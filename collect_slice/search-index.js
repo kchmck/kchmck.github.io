@@ -1,0 +1,3 @@
+var searchIndex = {};
+searchIndex['collect_slice'] = {"items":[[0,"","collect_slice","Collect an iterator into a slice.",null,null],[8,"CollectSlice","","An iterator that can collect into a slice.",null,null],[10,"collect_slice","","Loop through the iterator, writing items into the given slice until either the\niterator runs out of items or the slice fills up. Return the number of items\nwritten.",0,null],[11,"collect_slice_checked","","Perform `collect_slice()` and panic if there weren't enough items to fill up\nthe buffer or the buffer was too small to hold all the items.",0,null]],"paths":[[8,"CollectSlice"]]};
+initSearch(searchIndex);

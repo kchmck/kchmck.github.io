@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["CollectSlice","An iterator that can collect into a slice."]]});
