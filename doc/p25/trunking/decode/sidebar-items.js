@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["TalkGroup",""]],"fn":[["slice_u16",""],["slice_u24",""],["slice_u32",""]],"struct":[["Channel",""],["ChannelParams",""],["ServiceOptions",""],["SystemServices",""]],"type":[["ChannelParamsMap","Map channel identifier (maximum 16 per control channel) to its parameters."]]});

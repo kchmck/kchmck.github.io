@@ -4,12 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `src/lib.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/mick/.cargo/registry/src/github.com-1ecc6299db9ec823/collect_slice-1.0.0/src/lib.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>lib.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
+    
 
     
     
@@ -24,10 +26,10 @@
 
     
 
-    <section class="sidebar">
+    <nav class="sidebar">
         
         
-    </section>
+    </nav>
 
     <nav class="sub">
         <form class="search-form js-only">
@@ -247,18 +249,18 @@
     <span class='doccomment'>/// Loop through the iterator, writing items into the given slice until either the</span>
     <span class='doccomment'>/// iterator runs out of items or the slice fills up. Return the number of items</span>
     <span class='doccomment'>/// written.</span>
-    <span class='kw'>fn</span> <span class='ident'>collect_slice</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>slice</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>Self</span>::<span class='ident'>Item</span>]) <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
+    <span class='kw'>fn</span> <span class='ident'>collect_slice</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>slice</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='self'>Self</span>::<span class='ident'>Item</span>]) <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
 
     <span class='doccomment'>/// Perform `collect_slice()` and panic if there weren&#39;t enough items to fill up</span>
     <span class='doccomment'>/// the buffer or the buffer was too small to hold all the items.</span>
-    <span class='kw'>fn</span> <span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>slice</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>Self</span>::<span class='ident'>Item</span>]) {
+    <span class='kw'>fn</span> <span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>slice</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='self'>Self</span>::<span class='ident'>Item</span>]) {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>collect_slice</span>(<span class='ident'>slice</span>) <span class='op'>==</span> <span class='ident'>slice</span>.<span class='ident'>len</span>());
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
     }
 }
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>I</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='ident'>CollectSlice</span> <span class='kw'>for</span> <span class='ident'>I</span> {
-    <span class='kw'>fn</span> <span class='ident'>collect_slice</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>slice</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>Self</span>::<span class='ident'>Item</span>]) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
+    <span class='kw'>fn</span> <span class='ident'>collect_slice</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>slice</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='self'>Self</span>::<span class='ident'>Item</span>]) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
         <span class='ident'>slice</span>.<span class='ident'>iter_mut</span>().<span class='ident'>zip</span>(<span class='self'>self</span>).<span class='ident'>fold</span>(<span class='number'>0</span>, <span class='op'>|</span><span class='ident'>count</span>, (<span class='ident'>dest</span>, <span class='ident'>item</span>)<span class='op'>|</span> {
             <span class='op'>*</span><span class='ident'>dest</span> <span class='op'>=</span> <span class='ident'>item</span>;
             <span class='ident'>count</span> <span class='op'>+</span> <span class='number'>1</span>
@@ -268,7 +270,7 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='ident'>super</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_basic</span>() {
@@ -359,10 +361,12 @@
 
     <section class="footer"></section>
 
-    <div id="help" class="hidden">
+    <aside id="help" class="hidden">
         <div>
+            <h1 class="hidden">Help</h1>
+
             <div class="shortcuts">
-                <h1>Keyboard Shortcuts</h1>
+                <h2>Keyboard Shortcuts</h2>
 
                 <dl>
                     <dt>?</dt>
@@ -375,11 +379,13 @@
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 
             <div class="infos">
-                <h1>Search Tricks</h1>
+                <h2>Search Tricks</h2>
 
                 <p>
                     Prefix searches with a type followed by a colon (e.g.
@@ -395,11 +401,11 @@
 
                 <p>
                     Search functions by type signature (e.g.
-                    <code>vec -> usize</code>)
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
                 </p>
             </div>
         </div>
-    </div>
+    </aside>
 
     
 
@@ -411,6 +417,6 @@
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     
-    <script async src="../../search-index.js"></script>
+    <script defer src="../../search-index.js"></script>
 </body>
 </html>

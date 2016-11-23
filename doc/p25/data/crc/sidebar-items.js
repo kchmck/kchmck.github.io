@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["CRC","CRC calculator using long division."],["CRC16Params","Params for 16-bit CRC."],["CRC32Params","Params for 32-bit CRC."],["CRC9Params","Params for 9-bit CRC."]],"trait":[["CRCParams",""]],"type":[["CRC16","16-bit CRC calculator."],["CRC32","32-bit CRC calculator."],["CRC9","9-bit CRC calculator."]]});

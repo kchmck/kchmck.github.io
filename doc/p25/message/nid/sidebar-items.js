@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["DataUnit","Data unit of associated packet."],["NetworkAccessCode","\"Digital squelch\" NAC field of the NID."]],"struct":[["NIDReceiver","State machine that attempts to parse a stream of dibits into an NID word."],["NetworkID","NID word associated with each P25 packet."]]});

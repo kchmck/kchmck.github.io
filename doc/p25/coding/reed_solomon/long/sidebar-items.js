@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["decode","Try to decode the 36-hexbit word to the nearest codeword, correcting up to 8 errors. Return `Some((data, err))`, where `data` are the 20 data hexbits and `err` is the number of errors corrected, on success and `None` on an unrecoverable error."],["encode","Calculate the 16 parity hexbits for the 20 data hexbits."]]});

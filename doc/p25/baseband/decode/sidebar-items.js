@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Decider","Decides which symbol a sample represents with a threshold method."],["Decoder","Decodes symbol from sample at each symbol instant."]]});

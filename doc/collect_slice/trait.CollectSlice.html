@@ -9,7 +9,9 @@
 
     <title>collect_slice::CollectSlice - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
+    
 
     
     
@@ -24,10 +26,10 @@
 
     
 
-    <section class="sidebar">
+    <nav class="sidebar">
         
         <p class='location'><a href='index.html'>collect_slice</a></p><script>window.sidebarCurrent = {name: 'CollectSlice', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
-    </section>
+    </nav>
 
     <nav class="sub">
         <form class="search-form js-only">
@@ -42,40 +44,43 @@
 
     <section id='main' class="content trait">
 <h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>collect_slice</a>::<wbr><a class='trait' href=''>CollectSlice</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-4' class='srclink' href='../src/collect_slice/lib.rs.html#47-59' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait CollectSlice: <a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html' title='core::iter::Iterator'>Iterator</a> {
-    fn <a href='#tymethod.collect_slice' class='fnname'>collect_slice</a>(&amp;mut self, slice: <a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::<a class='trait' href='../collect_slice/trait.CollectSlice.html' title='collect_slice::CollectSlice'>Item</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>;
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-4' class='srclink' href='../src/collect_slice/lib.rs.html#47-59' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait CollectSlice: <a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='core::iter::iterator::Iterator'>Iterator</a> {
+    fn <a href='#tymethod.collect_slice' class='fnname'>collect_slice</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>;
 
-    fn <a href='#method.collect_slice_checked' class='fnname'>collect_slice_checked</a>(&amp;mut self, slice: <a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::<a class='trait' href='../collect_slice/trait.CollectSlice.html' title='collect_slice::CollectSlice'>Item</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) { ... }
+    fn <a href='#method.collect_slice_checked' class='fnname'>collect_slice_checked</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) { ... }
 }</pre><div class='docblock'><p>An iterator that can collect into a slice.</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.collect_slice' class='method stab '><code>fn <a href='#tymethod.collect_slice' class='fnname'>collect_slice</a>(&amp;mut self, slice: <a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::<a class='trait' href='../collect_slice/trait.CollectSlice.html' title='collect_slice::CollectSlice'>Item</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h3><div class='docblock'><p>Loop through the iterator, writing items into the given slice until either the
+        <h3 id='tymethod.collect_slice' class='method stab '><span id='collect_slice.v' class='invisible'><code>fn <a href='#tymethod.collect_slice' class='fnname'>collect_slice</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Loop through the iterator, writing items into the given slice until either the
 iterator runs out of items or the slice fills up. Return the number of items
 written.</p>
 </div></div>
             <h2 id='provided-methods'>Provided Methods</h2>
             <div class='methods'>
-        <h3 id='method.collect_slice_checked' class='method stab '><code>fn <a href='#method.collect_slice_checked' class='fnname'>collect_slice_checked</a>(&amp;mut self, slice: <a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::<a class='trait' href='../collect_slice/trait.CollectSlice.html' title='collect_slice::CollectSlice'>Item</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>)</code></h3><div class='docblock'><p>Perform <code>collect_slice()</code> and panic if there weren&#39;t enough items to fill up
+        <h3 id='method.collect_slice_checked' class='method stab '><span id='collect_slice_checked.v' class='invisible'><code>fn <a href='#method.collect_slice_checked' class='fnname'>collect_slice_checked</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>)</code></span></h3><div class='docblock'><p>Perform <code>collect_slice()</code> and panic if there weren&#39;t enough items to fill up
 the buffer or the buffer was too small to hold all the items.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    </ul><script type="text/javascript" async
-                              src="../implementors/collect_slice/trait.CollectSlice.js">
-                      </script></section>
+    <li><code>impl&lt;T,&nbsp;I:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='core::iter::iterator::Iterator'>Iterator</a>&lt;Item=T&gt;&gt; CollectSlice for I</code></li>
+</ul><script type="text/javascript" async
+                         src="../implementors/collect_slice/trait.CollectSlice.js">
+                 </script></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
 
-    <div id="help" class="hidden">
+    <aside id="help" class="hidden">
         <div>
+            <h1 class="hidden">Help</h1>
+
             <div class="shortcuts">
-                <h1>Keyboard Shortcuts</h1>
+                <h2>Keyboard Shortcuts</h2>
 
                 <dl>
                     <dt>?</dt>
@@ -88,11 +93,13 @@ the buffer or the buffer was too small to hold all the items.</p>
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 
             <div class="infos">
-                <h1>Search Tricks</h1>
+                <h2>Search Tricks</h2>
 
                 <p>
                     Prefix searches with a type followed by a colon (e.g.
@@ -108,11 +115,11 @@ the buffer or the buffer was too small to hold all the items.</p>
 
                 <p>
                     Search functions by type signature (e.g.
-                    <code>vec -> usize</code>)
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
                 </p>
             </div>
         </div>
-    </div>
+    </aside>
 
     
 
@@ -124,6 +131,6 @@ the buffer or the buffer was too small to hold all the items.</p>
     <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     
-    <script async src="../search-index.js"></script>
+    <script defer src="../search-index.js"></script>
 </body>
 </html>

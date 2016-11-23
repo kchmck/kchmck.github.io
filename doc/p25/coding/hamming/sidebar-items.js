@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["shortened","Encoding and decoding of the (10, 6, 3) code."],["standard","Encoding and decoding of the (15, 11, 3) code."]]});

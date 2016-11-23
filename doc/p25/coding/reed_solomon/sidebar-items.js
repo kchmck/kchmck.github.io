@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["long","Encoding and decoding of the (36, 20, 17) code."],["medium","Encoding and decoding of the (24, 16, 9) code."],["short","Encoding and decoding of the (24, 12, 13) code."]]});

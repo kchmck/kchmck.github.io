@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["LinkControlOpcode",""]],"struct":[["CallTermination",""],["GroupVoiceTraffic",""],["GroupVoiceUpdate",""],["LinkControlFields","Link Control information carried within voice packets."],["UnitVoiceTraffic",""]],"type":[["Buf",""]]});

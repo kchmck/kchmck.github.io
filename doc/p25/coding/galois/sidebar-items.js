@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Codeword","Codeword in the associated field."],["P25Field","GF(2^6) field characterized by α^6+α+1, as described in P25 specification."],["Polynomial","A syndrome polynomial with GF(2^6) codewords as coefficients."]],"trait":[["GaloisField",""],["PolynomialCoefs","Wraps a static codeword array."]],"type":[["P25Codeword",""]]});

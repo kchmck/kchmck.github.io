@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `DataUnitReceiver` struct in crate `p25`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, DataUnitReceiver">
+
+    <title>p25::message::data_unit::DataUnitReceiver - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>message</a>::<wbr><a href='index.html'>data_unit</a></p><script>window.sidebarCurrent = {name: 'DataUnitReceiver', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>message</a>::<wbr><a href='index.html'>data_unit</a>::<wbr><a class='struct' href=''>DataUnitReceiver</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-1692' class='srclink' href='../../../src/p25/src/message/data_unit.rs.html#112-117' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct DataUnitReceiver { /* fields omitted */ }</pre><div class='docblock'><p>State machine for low-level data unit reception.</p>
+
+<p>The state machine consumes baseband samples and performs the following steps common to
+all data units:</p>
+
+<ol>
+<li>Track average power of input signal</li>
+<li>Lock onto frame synchronization</li>
+<li>Deinterleave status symbols</li>
+<li>Decode NID information</li>
+<li>Decode dibit symbol until stopped</li>
+</ol>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/message/data_unit/struct.DataUnitReceiver.html' title='p25::message::data_unit::DataUnitReceiver'>DataUnitReceiver</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1695' class='srclink' href='../../../src/p25/src/message/data_unit.rs.html#119-205' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../../../p25/message/data_unit/struct.DataUnitReceiver.html' title='p25::message::data_unit::DataUnitReceiver'>DataUnitReceiver</a></code></span></h4>
+<div class='docblock'><p>Create a new <code>DataUnitReceiver</code> in the initial reception state.</p>
+</div><h4 id='method.flush_pads' class='method'><span id='flush_pads.v' class='invisible'><code>fn <a href='#method.flush_pads' class='fnname'>flush_pads</a>(&amp;mut self)</code></span></h4>
+<div class='docblock'><p>Flush any remaining padding symbols at the end of the current packet, and reenter
+the frame synchronization state afterwards.</p>
+</div><h4 id='method.resync' class='method'><span id='resync.v' class='invisible'><code>fn <a href='#method.resync' class='fnname'>resync</a>(&amp;mut self)</code></span></h4>
+<div class='docblock'><p>Force the receiver into frame synchronization.</p>
+</div><h4 id='method.reprime' class='method'><span id='reprime.v' class='invisible'><code>fn <a href='#method.reprime' class='fnname'>reprime</a>(&amp;mut self)</code></span></h4>
+<h4 id='method.feed' class='method'><span id='feed.v' class='invisible'><code>fn <a href='#method.feed' class='fnname'>feed</a>(&amp;mut self, s: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='type' href='../../../p25/error/type.Result.html' title='p25::error::Result'>Result</a>&lt;<a class='enum' href='../../../p25/message/data_unit/enum.ReceiverEvent.html' title='p25::message::data_unit::ReceiverEvent'>ReceiverEvent</a>&gt;&gt;</code></span></h4>
+<div class='docblock'><p>Feed in a baseband symbol, possibly producing a receiver event. Return
+<code>Some(Ok(event))</code> for any normal event, <code>Some(Err(err))</code> for any error, and <code>None</code>
+if no event occurred.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "p25";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>

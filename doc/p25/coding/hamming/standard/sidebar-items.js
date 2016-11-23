@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["decode","Try to decode the 15-bit word to the nearest codeword, correcting up to 1 error. Return `Some((data, err))`, where `data` are the 11 data bits and `err` is the number of errors, on success and `None` on an unrecoverable error."],["encode","Encode the 11 bits of data to a 15-bit codeword."]]});

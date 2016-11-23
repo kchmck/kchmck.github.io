@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["decode","Utilities for decoding a C4FM signal into symbols."],["encode","Utilities for encoding symbols as a C4FM signal."],["sync","Utilities for detecting the frame synchronization sequence and extracting symbol decoding thresholds from it."]]});
