@@ -47,15 +47,24 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-1959' class='srclink' href='../../../src/p25/src/trunking/fields.rs.html#5' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct ServiceOptions(_);</pre><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/trunking/fields/struct.ServiceOptions.html' title='p25::trunking::fields::ServiceOptions'>ServiceOptions</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1962' class='srclink' href='../../../src/p25/src/trunking/fields.rs.html#7-15' title='goto source code'>[src]</a></span></h3>
+               </span><a id='src-1949' class='srclink' href='../../../src/p25/src/trunking/fields.rs.html#6' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct ServiceOptions(_);</pre><div class='docblock'><p>Options that can be requested/granted by a service.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/trunking/fields/struct.ServiceOptions.html' title='p25::trunking::fields::ServiceOptions'>ServiceOptions</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1952' class='srclink' href='../../../src/p25/src/trunking/fields.rs.html#8-24' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(opts: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.ServiceOptions.html' title='p25::trunking::fields::ServiceOptions'>ServiceOptions</a></code></span></h4>
-<h4 id='method.emergency' class='method'><span id='emergency.v' class='invisible'><code>fn <a href='#method.emergency' class='fnname'>emergency</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
-<h4 id='method.protected' class='method'><span id='protected.v' class='invisible'><code>fn <a href='#method.protected' class='fnname'>protected</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
-<h4 id='method.duplex' class='method'><span id='duplex.v' class='invisible'><code>fn <a href='#method.duplex' class='fnname'>duplex</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
-<h4 id='method.packet_switched' class='method'><span id='packet_switched.v' class='invisible'><code>fn <a href='#method.packet_switched' class='fnname'>packet_switched</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
-<h4 id='method.prio' class='method'><span id='prio.v' class='invisible'><code>fn <a href='#method.prio' class='fnname'>prio</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h4>
-</div></section>
+<div class='docblock'><p>Create a new <code>ServiceOptions</code> based on the given byte.</p>
+</div><h4 id='method.emergency' class='method'><span id='emergency.v' class='invisible'><code>fn <a href='#method.emergency' class='fnname'>emergency</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
+<div class='docblock'><p>Whether the service should be processed as an emergency.</p>
+</div><h4 id='method.protected' class='method'><span id='protected.v' class='invisible'><code>fn <a href='#method.protected' class='fnname'>protected</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
+<div class='docblock'><p>Whether the channel should be encrypted.</p>
+</div><h4 id='method.full_duplex' class='method'><span id='full_duplex.v' class='invisible'><code>fn <a href='#method.full_duplex' class='fnname'>full_duplex</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
+<div class='docblock'><p>Whether the channel should be full duplex for simultaneous transmit and receive
+(otherwise fall back to half duplex.)</p>
+</div><h4 id='method.packet_switched' class='method'><span id='packet_switched.v' class='invisible'><code>fn <a href='#method.packet_switched' class='fnname'>packet_switched</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
+<div class='docblock'><p>Whether the service should be packet switched (otherwise fall back to circuit
+switched.)</p>
+</div><h4 id='method.prio' class='method'><span id='prio.v' class='invisible'><code>fn <a href='#method.prio' class='fnname'>prio</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h4>
+<div class='docblock'><p>Priority assigned to service, with 1 as lowest and 7 as highest.</p>
+</div></div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

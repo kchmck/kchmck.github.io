@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["VoiceLCTerminatorReceiver","State machine for receiving a link control voice terminator."]]});

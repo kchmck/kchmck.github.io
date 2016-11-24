@@ -112,24 +112,39 @@
 <span id="68">68</span>
 <span id="69">69</span>
 <span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
 </pre><pre class='rust '>
+<span class='doccomment'>//! Decode Cryptographic Control (CC) packets.</span>
+
 <span class='kw'>use</span> <span class='ident'>consts</span>::<span class='ident'>CRYPTO_CONTROL_BYTES</span>;
 <span class='kw'>use</span> <span class='ident'>util</span>::<span class='ident'>slice_u16</span>;
 
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CryptoControlFields</span>([<span class='ident'>u8</span>; <span class='ident'>CRYPTO_CONTROL_BYTES</span>]);
+<span class='doccomment'>/// Buffer of bytes that represent a crypto control packet.</span>
+<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Buf</span> <span class='op'>=</span> [<span class='ident'>u8</span>; <span class='ident'>CRYPTO_CONTROL_BYTES</span>];
+
+<span class='doccomment'>/// Information necessary to decrypt an encrypted message.</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CryptoControlFields</span>(<span class='ident'>Buf</span>);
 
 <span class='kw'>impl</span> <span class='ident'>CryptoControlFields</span> {
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>buf</span>: [<span class='ident'>u8</span>; <span class='number'>12</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>CryptoControlFields</span>(<span class='ident'>buf</span>) }
+    <span class='doccomment'>/// Create a new `CryptoControlFields` decoder from the given bytes.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>buf</span>: <span class='ident'>Buf</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>CryptoControlFields</span>(<span class='ident'>buf</span>) }
 
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>crypto_init</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>] { <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[..<span class='number'>9</span>] }
-
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>crypto_alg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>CryptoAlgorithm</span> {
-        <span class='ident'>CryptoAlgorithm</span>::<span class='ident'>from_bits</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>9</span>])
-    }
-
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>crypto_key</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> { <span class='ident'>slice_u16</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>10</span>..]) }
+    <span class='doccomment'>/// Initialization vector used internally by associated crypto algorithm.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>init</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>] { <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[..<span class='number'>9</span>] }
+    <span class='doccomment'>/// Type of crypto algorithm in use, if any.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>alg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>CryptoAlgorithm</span> { <span class='ident'>CryptoAlgorithm</span>::<span class='ident'>from_bits</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>9</span>]) }
+    <span class='doccomment'>/// Encryption key to use.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>key</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> { <span class='ident'>slice_u16</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>10</span>..]) }
 }
 
+<span class='doccomment'>/// Type of cryptographic algorithm.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>CryptoAlgorithm</span> {
     <span class='ident'>Accordion</span>,
@@ -146,6 +161,7 @@
 }
 
 <span class='kw'>impl</span> <span class='ident'>CryptoAlgorithm</span> {
+    <span class='doccomment'>/// Parse the given 8 bits into a crypto algorithm.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_bits</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>CryptoAlgorithm</span> {
         <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>CryptoAlgorithm</span>::<span class='op'>*</span>;
 
@@ -178,9 +194,9 @@
             <span class='number'>0xDE</span>, <span class='number'>0xAD</span>,
         ]);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>crypto_init</span>(), <span class='kw-2'>&amp;</span>[<span class='number'>0</span>,<span class='number'>0</span>,<span class='number'>0</span>,<span class='number'>1</span>,<span class='number'>0</span>,<span class='number'>0</span>,<span class='number'>0</span>,<span class='number'>2</span>,<span class='number'>0</span>]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>crypto_alg</span>(), <span class='ident'>AES</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>crypto_key</span>(), <span class='number'>0xDEAD</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>init</span>(), <span class='kw-2'>&amp;</span>[<span class='number'>0</span>,<span class='number'>0</span>,<span class='number'>0</span>,<span class='number'>1</span>,<span class='number'>0</span>,<span class='number'>0</span>,<span class='number'>0</span>,<span class='number'>2</span>,<span class='number'>0</span>]);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>alg</span>(), <span class='ident'>AES</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>key</span>(), <span class='number'>0xDEAD</span>);
     }
 }
 </pre>

@@ -143,6 +143,9 @@
 <span id="99"> 99</span>
 <span id="100">100</span>
 <span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>collect_slice</span>::<span class='ident'>CollectSlice</span>;
 
@@ -181,7 +184,9 @@
 
         <span class='kw'>let</span> <span class='ident'>data</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>golay</span>::<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>buf</span>) {
             <span class='prelude-val'>Some</span>((<span class='ident'>data</span>, <span class='ident'>err</span>)) <span class='op'>=&gt;</span> {<span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;golay err:{}&quot;</span>, <span class='ident'>err</span>); <span class='ident'>data</span>},
-            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>GolayUnrecoverable</span>)),
+            <span class='comment'>// The following RS code can correct up to 8 errors, so give it a chance to</span>
+            <span class='comment'>// correct the errors in this word.</span>
+            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> {<span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;GIVE RS A CHANCE&quot;</span>); <span class='number'>0</span>},
         };
 
         <span class='kw'>let</span> <span class='ident'>hexbits</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>hexbits</span>.<span class='ident'>feed</span>(<span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='ident'>data</span>)) {
@@ -223,6 +228,7 @@
 
         <span class='kw'>let</span> <span class='ident'>data</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>golay</span>::<span class='ident'>extended</span>::<span class='ident'>decode</span>(<span class='op'>*</span><span class='ident'>buf</span> <span class='kw'>as</span> <span class='ident'>u32</span>) {
             <span class='prelude-val'>Some</span>((<span class='ident'>data</span>, <span class='ident'>err</span>)) <span class='op'>=&gt;</span> <span class='ident'>data</span>,
+            <span class='comment'>// TODO: give RS a chance?</span>
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>GolayUnrecoverable</span>)),
         };
 

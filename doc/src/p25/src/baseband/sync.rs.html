@@ -766,20 +766,6 @@
 <span id="722">722</span>
 <span id="723">723</span>
 <span id="724">724</span>
-<span id="725">725</span>
-<span id="726">726</span>
-<span id="727">727</span>
-<span id="728">728</span>
-<span id="729">729</span>
-<span id="730">730</span>
-<span id="731">731</span>
-<span id="732">732</span>
-<span id="733">733</span>
-<span id="734">734</span>
-<span id="735">735</span>
-<span id="736">736</span>
-<span id="737">737</span>
-<span id="738">738</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Utilities for detecting the frame synchronization sequence and extracting symbol</span>
 <span class='doccomment'>//! decoding thresholds from it.</span>
@@ -806,20 +792,12 @@
     }
 }
 
-<span class='kw'>struct</span> <span class='ident'>AvgSmoothing</span>;
-
-<span class='kw'>impl</span> <span class='ident'>MovingAverageWeight</span> <span class='kw'>for</span> <span class='ident'>AvgSmoothing</span> {
-    <span class='kw'>fn</span> <span class='ident'>weight</span>() <span class='op'>-&gt;</span> <span class='ident'>f32</span> { <span class='number'>0.05</span> }
-}
-
 <span class='doccomment'>/// Continuously cross-correlates input signal with frame sync fingerprint.</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>SyncCorrelator</span> {
     <span class='doccomment'>/// Fingerprint correlator.</span>
     <span class='ident'>corr</span>: <span class='ident'>FIRFilter</span><span class='op'>&lt;</span><span class='ident'>SyncFingerprint</span><span class='op'>&gt;</span>,
     <span class='doccomment'>/// Moving average power of input signal.</span>
     <span class='ident'>power</span>: <span class='ident'>MovingAverage</span><span class='op'>&lt;</span><span class='ident'>PowerSmoothing</span><span class='op'>&gt;</span>,
-    <span class='ident'>psmooth</span>: <span class='ident'>MovingAverage</span><span class='op'>&lt;</span><span class='ident'>AvgSmoothing</span><span class='op'>&gt;</span>,
-    <span class='ident'>nsmooth</span>: <span class='ident'>MovingAverage</span><span class='op'>&lt;</span><span class='ident'>AvgSmoothing</span><span class='op'>&gt;</span>,
 }
 
 <span class='kw'>impl</span> <span class='ident'>SyncCorrelator</span> {
@@ -828,8 +806,6 @@
         <span class='ident'>SyncCorrelator</span> {
             <span class='ident'>corr</span>: <span class='ident'>FIRFilter</span>::<span class='ident'>new</span>(),
             <span class='ident'>power</span>: <span class='ident'>MovingAverage</span>::<span class='ident'>new</span>(<span class='number'>0.0</span>),
-            <span class='ident'>psmooth</span>: <span class='ident'>MovingAverage</span>::<span class='ident'>new</span>(<span class='number'>0.0</span>),
-            <span class='ident'>nsmooth</span>: <span class='ident'>MovingAverage</span>::<span class='ident'>new</span>(<span class='number'>0.0</span>),
         }
     }
 
@@ -853,10 +829,6 @@
             .<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>combined</span>[..]);
 
         <span class='kw'>let</span> (<span class='ident'>pavg</span>, <span class='ident'>navg</span>) <span class='op'>=</span> <span class='ident'>calc_averages</span>(<span class='kw-2'>&amp;</span><span class='ident'>combined</span>);
-        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;raw {}&quot;</span>, <span class='ident'>pavg</span>);
-        <span class='kw'>let</span> <span class='ident'>pavg</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>psmooth</span>.<span class='ident'>add</span>(<span class='ident'>pavg</span>);
-        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;smoothed {}&quot;</span>, <span class='ident'>pavg</span>);
-        <span class='kw'>let</span> <span class='ident'>navg</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>nsmooth</span>.<span class='ident'>add</span>(<span class='ident'>navg</span>);
 
         <span class='ident'>calc_thresholds</span>(<span class='ident'>pavg</span>, <span class='ident'>navg</span>)
     }

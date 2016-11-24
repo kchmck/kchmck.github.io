@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["fields","Decoders for various trunking-related packet fields."],["tsbk","Receiver for Trunking Signalling Block (TSBK) packets and decoders for various TSBK payloads."]]});
+initSidebarItems({"mod":[["fields","Decode various trunking-related packet fields."],["tsbk","Receive Trunking Signalling Block (TSBK) packets and decode the various TSBK payloads."]]});

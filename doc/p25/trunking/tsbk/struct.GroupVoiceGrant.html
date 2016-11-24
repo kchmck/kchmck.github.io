@@ -47,13 +47,20 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-2134' class='srclink' href='../../../src/p25/src/trunking/tsbk.rs.html#213' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct GroupVoiceGrant(_);</pre><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/trunking/tsbk/struct.GroupVoiceGrant.html' title='p25::trunking::tsbk::GroupVoiceGrant'>GroupVoiceGrant</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-2137' class='srclink' href='../../../src/p25/src/trunking/tsbk.rs.html#215-221' title='goto source code'>[src]</a></span></h3>
+               </span><a id='src-2270' class='srclink' href='../../../src/p25/src/trunking/tsbk.rs.html#275' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct GroupVoiceGrant(_);</pre><div class='docblock'><p>Indicates a talkgroup has been granted a voice traffic channel.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/trunking/tsbk/struct.GroupVoiceGrant.html' title='p25::trunking::tsbk::GroupVoiceGrant'>GroupVoiceGrant</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-2273' class='srclink' href='../../../src/p25/src/trunking/tsbk.rs.html#277-289' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(tsbk: <a class='struct' href='../../../p25/trunking/tsbk/struct.TSBKFields.html' title='p25::trunking::tsbk::TSBKFields'>TSBKFields</a>) -&gt; Self</code></span></h4>
-<h4 id='method.opts' class='method'><span id='opts.v' class='invisible'><code>fn <a href='#method.opts' class='fnname'>opts</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.ServiceOptions.html' title='p25::trunking::fields::ServiceOptions'>ServiceOptions</a></code></span></h4>
-<h4 id='method.talk_group' class='method'><span id='talk_group.v' class='invisible'><code>fn <a href='#method.talk_group' class='fnname'>talk_group</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/trunking/fields/enum.TalkGroup.html' title='p25::trunking::fields::TalkGroup'>TalkGroup</a></code></span></h4>
-<h4 id='method.src_unit' class='method'><span id='src_unit.v' class='invisible'><code>fn <a href='#method.src_unit' class='fnname'>src_unit</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></span></h4>
-</div></section>
+<div class='docblock'><p>Create a new <code>GroupVoiceGrant</code> decoder from the base TSBK decoder.</p>
+</div><h4 id='method.opts' class='method'><span id='opts.v' class='invisible'><code>fn <a href='#method.opts' class='fnname'>opts</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.ServiceOptions.html' title='p25::trunking::fields::ServiceOptions'>ServiceOptions</a></code></span></h4>
+<div class='docblock'><p>Options requested/granted for the traffic channel.</p>
+</div><h4 id='method.channel' class='method'><span id='channel.v' class='invisible'><code>fn <a href='#method.channel' class='fnname'>channel</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.Channel.html' title='p25::trunking::fields::Channel'>Channel</a></code></span></h4>
+<div class='docblock'><p>Parameters for tuning to the traffic channel.</p>
+</div><h4 id='method.talkgroup' class='method'><span id='talkgroup.v' class='invisible'><code>fn <a href='#method.talkgroup' class='fnname'>talkgroup</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/trunking/fields/enum.TalkGroup.html' title='p25::trunking::fields::TalkGroup'>TalkGroup</a></code></span></h4>
+<div class='docblock'><p>Talkgroup for the conversation.</p>
+</div><h4 id='method.src_unit' class='method'><span id='src_unit.v' class='invisible'><code>fn <a href='#method.src_unit' class='fnname'>src_unit</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></span></h4>
+<div class='docblock'><p>Unit that initiated the conversation.</p>
+</div></div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

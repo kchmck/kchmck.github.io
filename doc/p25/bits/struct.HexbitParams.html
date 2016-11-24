@@ -47,9 +47,9 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-229' class='srclink' href='../../src/p25/src/bits.rs.html#134' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-221' class='srclink' href='../../src/p25/src/bits.rs.html#135' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct HexbitParams;</pre><div class='docblock'><p>Parameters for <code>Hexbits</code> iterator.</p>
-</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../../p25/bits/trait.IterParams.html' title='p25::bits::IterParams'>IterParams</a> for <a class='struct' href='../../p25/bits/struct.HexbitParams.html' title='p25::bits::HexbitParams'>HexbitParams</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-231' class='srclink' href='../../src/p25/src/bits.rs.html#136-146' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../../p25/bits/trait.IterParams.html' title='p25::bits::IterParams'>IterParams</a> for <a class='struct' href='../../p25/bits/struct.HexbitParams.html' title='p25::bits::HexbitParams'>HexbitParams</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-223' class='srclink' href='../../src/p25/src/bits.rs.html#137-147' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='associatedtype.Input' class='type'><span id='Input.t' class='invisible'><code>type <a href='../../p25/bits/trait.IterParams.html#associatedtype.Input' class='type'>Input</a> = <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h4>
 <div class='docblock'><p>Type to consume when buffering.</p>
 </div><h4 id='associatedtype.Output' class='type'><span id='Output.t' class='invisible'><code>type <a href='../../p25/bits/trait.IterParams.html#associatedtype.Output' class='type'>Output</a> = <a class='struct' href='../../p25/bits/struct.Hexbit.html' title='p25::bits::Hexbit'>Hexbit</a></code></span></h4>
@@ -65,7 +65,7 @@
 </div><h4 id='method.to_output' class='method'><span id='to_output.v' class='invisible'><code>fn <a href='../../p25/bits/trait.IterParams.html#tymethod.to_output' class='fnname'>to_output</a>(bits: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>) -&gt; <a class='struct' href='../../p25/bits/struct.Hexbit.html' title='p25::bits::Hexbit'>Hexbit</a></code></span></h4>
 <div class='docblock'><p>Convert bits to output type.</p>
 </div><h4 id='method.post_shift' class='method'><span id='post_shift.v' class='invisible'><code>fn <a href='../../p25/bits/trait.IterParams.html#method.post_shift' class='fnname'>post_shift</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
-<div class='docblock'><p>Amount to shift buffer after all buffering.</p>
+<div class='docblock'><p>Amount to shift buffer after all buffering, so the bits are lined up at the MSB.</p>
 </div><h4 id='method.iterations' class='method'><span id='iterations.v' class='invisible'><code>fn <a href='../../p25/bits/trait.IterParams.html#method.iterations' class='fnname'>iterations</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
 <div class='docblock'><p>Number of iterations before buffering.</p>
 </div><h4 id='method.validate' class='method'><span id='validate.v' class='invisible'><code>fn <a href='../../p25/bits/trait.IterParams.html#method.validate' class='fnname'>validate</a>()</code></span></h4>

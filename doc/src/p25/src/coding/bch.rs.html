@@ -504,9 +504,9 @@
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>decode</span>(<span class='ident'>encode</span>(<span class='number'>0b0000001111111111</span>) <span class='op'>^</span>
                        <span class='number'>0b00100101010101000010001100100010011111111110</span>).<span class='ident'>is_none</span>());
 
-        <span class='comment'>// for i in 0..1u32&lt;&lt;17 {</span>
-        <span class='comment'>//     assert_eq!(decode(encode(i as u16)).unwrap().0, i as u16);</span>
-        <span class='comment'>// }</span>
+        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>1u32</span><span class='op'>&lt;&lt;</span><span class='number'>17</span> {
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>decode</span>(<span class='ident'>encode</span>(<span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u16</span>)).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u16</span>);
+        }
     }
 }
 </pre>

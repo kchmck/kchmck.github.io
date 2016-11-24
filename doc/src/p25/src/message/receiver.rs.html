@@ -248,7 +248,6 @@
 <span id="204">204</span>
 <span id="205">205</span>
 <span id="206">206</span>
-<span id="207">207</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! High-level receiver for receiving P25 voice, data, and trunking messages.</span>
 
@@ -260,14 +259,13 @@
 <span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>control</span>::<span class='ident'>LinkControlFields</span>;
 <span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>crypto</span>::<span class='ident'>CryptoControlFields</span>;
 <span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>frame</span>::<span class='ident'>VoiceFrame</span>;
-<span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>header</span>::<span class='ident'>VoiceHeaderFields</span>;
+<span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>header</span>::{<span class='ident'>VoiceHeaderReceiver</span>, <span class='ident'>VoiceHeaderFields</span>};
+<span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>term</span>::<span class='ident'>VoiceLCTerminatorReceiver</span>;
 
-<span class='kw'>use</span> <span class='ident'>voice</span>::{
+<span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>frame_group</span>::{
     <span class='ident'>FrameGroupEvent</span>,
     <span class='ident'>VoiceCCFrameGroupReceiver</span>,
-    <span class='ident'>VoiceHeaderReceiver</span>,
     <span class='ident'>VoiceLCFrameGroupReceiver</span>,
-    <span class='ident'>VoiceLCTerminatorReceiver</span>,
 };
 
 <span class='doccomment'>/// Set of callbacks to handle events and messages that occur when receiving the air</span>
@@ -290,7 +288,7 @@
     <span class='doccomment'>/// A trunking signalling packet was received.</span>
     <span class='kw'>fn</span> <span class='ident'>handle_tsbk</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>recv</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>DataUnitReceiver</span>, <span class='ident'>tsbk</span>: <span class='ident'>TSBKFields</span>);
     <span class='doccomment'>/// A voice terminator packet was received, optionally with link control word.</span>
-    <span class='kw'>fn</span> <span class='ident'>handle_term</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>recv</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>DataUnitReceiver</span>, <span class='ident'>lc</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>LinkControlFields</span><span class='op'>&gt;</span>);
+    <span class='kw'>fn</span> <span class='ident'>handle_term</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>recv</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>DataUnitReceiver</span>);
 }
 
 <span class='doccomment'>/// Internal state of the state machine.</span>
@@ -351,7 +349,7 @@
                     <span class='ident'>VoiceHeader</span> <span class='op'>=&gt;</span>
                         <span class='ident'>DecodeHeader</span>(<span class='ident'>VoiceHeaderReceiver</span>::<span class='ident'>new</span>()),
                     <span class='ident'>VoiceSimpleTerminator</span> <span class='op'>=&gt;</span> {
-                        <span class='ident'>handler</span>.<span class='ident'>handle_term</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>recv</span>, <span class='prelude-val'>None</span>);
+                        <span class='ident'>handler</span>.<span class='ident'>handle_term</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>recv</span>);
                         <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>flush_pads</span>();
                         <span class='ident'>Idle</span>
                     },
@@ -364,7 +362,6 @@
                     <span class='ident'>TrunkingSignaling</span> <span class='op'>=&gt;</span>
                         <span class='ident'>DecodeTSBK</span>(<span class='ident'>TSBKReceiver</span>::<span class='ident'>new</span>()),
                     <span class='ident'>DataPacket</span> <span class='op'>=&gt;</span> {
-                        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;\n\n\n\nDATA DATA DATA DATA\n\n\n\n&quot;</span>);
                         <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>resync</span>();
                         <span class='ident'>Idle</span>
                     },
@@ -430,7 +427,8 @@
             },
             <span class='ident'>DecodeLCTerminator</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>term</span>) <span class='op'>=&gt;</span> <span class='kw'>match</span> <span class='ident'>term</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
                 <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>lc</span>)) <span class='op'>=&gt;</span> {
-                    <span class='ident'>handler</span>.<span class='ident'>handle_term</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>recv</span>, <span class='prelude-val'>Some</span>(<span class='ident'>lc</span>));
+                    <span class='ident'>handler</span>.<span class='ident'>handle_lc</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>recv</span>, <span class='ident'>lc</span>);
+                    <span class='ident'>handler</span>.<span class='ident'>handle_term</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>recv</span>);
                     <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>flush_pads</span>();
                 },
                 <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>err</span>)) <span class='op'>=&gt;</span> {

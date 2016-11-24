@@ -47,73 +47,36 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-2080' class='srclink' href='../../../src/p25/src/trunking/tsbk.rs.html#1-495' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'><p>Receiver for Trunking Signalling Block (TSBK) packets and decoders for various TSBK
-payloads.</p>
+               </span><a id='src-2174' class='srclink' href='../../../src/p25/src/trunking/tsbk.rs.html#1-849' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Receive Trunking Signalling Block (TSBK) packets and decode the various TSBK payloads.</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.AltControlChannel.html'
-                                  title='p25::trunking::tsbk::AltControlChannel'>AltControlChannel</a></td>
+                           <td><a class='struct' href='struct.GroupDataGrant.html'
+                                  title='p25::trunking::tsbk::GroupDataGrant'>GroupDataGrant</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Indicates a talkgroup has been granted a data traffic channel.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.GroupVoiceGrant.html'
                                   title='p25::trunking::tsbk::GroupVoiceGrant'>GroupVoiceGrant</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Indicates a talkgroup has been granted a voice traffic channel.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.GroupVoiceUpdate.html'
-                                  title='p25::trunking::tsbk::GroupVoiceUpdate'>GroupVoiceUpdate</a></td>
+                           <td><a class='struct' href='struct.LocRegResponse.html'
+                                  title='p25::trunking::tsbk::LocRegResponse'>LocRegResponse</a></td>
                            <td class='docblock-short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.GroupVoiceUpdateExplicit.html'
-                                  title='p25::trunking::tsbk::GroupVoiceUpdateExplicit'>GroupVoiceUpdateExplicit</a></td>
-                           <td class='docblock-short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.LocRegisterResponse.html'
-                                  title='p25::trunking::tsbk::LocRegisterResponse'>LocRegisterResponse</a></td>
-                           <td class='docblock-short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.NetworkStatusBroadcast.html'
-                                  title='p25::trunking::tsbk::NetworkStatusBroadcast'>NetworkStatusBroadcast</a></td>
-                           <td class='docblock-short'>
-                                <p>WACN (Wide Area Communication Network) and System ID information of current control
-channel.</p>
+                                <p>Response given to a location registration request.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.PhoneGrant.html'
                                   title='p25::trunking::tsbk::PhoneGrant'>PhoneGrant</a></td>
                            <td class='docblock-short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.RFSSStatusBroadcast.html'
-                                  title='p25::trunking::tsbk::RFSSStatusBroadcast'>RFSSStatusBroadcast</a></td>
-                           <td class='docblock-short'>
-                                <p>Site and RFSS information of current control channel.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.SiteStatusBroadcast.html'
-                                  title='p25::trunking::tsbk::SiteStatusBroadcast'>SiteStatusBroadcast</a></td>
-                           <td class='docblock-short'>
-                                <p>Status of current site.</p>
+                                <p>Indicates a unit has been granted a traffic channel for a phone call.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -127,49 +90,28 @@ channel.</p>
                            <td><a class='struct' href='struct.TSBKReceiver.html'
                                   title='p25::trunking::tsbk::TSBKReceiver'>TSBKReceiver</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>State machine for receiving a TSBK packet.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.UnitCallRequest.html'
-                                  title='p25::trunking::tsbk::UnitCallRequest'>UnitCallRequest</a></td>
+                           <td><a class='struct' href='struct.UnitDeregAck.html'
+                                  title='p25::trunking::tsbk::UnitDeregAck'>UnitDeregAck</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Acknowledgement of successful user deregistration request.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.UnitDataGrant.html'
-                                  title='p25::trunking::tsbk::UnitDataGrant'>UnitDataGrant</a></td>
+                           <td><a class='struct' href='struct.UnitRegResponse.html'
+                                  title='p25::trunking::tsbk::UnitRegResponse'>UnitRegResponse</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Response given to an attempted user registration.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.UnitDeregisterAck.html'
-                                  title='p25::trunking::tsbk::UnitDeregisterAck'>UnitDeregisterAck</a></td>
+                           <td><a class='struct' href='struct.UnitTrafficChannel.html'
+                                  title='p25::trunking::tsbk::UnitTrafficChannel'>UnitTrafficChannel</a></td>
                            <td class='docblock-short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.UnitRegisterResponse.html'
-                                  title='p25::trunking::tsbk::UnitRegisterResponse'>UnitRegisterResponse</a></td>
-                           <td class='docblock-short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.UnitVoiceGrant.html'
-                                  title='p25::trunking::tsbk::UnitVoiceGrant'>UnitVoiceGrant</a></td>
-                           <td class='docblock-short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.UnitVoiceUpdate.html'
-                                  title='p25::trunking::tsbk::UnitVoiceUpdate'>UnitVoiceUpdate</a></td>
-                           <td class='docblock-short'>
-                                
+                                <p>Indicates a pair of units have been granted a traffic channel.</p>
                            </td>
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
@@ -177,7 +119,7 @@ channel.</p>
                            <td><a class='enum' href='enum.TSBKOpcode.html'
                                   title='p25::trunking::tsbk::TSBKOpcode'>TSBKOpcode</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Type of a TSBK payload.</p>
                            </td>
                        </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
@@ -185,7 +127,7 @@ channel.</p>
                            <td><a class='type' href='type.Buf.html'
                                   title='p25::trunking::tsbk::Buf'>Buf</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Buffer of bytes that represents a TSBK packet.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

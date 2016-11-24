@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["VoiceFrame",""]]});
+initSidebarItems({"struct":[["VoiceFrame","IMBE-encoded voice frame."]]});

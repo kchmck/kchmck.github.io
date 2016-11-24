@@ -313,122 +313,191 @@
 <span id="269">269</span>
 <span id="270">270</span>
 <span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
 </pre><pre class='rust '>
+<span class='doccomment'>//! Receive voice frame groups, known as LDU1 and LDU2 in the standard.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! Each frame group contains 9 voice frames, a low-speed data word, and an &quot;extra&quot;</span>
+<span class='doccomment'>//! packet: either link control (LC) or crypto control (CC).</span>
+
 <span class='kw'>use</span> <span class='ident'>std</span>;
 
 <span class='kw'>use</span> <span class='ident'>collect_slice</span>::<span class='ident'>CollectSlice</span>;
 
 <span class='kw'>use</span> <span class='ident'>bits</span>::{<span class='ident'>Hexbit</span>, <span class='ident'>HexbitBytes</span>, <span class='ident'>Dibit</span>};
-<span class='kw'>use</span> <span class='ident'>buffer</span>::{<span class='ident'>Buffer</span>, <span class='ident'>VoiceExtraStorage</span>, <span class='ident'>VoiceFrameStorage</span>, <span class='ident'>VoiceExtraWordStorage</span>,
-             <span class='ident'>VoiceDataFragStorage</span>};
 <span class='kw'>use</span> <span class='ident'>coding</span>::{<span class='ident'>cyclic</span>, <span class='ident'>hamming</span>, <span class='ident'>reed_solomon</span>};
 <span class='kw'>use</span> <span class='ident'>error</span>::{<span class='ident'>P25Error</span>, <span class='prelude-ty'>Result</span>};
+<span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>frame</span>::<span class='ident'>VoiceFrame</span>;
+<span class='kw'>use</span> <span class='ident'>voice</span>::{<span class='ident'>control</span>, <span class='ident'>crypto</span>};
+
+<span class='kw'>use</span> <span class='ident'>buffer</span>::{
+    <span class='ident'>Buffer</span>,
+    <span class='ident'>VoiceDataFragStorage</span>,
+    <span class='ident'>VoiceExtraStorage</span>,
+    <span class='ident'>VoiceExtraWordStorage</span>,
+    <span class='ident'>VoiceFrameStorage</span>,
+};
 
 <span class='kw'>use</span> <span class='ident'>consts</span>::{
+    <span class='ident'>CRYPTO_CONTROL_BYTES</span>,
     <span class='ident'>EXTRA_HEXBITS</span>,
     <span class='ident'>EXTRA_PIECE_DIBITS</span>,
     <span class='ident'>LINK_CONTROL_BYTES</span>,
-    <span class='ident'>CRYPTO_CONTROL_BYTES</span>,
 };
-
-<span class='kw'>use</span> <span class='ident'>voice</span>::{<span class='ident'>control</span>, <span class='ident'>crypto</span>};
-<span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>frame</span>::<span class='ident'>VoiceFrame</span>;
 
 <span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>P25Error</span>::<span class='op'>*</span>;
 <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>State</span>::<span class='op'>*</span>;
 <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StateChange</span>::<span class='op'>*</span>;
 
+<span class='doccomment'>/// Receiver for Link Control (LC) frame group.</span>
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>VoiceLCFrameGroupReceiver</span> <span class='op'>=</span> <span class='ident'>FrameGroupReceiver</span><span class='op'>&lt;</span><span class='ident'>LinkControlExtra</span><span class='op'>&gt;</span>;
+<span class='doccomment'>/// Receiver for Crypto Control (CC) frame group.</span>
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>VoiceCCFrameGroupReceiver</span> <span class='op'>=</span> <span class='ident'>FrameGroupReceiver</span><span class='op'>&lt;</span><span class='ident'>CryptoControlExtra</span><span class='op'>&gt;</span>;
 
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Extra</span> {
-    <span class='kw'>type</span> <span class='ident'>Fields</span>;
-
-    <span class='kw'>fn</span> <span class='ident'>decode_rs</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>Hexbit</span>; <span class='ident'>EXTRA_HEXBITS</span>]) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span>[<span class='ident'>Hexbit</span>], <span class='ident'>usize</span>)<span class='op'>&gt;</span>;
-    <span class='kw'>fn</span> <span class='ident'>decode_extra</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>Hexbit</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Fields</span>;
-}
-
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>LinkControlExtra</span>;
-
-<span class='kw'>impl</span> <span class='ident'>Extra</span> <span class='kw'>for</span> <span class='ident'>LinkControlExtra</span> {
-    <span class='kw'>type</span> <span class='ident'>Fields</span> <span class='op'>=</span> <span class='ident'>control</span>::<span class='ident'>LinkControlFields</span>;
-
-    <span class='kw'>fn</span> <span class='ident'>decode_rs</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>Hexbit</span>; <span class='ident'>EXTRA_HEXBITS</span>]) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span>[<span class='ident'>Hexbit</span>], <span class='ident'>usize</span>)<span class='op'>&gt;</span> {
-        <span class='ident'>reed_solomon</span>::<span class='ident'>short</span>::<span class='ident'>decode</span>(<span class='ident'>buf</span>)
-    }
-
-    <span class='kw'>fn</span> <span class='ident'>decode_extra</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>Hexbit</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Fields</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>bytes</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='ident'>LINK_CONTROL_BYTES</span>];
-        <span class='ident'>HexbitBytes</span>::<span class='ident'>new</span>(<span class='ident'>buf</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>()).<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>bytes</span>[..]);
-
-        <span class='ident'>control</span>::<span class='ident'>LinkControlFields</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>)
-    }
-}
-
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CryptoControlExtra</span>;
-
-<span class='kw'>impl</span> <span class='ident'>Extra</span> <span class='kw'>for</span> <span class='ident'>CryptoControlExtra</span> {
-    <span class='kw'>type</span> <span class='ident'>Fields</span> <span class='op'>=</span> <span class='ident'>crypto</span>::<span class='ident'>CryptoControlFields</span>;
-
-    <span class='kw'>fn</span> <span class='ident'>decode_rs</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>Hexbit</span>; <span class='ident'>EXTRA_HEXBITS</span>]) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span>[<span class='ident'>Hexbit</span>], <span class='ident'>usize</span>)<span class='op'>&gt;</span> {
-        <span class='ident'>reed_solomon</span>::<span class='ident'>medium</span>::<span class='ident'>decode</span>(<span class='ident'>buf</span>)
-    }
-
-    <span class='kw'>fn</span> <span class='ident'>decode_extra</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>Hexbit</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Fields</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>bytes</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='ident'>CRYPTO_CONTROL_BYTES</span>];
-        <span class='ident'>HexbitBytes</span>::<span class='ident'>new</span>(<span class='ident'>buf</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>()).<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>bytes</span>[..]);
-
-        <span class='ident'>crypto</span>::<span class='ident'>CryptoControlFields</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>)
-    }
-}
-
+<span class='doccomment'>/// Internal state of the frame group receiver.</span>
 <span class='kw'>enum</span> <span class='ident'>State</span> {
+    <span class='doccomment'>/// Decoding a voice frame.</span>
     <span class='ident'>DecodeVoiceFrame</span>(<span class='ident'>VoiceFrameReceiver</span>),
+    <span class='doccomment'>/// Decoding an &quot;extra&quot;.</span>
     <span class='ident'>DecodeExtra</span>,
-    <span class='ident'>DecodeDataFragment</span>,
+    <span class='doccomment'>/// Decoding a low-speed data fragment.</span>
+    <span class='ident'>DecodeDataFragment</span>(<span class='ident'>DataFragmentReceiver</span>),
+    <span class='doccomment'>/// Finished decoding the frame group.</span>
     <span class='ident'>Done</span>,
 }
 
 <span class='kw'>impl</span> <span class='ident'>State</span> {
+    <span class='doccomment'>/// Decode the upcoming symbols as a voice frame.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode_voice_frame</span>() <span class='op'>-&gt;</span> <span class='ident'>State</span> {
         <span class='ident'>DecodeVoiceFrame</span>(<span class='ident'>VoiceFrameReceiver</span>::<span class='ident'>new</span>())
     }
+
+    <span class='doccomment'>/// Decode the upcoming symbols as a low-speed data fragment.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode_data_frag</span>() <span class='op'>-&gt;</span> <span class='ident'>State</span> {
+        <span class='ident'>DecodeDataFragment</span>(<span class='ident'>DataFragmentReceiver</span>::<span class='ident'>new</span>())
+    }
 }
 
+<span class='doccomment'>/// Action the state machine should take.</span>
 <span class='kw'>enum</span> <span class='ident'>StateChange</span><span class='op'>&lt;</span><span class='ident'>E</span>: <span class='ident'>Extra</span><span class='op'>&gt;</span> {
+    <span class='doccomment'>/// Do nothing.</span>
     <span class='ident'>NoChange</span>,
+    <span class='doccomment'>/// Change to the enclosed state.</span>
     <span class='ident'>Change</span>(<span class='ident'>State</span>),
+    <span class='doccomment'>/// Change to the enclosed state and propagate an event.</span>
     <span class='ident'>EventChange</span>(<span class='ident'>FrameGroupEvent</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span>, <span class='ident'>State</span>),
+    <span class='doccomment'>/// Propagate an error.</span>
     <span class='ident'>Error</span>(<span class='ident'>P25Error</span>),
 }
 
+<span class='doccomment'>/// Events that can occur when receiving a frame group.</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>FrameGroupEvent</span><span class='op'>&lt;</span><span class='ident'>E</span>: <span class='ident'>Extra</span><span class='op'>&gt;</span> {
+    <span class='doccomment'>/// Decoded a voice frame.</span>
     <span class='ident'>VoiceFrame</span>(<span class='ident'>VoiceFrame</span>),
+    <span class='doccomment'>/// Decoded an &quot;extra&quot; packet.</span>
     <span class='ident'>Extra</span>(<span class='ident'>E</span>::<span class='ident'>Fields</span>),
+    <span class='doccomment'>/// Decoded a 16-bit fragment of the low-speed data word.</span>
     <span class='ident'>DataFragment</span>(<span class='ident'>u32</span>),
 }
 
+<span class='doccomment'>/// State machine that receives the various pieces that make up a frame group.</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>FrameGroupReceiver</span><span class='op'>&lt;</span><span class='ident'>E</span>: <span class='ident'>Extra</span><span class='op'>&gt;</span> {
+    <span class='doccomment'>/// Current state.</span>
     <span class='ident'>state</span>: <span class='ident'>State</span>,
+    <span class='doccomment'>/// Receiver for inner extra packet. This is persisted across state changes because</span>
+    <span class='doccomment'>/// each extra packet is split into 6 chunks and spread throughout the frame group.</span>
     <span class='ident'>extra</span>: <span class='ident'>ExtraReceiver</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span>,
-    <span class='ident'>frag</span>: <span class='ident'>DataFragmentReceiver</span>,
+    <span class='doccomment'>/// The current frame position within the frame group.</span>
     <span class='ident'>frame</span>: <span class='ident'>usize</span>,
 }
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>E</span>: <span class='ident'>Extra</span><span class='op'>&gt;</span> <span class='ident'>FrameGroupReceiver</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span> {
+    <span class='doccomment'>/// Create a new `FrameGroupReceiver` in the initial state.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>FrameGroupReceiver</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='ident'>FrameGroupReceiver</span> {
             <span class='ident'>state</span>: <span class='ident'>State</span>::<span class='ident'>decode_voice_frame</span>(),
             <span class='ident'>extra</span>: <span class='ident'>ExtraReceiver</span>::<span class='ident'>new</span>(),
-            <span class='ident'>frag</span>: <span class='ident'>DataFragmentReceiver</span>::<span class='ident'>new</span>(),
             <span class='ident'>frame</span>: <span class='number'>0</span>,
         }
     }
 
+    <span class='doccomment'>/// Whether the full frame group has been received.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>done</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Done</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>state</span> { <span class='bool-val'>true</span> } <span class='kw'>else</span> { <span class='bool-val'>false</span> }
     }
 
+    <span class='doccomment'>/// Determine what action to take based on the given symbol.</span>
     <span class='kw'>fn</span> <span class='ident'>handle</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>dibit</span>: <span class='ident'>Dibit</span>) <span class='op'>-&gt;</span> <span class='ident'>StateChange</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>state</span> {
             <span class='ident'>DecodeVoiceFrame</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>decoder</span>) <span class='op'>=&gt;</span> <span class='kw'>match</span> <span class='ident'>decoder</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
@@ -438,7 +507,7 @@
                     <span class='ident'>EventChange</span>(<span class='ident'>FrameGroupEvent</span>::<span class='ident'>VoiceFrame</span>(<span class='ident'>vf</span>), <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>frame</span> {
                         <span class='number'>1</span> <span class='op'>=&gt;</span> <span class='ident'>State</span>::<span class='ident'>decode_voice_frame</span>(),
                         <span class='number'>2</span>...<span class='number'>7</span> <span class='op'>=&gt;</span> <span class='ident'>DecodeExtra</span>,
-                        <span class='number'>8</span> <span class='op'>=&gt;</span> <span class='ident'>DecodeDataFragment</span>,
+                        <span class='number'>8</span> <span class='op'>=&gt;</span> <span class='ident'>State</span>::<span class='ident'>decode_data_frag</span>(),
                         <span class='number'>9</span> <span class='op'>=&gt;</span> <span class='ident'>Done</span>,
                         _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
                     })
@@ -456,7 +525,7 @@
                     <span class='ident'>NoChange</span>
                 }
             },
-            <span class='ident'>DecodeDataFragment</span> <span class='op'>=&gt;</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>frag</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
+            <span class='ident'>DecodeDataFragment</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>dec</span>) <span class='op'>=&gt;</span> <span class='kw'>match</span> <span class='ident'>dec</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
                 <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>data</span>)) <span class='op'>=&gt;</span> <span class='ident'>EventChange</span>(<span class='ident'>FrameGroupEvent</span>::<span class='ident'>DataFragment</span>(<span class='ident'>data</span>),
                                               <span class='ident'>State</span>::<span class='ident'>decode_voice_frame</span>()),
                 <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>err</span>)) <span class='op'>=&gt;</span> <span class='ident'>Error</span>(<span class='ident'>err</span>),
@@ -466,6 +535,9 @@
         }
     }
 
+    <span class='doccomment'>/// Feed in a baseband symbol, possibly producing an event. Return `Some(Ok(event))`</span>
+    <span class='doccomment'>/// if a nominal event occurred, `Some(Err(err))` if an error occurred, and `None` in</span>
+    <span class='doccomment'>/// the case of no event.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>dibit</span>: <span class='ident'>Dibit</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>FrameGroupEvent</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;&gt;</span><span class='op'>&gt;</span> {
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>handle</span>(<span class='ident'>dibit</span>) {
             <span class='ident'>EventChange</span>(<span class='ident'>event</span>, <span class='ident'>next</span>) <span class='op'>=&gt;</span> {
@@ -482,17 +554,70 @@
     }
 }
 
+<span class='doccomment'>/// An &quot;extra&quot; information packet carried along in a frame group.</span>
+<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Extra</span> {
+    <span class='doccomment'>/// Base decoder for the packet.</span>
+    <span class='kw'>type</span> <span class='ident'>Fields</span>;
+
+    <span class='doccomment'>/// Decode the inner Reed Soloman code.</span>
+    <span class='kw'>fn</span> <span class='ident'>decode_rs</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>Hexbit</span>; <span class='ident'>EXTRA_HEXBITS</span>]) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span>[<span class='ident'>Hexbit</span>], <span class='ident'>usize</span>)<span class='op'>&gt;</span>;
+    <span class='doccomment'>/// Transform the given hexbits into a base packet decoder.</span>
+    <span class='kw'>fn</span> <span class='ident'>decode_extra</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>Hexbit</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Fields</span>;
+}
+
+<span class='doccomment'>/// Link control frame group extra.</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>LinkControlExtra</span>;
+
+<span class='kw'>impl</span> <span class='ident'>Extra</span> <span class='kw'>for</span> <span class='ident'>LinkControlExtra</span> {
+    <span class='kw'>type</span> <span class='ident'>Fields</span> <span class='op'>=</span> <span class='ident'>control</span>::<span class='ident'>LinkControlFields</span>;
+
+    <span class='kw'>fn</span> <span class='ident'>decode_rs</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>Hexbit</span>; <span class='ident'>EXTRA_HEXBITS</span>]) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span>[<span class='ident'>Hexbit</span>], <span class='ident'>usize</span>)<span class='op'>&gt;</span> {
+        <span class='ident'>reed_solomon</span>::<span class='ident'>short</span>::<span class='ident'>decode</span>(<span class='ident'>buf</span>)
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>decode_extra</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>Hexbit</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Fields</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>bytes</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='ident'>LINK_CONTROL_BYTES</span>];
+        <span class='ident'>HexbitBytes</span>::<span class='ident'>new</span>(<span class='ident'>buf</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>()).<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>bytes</span>[..]);
+
+        <span class='ident'>control</span>::<span class='ident'>LinkControlFields</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>)
+    }
+}
+
+<span class='doccomment'>/// Crypto control frame group extra.</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CryptoControlExtra</span>;
+
+<span class='kw'>impl</span> <span class='ident'>Extra</span> <span class='kw'>for</span> <span class='ident'>CryptoControlExtra</span> {
+    <span class='kw'>type</span> <span class='ident'>Fields</span> <span class='op'>=</span> <span class='ident'>crypto</span>::<span class='ident'>CryptoControlFields</span>;
+
+    <span class='kw'>fn</span> <span class='ident'>decode_rs</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>Hexbit</span>; <span class='ident'>EXTRA_HEXBITS</span>]) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span>[<span class='ident'>Hexbit</span>], <span class='ident'>usize</span>)<span class='op'>&gt;</span> {
+        <span class='ident'>reed_solomon</span>::<span class='ident'>medium</span>::<span class='ident'>decode</span>(<span class='ident'>buf</span>)
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>decode_extra</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>Hexbit</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Fields</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>bytes</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='ident'>CRYPTO_CONTROL_BYTES</span>];
+        <span class='ident'>HexbitBytes</span>::<span class='ident'>new</span>(<span class='ident'>buf</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>()).<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>bytes</span>[..]);
+
+        <span class='ident'>crypto</span>::<span class='ident'>CryptoControlFields</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>)
+    }
+}
+
+<span class='doccomment'>/// Receives and decodes an IMBE voice frame.</span>
 <span class='kw'>struct</span> <span class='ident'>VoiceFrameReceiver</span> {
+    <span class='doccomment'>/// Current buffered dibits.</span>
     <span class='ident'>dibits</span>: <span class='ident'>Buffer</span><span class='op'>&lt;</span><span class='ident'>VoiceFrameStorage</span><span class='op'>&gt;</span>,
 }
 
 <span class='kw'>impl</span> <span class='ident'>VoiceFrameReceiver</span> {
+    <span class='doccomment'>/// Create a new `VoiceFrameReceiver` in the initial state.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>VoiceFrameReceiver</span> {
         <span class='ident'>VoiceFrameReceiver</span> {
             <span class='ident'>dibits</span>: <span class='ident'>Buffer</span>::<span class='ident'>new</span>(<span class='ident'>VoiceFrameStorage</span>::<span class='ident'>new</span>()),
         }
     }
 
+    <span class='doccomment'>/// Feed in a baseband symbol, possibly resulting in a decoded voice frame. Return</span>
+    <span class='doccomment'>/// `Some(Ok(frame))` if a voice frame was successfully decoded, `Some(Err(err))` if</span>
+    <span class='doccomment'>/// an error occurred, and `None` in the case of no event.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>dibit</span>: <span class='ident'>Dibit</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>VoiceFrame</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>dibits</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
             <span class='prelude-val'>Some</span>(<span class='ident'>buf</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>VoiceFrame</span>::<span class='ident'>new</span>(<span class='ident'>buf</span>)),
@@ -501,14 +626,19 @@
     }
 }
 
+<span class='doccomment'>/// Receives and decodes a frame group extra packet.</span>
 <span class='kw'>struct</span> <span class='ident'>ExtraReceiver</span><span class='op'>&lt;</span><span class='ident'>E</span>: <span class='ident'>Extra</span><span class='op'>&gt;</span> {
     <span class='ident'>extra</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span>,
+    <span class='doccomment'>/// Current buffered dibits for the current hexbit.</span>
     <span class='ident'>dibits</span>: <span class='ident'>Buffer</span><span class='op'>&lt;</span><span class='ident'>VoiceExtraWordStorage</span><span class='op'>&gt;</span>,
+    <span class='doccomment'>/// Current buffered hexbits.</span>
     <span class='ident'>hexbits</span>: <span class='ident'>Buffer</span><span class='op'>&lt;</span><span class='ident'>VoiceExtraStorage</span><span class='op'>&gt;</span>,
+    <span class='doccomment'>/// Number of dibits that have been received into the packet.</span>
     <span class='ident'>dibit</span>: <span class='ident'>usize</span>,
 }
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>E</span>: <span class='ident'>Extra</span><span class='op'>&gt;</span> <span class='ident'>ExtraReceiver</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span> {
+    <span class='doccomment'>/// Create a new `ExtraReceiver` in the initial state.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>ExtraReceiver</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='ident'>ExtraReceiver</span> {
             <span class='ident'>extra</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>,
@@ -518,8 +648,12 @@
         }
     }
 
+    <span class='doccomment'>/// Whether the current piece of the packet is finished decoding.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>piece_done</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='ident'>dibit</span> <span class='op'>%</span> <span class='ident'>EXTRA_PIECE_DIBITS</span> <span class='op'>==</span> <span class='number'>0</span> }
 
+    <span class='doccomment'>/// Feed in a baseband symbol, possibly producing a decoded packet. Return</span>
+    <span class='doccomment'>/// `Some(Ok(pkt))` if the packet was successfully decoded, `Some(Err(err))` if an</span>
+    <span class='doccomment'>/// error occurred, and `None` in the case of no event.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>dibit</span>: <span class='ident'>Dibit</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>E</span>::<span class='ident'>Fields</span><span class='op'>&gt;&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>dibit</span> <span class='op'>+=</span> <span class='number'>1</span>;
 
@@ -530,7 +664,8 @@
 
         <span class='kw'>let</span> <span class='ident'>bits</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>hamming</span>::<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>buf</span>) {
             <span class='prelude-val'>Some</span>((<span class='ident'>data</span>, <span class='ident'>err</span>)) <span class='op'>=&gt;</span> <span class='ident'>data</span>,
-            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> {<span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;extra&quot;</span>); <span class='kw'>return</span> <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>HammingUnrecoverable</span>))},
+            <span class='comment'>// Let the following RS code attempt to fix these errors.</span>
+            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='number'>0</span>,
         };
 
         <span class='kw'>let</span> <span class='ident'>hexbits</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>hexbits</span>.<span class='ident'>feed</span>(<span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='ident'>bits</span>)) {
@@ -547,21 +682,30 @@
     }
 }
 
+<span class='doccomment'>/// Receives a 16-bit fragment of the 32-bit &quot;low-speed data&quot; word embedded in each frame</span>
+<span class='doccomment'>/// group.</span>
 <span class='kw'>struct</span> <span class='ident'>DataFragmentReceiver</span> {
+    <span class='doccomment'>/// Current buffer of coded dibits.</span>
     <span class='ident'>dibits</span>: <span class='ident'>Buffer</span><span class='op'>&lt;</span><span class='ident'>VoiceDataFragStorage</span><span class='op'>&gt;</span>,
-    <span class='ident'>dibit</span>: <span class='ident'>usize</span>,
+    <span class='doccomment'>/// Which byte is being received.</span>
+    <span class='ident'>byte</span>: <span class='ident'>u8</span>,
+    <span class='doccomment'>/// Current decoded fragment.</span>
     <span class='ident'>data</span>: <span class='ident'>u32</span>,
 }
 
 <span class='kw'>impl</span> <span class='ident'>DataFragmentReceiver</span> {
+    <span class='doccomment'>/// Create a new `DataFragmentReceiver` in the initial state.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>DataFragmentReceiver</span> {
         <span class='ident'>DataFragmentReceiver</span> {
             <span class='ident'>dibits</span>: <span class='ident'>Buffer</span>::<span class='ident'>new</span>(<span class='ident'>VoiceDataFragStorage</span>::<span class='ident'>new</span>()),
-            <span class='ident'>dibit</span>: <span class='number'>0</span>,
+            <span class='ident'>byte</span>: <span class='number'>0</span>,
             <span class='ident'>data</span>: <span class='number'>0</span>,
         }
     }
 
+    <span class='doccomment'>/// Feed in a baseband symbol, possibly producing a decoded data fragment. Return</span>
+    <span class='doccomment'>/// `Some(Ok(frag))` if a fragment was successfully received, `Some(Err(err))` if an</span>
+    <span class='doccomment'>/// error occurred, and `None` in the case of no event.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>dibit</span>: <span class='ident'>Dibit</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>buf</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>dibits</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
             <span class='prelude-val'>Some</span>(<span class='ident'>buf</span>) <span class='op'>=&gt;</span> <span class='op'>*</span><span class='ident'>buf</span> <span class='kw'>as</span> <span class='ident'>u16</span>,
@@ -573,12 +717,12 @@
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>CyclicUnrecoverable</span>)),
         };
 
-        <span class='self'>self</span>.<span class='ident'>dibit</span> <span class='op'>+=</span> <span class='number'>1</span>;
+        <span class='self'>self</span>.<span class='ident'>byte</span> <span class='op'>+=</span> <span class='number'>1</span>;
 
         <span class='self'>self</span>.<span class='ident'>data</span> <span class='op'>&lt;&lt;=</span> <span class='number'>8</span>;
         <span class='self'>self</span>.<span class='ident'>data</span> <span class='op'>|=</span> <span class='ident'>bits</span> <span class='kw'>as</span> <span class='ident'>u32</span>;
 
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>dibit</span> <span class='op'>==</span> <span class='number'>2</span> {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>byte</span> <span class='op'>==</span> <span class='number'>2</span> {
             <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='self'>self</span>.<span class='ident'>data</span>))
         } <span class='kw'>else</span> {
             <span class='prelude-val'>None</span>

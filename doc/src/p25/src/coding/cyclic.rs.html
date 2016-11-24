@@ -343,9 +343,9 @@
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='prelude-val'>Some</span>((<span class='ident'>w</span>, <span class='number'>2</span>)), <span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b0100000000000100</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='prelude-val'>Some</span>((<span class='ident'>w</span>, <span class='number'>2</span>)), <span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b1000000000001000</span>));
 
-        <span class='comment'>// for i in 0..1u16&lt;&lt;8 {</span>
-        <span class='comment'>//     assert_eq!(decode(encode(i as u8)).unwrap().0, i as u8);</span>
-        <span class='comment'>// }</span>
+        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>1u16</span><span class='op'>&lt;&lt;</span><span class='number'>8</span> {
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>decode</span>(<span class='ident'>encode</span>(<span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u8</span>)).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u8</span>);
+        }
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>

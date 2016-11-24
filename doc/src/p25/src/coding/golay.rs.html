@@ -432,16 +432,6 @@
 <span id="388">388</span>
 <span id="389">389</span>
 <span id="390">390</span>
-<span id="391">391</span>
-<span id="392">392</span>
-<span id="393">393</span>
-<span id="394">394</span>
-<span id="395">395</span>
-<span id="396">396</span>
-<span id="397">397</span>
-<span id="398">398</span>
-<span id="399">399</span>
-<span id="400">400</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Encoding and decoding of the (23, 12, 7) standard, (24, 12, 8) extended, and (18, 6,</span>
 <span class='doccomment'>//! 8) shortened Golay codes described by P25.</span>
@@ -519,8 +509,7 @@
 
         <span class='kw'>match</span> <span class='ident'>extended</span>::<span class='ident'>decode</span>(<span class='ident'>word</span>) {
             <span class='prelude-val'>Some</span>((<span class='ident'>data</span>, <span class='ident'>err</span>)) <span class='op'>=&gt;</span> <span class='kw'>if</span> <span class='ident'>data</span> <span class='op'>&gt;&gt;</span> <span class='number'>6</span> <span class='op'>!=</span> <span class='number'>0</span> {
-                <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;ASASASDDAS {:012b} {}&quot;</span>, <span class='ident'>data</span>, <span class='ident'>err</span>);
-                <span class='prelude-val'>Some</span>(((<span class='ident'>data</span> <span class='kw-2'>&amp;</span> <span class='number'>0x3F</span>) <span class='kw'>as</span> <span class='ident'>u8</span>, <span class='ident'>err</span>))
+                <span class='prelude-val'>None</span>
             } <span class='kw'>else</span> {
                 <span class='prelude-val'>Some</span>((<span class='ident'>data</span> <span class='kw'>as</span> <span class='ident'>u8</span>, <span class='ident'>err</span>))
             },
@@ -832,15 +821,6 @@
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>1</span><span class='op'>&lt;&lt;</span><span class='number'>12</span> {
             <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>extended</span>::<span class='ident'>decode</span>(<span class='ident'>extended</span>::<span class='ident'>encode</span>(<span class='ident'>i</span>)).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>i</span>);
         }
-    }
-
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_shit</span>() {
-        <span class='kw'>let</span> <span class='ident'>word</span> <span class='op'>=</span> <span class='number'>0b110001010100010100</span>;
-
-        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;g({:018b}) = {:?}&quot;</span>, <span class='ident'>word</span>, <span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>word</span>));
-
-        <span class='macro'>panic</span><span class='macro'>!</span>();
     }
 }
 </pre>

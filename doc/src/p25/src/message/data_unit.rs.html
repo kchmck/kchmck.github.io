@@ -245,8 +245,6 @@
 <span id="201">201</span>
 <span id="202">202</span>
 <span id="203">203</span>
-<span id="204">204</span>
-<span id="205">205</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! General low-level receiver for all data units, covering frame synchronization up to</span>
 <span class='doccomment'>//! symbol decoding.</span>
@@ -358,7 +356,7 @@
 <span class='doccomment'>/// 2. Lock onto frame synchronization</span>
 <span class='doccomment'>/// 3. Deinterleave status symbols</span>
 <span class='doccomment'>/// 4. Decode NID information</span>
-<span class='doccomment'>/// 5. Decode dibit symbol until stopped</span>
+<span class='doccomment'>/// 5. Decode dibit symbols until stopped</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>DataUnitReceiver</span> {
     <span class='doccomment'>/// Current state.</span>
     <span class='ident'>state</span>: <span class='ident'>State</span>,
@@ -380,14 +378,13 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>flush_pads</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>state</span> {
             <span class='ident'>DecodePacket</span>(<span class='ident'>recv</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>flush_pads</span>(<span class='ident'>recv</span>),
-            <span class='ident'>Prime</span>(_) <span class='op'>|</span> <span class='ident'>Sync</span>(_) <span class='op'>=&gt;</span> {},
+            <span class='ident'>Sync</span>(_) <span class='op'>=&gt;</span> {},
             _ <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;not decoding a packet&quot;</span>),
         }
     }
 
     <span class='doccomment'>/// Force the receiver into frame synchronization.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>resync</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) { <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>sync</span>(); }
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>reprime</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) { <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>prime</span>(); }
 
     <span class='doccomment'>/// Determine the next action to take based on the given sample.</span>
     <span class='kw'>fn</span> <span class='ident'>handle</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>s</span>: <span class='ident'>f32</span>) <span class='op'>-&gt;</span> <span class='ident'>StateChange</span> {
@@ -402,7 +399,6 @@
             },
             <span class='ident'>Sync</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>sync</span>) <span class='op'>=&gt;</span> <span class='kw'>if</span> <span class='ident'>sync</span>.<span class='ident'>feed</span>(<span class='ident'>power</span>, <span class='ident'>thresh</span>) {
                 <span class='kw'>let</span> (<span class='ident'>p</span>, <span class='ident'>m</span>, <span class='ident'>n</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>corr</span>.<span class='ident'>thresholds</span>();
-                <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;pos:{} mid:{} neg:{}&quot;</span>, <span class='ident'>p</span>, <span class='ident'>m</span>, <span class='ident'>n</span>);
                 <span class='ident'>Change</span>(<span class='ident'>State</span>::<span class='ident'>decode_nid</span>(<span class='ident'>Decoder</span>::<span class='ident'>new</span>(<span class='ident'>Decider</span>::<span class='ident'>new</span>(<span class='ident'>p</span>, <span class='ident'>m</span>, <span class='ident'>n</span>))))
             } <span class='kw'>else</span> {
                 <span class='ident'>NoChange</span>

@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["VoiceHeaderFields",""]]});
+initSidebarItems({"struct":[["VoiceHeaderFields","Begins each voice message with information necessary to decode the following superframes."],["VoiceHeaderReceiver","State machine for receiving a voice header packet."]],"type":[["Buf","Buffer of bytes that represents a voice header packet."]]});

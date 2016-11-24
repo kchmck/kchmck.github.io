@@ -47,8 +47,8 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-1957' class='srclink' href='../../../src/p25/src/trunking/fields.rs.html#1-256' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'><p>Decoders for various trunking-related packet fields.</p>
+               </span><a id='src-1947' class='srclink' href='../../../src/p25/src/trunking/fields.rs.html#1-420' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Decode various trunking-related packet fields.</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
@@ -57,6 +57,13 @@
                            <td class='docblock-short'>
                                 <p>Advertisement of an adjacent/nearby site within the same WACN (Wide Area Communication
 Network.)</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.AltControlChannel.html'
+                                  title='p25::trunking::fields::AltControlChannel'>AltControlChannel</a></td>
+                           <td class='docblock-short'>
+                                <p>Advertisement of one or more alternative control channels for the current site.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -82,10 +89,39 @@ associated channel.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GroupTrafficUpdate.html'
+                                  title='p25::trunking::fields::GroupTrafficUpdate'>GroupTrafficUpdate</a></td>
+                           <td class='docblock-short'>
+                                <p>Updates subscribers about new or ongoing talkgroup conversations.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.NetworkStatusBroadcast.html'
+                                  title='p25::trunking::fields::NetworkStatusBroadcast'>NetworkStatusBroadcast</a></td>
+                           <td class='docblock-short'>
+                                <p>WACN (Wide Area Communication Network) and System ID information of current control
+channel.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.PhoneAlert.html'
+                                  title='p25::trunking::fields::PhoneAlert'>PhoneAlert</a></td>
+                           <td class='docblock-short'>
+                                <p>Alerts a unit of a call from the public phone network.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.RFSSStatusBroadcast.html'
+                                  title='p25::trunking::fields::RFSSStatusBroadcast'>RFSSStatusBroadcast</a></td>
+                           <td class='docblock-short'>
+                                <p>Site and RFSS information of current control channel.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='struct' href='struct.ServiceOptions.html'
                                   title='p25::trunking::fields::ServiceOptions'>ServiceOptions</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Options that can be requested/granted by a service.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -99,23 +135,36 @@ associated channel.</p>
                            <td><a class='struct' href='struct.SystemServices.html'
                                   title='p25::trunking::fields::SystemServices'>SystemServices</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Supported services of a control channel.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.UnitCallAlert.html'
+                                  title='p25::trunking::fields::UnitCallAlert'>UnitCallAlert</a></td>
+                           <td class='docblock-short'>
+                                <p>Request for a target unit to call a source unit.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.UnitCallRequest.html'
+                                  title='p25::trunking::fields::UnitCallRequest'>UnitCallRequest</a></td>
+                           <td class='docblock-short'>
+                                <p>Signals a target unit that a unit-to-unit all has been requested.</p>
                            </td>
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.RegResponse.html'
+                                  title='p25::trunking::fields::RegResponse'>RegResponse</a></td>
+                           <td class='docblock-short'>
+                                <p>Registration response.</p>
+                           </td>
+                       </tr>
                        <tr class=' module-item'>
                            <td><a class='enum' href='enum.TalkGroup.html'
                                   title='p25::trunking::fields::TalkGroup'>TalkGroup</a></td>
                            <td class='docblock-short'>
                                 <p>Identifies which group a message belongs to.</p>
-                           </td>
-                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class='fn' href='fn.parse_updates.html'
-                                  title='p25::trunking::fields::parse_updates'>parse_updates</a></td>
-                           <td class='docblock-short'>
-                                <p>Parse out the pair of channels/talkgroups found in a Group Voice Update.</p>
                            </td>
                        </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
@@ -123,14 +172,7 @@ associated channel.</p>
                            <td><a class='type' href='type.ChannelParamsMap.html'
                                   title='p25::trunking::fields::ChannelParamsMap'>ChannelParamsMap</a></td>
                            <td class='docblock-short'>
-                                <p>Map channel identifier (maximum 16 per control channel) to its parameters.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='type' href='type.ChannelUpdates.html'
-                                  title='p25::trunking::fields::ChannelUpdates'>ChannelUpdates</a></td>
-                           <td class='docblock-short'>
-                                <p>Represents the channel updates seen in a Group Voice Update.</p>
+                                <p>Maps channel identifiers (maximum 16 per control channel) to their tuning parameters.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

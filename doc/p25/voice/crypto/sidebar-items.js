@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["CryptoAlgorithm",""]],"struct":[["CryptoControlFields",""]]});
+initSidebarItems({"enum":[["CryptoAlgorithm","Type of cryptographic algorithm."]],"struct":[["CryptoControlFields","Information necessary to decrypt an encrypted message."]],"type":[["Buf","Buffer of bytes that represent a crypto control packet."]]});

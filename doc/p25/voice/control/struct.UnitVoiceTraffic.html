@@ -47,14 +47,20 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-2633' class='srclink' href='../../../src/p25/src/voice/control.rs.html#122' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct UnitVoiceTraffic(_);</pre><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/voice/control/struct.UnitVoiceTraffic.html' title='p25::voice::control::UnitVoiceTraffic'>UnitVoiceTraffic</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-2636' class='srclink' href='../../../src/p25/src/voice/control.rs.html#124-131' title='goto source code'>[src]</a></span></h3>
+               </span><a id='src-2415' class='srclink' href='../../../src/p25/src/voice/control.rs.html#123' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct UnitVoiceTraffic(_);</pre><div class='docblock'><p>Identity of units transmitting on current unit-to-unit traffic channel.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/voice/control/struct.UnitVoiceTraffic.html' title='p25::voice::control::UnitVoiceTraffic'>UnitVoiceTraffic</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-2418' class='srclink' href='../../../src/p25/src/voice/control.rs.html#125-137' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(lc: <a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='p25::voice::control::LinkControlFields'>LinkControlFields</a>) -&gt; Self</code></span></h4>
-<h4 id='method.mfg' class='method'><span id='mfg.v' class='invisible'><code>fn <a href='#method.mfg' class='fnname'>mfg</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h4>
-<h4 id='method.opts' class='method'><span id='opts.v' class='invisible'><code>fn <a href='#method.opts' class='fnname'>opts</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.ServiceOptions.html' title='p25::trunking::fields::ServiceOptions'>ServiceOptions</a></code></span></h4>
-<h4 id='method.dest_unit' class='method'><span id='dest_unit.v' class='invisible'><code>fn <a href='#method.dest_unit' class='fnname'>dest_unit</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></span></h4>
-<h4 id='method.src_unit' class='method'><span id='src_unit.v' class='invisible'><code>fn <a href='#method.src_unit' class='fnname'>src_unit</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></span></h4>
-</div></section>
+<div class='docblock'><p>Create a new <code>UnitVoiceTraffic</code> from the base LC decoder.</p>
+</div><h4 id='method.mfg' class='method'><span id='mfg.v' class='invisible'><code>fn <a href='#method.mfg' class='fnname'>mfg</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h4>
+<div class='docblock'><p>Manufacturer ID of current packet.</p>
+</div><h4 id='method.opts' class='method'><span id='opts.v' class='invisible'><code>fn <a href='#method.opts' class='fnname'>opts</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.ServiceOptions.html' title='p25::trunking::fields::ServiceOptions'>ServiceOptions</a></code></span></h4>
+<div class='docblock'><p>Service options provided by current traffic channel.</p>
+</div><h4 id='method.dest_unit' class='method'><span id='dest_unit.v' class='invisible'><code>fn <a href='#method.dest_unit' class='fnname'>dest_unit</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></span></h4>
+<div class='docblock'><p>Destination user address for current transmission.</p>
+</div><h4 id='method.src_unit' class='method'><span id='src_unit.v' class='invisible'><code>fn <a href='#method.src_unit' class='fnname'>src_unit</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></span></h4>
+<div class='docblock'><p>Source user address for current transmission.</p>
+</div></div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

@@ -586,25 +586,6 @@
 <span id="542">542</span>
 <span id="543">543</span>
 <span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
-<span id="547">547</span>
-<span id="548">548</span>
-<span id="549">549</span>
-<span id="550">550</span>
-<span id="551">551</span>
-<span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
-<span id="557">557</span>
-<span id="558">558</span>
-<span id="559">559</span>
-<span id="560">560</span>
-<span id="561">561</span>
-<span id="562">562</span>
-<span id="563">563</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Implements encoding and decoding of the &quot;trellis&quot; convolutional error correcting code</span>
 <span class='doccomment'>//! specified by P25.</span>
@@ -765,9 +746,6 @@
     }
 }
 
-<span class='doccomment'>/// Each cell is `Some(x)`, where `x` is a state ... if ..., or `None` if the state is ambiguous</span>
-<span class='doccomment'>/// Ambiguous by default</span>
-<span class='doccomment'>/// Represents an array of `Option&lt;usize&gt;`, whose length determines</span>
 <span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>WalkHistory</span>: <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span>
     <span class='ident'>Deref</span><span class='op'>&lt;</span><span class='ident'>Target</span> <span class='op'>=</span> [<span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>]<span class='op'>&gt;</span> <span class='op'>+</span> <span class='ident'>DerefMut</span>
 {
@@ -796,16 +774,12 @@
     };
 }
 
-<span class='doccomment'>///</span>
 <span class='macro'>history_type</span><span class='macro'>!</span>(<span class='ident'>DibitHistory</span>, <span class='number'>4</span>);
-<span class='doccomment'>///</span>
 <span class='macro'>history_type</span><span class='macro'>!</span>(<span class='ident'>TribitHistory</span>, <span class='number'>4</span>);
 
-<span class='doccomment'>///</span>
 <span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Walks</span><span class='op'>&lt;</span><span class='ident'>H</span>: <span class='ident'>WalkHistory</span><span class='op'>&gt;</span>: <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span>
     <span class='ident'>Deref</span><span class='op'>&lt;</span><span class='ident'>Target</span> <span class='op'>=</span> [<span class='ident'>Walk</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>]<span class='op'>&gt;</span> <span class='op'>+</span> <span class='ident'>DerefMut</span>
 {
-    <span class='doccomment'>///</span>
     <span class='kw'>fn</span> <span class='ident'>states</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
 }
 
@@ -841,9 +815,7 @@
     };
 }
 
-<span class='doccomment'>///</span>
 <span class='macro'>impl_walks</span><span class='macro'>!</span>(<span class='ident'>DibitWalks</span>, <span class='ident'>DibitHistory</span>, <span class='number'>4</span>);
-<span class='doccomment'>///</span>
 <span class='macro'>impl_walks</span><span class='macro'>!</span>(<span class='ident'>TribitWalks</span>, <span class='ident'>TribitHistory</span>, <span class='number'>8</span>);
 
 <span class='doccomment'>/// Decodes a received convolutional code dibit stream to a nearby codeword using the</span>
@@ -881,7 +853,6 @@
         }.<span class='ident'>prime</span>()
     }
 
-    <span class='doccomment'>///</span>
     <span class='kw'>fn</span> <span class='ident'>prime</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>1</span>..<span class='ident'>H</span>::<span class='ident'>history</span>() {
             <span class='self'>self</span>.<span class='ident'>step</span>();
@@ -890,14 +861,11 @@
         <span class='self'>self</span>
     }
 
-    <span class='doccomment'>/// Swap the current walk with the previous walk.</span>
     <span class='kw'>fn</span> <span class='ident'>switch_walk</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
         <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>swap</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>cur</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>prev</span>);
     }
 
-    <span class='doccomment'>/// Return `false` if the symbol source has been depleted and `true` otherwise.</span>
     <span class='kw'>fn</span> <span class='ident'>step</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='comment'>// Create next edge from n</span>
         <span class='kw'>let</span> <span class='ident'>input</span> <span class='op'>=</span> <span class='ident'>Edge</span>::<span class='ident'>new</span>(<span class='kw'>match</span> (<span class='self'>self</span>.<span class='ident'>src</span>.<span class='ident'>next</span>(), <span class='self'>self</span>.<span class='ident'>src</span>.<span class='ident'>next</span>()) {
             (<span class='prelude-val'>Some</span>(<span class='ident'>hi</span>), <span class='prelude-val'>Some</span>(<span class='ident'>lo</span>)) <span class='op'>=&gt;</span> (<span class='ident'>hi</span>, <span class='ident'>lo</span>),
             (<span class='prelude-val'>None</span>, <span class='prelude-val'>None</span>) <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='bool-val'>false</span>,
@@ -964,14 +932,10 @@
 
 <span class='doccomment'>/// Decoding decision.</span>
 <span class='kw'>enum</span> <span class='ident'>Decision</span> {
-    <span class='doccomment'>/// Symbol has been decoded definitely with the associated minimum walk distance and</span>
-    <span class='doccomment'>/// walk state.</span>
     <span class='ident'>Definite</span>(<span class='ident'>usize</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>),
-    <span class='doccomment'>///</span>
     <span class='ident'>Ambiguous</span>(<span class='ident'>usize</span>),
 }
 
-<span class='doccomment'>/// Represents</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Walk</span><span class='op'>&lt;</span><span class='ident'>H</span>: <span class='ident'>WalkHistory</span><span class='op'>&gt;</span>{
     <span class='ident'>history</span>: <span class='ident'>H</span>,
@@ -995,7 +959,6 @@
         <span class='self'>self</span>
     }
 
-    <span class='doccomment'>/// Append</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>append</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>other</span>: <span class='self'>Self</span>) {
         <span class='self'>self</span>.<span class='ident'>distance</span> <span class='op'>=</span> <span class='ident'>other</span>.<span class='ident'>distance</span>;
         <span class='ident'>other</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>().<span class='ident'>collect_slice</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>[<span class='number'>1</span>..]);
@@ -1034,7 +997,6 @@
     <span class='kw'>fn</span> <span class='ident'>default</span>() <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>Walk</span>::<span class='ident'>new</span>(<span class='ident'>std</span>::<span class='ident'>usize</span>::<span class='ident'>MAX</span>) }
 }
 
-<span class='doccomment'>///</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>)]</span>
 <span class='kw'>struct</span> <span class='ident'>Edge</span>(<span class='ident'>u8</span>);
 

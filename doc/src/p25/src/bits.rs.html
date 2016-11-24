@@ -560,14 +560,16 @@
 <span id="516">516</span>
 <span id="517">517</span>
 <span id="518">518</span>
+<span id="519">519</span>
 </pre><pre class='rust '>
-<span class='doccomment'>//! Utilities for packing/unpacking dibits and tribits into/out of bytes.</span>
+<span class='doccomment'>//! Dibits, tribits, and hexbits.</span>
 
 <span class='kw'>use</span> <span class='ident'>std</span>;
 
 <span class='doccomment'>/// Iterate over the 2-bit symbols of a byte source, MSB to LSB.</span>
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Dibits</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>SubByteIter</span><span class='op'>&lt;</span><span class='ident'>DibitParams</span>, <span class='ident'>T</span><span class='op'>&gt;</span>;
-<span class='doccomment'>/// Iterates over the 3-bit symbols of a byte source, MSB to LSB.</span>
+<span class='doccomment'>/// Iterates over the 3-bit symbols of a byte source, MSB to LSB. The source must be a</span>
+<span class='doccomment'>/// multiple of 3 bytes.</span>
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Tribits</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>SubByteIter</span><span class='op'>&lt;</span><span class='ident'>TribitParams</span>, <span class='ident'>T</span><span class='op'>&gt;</span>;
 <span class='doccomment'>/// Iterates over the 6-bit symbols of a byte source, MSB to LSB. The source must be a</span>
 <span class='doccomment'>/// multiple of 3 bytes.</span>
@@ -595,7 +597,7 @@
     <span class='doccomment'>/// Amount to shift buffer after loading an input symbol.</span>
     <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
 
-    <span class='doccomment'>/// Amount to shift buffer after all buffering.</span>
+    <span class='doccomment'>/// Amount to shift buffer after all buffering, so the bits are lined up at the MSB.</span>
     <span class='kw'>fn</span> <span class='ident'>post_shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>32</span> <span class='op'>-</span> <span class='self'>Self</span>::<span class='ident'>shift</span>() <span class='op'>*</span> <span class='self'>Self</span>::<span class='ident'>buffer</span>() }
 
     <span class='doccomment'>/// Number of iterations before buffering.</span>
