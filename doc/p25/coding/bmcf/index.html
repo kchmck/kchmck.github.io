@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `bmcf` mod in crate `p25`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, bmcf">
+
+    <title>p25::coding::bmcf - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a></p><script>window.sidebarCurrent = {name: 'bmcf', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a>::<wbr><a class='mod' href=''>bmcf</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-515' class='srclink' href='../../../src/p25/src/coding/bmcf.rs.html#1-348' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Decodes Reed Solomon and BCH codes using the Berlekamp-Massey, Chien Search, and
+Forney algorithms.</p>
+
+<h1 id='decoding-procedure' class='section-header'><a href='#decoding-procedure'>Decoding Procedure</a></h1>
+<p>The standard [1]-[11] procedure for Reed Solomon/BCH error correction has the
+following steps:</p>
+
+<ol>
+<li>Generate the syndrome polynomial s(x) = s<sub>1</sub> + s<sub>2</sub>x + ··· +
+s<sub>2t</sub>x<sup>2t-1</sup>, where s<sub>i</sub> = r(α<sup>i</sup>) using the
+received word polynomial r(x).</li>
+<li>Use s(x) to build the error locator polynomial Λ(x) = (1 + a<sub>1</sub>x) ··· (1 +
+a<sub>e</sub>x), where deg(Λ(x)) = e ≤ t is the number of detected errors.</li>
+<li>Find the roots a<sub>1</sub><sup>-1</sup>, ..., a<sub>E</sub><sup>-1</sup> of Λ(x),
+such that Λ(a<sub>i</sub><sup>-1</sup>) = 0. Then for each, if
+a<sub>i</sub><sup>-1</sup> = α<sup>k<sub>i</sub></sup>, the error location within
+the received word is taken as m<sub>i</sub> in α<sup>m<sub>i</sub></sup> ≡
+α<sup>-k<sub>i</sub></sup> (modulo the field).</li>
+<li>Verify that e = E.</li>
+<li>Construct the error evaluator polynomial Ω(x) = Λ(x)s(x) mod x<sup>2t</sup> and
+compute each error pattern b<sub>i</sub> = Ω(a<sub>i</sub><sup>-1</sup>) /
+Λ&#39;(a<sub>i</sub><sup>-1</sup>).</li>
+<li>For each (m<sub>i</sub>, b<sub>i</sub>) pair, correct the symbol at location
+m<sub>i</sub> using the bit pattern b<sub>i</sub>.</li>
+</ol>
+
+<p>This module implements steps 2 through 5. The implementation uses several well-known
+techniques exist to perform these steps relatively efficiently: the Berlekamp-Massey
+algorithm for step 2, Chien Search for step 3, and the Forney algorithm for step 5.</p>
+
+<h1 id='berlekamp-massey-algorithm' class='section-header'><a href='#berlekamp-massey-algorithm'>Berlekamp-Massey Algorithm</a></h1>
+<p>The Berlekamp-Massey algorithm has many variants [1], [2], [9], [12], [13] mostly with
+subtle differences. The key observation from Massey&#39;s generalization is to view Λ(x)
+as the &quot;connection polynomial&quot; of a linear feedback shift register (LFSR) that
+generates the sequence of syndromes s<sub>1</sub>, ..., s<sub>2t</sub>. The algorithm
+then synthesizes Λ(x) when constructing the corresponding unique shortest LFSR that
+generates those syndromes.</p>
+
+<h1 id='chien-search' class='section-header'><a href='#chien-search'>Chien Search</a></h1>
+<p>With Λ(x) = Λ<sub>0</sub> + Λ<sub>1</sub>x + Λ<sub>2</sub>x<sup>2</sup> + ··· +
+Λ<sub>e</sub>x<sup>e</sup> (where Λ<sub>0</sub> = 1.), let P<sub>i</sub> =
+[p<sub>0</sub>, ..., p<sub>e</sub>], 0 ≤ i &lt; n, which is indexed as P<sub>i</sub>[k],
+0 ≤ k ≤ e.</p>
+
+<p>Starting with the base case i = 0, let P<sub>0</sub>[k] = Λ<sub>k</sub> so that
+Λ(α<sup>0</sup>) = Λ(1) = Λ<sub>0</sub> + Λ<sub>1</sub> + ··· + Λ<sub>e</sub> =
+sum(P<sub>0</sub>).</p>
+
+<p>Then for i &gt; 0, let P<sub>i</sub>[k] = P<sub>i-1</sub>[k]⋅α<sup>k</sup> so that
+Λ(α<sup>i</sup>) = sum(P<sub>i</sub>).</p>
+
+<h1 id='forney-algorithm' class='section-header'><a href='#forney-algorithm'>Forney Algorithm</a></h1>
+<p>The Forney algorithm reduces the problem of computing error patterns to evaluating
+Ω(x) / Λ&#39;(x), where Ω(x) = s(x)Λ(x) mod x<sup>2t</sup>. This requires no polynomial
+long division, just a one-time polynomial multiplication and derivative evaluation
+to create Ω(x), then two polynomial evaluations and one codeword division for each
+error.</p>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.ErrorDescriptions.html'
+                                  title='p25::coding::bmcf::ErrorDescriptions'>ErrorDescriptions</a></td>
+                           <td class='docblock-short'>
+                                <p>Computes error locations and patterns from the roots of the error locator polynomial
+Λ(x).</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.ErrorLocator.html'
+                                  title='p25::coding::bmcf::ErrorLocator'>ErrorLocator</a></td>
+                           <td class='docblock-short'>
+                                <p>Finds the error location polynomial Λ(x) from the syndrome polynomial s(x).</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Errors.html'
+                                  title='p25::coding::bmcf::Errors'>Errors</a></td>
+                           <td class='docblock-short'>
+                                <p>Decodes and iterates over codeword errors.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.PolynomialRoots.html'
+                                  title='p25::coding::bmcf::PolynomialRoots'>PolynomialRoots</a></td>
+                           <td class='docblock-short'>
+                                <p>Finds the roots of the given error locator polynomial Λ(x).</p>
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "p25";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>

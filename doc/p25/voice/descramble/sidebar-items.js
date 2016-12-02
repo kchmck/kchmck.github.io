@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["descramble","Descramble a portion of the given voice frame dibits into the PN-scrambled, coded chunk `u_{idx}`."]]});

@@ -47,28 +47,30 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-431' class='srclink' href='../../../src/p25/src/coding/galois.rs.html#1-682' title='goto source code'>[src]</a></span></h1>
-<h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+               </span><a id='src-300' class='srclink' href='../../../src/p25/src/coding/galois.rs.html#1-1033' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Galois field arithmetic for codewords and polynomials.</p>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.Codeword.html'
                                   title='p25::coding::galois::Codeword'>Codeword</a></td>
                            <td class='docblock-short'>
-                                <p>Codeword in the associated field.</p>
+                                <p>Codeword in a Galois field.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.P25Field.html'
                                   title='p25::coding::galois::P25Field'>P25Field</a></td>
                            <td class='docblock-short'>
-                                <p>GF(2<sup>6)</sup> field characterized by α<sup>6+α+1,</sup> as described in P25 specification.</p>
+                                <p>GF(2<sup>6</sup>) field characterized by α<sup>6</sup>+α+1, as described in the P25
+specification.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.Polynomial.html'
                                   title='p25::coding::galois::Polynomial'>Polynomial</a></td>
                            <td class='docblock-short'>
-                                <p>A syndrome polynomial with GF(2<sup>6)</sup> codewords as coefficients.</p>
+                                <p>Polynomial with P25&#39;s GF(2<sup>6</sup>) codewords as coefficients.</p>
                            </td>
                        </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
@@ -76,14 +78,14 @@
                            <td><a class='trait' href='trait.GaloisField.html'
                                   title='p25::coding::galois::GaloisField'>GaloisField</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>A GF(2<sup>r</sup>) Galois field.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.PolynomialCoefs.html'
                                   title='p25::coding::galois::PolynomialCoefs'>PolynomialCoefs</a></td>
                            <td class='docblock-short'>
-                                <p>Wraps a static codeword array.</p>
+                                <p>Coefficient storage for a bounded-degree Galois polynomial of a particular code.</p>
                            </td>
                        </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
@@ -91,7 +93,7 @@
                            <td><a class='type' href='type.P25Codeword.html'
                                   title='p25::coding::galois::P25Codeword'>P25Codeword</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Codeword in the P25 Galois field.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

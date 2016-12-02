@@ -1,10 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="refresh" content="0;URL=../../../p25/data/struct.ConfirmedFields.html">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `ConfirmedFields` struct in crate `p25`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ConfirmedFields">
+
+    <title>p25::data::header::ConfirmedFields - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
 </head>
-<body>
-    <p>Redirecting to <a href="../../../p25/data/struct.ConfirmedFields.html">../../../p25/data/struct.ConfirmedFields.html</a>...</p>
-    <script>location.replace("../../../p25/data/struct.ConfirmedFields.html" + location.search + location.hash);</script>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>header</a></p><script>window.sidebarCurrent = {name: 'ConfirmedFields', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>header</a>::<wbr><a class='struct' href=''>ConfirmedFields</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-1269' class='srclink' href='../../../src/p25/src/data/header.rs.html#174-183' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct ConfirmedFields {
+    pub preamble: <a class='struct' href='../../../p25/data/header/struct.ConfirmedPreamble.html' title='p25::data::header::ConfirmedPreamble'>ConfirmedPreamble</a>,
+    pub sap: <a class='struct' href='../../../p25/data/header/struct.ServiceAccessPoint.html' title='p25::data::header::ServiceAccessPoint'>ServiceAccessPoint</a>,
+    pub mfg: <a class='struct' href='../../../p25/data/header/struct.Manufacturer.html' title='p25::data::header::Manufacturer'>Manufacturer</a>,
+    pub addr: <a class='struct' href='../../../p25/data/header/struct.LogicalLink.html' title='p25::data::header::LogicalLink'>LogicalLink</a>,
+    pub blocks: <a class='struct' href='../../../p25/data/header/struct.BlockCount.html' title='p25::data::header::BlockCount'>BlockCount</a>,
+    pub pads: <a class='struct' href='../../../p25/data/header/struct.PadCount.html' title='p25::data::header::PadCount'>PadCount</a>,
+    pub seq: <a class='struct' href='../../../p25/data/header/struct.Sequencing.html' title='p25::data::header::Sequencing'>Sequencing</a>,
+    pub data_offset: <a class='struct' href='../../../p25/data/header/struct.DataOffset.html' title='p25::data::header::DataOffset'>DataOffset</a>,
+}</pre><div class='docblock'><p>Header fields for confirmed packet.</p>
+</div><h2 class='fields'>Fields</h2><span id='structfield.preamble' class='structfield'>
+                           <span id='preamble.v' class='invisible'>
+                           <code>preamble: <a class='struct' href='../../../p25/data/header/struct.ConfirmedPreamble.html' title='p25::data::header::ConfirmedPreamble'>ConfirmedPreamble</a></code>
+                           </span></span><span class='stab '></span><span id='structfield.sap' class='structfield'>
+                           <span id='sap.v' class='invisible'>
+                           <code>sap: <a class='struct' href='../../../p25/data/header/struct.ServiceAccessPoint.html' title='p25::data::header::ServiceAccessPoint'>ServiceAccessPoint</a></code>
+                           </span></span><span class='stab '></span><span id='structfield.mfg' class='structfield'>
+                           <span id='mfg.v' class='invisible'>
+                           <code>mfg: <a class='struct' href='../../../p25/data/header/struct.Manufacturer.html' title='p25::data::header::Manufacturer'>Manufacturer</a></code>
+                           </span></span><span class='stab '></span><span id='structfield.addr' class='structfield'>
+                           <span id='addr.v' class='invisible'>
+                           <code>addr: <a class='struct' href='../../../p25/data/header/struct.LogicalLink.html' title='p25::data::header::LogicalLink'>LogicalLink</a></code>
+                           </span></span><span class='stab '></span><span id='structfield.blocks' class='structfield'>
+                           <span id='blocks.v' class='invisible'>
+                           <code>blocks: <a class='struct' href='../../../p25/data/header/struct.BlockCount.html' title='p25::data::header::BlockCount'>BlockCount</a></code>
+                           </span></span><span class='stab '></span><span id='structfield.pads' class='structfield'>
+                           <span id='pads.v' class='invisible'>
+                           <code>pads: <a class='struct' href='../../../p25/data/header/struct.PadCount.html' title='p25::data::header::PadCount'>PadCount</a></code>
+                           </span></span><span class='stab '></span><span id='structfield.seq' class='structfield'>
+                           <span id='seq.v' class='invisible'>
+                           <code>seq: <a class='struct' href='../../../p25/data/header/struct.Sequencing.html' title='p25::data::header::Sequencing'>Sequencing</a></code>
+                           </span></span><span class='stab '></span><span id='structfield.data_offset' class='structfield'>
+                           <span id='data_offset.v' class='invisible'>
+                           <code>data_offset: <a class='struct' href='../../../p25/data/header/struct.DataOffset.html' title='p25::data::header::DataOffset'>DataOffset</a></code>
+                           </span></span><span class='stab '></span><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../../../p25/data/header/trait.BufWrite.html' title='p25::data::header::BufWrite'>BufWrite</a> for <a class='struct' href='../../../p25/data/header/struct.ConfirmedFields.html' title='p25::data::header::ConfirmedFields'>ConfirmedFields</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1278' class='srclink' href='../../../src/p25/src/data/header.rs.html#185-196' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.write' class='method'><span id='write.v' class='invisible'><code>fn <a href='../../../p25/data/header/trait.BufWrite.html#tymethod.write' class='fnname'>write</a>&lt;'a,&nbsp;'b,&nbsp;T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='core::iter::iterator::Iterator'>Iterator</a>&lt;Item=&amp;'a mut <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;&gt;(&amp;self, buf: &amp;'b mut T)</code></span></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "p25";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    
+    <script defer src="../../../search-index.js"></script>
 </body>
 </html>

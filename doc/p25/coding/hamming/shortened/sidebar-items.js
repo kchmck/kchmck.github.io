@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["decode","Try to decode the 10-bit word to the nearest codeword, correcting up to 1 error. Return `Some((data, err))`, where `data` are the 6 data bits and `err` is the number of errors, on success and `None` on an unrecoverable error."],["encode","Encode the 6 data bits to a 10-bit codeword."]]});
+initSidebarItems({"fn":[["decode","Try to decode the given 10-bit word to the nearest codeword, correcting up to 1 error."],["encode","Encode the given 6 data bits into a 10-bit codeword."]]});

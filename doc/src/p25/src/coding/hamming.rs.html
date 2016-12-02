@@ -260,6 +260,12 @@
 <span id="216">216</span>
 <span id="217">217</span>
 <span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Encoding and decoding of the (15, 11, 3) standard and (10, 6, 3) shortened Hamming</span>
 <span class='doccomment'>//! codes described by P25.</span>
@@ -271,15 +277,18 @@
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>standard</span> {
     <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>HammingDecoder</span>;
 
-    <span class='doccomment'>/// Encode the 11 bits of data to a 15-bit codeword.</span>
+    <span class='doccomment'>/// Encode the given 11 bits of data into a 15-bit codeword.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>encode</span>(<span class='ident'>data</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>data</span> <span class='op'>&gt;&gt;</span> <span class='number'>11</span> <span class='op'>==</span> <span class='number'>0</span>);
         <span class='macro'>matrix_mul_systematic</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='ident'>GEN</span>, <span class='ident'>u16</span>)
     }
 
-    <span class='doccomment'>/// Try to decode the 15-bit word to the nearest codeword, correcting up to 1 error.</span>
-    <span class='doccomment'>/// Return `Some((data, err))`, where `data` are the 11 data bits and `err` is the</span>
-    <span class='doccomment'>/// number of errors, on success and `None` on an unrecoverable error.</span>
+    <span class='doccomment'>/// Try to decode the given 15-bit word to the nearest codeword, correcting up to 1</span>
+    <span class='doccomment'>/// error.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If decoding was successful, return `Some((data, err))`, where `data` is the 11</span>
+    <span class='doccomment'>/// data bits and `err` is the number of corrected bits. Otherwise, return `None` to</span>
+    <span class='doccomment'>/// indicate an unrecoverable error.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode</span>(<span class='ident'>word</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>u16</span>, <span class='ident'>usize</span>)<span class='op'>&gt;</span> {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='number'>15</span> <span class='op'>==</span> <span class='number'>0</span>);
         <span class='ident'>StandardHamming</span>::<span class='ident'>decode</span>(<span class='ident'>word</span>)
@@ -336,15 +345,18 @@
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>shortened</span> {
     <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>HammingDecoder</span>;
 
-    <span class='doccomment'>/// Encode the 6 data bits to a 10-bit codeword.</span>
+    <span class='doccomment'>/// Encode the given 6 data bits into a 10-bit codeword.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>encode</span>(<span class='ident'>data</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>data</span> <span class='op'>&gt;&gt;</span> <span class='number'>6</span> <span class='op'>==</span> <span class='number'>0</span>);
         <span class='macro'>matrix_mul_systematic</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='ident'>GEN</span>, <span class='ident'>u16</span>)
     }
 
-    <span class='doccomment'>/// Try to decode the 10-bit word to the nearest codeword, correcting up to 1 error.</span>
-    <span class='doccomment'>/// Return `Some((data, err))`, where `data` are the 6 data bits and `err` is the</span>
-    <span class='doccomment'>/// number of errors, on success and `None` on an unrecoverable error.</span>
+    <span class='doccomment'>/// Try to decode the given 10-bit word to the nearest codeword, correcting up to 1</span>
+    <span class='doccomment'>/// error.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If decoding was successful, return `Some((data, err))`, where `data` is the 6</span>
+    <span class='doccomment'>/// data bits and `err` is the number of corrected bits. Otherwise, return `None` to</span>
+    <span class='doccomment'>/// indicate an unrecoverable error.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode</span>(<span class='ident'>word</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>u8</span>, <span class='ident'>usize</span>)<span class='op'>&gt;</span> {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='number'>10</span> <span class='op'>==</span> <span class='number'>0</span>);
         <span class='ident'>ShortHamming</span>::<span class='ident'>decode</span>(<span class='ident'>word</span>)

@@ -275,6 +275,41 @@
 <span id="231">231</span>
 <span id="232">232</span>
 <span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Encoding and decoding of the (63, 16, 23) BCH code described by P25.</span>
 <span class='doccomment'>//!</span>
@@ -286,44 +321,31 @@
 <span class='kw'>use</span> <span class='ident'>coding</span>::<span class='ident'>galois</span>::{<span class='ident'>GaloisField</span>, <span class='ident'>P25Field</span>, <span class='ident'>P25Codeword</span>, <span class='ident'>Polynomial</span>, <span class='ident'>PolynomialCoefs</span>};
 <span class='kw'>use</span> <span class='ident'>coding</span>::<span class='ident'>bmcf</span>;
 
-<span class='doccomment'>/// Encode the 16 data bits into a 64-bit codeword.</span>
+<span class='doccomment'>/// Encode the given 16 data bits into a 64-bit codeword.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>encode</span>(<span class='ident'>word</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='ident'>u64</span> {
     <span class='macro'>matrix_mul_systematic</span><span class='macro'>!</span>(<span class='ident'>word</span>, <span class='ident'>GEN</span>, <span class='ident'>u64</span>)
 }
 
-<span class='doccomment'>/// Try to decode the 64-bit word to the nearest codeword, correcting up to 11 errors.</span>
-<span class='doccomment'>/// Return `Some((data, err))`, where `data` is the 16 data bits and `err` is the number</span>
-<span class='doccomment'>/// of errors, if the codeword could be corrected and `None` if it couldn&#39;t.</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode</span>(<span class='ident'>word</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>u16</span>, <span class='ident'>usize</span>)<span class='op'>&gt;</span> {
+<span class='doccomment'>/// Try to decode the given 64-bit word to the nearest codeword, correcting up to 11</span>
+<span class='doccomment'>/// bit errors.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// If decoding was successful, return `Some((data, err))`, where `data` is the 16 data</span>
+<span class='doccomment'>/// bits and `err` is the number of bits corrected. Otherwise, return `None` to indicate</span>
+<span class='doccomment'>/// an unrecoverable error.</span>
+<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode</span>(<span class='ident'>bits</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>u16</span>, <span class='ident'>usize</span>)<span class='op'>&gt;</span> {
     <span class='comment'>// The BCH code is only over the first 63 bits, so strip off the P25 parity bit.</span>
-    <span class='kw'>let</span> <span class='ident'>word</span> <span class='op'>=</span> <span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
+    <span class='kw'>let</span> <span class='ident'>word</span> <span class='op'>=</span> <span class='ident'>bits</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
 
-    <span class='comment'>// Compute the syndrome polynomial.</span>
-    <span class='kw'>let</span> <span class='ident'>syn</span> <span class='op'>=</span> <span class='ident'>syndromes</span>(<span class='ident'>word</span>);
+    <span class='ident'>bmcf</span>::<span class='ident'>Errors</span>::<span class='ident'>new</span>(<span class='ident'>syndromes</span>(<span class='ident'>word</span>)).<span class='ident'>map</span>(<span class='op'>|</span>(<span class='ident'>nerr</span>, <span class='ident'>errs</span>)<span class='op'>|</span> {
+        <span class='comment'>// Flip all error bits.</span>
+        <span class='kw'>let</span> <span class='ident'>fixed</span> <span class='op'>=</span> <span class='ident'>errs</span>.<span class='ident'>fold</span>(<span class='ident'>word</span>, <span class='op'>|</span><span class='ident'>w</span>, (<span class='ident'>loc</span>, <span class='ident'>pat</span>)<span class='op'>|</span> {
+            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>pat</span>.<span class='ident'>power</span>().<span class='ident'>unwrap</span>() <span class='op'>==</span> <span class='number'>0</span>);
+            <span class='ident'>w</span> <span class='op'>^</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='ident'>loc</span>
+        });
 
-    <span class='comment'>// Get the error location polynomial.</span>
-    <span class='kw'>let</span> <span class='ident'>poly</span> <span class='op'>=</span> <span class='ident'>BCHDecoder</span>::<span class='ident'>new</span>(<span class='ident'>syn</span>).<span class='ident'>decode</span>();
-
-    <span class='comment'>// The degree indicates the number of errors that need to be corrected.</span>
-    <span class='kw'>let</span> <span class='ident'>errors</span> <span class='op'>=</span> <span class='ident'>poly</span>.<span class='ident'>degree</span>().<span class='ident'>expect</span>(<span class='string'>&quot;invalid error polynomial&quot;</span>);
-
-    <span class='comment'>// Get the error locations from the polynomial.</span>
-    <span class='kw'>let</span> <span class='ident'>locs</span> <span class='op'>=</span> <span class='ident'>bmcf</span>::<span class='ident'>Errors</span>::<span class='ident'>new</span>(<span class='ident'>poly</span>, <span class='ident'>syn</span>);
-
-    <span class='comment'>// Correct the codeword and count the number of corrected errors. Stop the iteration</span>
-    <span class='comment'>// after `errors` iterations since it won&#39;t yield any more locations after that</span>
-    <span class='comment'>// anyway.</span>
-    <span class='kw'>let</span> (<span class='ident'>word</span>, <span class='ident'>count</span>) <span class='op'>=</span> <span class='ident'>locs</span>.<span class='ident'>take</span>(<span class='ident'>errors</span>).<span class='ident'>fold</span>((<span class='ident'>word</span>, <span class='number'>0</span>), <span class='op'>|</span>(<span class='ident'>w</span>, <span class='ident'>s</span>), (<span class='ident'>loc</span>, <span class='ident'>val</span>)<span class='op'>|</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>val</span>.<span class='ident'>power</span>().<span class='ident'>unwrap</span>() <span class='op'>==</span> <span class='number'>0</span>);
-        (<span class='ident'>w</span> <span class='op'>^</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='ident'>loc</span>, <span class='ident'>s</span> <span class='op'>+</span> <span class='number'>1</span>)
-    });
-
-    <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>==</span> <span class='ident'>errors</span> {
-        <span class='comment'>// Strip off the (corrected) parity-check bits.</span>
-        <span class='prelude-val'>Some</span>(((<span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='number'>47</span>) <span class='kw'>as</span> <span class='ident'>u16</span>, <span class='ident'>errors</span>))
-    } <span class='kw'>else</span> {
-        <span class='prelude-val'>None</span>
-    }
+        <span class='comment'>// Strip off the parity bits.</span>
+        ((<span class='ident'>fixed</span> <span class='op'>&gt;&gt;</span> <span class='number'>47</span>) <span class='kw'>as</span> <span class='ident'>u16</span>, <span class='ident'>nerr</span>)
+    })
 }
 
 <span class='doccomment'>/// Generator matrix from P25, transformed for more efficient codeword generation.</span>
@@ -378,50 +400,129 @@
     <span class='number'>0b0000000000000011</span>,
 ];
 
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Default</span>)]</span>
-<span class='kw'>struct</span> <span class='ident'>BCHCoefs</span>([<span class='ident'>P25Codeword</span>; <span class='number'>22</span> <span class='op'>+</span> <span class='number'>2</span>]);
+<span class='doccomment'>/// Polynomial coefficients for BCH decoding.</span>
+<span class='macro'>impl_polynomial_coefs</span><span class='macro'>!</span>(<span class='ident'>BCHCoefs</span>, <span class='number'>23</span>);
 
-<span class='kw'>impl</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Deref</span> <span class='kw'>for</span> <span class='ident'>BCHCoefs</span> {
-    <span class='kw'>type</span> <span class='ident'>Target</span> <span class='op'>=</span> [<span class='ident'>P25Codeword</span>];
-    <span class='kw'>fn</span> <span class='ident'>deref</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='self'>Self</span>::<span class='ident'>Target</span> { <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[..] }
-}
-
-<span class='kw'>impl</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>DerefMut</span> <span class='kw'>for</span> <span class='ident'>BCHCoefs</span> {
-    <span class='kw'>fn</span> <span class='ident'>deref_mut</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>Self</span>::<span class='ident'>Target</span> { <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='number'>0</span>[..] }
-}
-
-<span class='kw'>impl</span> <span class='ident'>PolynomialCoefs</span> <span class='kw'>for</span> <span class='ident'>BCHCoefs</span> {
-    <span class='kw'>fn</span> <span class='ident'>distance</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>23</span> }
-}
-
+<span class='doccomment'>/// Polynomial with BCH coefficients.</span>
 <span class='kw'>type</span> <span class='ident'>BCHPolynomial</span> <span class='op'>=</span> <span class='ident'>Polynomial</span><span class='op'>&lt;</span><span class='ident'>BCHCoefs</span><span class='op'>&gt;</span>;
-<span class='kw'>type</span> <span class='ident'>BCHDecoder</span> <span class='op'>=</span> <span class='ident'>bmcf</span>::<span class='ident'>BerlMasseyDecoder</span><span class='op'>&lt;</span><span class='ident'>BCHCoefs</span><span class='op'>&gt;</span>;
 
-<span class='doccomment'>/// Generate the syndrome polynomial for the given received word.</span>
+<span class='doccomment'>/// Generate the syndrome polynomial s(x) from the given received word r(x).</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// The resulting polynomial has the form s(x) = s&lt;sub&gt;1&lt;/sub&gt; + s&lt;sub&gt;2&lt;/sub&gt;x + ··· +</span>
+<span class='doccomment'>/// s&lt;sub&gt;2t&lt;/sub&gt;x&lt;sup&gt;2t&lt;/sup&gt;, where s&lt;sub&gt;i&lt;/sub&gt; = r(α&lt;sup&gt;i&lt;/sup&gt;).</span>
 <span class='kw'>fn</span> <span class='ident'>syndromes</span>(<span class='ident'>word</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='ident'>BCHPolynomial</span> {
-    <span class='ident'>BCHPolynomial</span>::<span class='ident'>new</span>(<span class='ident'>std</span>::<span class='ident'>iter</span>::<span class='ident'>once</span>(<span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>))
-        .<span class='ident'>chain</span>((<span class='number'>1</span>..<span class='ident'>BCHCoefs</span>::<span class='ident'>distance</span>()).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>pow</span><span class='op'>|</span> {
-            (<span class='number'>0</span>..<span class='ident'>P25Field</span>::<span class='ident'>size</span>()).<span class='ident'>fold</span>(<span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(), <span class='op'>|</span><span class='ident'>s</span>, <span class='ident'>b</span><span class='op'>|</span> {
-                <span class='kw'>if</span> <span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='ident'>b</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span> <span class='op'>==</span> <span class='number'>0</span> {
-                    <span class='ident'>s</span>
-                } <span class='kw'>else</span> {
-                    <span class='ident'>s</span> <span class='op'>+</span> <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='ident'>b</span> <span class='op'>*</span> <span class='ident'>pow</span>)
-                }
-            })
-        }))
-    )
+    <span class='ident'>BCHPolynomial</span>::<span class='ident'>new</span>((<span class='number'>1</span>...<span class='ident'>BCHCoefs</span>::<span class='ident'>syndromes</span>()).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>p</span><span class='op'>|</span> {
+        <span class='comment'>// Compute r(α^p) with the polynomial representation of the bitmap. The LSB of</span>
+        <span class='comment'>// `word` maps to the coefficient of the degree-0 term.</span>
+        (<span class='number'>0</span>..<span class='ident'>P25Field</span>::<span class='ident'>size</span>()).<span class='ident'>fold</span>(<span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(), <span class='op'>|</span><span class='ident'>s</span>, <span class='ident'>b</span><span class='op'>|</span> {
+            <span class='kw'>if</span> <span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='ident'>b</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span> <span class='op'>==</span> <span class='number'>0</span> {
+                <span class='ident'>s</span>
+            } <span class='kw'>else</span> {
+                <span class='ident'>s</span> <span class='op'>+</span> <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='ident'>b</span> <span class='op'>*</span> <span class='ident'>p</span>)
+            }
+        })
+    }))
 }
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
+    <span class='kw'>use</span> <span class='ident'>std</span>;
     <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
-    <span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>syndromes</span>, <span class='ident'>BCHDecoder</span>, <span class='ident'>BCHCoefs</span>, <span class='ident'>BCHPolynomial</span>};
-    <span class='kw'>use</span> <span class='ident'>coding</span>::<span class='ident'>galois</span>::{<span class='ident'>P25Codeword</span>, <span class='ident'>PolynomialCoefs</span>};
-    <span class='kw'>use</span> <span class='ident'>coding</span>::<span class='ident'>bmcf</span>::<span class='ident'>Errors</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>syndromes</span>, <span class='ident'>BCHCoefs</span>};
+    <span class='kw'>use</span> <span class='ident'>coding</span>::<span class='ident'>galois</span>::{<span class='ident'>PolynomialCoefs</span>, <span class='ident'>P25Codeword</span>, <span class='ident'>Polynomial</span>};
+
+    <span class='macro'>impl_polynomial_coefs</span><span class='macro'>!</span>(<span class='ident'>TestCoefs</span>, <span class='number'>23</span>, <span class='number'>50</span>);
+    <span class='kw'>type</span> <span class='ident'>TestPolynomial</span> <span class='op'>=</span> <span class='ident'>Polynomial</span><span class='op'>&lt;</span><span class='ident'>TestCoefs</span><span class='op'>&gt;</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>validate_coefs</span>() {
         <span class='ident'>BCHCoefs</span>::<span class='ident'>default</span>().<span class='ident'>validate</span>();
+    }
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>verify_gen</span>() {
+        <span class='comment'>// Verify construction of BCH generator polynomial g(x).</span>
+
+        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>Polynomial</span>::<span class='op'>&lt;</span><span class='ident'>TestCoefs</span><span class='op'>&gt;</span>::<span class='ident'>new</span>([
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+        ].<span class='ident'>iter</span>().<span class='ident'>cloned</span>()) <span class='op'>*</span> <span class='ident'>Polynomial</span>::<span class='ident'>new</span>([
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+        ].<span class='ident'>iter</span>().<span class='ident'>cloned</span>()) <span class='op'>*</span> <span class='ident'>Polynomial</span>::<span class='ident'>new</span>([
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+        ].<span class='ident'>iter</span>().<span class='ident'>cloned</span>()) <span class='op'>*</span> <span class='ident'>Polynomial</span>::<span class='ident'>new</span>([
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+        ].<span class='ident'>iter</span>().<span class='ident'>cloned</span>()) <span class='op'>*</span> <span class='ident'>Polynomial</span>::<span class='ident'>new</span>([
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+        ].<span class='ident'>iter</span>().<span class='ident'>cloned</span>()) <span class='op'>*</span> <span class='ident'>Polynomial</span>::<span class='ident'>new</span>([
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+        ].<span class='ident'>iter</span>().<span class='ident'>cloned</span>()) <span class='op'>*</span> <span class='ident'>Polynomial</span>::<span class='ident'>new</span>([
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+        ].<span class='ident'>iter</span>().<span class='ident'>cloned</span>()) <span class='op'>*</span> <span class='ident'>Polynomial</span>::<span class='ident'>new</span>([
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+        ].<span class='ident'>iter</span>().<span class='ident'>cloned</span>()) <span class='op'>*</span> <span class='ident'>Polynomial</span>::<span class='ident'>new</span>([
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(),
+            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
+        ].<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
+
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>degree</span>().<span class='ident'>unwrap</span>(), <span class='number'>47</span>);
+
+        <span class='kw'>let</span> <span class='ident'>gen</span> <span class='op'>=</span> <span class='number'>0o6331_1413_6723_5453u64</span>;
+
+        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>...<span class='number'>47</span> {
+            <span class='kw'>let</span> <span class='ident'>coef</span> <span class='op'>=</span> <span class='ident'>gen</span> <span class='op'>&gt;&gt;</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;
+
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>[<span class='ident'>i</span>].<span class='ident'>power</span>(), <span class='kw'>if</span> <span class='ident'>coef</span> <span class='op'>==</span> <span class='number'>0</span> {
+                <span class='prelude-val'>None</span>
+            } <span class='kw'>else</span> {
+                <span class='prelude-val'>Some</span>(<span class='number'>0</span>)
+            });
+        }
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -437,40 +538,9 @@
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_syndromes</span>() {
         <span class='kw'>let</span> <span class='ident'>w</span> <span class='op'>=</span> <span class='ident'>encode</span>(<span class='number'>0b1111111100000000</span>)<span class='op'>&gt;&gt;</span><span class='number'>1</span>;
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>syndromes</span>(<span class='ident'>w</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>len</span>(), <span class='number'>24</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>degree</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>syndromes</span>(<span class='ident'>w</span> <span class='op'>^</span> <span class='number'>1</span><span class='op'>&lt;&lt;</span><span class='number'>60</span>).<span class='ident'>degree</span>().<span class='ident'>unwrap</span>(), <span class='number'>22</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>p</span>[<span class='number'>0</span>] <span class='op'>==</span> <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>));
-    }
-
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_decoder</span>() {
-        <span class='kw'>let</span> <span class='ident'>w</span> <span class='op'>=</span> <span class='ident'>encode</span>(<span class='number'>0b1111111100000000</span>)<span class='op'>^</span><span class='number'>0b11</span><span class='op'>&lt;&lt;</span><span class='number'>61</span>;
-        <span class='kw'>let</span> <span class='ident'>poly</span> <span class='op'>=</span> <span class='ident'>BCHDecoder</span>::<span class='ident'>new</span>(<span class='ident'>syndromes</span>(<span class='ident'>w</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>)).<span class='ident'>decode</span>();
-
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>poly</span>.<span class='ident'>coef</span>(<span class='number'>0</span>).<span class='ident'>power</span>().<span class='ident'>unwrap</span>() <span class='op'>==</span> <span class='number'>0</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>poly</span>.<span class='ident'>coef</span>(<span class='number'>1</span>).<span class='ident'>power</span>().<span class='ident'>unwrap</span>() <span class='op'>==</span> <span class='number'>3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>poly</span>.<span class='ident'>coef</span>(<span class='number'>2</span>).<span class='ident'>power</span>().<span class='ident'>unwrap</span>() <span class='op'>==</span> <span class='number'>58</span>);
-    }
-
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_locs</span>() {
-        <span class='kw'>let</span> <span class='ident'>w</span> <span class='op'>=</span> <span class='ident'>encode</span>(<span class='number'>0b0000111100001111</span>)<span class='op'>^</span><span class='number'>0b11</span><span class='op'>&lt;&lt;</span><span class='number'>61</span>;
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>syndromes</span>(<span class='ident'>w</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>);
-
-        <span class='kw'>let</span> <span class='ident'>coefs</span> <span class='op'>=</span> <span class='ident'>BCHPolynomial</span>::<span class='ident'>new</span>([
-            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>),
-            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>3</span>),
-            <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>58</span>),
-        ].<span class='ident'>into_iter</span>().<span class='ident'>cloned</span>());
-
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>locs</span> <span class='op'>=</span> <span class='ident'>Errors</span>::<span class='ident'>new</span>(<span class='ident'>coefs</span>, <span class='ident'>p</span>);
-
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>locs</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>() <span class='op'>==</span> (<span class='number'>61</span>, <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>)));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>locs</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>() <span class='op'>==</span> (<span class='number'>60</span>, <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='number'>0</span>)));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>locs</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>syndromes</span>(<span class='ident'>w</span>).<span class='ident'>degree</span>(), <span class='prelude-val'>None</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>syndromes</span>(<span class='ident'>w</span> <span class='op'>^</span> <span class='number'>1</span><span class='op'>&lt;&lt;</span><span class='number'>60</span>).<span class='ident'>degree</span>().<span class='ident'>unwrap</span>(), <span class='number'>21</span>);
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>

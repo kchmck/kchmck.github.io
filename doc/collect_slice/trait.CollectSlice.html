@@ -47,23 +47,116 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-4' class='srclink' href='../src/collect_slice/lib.rs.html#47-59' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-4' class='srclink' href='../src/collect_slice/lib.rs.html#49-169' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait CollectSlice: <a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='core::iter::iterator::Iterator'>Iterator</a> {
     fn <a href='#tymethod.collect_slice' class='fnname'>collect_slice</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>;
 
+    fn <a href='#method.collect_slice_fill' class='fnname'>collect_slice_fill</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) { ... }
+    fn <a href='#method.collect_slice_exhaust' class='fnname'>collect_slice_exhaust</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a> { ... }
     fn <a href='#method.collect_slice_checked' class='fnname'>collect_slice_checked</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) { ... }
 }</pre><div class='docblock'><p>An iterator that can collect into a slice.</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.collect_slice' class='method stab '><span id='collect_slice.v' class='invisible'><code>fn <a href='#tymethod.collect_slice' class='fnname'>collect_slice</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Loop through the iterator, writing items into the given slice until either the
-iterator runs out of items or the slice fills up. Return the number of items
-written.</p>
+        <h3 id='tymethod.collect_slice' class='method stab '><span id='collect_slice.v' class='invisible'><code>fn <a href='#tymethod.collect_slice' class='fnname'>collect_slice</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Loop through the iterator, sequentially writing items into the given slice until
+either the iterator runs out of items or the slice fills up.</p>
+
+<p>Return the number of items written.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>collect_slice</span>::<span class='ident'>CollectSlice</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buf</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='number'>10</span>];
+
+<span class='comment'>// Fill a whole slice.</span>
+<span class='kw'>let</span> <span class='ident'>count</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>10</span>).<span class='ident'>collect_slice</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>count</span>, <span class='number'>10</span>);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>, [<span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>, <span class='number'>6</span>, <span class='number'>7</span>, <span class='number'>8</span>, <span class='number'>9</span>]);
+
+<span class='comment'>// Write into a subslice</span>
+<span class='kw'>let</span> <span class='ident'>count</span> <span class='op'>=</span> (<span class='number'>10</span>..<span class='number'>20</span>).<span class='ident'>collect_slice</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[<span class='number'>5</span>..<span class='number'>7</span>]);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>count</span>, <span class='number'>2</span>);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>, [<span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>10</span>, <span class='number'>11</span>, <span class='number'>7</span>, <span class='number'>8</span>, <span class='number'>9</span>]);
+
+<span class='comment'>// Only writes until iterator is exhausted.</span>
+<span class='kw'>let</span> <span class='ident'>count</span> <span class='op'>=</span> (<span class='number'>8</span>..<span class='number'>10</span>).<span class='ident'>collect_slice</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>count</span>, <span class='number'>2</span>);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>, [<span class='number'>8</span>, <span class='number'>9</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>10</span>, <span class='number'>11</span>, <span class='number'>7</span>, <span class='number'>8</span>, <span class='number'>9</span>]);
+
+<span class='comment'>// Extra iterator items are ignored.</span>
+<span class='kw'>let</span> <span class='ident'>count</span> <span class='op'>=</span> (<span class='number'>20</span>..<span class='number'>40</span>).<span class='ident'>collect_slice</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>count</span>, <span class='number'>10</span>);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>, [<span class='number'>20</span>, <span class='number'>21</span>, <span class='number'>22</span>, <span class='number'>23</span>, <span class='number'>24</span>, <span class='number'>25</span>, <span class='number'>26</span>, <span class='number'>27</span>, <span class='number'>28</span>, <span class='number'>29</span>]);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 </div></div>
             <h2 id='provided-methods'>Provided Methods</h2>
             <div class='methods'>
-        <h3 id='method.collect_slice_checked' class='method stab '><span id='collect_slice_checked.v' class='invisible'><code>fn <a href='#method.collect_slice_checked' class='fnname'>collect_slice_checked</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>)</code></span></h3><div class='docblock'><p>Perform <code>collect_slice()</code> and panic if there weren&#39;t enough items to fill up
-the buffer or the buffer was too small to hold all the items.</p>
+        <h3 id='method.collect_slice_fill' class='method stab '><span id='collect_slice_fill.v' class='invisible'><code>fn <a href='#method.collect_slice_fill' class='fnname'>collect_slice_fill</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>)</code></span></h3><div class='docblock'><p>Perform <code>collect_slice()</code> and panic if iterator yielded too few items to fill the
+slice.</p>
+
+<p>If this function succeeds, the number of items written equals the size of the
+given slice.</p>
+
+<h1 id='examples-1' class='section-header'><a href='#examples-1'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>collect_slice</span>::<span class='ident'>CollectSlice</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buf</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='number'>10</span>];
+
+<span class='comment'>// Succeeds as long as entire slice is filled.</span>
+(<span class='number'>0</span>..<span class='number'>20</span>).<span class='ident'>collect_slice_fill</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);
+(<span class='number'>0</span>..<span class='number'>5</span>).<span class='ident'>collect_slice_fill</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..<span class='number'>5</span>]);
+
+<span class='comment'>// Panics otherwise!</span>
+(<span class='number'>0</span>..<span class='number'>5</span>).<span class='ident'>collect_slice_fill</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
+</div><h3 id='method.collect_slice_exhaust' class='method stab '><span id='collect_slice_exhaust.v' class='invisible'><code>fn <a href='#method.collect_slice_exhaust' class='fnname'>collect_slice_exhaust</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Perform <code>collect_slice()</code> and panic if the slice was too small to hold all the
+items.</p>
+
+<p>Return the number of items written.</p>
+
+<h1 id='examples-2' class='section-header'><a href='#examples-2'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>collect_slice</span>::<span class='ident'>CollectSlice</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buf</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='number'>10</span>];
+
+<span class='comment'>// Succeeds as long as iterator yields all its items.</span>
+<span class='kw'>let</span> <span class='ident'>count</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>10</span>).<span class='ident'>collect_slice_exhaust</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>count</span>, <span class='number'>10</span>);
+<span class='kw'>let</span> <span class='ident'>count</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>5</span>).<span class='ident'>collect_slice_exhaust</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>count</span>, <span class='number'>5</span>);
+
+<span class='comment'>// Panics otherwise!</span>
+(<span class='number'>0</span>..<span class='number'>20</span>).<span class='ident'>collect_slice_exhaust</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);
+<a class='test-arrow' target='_blank' href=''>Run</a></pre>
+</div><h3 id='method.collect_slice_checked' class='method stab '><span id='collect_slice_checked.v' class='invisible'><code>fn <a href='#method.collect_slice_checked' class='fnname'>collect_slice_checked</a>(&amp;mut self, slice: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a>Self::Item<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>)</code></span></h3><div class='docblock'><p>Perform <code>collect_slice()</code> and panic if there weren&#39;t enough items to fill up
+the slice or the slice was too small to hold all the items.</p>
+
+<p>If this function succeeds, the number of items written equals the size of the
+given slice.</p>
+
+<h1 id='examples-3' class='section-header'><a href='#examples-3'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>collect_slice</span>::<span class='ident'>CollectSlice</span>;
+
+<span class='comment'>// Succeeds as long as iterator count equals slice capacity.</span>
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buf</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='number'>10</span>];
+(<span class='number'>0</span>..<span class='number'>10</span>).<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);
+(<span class='number'>0</span>..<span class='number'>5</span>).<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[<span class='number'>2</span>..<span class='number'>7</span>]);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
+
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>collect_slice</span>::<span class='ident'>CollectSlice</span>;
+
+<span class='comment'>// Panics if iterator isn&#39;t exhausted!</span>
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buf</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='number'>10</span>];
+(<span class='number'>0</span>..<span class='number'>20</span>).<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
+
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>collect_slice</span>::<span class='ident'>CollectSlice</span>;
+
+<span class='comment'>// Panics if slice isn&#39;t filled!</span>
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buf</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='number'>10</span>];
+(<span class='number'>0</span>..<span class='number'>5</span>).<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>

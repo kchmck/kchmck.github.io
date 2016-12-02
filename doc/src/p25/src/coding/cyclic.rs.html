@@ -210,6 +210,9 @@
 <span id="166">166</span>
 <span id="167">167</span>
 <span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Encoding and decoding of the (16, 8, 5) shortened cyclic code described by P25.</span>
 <span class='doccomment'>//!</span>
@@ -219,14 +222,17 @@
 <span class='doccomment'>//! that this code is shortened from a (17, 8, 5) code came from &quot;Standard APCO25 Physical</span>
 <span class='doccomment'>//! Layer of the Radio Transmission Chain&quot;, Simon, 2014.</span>
 
-<span class='doccomment'>/// Encode the 8 data bits into a 16-bit codeword.</span>
+<span class='doccomment'>/// Encode the given 8 data bits into a 16-bit codeword.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>encode</span>(<span class='ident'>data</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> {
     <span class='macro'>matrix_mul_systematic</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='ident'>GEN</span>, <span class='ident'>u16</span>)
 }
 
-<span class='doccomment'>/// Try to decode the 16-bit word to the nearest codeword, correcting up to 2 errors.</span>
-<span class='doccomment'>/// Return `Some((data, err))`, where `data` are the 12 data bits and `err` is the number</span>
-<span class='doccomment'>/// of errors corrected, on success and `None` on a detected unrecoverable error.</span>
+<span class='doccomment'>/// Try to decode the given 16-bit word to the nearest codeword, correcting up to 2</span>
+<span class='doccomment'>/// errors.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// If decoding was successful, return `Some((data, err))`, where `data` is the 12 data</span>
+<span class='doccomment'>/// bits and `err` is the number of corrected bits. Otherwise, return `None` to indicate</span>
+<span class='doccomment'>/// an unrecoverable error.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode</span>(<span class='ident'>word</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>u8</span>, <span class='ident'>usize</span>)<span class='op'>&gt;</span> {
     <span class='comment'>// Go through a full cycle of the codeword, so the data bits end up in their original</span>
     <span class='comment'>// position. The word is expanded to 32 bits so it can be treated as the 17-bit word</span>

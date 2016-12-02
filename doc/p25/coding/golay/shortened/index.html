@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-615' class='srclink' href='../../../../src/p25/src/coding/golay.rs.html#59-84' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-640' class='srclink' href='../../../../src/p25/src/coding/golay.rs.html#63-90' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Encoding and decoding of the (18, 6, 8) code.</p>
 </div><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
@@ -55,17 +55,15 @@
                            <td><a class='fn' href='fn.decode.html'
                                   title='p25::coding::golay::shortened::decode'>decode</a></td>
                            <td class='docblock-short'>
-                                <p>Try to decode the 18-bit word to the nearest codeword, correcting up to 3 errors.
-Return <code>Some((data, err))</code>, where <code>data</code> are the 6 data bits and <code>err</code> is the
-number of errors corrected in the data bits, on success and <code>None</code> on an
-unrecoverable error.</p>
+                                <p>Try to decode the given 18-bit word to the nearest codeword, correcting up to 3
+errors.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.encode.html'
                                   title='p25::coding::golay::shortened::encode'>encode</a></td>
                            <td class='docblock-short'>
-                                <p>Encode the 6 data bits to an 18-bit codeword.</p>
+                                <p>Encode the given 6 data bits to an 18-bit codeword.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

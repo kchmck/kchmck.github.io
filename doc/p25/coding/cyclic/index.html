@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-407' class='srclink' href='../../../src/p25/src/coding/cyclic.rs.html#1-168' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-602' class='srclink' href='../../../src/p25/src/coding/cyclic.rs.html#1-171' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Encoding and decoding of the (16, 8, 5) shortened cyclic code described by P25.</p>
 
 <p>The parity-check matrix construction was sourced from <em>Coding Theory and Cryptography:
@@ -61,16 +61,15 @@ Layer of the Radio Transmission Chain&quot;, Simon, 2014.</p>
                            <td><a class='fn' href='fn.decode.html'
                                   title='p25::coding::cyclic::decode'>decode</a></td>
                            <td class='docblock-short'>
-                                <p>Try to decode the 16-bit word to the nearest codeword, correcting up to 2 errors.
-Return <code>Some((data, err))</code>, where <code>data</code> are the 12 data bits and <code>err</code> is the number
-of errors corrected, on success and <code>None</code> on a detected unrecoverable error.</p>
+                                <p>Try to decode the given 16-bit word to the nearest codeword, correcting up to 2
+errors.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.encode.html'
                                   title='p25::coding::cyclic::encode'>encode</a></td>
                            <td class='docblock-short'>
-                                <p>Encode the 8 data bits into a 16-bit codeword.</p>
+                                <p>Encode the given 8 data bits into a 16-bit codeword.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

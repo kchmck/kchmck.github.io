@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DataCoder",""]],"type":[["DibitCoder","Half-rate (dibit) convolutional coder."],["TribitCoder","3/4-rate (tribit) convolutional coder."]]});

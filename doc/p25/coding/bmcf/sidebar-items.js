@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ErrorDescriptions","Computes error locations and patterns from the roots of the error locator polynomial Λ(x)."],["ErrorLocator","Finds the error location polynomial Λ(x) from the syndrome polynomial s(x)."],["Errors","Decodes and iterates over codeword errors."],["PolynomialRoots","Finds the roots of the given error locator polynomial Λ(x)."]]});

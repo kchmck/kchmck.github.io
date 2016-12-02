@@ -76,19 +76,17 @@
 <span id="32">32</span>
 <span id="33">33</span>
 <span id="34">34</span>
-<span id="35">35</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Implements Project 25&#39;s data packet specification.</span>
 
-<span class='kw'>mod</span> <span class='ident'>coder</span>;
-<span class='kw'>mod</span> <span class='ident'>fragment</span>;
-<span class='kw'>mod</span> <span class='ident'>header</span>;
-<span class='kw'>mod</span> <span class='ident'>params</span>;
-<span class='kw'>mod</span> <span class='ident'>payload</span>;
-
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>coder</span>;
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>crc</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>fragment</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>header</span>;
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>interleave</span>;
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>packet</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>params</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>payload</span>;
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>values</span>;
 
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>fragment</span>::{<span class='ident'>ConfirmedFragments</span>, <span class='ident'>UnconfirmedFragments</span>};

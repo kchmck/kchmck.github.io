@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ConfirmedParams","Params for confirmed data packets."],["UnconfirmedParams","Params for unconfirmed data packets."]],"trait":[["PacketParams",""]]});

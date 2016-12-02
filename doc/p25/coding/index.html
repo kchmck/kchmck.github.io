@@ -47,8 +47,36 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-298' class='srclink' href='../../src/p25/src/coding/mod.rs.html#1-14' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-298' class='srclink' href='../../src/p25/src/coding/mod.rs.html#1-47' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Encoding and decoding for the several error correction coding schemes used in P25.</p>
+
+<h1 id='references' class='section-header'><a href='#references'>References</a></h1>
+<ol>
+<li><em>Coding Theory and Cryptography</em>, Hankerson, et al, 2000.</li>
+<li><em>Error-Control Block Codes for Communication Engineers</em>, Lee, 2000.</li>
+<li><a href="http://www.ee.iitm.ac.in/%7Eee11b130/RS_report.pdf">&quot;Implementation of a Reed-Solomon Encoder and Decoder in MATLAB&quot;</a>, Ramesh.</li>
+<li><a href="http://www.ti.com/lit/an/spra686/spra686.pdf">&quot;Reed Solomon Decoder&quot;</a>, Sankaran,
+Texas Instruments, 2000.</li>
+<li><a href="http://web.ntpu.edu.tw/%7Eyshan/BCH_decoding.pdf">&quot;Decoding BCH/RS Codes&quot;</a>, Han,
+National Taipei University.</li>
+<li><a href="https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19780022919.pdf">&quot;A Decoding Procedure for the Reed-Solomon Codes&quot;</a>, Lim, NASA
+Ames, 1978.</li>
+<li><a href="http://downloads.bbc.co.uk/rd/pubs/whp/%20whp-pdf-files/WHP031.pdf">&quot;Reed-Solomon error correction&quot;</a>, Clarke, BBC,
+2002.</li>
+<li><a href="http://www.site.uottawa.ca/%7Edamours/courses/ELG_5372/Lecture18.pdf">&quot;Lecture 18: Decoding of Nonbinary BCH and RS Codes&quot;</a>, D&#39;Amours,
+University of Ottowa.</li>
+<li><a href="http://web.stanford.edu/class/ee387/handouts/notes19.pdf">&quot;EE 387, Notes 19&quot;</a>,
+Gill, Stanford University.</li>
+<li><a href="http://web.stanford.edu/class/ee387/handouts/notes20.pdf">&quot;EE 387, Notes 20&quot;</a>,
+Gill, Stanford University.</li>
+<li><a href="https://www.cs.duke.edu/courses/spring11/cps296.3/decoding_rs.pdf">&quot;Implementing Reed-Solomon&quot;</a>, Brown, Duke
+University.</li>
+<li>&quot;Nonbinary BCH Decoding&quot;, Berlekamp, 1966.</li>
+<li>&quot;Shift-Register Synthesis and BCH Decoding&quot;, Massey, 1969.</li>
+<li>&quot;Cyclic decoding procedure for BCH codes&quot;, Chien, 1964.</li>
+<li>&quot;On decoding BCH codes&quot;, Forney, 1965.</li>
+<li><em>Error Control Coding</em>, Lin and Costello, 1983.</li>
+</ol>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
@@ -56,6 +84,14 @@
                                   title='p25::coding::bch'>bch</a></td>
                            <td class='docblock-short'>
                                 <p>Encoding and decoding of the (63, 16, 23) BCH code described by P25.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='bmcf/index.html'
+                                  title='p25::coding::bmcf'>bmcf</a></td>
+                           <td class='docblock-short'>
+                                <p>Decodes Reed Solomon and BCH codes using the Berlekamp-Massey, Chien Search, and
+Forney algorithms.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -69,7 +105,7 @@
                            <td><a class='mod' href='galois/index.html'
                                   title='p25::coding::galois'>galois</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Galois field arithmetic for codewords and polynomials.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>

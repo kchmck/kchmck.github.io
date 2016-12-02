@@ -47,15 +47,38 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-1059' class='srclink' href='../../src/p25/src/data/mod.rs.html#1-35' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-1047' class='srclink' href='../../src/p25/src/data/mod.rs.html#1-34' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Implements Project 25&#39;s data packet specification.</p>
-</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
+<table><tr><td><code>pub use self::fragment::{<a class='type' href='../../p25/data/fragment/type.ConfirmedFragments.html' title='p25::data::fragment::ConfirmedFragments'>ConfirmedFragments</a>, <a class='type' href='../../p25/data/fragment/type.UnconfirmedFragments.html' title='p25::data::fragment::UnconfirmedFragments'>UnconfirmedFragments</a>};</code></td></tr><tr><td><code>pub use self::header::{<a class='type' href='../../p25/data/header/type.ConfirmedHeader.html' title='p25::data::header::ConfirmedHeader'>ConfirmedHeader</a>, <a class='struct' href='../../p25/data/header/struct.ConfirmedFields.html' title='p25::data::header::ConfirmedFields'>ConfirmedFields</a>, <a class='struct' href='../../p25/data/header/struct.ConfirmedPreamble.html' title='p25::data::header::ConfirmedPreamble'>ConfirmedPreamble</a>, <a class='type' href='../../p25/data/header/type.UnconfirmedHeader.html' title='p25::data::header::UnconfirmedHeader'>UnconfirmedHeader</a>, <a class='struct' href='../../p25/data/header/struct.UnconfirmedFields.html' title='p25::data::header::UnconfirmedFields'>UnconfirmedFields</a>, <a class='struct' href='../../p25/data/header/struct.UnconfirmedPreamble.html' title='p25::data::header::UnconfirmedPreamble'>UnconfirmedPreamble</a>, <a class='struct' href='../../p25/data/header/struct.ServiceAccessPoint.html' title='p25::data::header::ServiceAccessPoint'>ServiceAccessPoint</a>, <a class='struct' href='../../p25/data/header/struct.Manufacturer.html' title='p25::data::header::Manufacturer'>Manufacturer</a>, <a class='struct' href='../../p25/data/header/struct.LogicalLink.html' title='p25::data::header::LogicalLink'>LogicalLink</a>, <a class='struct' href='../../p25/data/header/struct.BlockCount.html' title='p25::data::header::BlockCount'>BlockCount</a>, <a class='struct' href='../../p25/data/header/struct.PadCount.html' title='p25::data::header::PadCount'>PadCount</a>, <a class='struct' href='../../p25/data/header/struct.Sequencing.html' title='p25::data::header::Sequencing'>Sequencing</a>, <a class='struct' href='../../p25/data/header/struct.DataOffset.html' title='p25::data::header::DataOffset'>DataOffset</a>};</code></td></tr><tr><td><code>pub use self::payload::{<a class='type' href='../../p25/data/payload/type.ConfirmedPayload.html' title='p25::data::payload::ConfirmedPayload'>ConfirmedPayload</a>, <a class='type' href='../../p25/data/payload/type.UnconfirmedPayload.html' title='p25::data::payload::UnconfirmedPayload'>UnconfirmedPayload</a>};</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='coder/index.html'
+                                  title='p25::data::coder'>coder</a></td>
+                           <td class='docblock-short'>
+                                <p>Provides a convenience interface for coding symbols into a buffer.</p>
+                           </td>
+                       </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='crc/index.html'
                                   title='p25::data::crc'>crc</a></td>
                            <td class='docblock-short'>
                                 <p>Implements the 9, 16, and 32-bit CRCs defined by P25 for data checksums.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='fragment/index.html'
+                                  title='p25::data::fragment'>fragment</a></td>
+                           <td class='docblock-short'>
+                                <p>Provides <code>Fragments</code> iterator for splitting a data slice into fragment slices, whose
+size depends on the data packet used.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='header/index.html'
+                                  title='p25::data::header'>header</a></td>
+                           <td class='docblock-short'>
+                                <p>Header generation for data packets.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -73,131 +96,24 @@
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='mod' href='params/index.html'
+                                  title='p25::data::params'>params</a></td>
+                           <td class='docblock-short'>
+                                <p>Defines various parameters used for data packets.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='payload/index.html'
+                                  title='p25::data::payload'>payload</a></td>
+                           <td class='docblock-short'>
+                                <p>Generate data blocks from a slice of bytes.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='mod' href='values/index.html'
                                   title='p25::data::values'>values</a></td>
                            <td class='docblock-short'>
                                 
-                           </td>
-                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.BlockCount.html'
-                                  title='p25::data::BlockCount'>BlockCount</a></td>
-                           <td class='docblock-short'>
-                                <p>FMF and blocks-to-follow fields.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.ConfirmedFields.html'
-                                  title='p25::data::ConfirmedFields'>ConfirmedFields</a></td>
-                           <td class='docblock-short'>
-                                <p>Header fields for confirmed packet.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.ConfirmedPreamble.html'
-                                  title='p25::data::ConfirmedPreamble'>ConfirmedPreamble</a></td>
-                           <td class='docblock-short'>
-                                <p>Preamble for confirmed data packet.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.DataOffset.html'
-                                  title='p25::data::DataOffset'>DataOffset</a></td>
-                           <td class='docblock-short'>
-                                <p>Byte offset into data payload where data header stops and data information begins.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.LogicalLink.html'
-                                  title='p25::data::LogicalLink'>LogicalLink</a></td>
-                           <td class='docblock-short'>
-                                <p>Logical link ID field for addressing source or destination subscriber.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.Manufacturer.html'
-                                  title='p25::data::Manufacturer'>Manufacturer</a></td>
-                           <td class='docblock-short'>
-                                <p>Manufacturer&#39;s ID field.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.PadCount.html'
-                                  title='p25::data::PadCount'>PadCount</a></td>
-                           <td class='docblock-short'>
-                                <p>Number of pad bytes at the end of the data.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.Sequencing.html'
-                                  title='p25::data::Sequencing'>Sequencing</a></td>
-                           <td class='docblock-short'>
-                                <p>Syn, N(S), and FSNF fields.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.ServiceAccessPoint.html'
-                                  title='p25::data::ServiceAccessPoint'>ServiceAccessPoint</a></td>
-                           <td class='docblock-short'>
-                                <p>Service access point (SAP) field.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.UnconfirmedFields.html'
-                                  title='p25::data::UnconfirmedFields'>UnconfirmedFields</a></td>
-                           <td class='docblock-short'>
-                                <p>Header fields for unconfirmed packet.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.UnconfirmedPreamble.html'
-                                  title='p25::data::UnconfirmedPreamble'>UnconfirmedPreamble</a></td>
-                           <td class='docblock-short'>
-                                <p>Preamble for unconfirmed data packet.</p>
-                           </td>
-                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class='type' href='type.ConfirmedFragments.html'
-                                  title='p25::data::ConfirmedFragments'>ConfirmedFragments</a></td>
-                           <td class='docblock-short'>
-                                <p>Fragments for confirmed data packets.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='type' href='type.ConfirmedHeader.html'
-                                  title='p25::data::ConfirmedHeader'>ConfirmedHeader</a></td>
-                           <td class='docblock-short'>
-                                <p>Packet header block for confirmed data packet.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='type' href='type.ConfirmedPayload.html'
-                                  title='p25::data::ConfirmedPayload'>ConfirmedPayload</a></td>
-                           <td class='docblock-short'>
-                                <p>Payload blocks for a confirmed data packet.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='type' href='type.UnconfirmedFragments.html'
-                                  title='p25::data::UnconfirmedFragments'>UnconfirmedFragments</a></td>
-                           <td class='docblock-short'>
-                                <p>Fragments for unconfirmed data packets.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='type' href='type.UnconfirmedHeader.html'
-                                  title='p25::data::UnconfirmedHeader'>UnconfirmedHeader</a></td>
-                           <td class='docblock-short'>
-                                <p>Packet header block for unconfirmed data packet.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='type' href='type.UnconfirmedPayload.html'
-                                  title='p25::data::UnconfirmedPayload'>UnconfirmedPayload</a></td>
-                           <td class='docblock-short'>
-                                <p>Payload blocks for an unconfirmed data packet.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

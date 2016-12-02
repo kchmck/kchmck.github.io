@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-734' class='srclink' href='../../../../src/p25/src/coding/reed_solomon.rs.html#55-86' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-760' class='srclink' href='../../../../src/p25/src/coding/reed_solomon.rs.html#56-89' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Encoding and decoding of the (24, 16, 9) code.</p>
 </div><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
@@ -55,17 +55,16 @@
                            <td><a class='fn' href='fn.decode.html'
                                   title='p25::coding::reed_solomon::medium::decode'>decode</a></td>
                            <td class='docblock-short'>
-                                <p>Try to decode the 24-hexbit word to the nearest codeword, correcting up to 4
-errors. Return <code>Some((data, err))</code>, where <code>data</code> are the 16 data hexbits and <code>err</code>
-is the number of errors corrected, on success and <code>None</code> on an unrecoverable
-error.</p>
+                                <p>Try to decode the given 24-hexbit word to the nearest codeword, correcting up to 4
+hexbit errors (up to 24 bit errors.)</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.encode.html'
                                   title='p25::coding::reed_solomon::medium::encode'>encode</a></td>
                            <td class='docblock-short'>
-                                <p>Calculate the 8 parity hexbits for the 16 data hexbits.</p>
+                                <p>Calculate the 8 parity hexbits for the first 16 data hexbits in the given buffer,
+placing the parity hexbits at the end of the buffer.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

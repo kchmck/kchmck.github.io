@@ -47,10 +47,13 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-656' class='srclink' href='../../../../src/p25/src/coding/hamming.rs.html#20-23' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn decode(word: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a>&gt;</pre><div class='docblock'><p>Try to decode the 15-bit word to the nearest codeword, correcting up to 1 error.
-Return <code>Some((data, err))</code>, where <code>data</code> are the 11 data bits and <code>err</code> is the
-number of errors, on success and <code>None</code> on an unrecoverable error.</p>
+               </span><a id='src-683' class='srclink' href='../../../../src/p25/src/coding/hamming.rs.html#23-26' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn decode(word: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a>&gt;</pre><div class='docblock'><p>Try to decode the given 15-bit word to the nearest codeword, correcting up to 1
+error.</p>
+
+<p>If decoding was successful, return <code>Some((data, err))</code>, where <code>data</code> is the 11
+data bits and <code>err</code> is the number of corrected bits. Otherwise, return <code>None</code> to
+indicate an unrecoverable error.</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 

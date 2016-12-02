@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Fragments","Iterator over data fragments, yielding fragment-sized data slices to be turned into payload blocks."]],"type":[["ConfirmedFragments","Fragments for confirmed data packets."],["UnconfirmedFragments","Fragments for unconfirmed data packets."]]});

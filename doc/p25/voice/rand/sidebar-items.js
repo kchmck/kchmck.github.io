@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["PseudoRand","Generates 23-bit and 15-bit scrambling words using the P25 PN sequence algorithm."]]});

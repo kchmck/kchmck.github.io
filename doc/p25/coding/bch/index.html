@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-368' class='srclink' href='../../../src/p25/src/coding/bch.rs.html#1-233' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-489' class='srclink' href='../../../src/p25/src/coding/bch.rs.html#1-268' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Encoding and decoding of the (63, 16, 23) BCH code described by P25.</p>
 
 <p>These algorithms are derived from <em>Coding Theory and Cryptography: The Essentials</em>,
@@ -58,16 +58,15 @@ Hankerson, Hoffman, et al, 2000.</p>
                            <td><a class='fn' href='fn.decode.html'
                                   title='p25::coding::bch::decode'>decode</a></td>
                            <td class='docblock-short'>
-                                <p>Try to decode the 64-bit word to the nearest codeword, correcting up to 11 errors.
-Return <code>Some((data, err))</code>, where <code>data</code> is the 16 data bits and <code>err</code> is the number
-of errors, if the codeword could be corrected and <code>None</code> if it couldn&#39;t.</p>
+                                <p>Try to decode the given 64-bit word to the nearest codeword, correcting up to 11
+bit errors.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.encode.html'
                                   title='p25::coding::bch::encode'>encode</a></td>
                            <td class='docblock-short'>
-                                <p>Encode the 16 data bits into a 64-bit codeword.</p>
+                                <p>Encode the given 16 data bits into a 64-bit codeword.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>
