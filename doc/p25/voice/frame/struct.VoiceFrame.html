@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-2436' class='srclink' href='../../../src/p25/src/voice/frame.rs.html#14-19' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-2401' class='srclink' href='../../../src/p25/src/voice/frame.rs.html#14-19' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct VoiceFrame {
     pub chunks: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>; 8]</a>,
     pub errors: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>; 7]</a>,
@@ -60,7 +60,7 @@
                            <span id='errors.v' class='invisible'>
                            <code>errors: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>; 7]</a></code>
                            </span></span><span class='stab '></span><div class='docblock'><p>Number of FEC errors detected for each associated chunk <code>u_0</code>, ..., <code>u_6</code>.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='p25::voice::frame::VoiceFrame'>VoiceFrame</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-2441' class='srclink' href='../../../src/p25/src/voice/frame.rs.html#21-73' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='p25::voice::frame::VoiceFrame'>VoiceFrame</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-2406' class='srclink' href='../../../src/p25/src/voice/frame.rs.html#21-73' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(dibits: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[</a><a class='struct' href='../../../p25/bits/struct.Dibit.html' title='p25::bits::Dibit'>Dibit</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>; 72]</a>) -&gt; <a class='type' href='../../../p25/error/type.Result.html' title='p25::error::Result'>Result</a>&lt;<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='p25::voice::frame::VoiceFrame'>VoiceFrame</a>&gt;</code></span></h4>
 <div class='docblock'><p>Try to decode a <code>VoiceFrame</code> from the given coded, PN-scrambled, interleaved
 dibits. Return <code>Ok(frame)</code> if the frame was successfully decoded, and <code>Err(err)</code>

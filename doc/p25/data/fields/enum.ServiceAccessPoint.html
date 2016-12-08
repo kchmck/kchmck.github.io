@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `ServiceAccessPoint` enum in crate `p25`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ServiceAccessPoint">
+
+    <title>p25::data::fields::ServiceAccessPoint - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>fields</a></p><script>window.sidebarCurrent = {name: 'ServiceAccessPoint', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content enum">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>fields</a>::<wbr><a class='enum' href=''>ServiceAccessPoint</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-3327' class='srclink' href='../../../src/p25/src/data/fields.rs.html#48-69' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum ServiceAccessPoint {
+    UnencryptedUserData,
+    EncryptedUserData,
+    CircuitData,
+    CircuitDataControl,
+    PacketData,
+    ARP,
+    SNDCPControl,
+    ExtendedAddressing,
+    RegistrationAuth,
+    ChannelReassignment,
+    SystemConfiguration,
+    Loopback,
+    Statistics,
+    OutOfService,
+    Paging,
+    Configuration,
+    UnencryptedKeyManagement,
+    EncryptedKeyManagement,
+    TrunkingControl,
+    EncryptedTrunkingControl,
+}</pre><div class='docblock'><p>Destination service for data packet.</p>
+</div><h2 class='variants'>Variants</h2>
+<span id='variant.UnencryptedUserData' class='variant'><span id='UnencryptedUserData.v' class='invisible'><code>UnencryptedUserData</code></span></span><span id='variant.EncryptedUserData' class='variant'><span id='EncryptedUserData.v' class='invisible'><code>EncryptedUserData</code></span></span><span id='variant.CircuitData' class='variant'><span id='CircuitData.v' class='invisible'><code>CircuitData</code></span></span><span id='variant.CircuitDataControl' class='variant'><span id='CircuitDataControl.v' class='invisible'><code>CircuitDataControl</code></span></span><span id='variant.PacketData' class='variant'><span id='PacketData.v' class='invisible'><code>PacketData</code></span></span><span id='variant.ARP' class='variant'><span id='ARP.v' class='invisible'><code>ARP</code></span></span><span id='variant.SNDCPControl' class='variant'><span id='SNDCPControl.v' class='invisible'><code>SNDCPControl</code></span></span><span id='variant.ExtendedAddressing' class='variant'><span id='ExtendedAddressing.v' class='invisible'><code>ExtendedAddressing</code></span></span><span id='variant.RegistrationAuth' class='variant'><span id='RegistrationAuth.v' class='invisible'><code>RegistrationAuth</code></span></span><span id='variant.ChannelReassignment' class='variant'><span id='ChannelReassignment.v' class='invisible'><code>ChannelReassignment</code></span></span><span id='variant.SystemConfiguration' class='variant'><span id='SystemConfiguration.v' class='invisible'><code>SystemConfiguration</code></span></span><span id='variant.Loopback' class='variant'><span id='Loopback.v' class='invisible'><code>Loopback</code></span></span><span id='variant.Statistics' class='variant'><span id='Statistics.v' class='invisible'><code>Statistics</code></span></span><span id='variant.OutOfService' class='variant'><span id='OutOfService.v' class='invisible'><code>OutOfService</code></span></span><span id='variant.Paging' class='variant'><span id='Paging.v' class='invisible'><code>Paging</code></span></span><span id='variant.Configuration' class='variant'><span id='Configuration.v' class='invisible'><code>Configuration</code></span></span><span id='variant.UnencryptedKeyManagement' class='variant'><span id='UnencryptedKeyManagement.v' class='invisible'><code>UnencryptedKeyManagement</code></span></span><span id='variant.EncryptedKeyManagement' class='variant'><span id='EncryptedKeyManagement.v' class='invisible'><code>EncryptedKeyManagement</code></span></span><span id='variant.TrunkingControl' class='variant'><span id='TrunkingControl.v' class='invisible'><code>TrunkingControl</code></span></span><span id='variant.EncryptedTrunkingControl' class='variant'><span id='EncryptedTrunkingControl.v' class='invisible'><code>EncryptedTrunkingControl</code></span></span><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='enum' href='../../../p25/data/fields/enum.ServiceAccessPoint.html' title='p25::data::fields::ServiceAccessPoint'>ServiceAccessPoint</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1156' class='srclink' href='../../../src/p25/src/data/fields.rs.html#71-130' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from_bits' class='method'><span id='from_bits.v' class='invisible'><code>fn <a href='#method.from_bits' class='fnname'>from_bits</a>(bits: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='enum' href='../../../p25/data/fields/enum.ServiceAccessPoint.html' title='p25::data::fields::ServiceAccessPoint'>ServiceAccessPoint</a>&gt;</code></span></h4>
+<div class='docblock'><p>Convert the given 6 bits to a SAP identifier.</p>
+</div><h4 id='method.to_bits' class='method'><span id='to_bits.v' class='invisible'><code>fn <a href='#method.to_bits' class='fnname'>to_bits</a>(self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h4>
+<div class='docblock'><p>Convert SAP identifier to its 6-bit representation.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a> for <a class='enum' href='../../../p25/data/fields/enum.ServiceAccessPoint.html' title='p25::data::fields::ServiceAccessPoint'>ServiceAccessPoint</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-3348' class='srclink' href='../../../src/p25/src/data/fields.rs.html#47' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='enum' href='../../../p25/data/fields/enum.ServiceAccessPoint.html' title='p25::data::fields::ServiceAccessPoint'>ServiceAccessPoint</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-3349' class='srclink' href='../../../src/p25/src/data/fields.rs.html#47' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class='method'><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/data/fields/enum.ServiceAccessPoint.html' title='p25::data::fields::ServiceAccessPoint'>ServiceAccessPoint</a></code></span></h4>
+<div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
+</div><h4 id='method.clone_from' class='method'><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
+<div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a> for <a class='enum' href='../../../p25/data/fields/enum.ServiceAccessPoint.html' title='p25::data::fields::ServiceAccessPoint'>ServiceAccessPoint</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-3352' class='srclink' href='../../../src/p25/src/data/fields.rs.html#47' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a> for <a class='enum' href='../../../p25/data/fields/enum.ServiceAccessPoint.html' title='p25::data::fields::ServiceAccessPoint'>ServiceAccessPoint</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-3355' class='srclink' href='../../../src/p25/src/data/fields.rs.html#47' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.eq' class='method'><span id='eq.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq' class='fnname'>eq</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../../../p25/data/fields/enum.ServiceAccessPoint.html' title='p25::data::fields::ServiceAccessPoint'>ServiceAccessPoint</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
+<div class='docblock'><p>This method tests for <code>self</code> and <code>other</code> values to be equal, and is used by <code>==</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq">Read more</a></p>
+</div><h4 id='method.ne' class='method'><span id='ne.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, other: &amp;Rhs) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
+<div class='docblock'><p>This method tests for <code>!=</code>.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='enum' href='../../../p25/data/fields/enum.ServiceAccessPoint.html' title='p25::data::fields::ServiceAccessPoint'>ServiceAccessPoint</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-3361' class='srclink' href='../../../src/p25/src/data/fields.rs.html#47' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class='method'><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "p25";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>

@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["DataPacket","Type of a data packet."],["ServiceAccessPoint",""]]});

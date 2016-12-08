@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `MessageEvent` enum in crate `p25`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, MessageEvent">
+
+    <title>p25::message::receiver::MessageEvent - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>message</a>::<wbr><a href='index.html'>receiver</a></p><script>window.sidebarCurrent = {name: 'MessageEvent', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content enum">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>message</a>::<wbr><a href='index.html'>receiver</a>::<wbr><a class='enum' href=''>MessageEvent</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-1759' class='srclink' href='../../../src/p25/src/message/receiver.rs.html#21-40' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum MessageEvent {
+    Error(<a class='enum' href='../../../p25/error/enum.P25Error.html' title='p25::error::P25Error'>P25Error</a>),
+    PacketNID(<a class='struct' href='../../../p25/message/nid/struct.NetworkID.html' title='p25::message::nid::NetworkID'>NetworkID</a>),
+    VoiceHeader(<a class='struct' href='../../../p25/voice/header/struct.VoiceHeaderFields.html' title='p25::voice::header::VoiceHeaderFields'>VoiceHeaderFields</a>),
+    VoiceFrame(<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='p25::voice::frame::VoiceFrame'>VoiceFrame</a>),
+    LinkControl(<a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='p25::voice::control::LinkControlFields'>LinkControlFields</a>),
+    CryptoControl(<a class='struct' href='../../../p25/voice/crypto/struct.CryptoControlFields.html' title='p25::voice::crypto::CryptoControlFields'>CryptoControlFields</a>),
+    LowSpeedDataFragment(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>),
+    TrunkingControl(<a class='struct' href='../../../p25/trunking/tsbk/struct.TSBKFields.html' title='p25::trunking::tsbk::TSBKFields'>TSBKFields</a>),
+    VoiceTerm(<a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='p25::voice::control::LinkControlFields'>LinkControlFields</a>),
+}</pre><div class='docblock'><p>Events that can occur when receiving P25 messages.</p>
+</div><h2 class='variants'>Variants</h2>
+<span id='variant.Error' class='variant'><span id='Error.v' class='invisible'><code>Error(<a class='enum' href='../../../p25/error/enum.P25Error.html' title='p25::error::P25Error'>P25Error</a>)</code></span></span><div class='docblock'><p>A runtime error occured.</p>
+</div><span id='variant.PacketNID' class='variant'><span id='PacketNID.v' class='invisible'><code>PacketNID(<a class='struct' href='../../../p25/message/nid/struct.NetworkID.html' title='p25::message::nid::NetworkID'>NetworkID</a>)</code></span></span><div class='docblock'><p>An NID at the start of a packet was decoded.</p>
+</div><span id='variant.VoiceHeader' class='variant'><span id='VoiceHeader.v' class='invisible'><code>VoiceHeader(<a class='struct' href='../../../p25/voice/header/struct.VoiceHeaderFields.html' title='p25::voice::header::VoiceHeaderFields'>VoiceHeaderFields</a>)</code></span></span><div class='docblock'><p>A voice header was received.</p>
+</div><span id='variant.VoiceFrame' class='variant'><span id='VoiceFrame.v' class='invisible'><code>VoiceFrame(<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='p25::voice::frame::VoiceFrame'>VoiceFrame</a>)</code></span></span><div class='docblock'><p>A voice frame was received.</p>
+</div><span id='variant.LinkControl' class='variant'><span id='LinkControl.v' class='invisible'><code>LinkControl(<a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='p25::voice::control::LinkControlFields'>LinkControlFields</a>)</code></span></span><div class='docblock'><p>A link control word was decoded.</p>
+</div><span id='variant.CryptoControl' class='variant'><span id='CryptoControl.v' class='invisible'><code>CryptoControl(<a class='struct' href='../../../p25/voice/crypto/struct.CryptoControlFields.html' title='p25::voice::crypto::CryptoControlFields'>CryptoControlFields</a>)</code></span></span><div class='docblock'><p>A crypto control word was decoded.</p>
+</div><span id='variant.LowSpeedDataFragment' class='variant'><span id='LowSpeedDataFragment.v' class='invisible'><code>LowSpeedDataFragment(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>)</code></span></span><div class='docblock'><p>A voice low-speed data fragment was decoded.</p>
+</div><span id='variant.TrunkingControl' class='variant'><span id='TrunkingControl.v' class='invisible'><code>TrunkingControl(<a class='struct' href='../../../p25/trunking/tsbk/struct.TSBKFields.html' title='p25::trunking::tsbk::TSBKFields'>TSBKFields</a>)</code></span></span><div class='docblock'><p>A trunking signalling packet was received.</p>
+</div><span id='variant.VoiceTerm' class='variant'><span id='VoiceTerm.v' class='invisible'><code>VoiceTerm(<a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='p25::voice::control::LinkControlFields'>LinkControlFields</a>)</code></span></span><div class='docblock'><p>A voice terminator link control was received.</p>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "p25";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>
