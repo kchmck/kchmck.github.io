@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Gains","The gain vector G<sub>m</sub>, 1 ≤ m ≤ 6, gives a coarse envelope for the voice frame."]]});

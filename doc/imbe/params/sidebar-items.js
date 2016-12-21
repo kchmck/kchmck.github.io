@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["BaseParams","Basic parameters of the current frame."]]});

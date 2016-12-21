@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["PrevFrame","Various parameters saved from the previous frame, used when constructing the current frame."]]});

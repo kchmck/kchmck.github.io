@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `unvoiced` mod in crate `imbe`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, unvoiced">
+
+    <title>imbe::unvoiced - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>imbe</a></p><script>window.sidebarCurrent = {name: 'unvoiced', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>imbe</a>::<wbr><a class='mod' href=''>unvoiced</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/imbe/unvoiced.rs.html#1-283' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Unvoiced spectrum synthesis.</p>
+
+<p>At a high level, the unvoiced signal is generated with these steps:</p>
+
+<ol>
+<li>Construct the frequency-domain representation of a white noise signal using the
+Discrete Fourier Transform (DFT).</li>
+<li>Bandpass the spectrum to contain only the frequencies marked as unvoiced in the
+current frame.</li>
+<li>Perform an Inverse Discrete Fourier Transform (IDFT) on this spectrum to produce a
+white noise signal containing only the unvoiced frequency content.</li>
+</ol>
+
+<p>Rather than performing both DFT and IDFT operations, which are relatively expensive
+and were found to be a bottleneck, this implementation computes an equivalent result
+using only a partial IDFT.</p>
+
+<h2 id='dft-of-noise' class='section-header'><a href='#dft-of-noise'>DFT of Noise</a></h2>
+<p><a href="http://users.ece.gatech.edu/mrichard/DFT%20of%20Noise.pdf">Under certain circumstances</a> the DFT of a noise signal can have its points
+sampled from a probability distribution, rather than each computed with a O(N)
+procedure.</p>
+
+<p>According to the standard [p58], the DFT is generated from a windowed white noise
+signal u(n). The standard specifies that the signal can have arbitrary mean but doesn&#39;t
+specify if there are any constraints on the variance or if the signal must be real or
+complex (although the given example u(n) is real with sample mean μ<sub>x</sub> ≈
+26562 and variance σ<sub>x</sub><sup>2</sup> ≈ 235198690.)</p>
+
+<p>This implementation assumes the white noise signal is real with samples pulled from a
+Gaussian distribution having sample mean μ<sub>x</sub> = 0 and sample variance
+σ<sub>x</sub><sup>2</sup> = 1, i.e., u(n) ~ <em>N</em>(0, 1). The resulting DFT of this
+signal then has points with real and complex parts that are sampled from a Gaussian
+distribution with mean μ = 0 and variance σ<sup>2</sup> =
+E<sub>w</sub>σ<sub>x</sub><sup>2</sup> / 2 = E<sub>w</sub> / 2, i.e.,
+Re[U<sub>w</sub>(m)], Im[U<sub>w</sub>(m)] ~ <em>N</em>(0, E<sub>w</sub> / 2), where
+E<sub>w</sub> is the energy of the speech synthesis window w<sub>s</sub>(n).</p>
+
+<p>Note that <a href="http://users.ece.gatech.edu/mrichard/DFT%20of%20Noise.pdf">the given source</a> only derives this result for a complex signal
+with equal real and imaginary sample variances, but empirical evaluations show that
+the result is the same with a real signal.</p>
+
+<h2 id='dft-symmetry' class='section-header'><a href='#dft-symmetry'>DFT Symmetry</a></h2>
+<p>According to Eq 125, the IDFT is defined as</p>
+
+<blockquote>
+<p>u<sub>w</sub>(n) = [U<sub>w</sub>(-128) exp(<em>j</em> 2π(-128)n/256) +
+          U<sub>w</sub>(-127) exp(<em>j</em> 2π(-127)n/256) + ··· +
+          U<sub>w</sub>(126) exp(<em>j</em> π(126)n/256) +
+          U<sub>w</sub>(127) exp(<em>j</em> 2π(127)n/256)] / 256</p>
+</blockquote>
+
+<p>Since u(n) is a real signal, U<sub>w</sub>(m) = U<sub>w</sub>(-m)<sup>*</sup> (i.e.,
+the complex conjugate), and the DFT magnitude is symmetric
+around DC: for all m, 0 ≤ m ≤ 127,</p>
+
+<blockquote>
+<p>U<sub>w</sub>(m) exp(<em>j</em> mφ) + U<sub>w</sub>(-m) exp(<em>-j</em> mφ) =</p>
+
+<p>(a + <em>j</em> b)(cos mφ + <em>j</em> sin mφ) + (a - <em>j</em> b)(cos mφ - sin mφ) =</p>
+
+<p>2a cos mφ - 2b sin mφ = 2 Re[U(m)] cos mφ - 2 Im[U(m)] sin mφ</p>
+</blockquote>
+
+<p>Additionally, the definition of a<sub>l</sub> and b<sub>l</sub> in Eqs 122 and 123
+guarantees that for all L and ω<sub>0</sub> parameters, a<sub>1</sub> ≥ 2 and
+b<sub>L</sub> ≤ 125. So according to Eq 124, every frame has U<sub>w</sub>(-128) =
+U<sub>w</sub>(0) = 0.</p>
+
+<p>Using these results, it can be seen that the sum for u<sub>w</sub>(n) can be
+&quot;simplified&quot; to</p>
+
+<blockquote>
+<p>u<sub>w</sub>(n) =</p>
+
+<p>[0 + U<sub>w</sub>(-127) exp(<em>j</em> 2π(-127)n/256) + ··· +
+  U<sub>w</sub>(-1) exp(<em>j</em> 2π(-1)n/256) + 0 +
+  U<sub>w</sub>(1) exp(<em>j</em> π(1)n/256) + ··· +
+  U<sub>w</sub>(127) exp(<em>j</em> 2π(127)n/256)] / 256 =</p>
+
+<p>2 [Re[U(0)] cos(2π(0)n/256) - Im[U(0)] sin(2π(0)n/256) +
+  Re[U(1)] cos(2π(1)n/256) - Im[U(1)] sin(2π(1)n/256) + ··· +
+  Re[U(127)] cos(2π(127)n/256) - Im[U(127)] sin(2π(127)n/256)] / 256</p>
+</blockquote>
+
+<p>which requires half as many U<sub>w</sub>(m) values and performs no complex
+arithmetic.</p>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Unvoiced.html'
+                                  title='imbe::unvoiced::Unvoiced'>Unvoiced</a></td>
+                           <td class='docblock-short'>
+                                <p>Synthesizes unvoiced spectrum signal s<sub>uv</sub>(n).</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.UnvoicedDFT.html'
+                                  title='imbe::unvoiced::UnvoicedDFT'>UnvoicedDFT</a></td>
+                           <td class='docblock-short'>
+                                <p>Constructs unvoiced DFT/IDFT.</p>
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "imbe";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["ENERGY_SYNTHESIS","Energy of speech synthesis window."]],"fn":[["synthesis","Retrieve the speech synthesis window w<sub>s</sub>."]],"struct":[["Window","Wraps a set of window coefficients and remaps the center coefficient to index 0."]]});

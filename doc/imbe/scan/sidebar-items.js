@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ScanBits","Sequentially extracts the bits scanned into prioritized chunks."],["ScanChunks","Iterates over the chunks covered in the scanning procedure [p39]."],["ScanSep","Decodes voiced/unvoiced decisions and the quantized gain index fragment from prioritized chunks."]]});
