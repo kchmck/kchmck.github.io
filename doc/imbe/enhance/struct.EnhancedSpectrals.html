@@ -50,7 +50,7 @@
                </span><a class='srclink' href='../../src/imbe/enhance.rs.html#94' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct EnhancedSpectrals(_);</pre><div class='docblock'><p>Enhanced spectral amplitudes, &quot;overbar&quot; M<sub>l</sub>, are derived from the decoded
 spectral amplitudes, &quot;tilde&quot; M<sub>l</sub>.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/enhance/struct.EnhancedSpectrals.html' title='imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#96-148' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/enhance/struct.EnhancedSpectrals.html' title='imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#96-150' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(spectrals: &amp;<a class='struct' href='../../imbe/spectral/struct.Spectrals.html' title='imbe::spectral::Spectrals'>Spectrals</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fen: &amp;<a class='struct' href='../../imbe/enhance/struct.FrameEnergy.html' title='imbe::enhance::FrameEnergy'>FrameEnergy</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='imbe::params::BaseParams'>BaseParams</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='../../imbe/enhance/struct.EnhancedSpectrals.html' title='imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></code></span></h4>
 <div class='docblock'><p>Create a new <code>EnhancedSpectrals</code> from the given base spectral amplitudes
 M<sub>l</sub> and current frame energy values and parameters.</p>
@@ -73,6 +73,16 @@ M<sub>l</sub> and current frame energy values and parameters.</p>
 
 <span class='kw'>let</span> <span class='ident'>array</span> <span class='op'>=</span> <span class='ident'>ArrayVec</span>::<span class='ident'>from</span>([<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>]);
 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>array</span>.<span class='ident'>capacity</span>(), <span class='number'>3</span>);</pre>
+</div><h4 id='method.is_full' class='method'><span id='is_full.v' class='invisible'><code>fn <a href='#method.is_full' class='fnname'>is_full</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
+<div class='docblock'><p>Return if the <code>ArrayVec</code> is completely filled.</p>
+
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>arrayvec</span>::<span class='ident'>ArrayVec</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>array</span> <span class='op'>=</span> <span class='ident'>ArrayVec</span>::<span class='op'>&lt;</span>[_; <span class='number'>1</span>]<span class='op'>&gt;</span>::<span class='ident'>new</span>();
+<span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>array</span>.<span class='ident'>is_full</span>());
+<span class='ident'>array</span>.<span class='ident'>push</span>(<span class='number'>1</span>);
+<span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>array</span>.<span class='ident'>is_full</span>());</pre>
 </div><h4 id='method.push' class='method'><span id='push.v' class='invisible'><code>fn <a href='#method.push' class='fnname'>push</a>(&amp;mut self, element: A::<a class='trait' href='../../arrayvec/array/trait.Array.html' title='arrayvec::array::Array'>Item</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;A::<a class='trait' href='../../arrayvec/array/trait.Array.html' title='arrayvec::array::Array'>Item</a>&gt;</code></span></h4>
 <div class='docblock'><p>Push <code>element</code> to the end of the vector.</p>
 
@@ -96,6 +106,10 @@ if the vector is full.</p>
 <p>Shift up all elements after <code>index</code>. If any is pushed out, it is returned.</p>
 
 <p>Return <code>None</code> if no element is shifted out.</p>
+
+<p><code>index</code> must be &lt;= <code>self.len()</code> and &lt; <code>self.capacity()</code>. Note that any
+out of bounds index insert results in the element being &quot;shifted out&quot;
+and returned directly.</p>
 
 <pre class='rust rust-example-rendered'>
 <span class='kw'>use</span> <span class='ident'>arrayvec</span>::<span class='ident'>ArrayVec</span>;
@@ -211,15 +225,15 @@ to move the array out, its performance is not optimal.</p>
 <div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
 </div><h4 id='method.clone_from' class='method'><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
 <div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
-</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.Deref.html' title='core::ops::Deref'>Deref</a> for <a class='struct' href='../../imbe/enhance/struct.EnhancedSpectrals.html' title='imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#150-153' title='goto source code'>[src]</a></span></h3>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.Deref.html' title='core::ops::Deref'>Deref</a> for <a class='struct' href='../../imbe/enhance/struct.EnhancedSpectrals.html' title='imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#152-155' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='associatedtype.Target' class='type'><span id='Target.t' class='invisible'><code>type <a href='https://doc.rust-lang.org/nightly/core/ops/trait.Deref.html#associatedtype.Target' class='type'>Target</a> = <a class='struct' href='../../arrayvec/struct.ArrayVec.html' title='arrayvec::ArrayVec'>ArrayVec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>; 56]</a>&gt;</code></span></h4>
 <div class='docblock'><p>The resulting type after dereferencing</p>
 </div><h4 id='method.deref' class='method'><span id='deref.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/ops/trait.Deref.html#tymethod.deref' class='fnname'>deref</a>(&amp;self) -&gt; &amp;Self::<a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.Deref.html' title='core::ops::Deref'>Target</a></code></span></h4>
 <div class='docblock'><p>The method called to dereference a value</p>
-</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.DerefMut.html' title='core::ops::DerefMut'>DerefMut</a> for <a class='struct' href='../../imbe/enhance/struct.EnhancedSpectrals.html' title='imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#155-157' title='goto source code'>[src]</a></span></h3>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.DerefMut.html' title='core::ops::DerefMut'>DerefMut</a> for <a class='struct' href='../../imbe/enhance/struct.EnhancedSpectrals.html' title='imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#157-159' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.deref_mut' class='method'><span id='deref_mut.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/ops/trait.DerefMut.html#tymethod.deref_mut' class='fnname'>deref_mut</a>(&amp;mut self) -&gt; &amp;mut Self::<a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.Deref.html' title='core::ops::Deref'>Target</a></code></span></h4>
 <div class='docblock'><p>The method called to mutably dereference a value</p>
-</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='core::default::Default'>Default</a> for <a class='struct' href='../../imbe/enhance/struct.EnhancedSpectrals.html' title='imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#159-165' title='goto source code'>[src]</a></span></h3>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='core::default::Default'>Default</a> for <a class='struct' href='../../imbe/enhance/struct.EnhancedSpectrals.html' title='imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#161-167' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.default' class='method'><span id='default.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default' class='fnname'>default</a>() -&gt; <a class='struct' href='../../imbe/enhance/struct.EnhancedSpectrals.html' title='imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></code></span></h4>
 <div class='docblock'><p>Create a new <code>EnhancedSpectrals</code> with default initial values.</p>
 </div></div></section>
