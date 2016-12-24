@@ -47,8 +47,8 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-1433' class='srclink' href='../../../src/p25/src/data/packet.rs.html#9-56' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn confirmed&lt;S&gt;(header: <a class='type' href='../../../p25/data/header/type.ConfirmedHeader.html' title='p25::data::header::ConfirmedHeader'>ConfirmedHeader</a>, payload: <a class='type' href='../../../p25/data/payload/type.ConfirmedPayload.html' title='p25::data::payload::ConfirmedPayload'>ConfirmedPayload</a>, sn: S) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../../p25/bits/struct.Dibit.html' title='p25::bits::Dibit'>Dibit</a>&gt; <span class='where'>where S: <a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='core::iter::iterator::Iterator'>Iterator</a>&lt;Item=<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;</span></pre><div class='docblock'><p>Construct a confirmed data packet with the given header, payload blocks, and serial
+               </span><a class='srclink' href='../../../src/p25/data/packet.rs.html#9-56' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn confirmed&lt;S&gt;(header: <a class='type' href='../../../p25/data/header/type.ConfirmedHeader.html' title='p25::data::header::ConfirmedHeader'>ConfirmedHeader</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; payload: <a class='type' href='../../../p25/data/payload/type.ConfirmedPayload.html' title='p25::data::payload::ConfirmedPayload'>ConfirmedPayload</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sn: S)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../../p25/bits/struct.Dibit.html' title='p25::bits::Dibit'>Dibit</a>&gt; <span class='where'>where S: <a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='core::iter::iterator::Iterator'>Iterator</a>&lt;Item=<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;</span></pre><div class='docblock'><p>Construct a confirmed data packet with the given header, payload blocks, and serial
 number generator. The returned value is the coded, interleaved set of dibit symbols
 that make up the packet.</p>
 </div></section>
@@ -107,11 +107,9 @@ that make up the packet.</p>
     <script>
         window.rootPath = "../../../";
         window.currentCrate = "p25";
-        window.playgroundUrl = "";
     </script>
     <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
-    
     <script defer src="../../../search-index.js"></script>
 </body>
 </html>

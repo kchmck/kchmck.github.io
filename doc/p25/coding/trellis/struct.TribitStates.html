@@ -47,9 +47,9 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-878' class='srclink' href='../../../src/p25/src/coding/trellis.rs.html#99' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/p25/coding/trellis.rs.html#99' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct TribitStates;</pre><div class='docblock'><p>3/4-rate state machine (tribit input).</p>
-</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../../../p25/coding/trellis/trait.States.html' title='p25::coding::trellis::States'>States</a> for <a class='struct' href='../../../p25/coding/trellis/struct.TribitStates.html' title='p25::coding::trellis::TribitStates'>TribitStates</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-880' class='srclink' href='../../../src/p25/src/coding/trellis.rs.html#101-124' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../../../p25/coding/trellis/trait.States.html' title='p25::coding::trellis::States'>States</a> for <a class='struct' href='../../../p25/coding/trellis/struct.TribitStates.html' title='p25::coding::trellis::TribitStates'>TribitStates</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/coding/trellis.rs.html#101-124' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='associatedtype.Symbol' class='type'><span id='Symbol.t' class='invisible'><code>type <a href='../../../p25/coding/trellis/trait.States.html#associatedtype.Symbol' class='type'>Symbol</a> = <a class='struct' href='../../../p25/bits/struct.Tribit.html' title='p25::bits::Tribit'>Tribit</a></code></span></h4>
 <div class='docblock'><p>Symbol type to use for states and input.</p>
 </div><h4 id='method.size' class='method'><span id='size.v' class='invisible'><code>fn <a href='../../../p25/coding/trellis/trait.States.html#tymethod.size' class='fnname'>size</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
@@ -58,9 +58,9 @@
 <div class='docblock'><p>Get the &quot;constellation point&quot; on the transition from the current state to the next state. <a href="../../../p25/coding/trellis/trait.States.html#tymethod.pair_idx">Read more</a></p>
 </div><h4 id='method.state' class='method'><span id='state.v' class='invisible'><code>fn <a href='../../../p25/coding/trellis/trait.States.html#tymethod.state' class='fnname'>state</a>(input: <a class='struct' href='../../../p25/bits/struct.Tribit.html' title='p25::bits::Tribit'>Tribit</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
 <div class='docblock'><p>Convert the given symbol to a state.</p>
-</div><h4 id='method.finisher' class='method'><span id='finisher.v' class='invisible'><code>fn <a href='../../../p25/coding/trellis/trait.States.html#tymethod.finisher' class='fnname'>finisher</a>() -&gt; Self::Symbol</code></span></h4>
+</div><h4 id='method.finisher' class='method'><span id='finisher.v' class='invisible'><code>fn <a href='../../../p25/coding/trellis/trait.States.html#tymethod.finisher' class='fnname'>finisher</a>() -&gt; Self::<a class='trait' href='../../../p25/coding/trellis/trait.States.html' title='p25::coding::trellis::States'>Symbol</a></code></span></h4>
 <div class='docblock'><p>Get the &quot;flushing&quot; symbol fed in at the end of a stream.</p>
-</div><h4 id='method.symbol' class='method'><span id='symbol.v' class='invisible'><code>fn <a href='../../../p25/coding/trellis/trait.States.html#tymethod.symbol' class='fnname'>symbol</a>(state: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; Self::Symbol</code></span></h4>
+</div><h4 id='method.symbol' class='method'><span id='symbol.v' class='invisible'><code>fn <a href='../../../p25/coding/trellis/trait.States.html#tymethod.symbol' class='fnname'>symbol</a>(state: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; Self::<a class='trait' href='../../../p25/coding/trellis/trait.States.html' title='p25::coding::trellis::States'>Symbol</a></code></span></h4>
 <div class='docblock'><p>Convert the given state to a symbol.</p>
 </div><h4 id='method.pair' class='method'><span id='pair.v' class='invisible'><code>fn <a href='../../../p25/coding/trellis/trait.States.html#method.pair' class='fnname'>pair</a>(state: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, next: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='struct' href='../../../p25/bits/struct.Dibit.html' title='p25::bits::Dibit'>Dibit</a>, <a class='struct' href='../../../p25/bits/struct.Dibit.html' title='p25::bits::Dibit'>Dibit</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a></code></span></h4>
 <div class='docblock'><p>Get the dibit pair on the transition from the current state to the next state.</p>
@@ -120,11 +120,9 @@
     <script>
         window.rootPath = "../../../";
         window.currentCrate = "p25";
-        window.playgroundUrl = "";
     </script>
     <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
-    
     <script defer src="../../../search-index.js"></script>
 </body>
 </html>

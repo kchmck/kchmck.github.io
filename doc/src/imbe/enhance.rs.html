@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `enhance.rs`.">
+    <meta name="description" content="Source to the Rust file `src/enhance.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>enhance.rs.html -- source</title>
@@ -715,7 +715,7 @@
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
     <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
-    <span class='kw'>use</span> <span class='ident'>descramble</span>::{<span class='ident'>decode_period</span>, <span class='ident'>descramble</span>};
+    <span class='kw'>use</span> <span class='ident'>descramble</span>::{<span class='ident'>Bootstrap</span>, <span class='ident'>descramble</span>};
     <span class='kw'>use</span> <span class='ident'>gain</span>::<span class='ident'>Gains</span>;
     <span class='kw'>use</span> <span class='ident'>spectral</span>::<span class='ident'>Spectrals</span>;
     <span class='kw'>use</span> <span class='ident'>coefs</span>::<span class='ident'>Coefficients</span>;
@@ -747,8 +747,8 @@
             <span class='number'>0b00001000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>decode_period</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap</span>());
+        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
+        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap_period</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>harmonics</span>, <span class='number'>16</span>);
         <span class='kw'>let</span> (<span class='ident'>amps</span>, _, <span class='ident'>gain_idx</span>) <span class='op'>=</span> <span class='ident'>descramble</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
         <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>Gains</span>::<span class='ident'>new</span>(<span class='ident'>gain_idx</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
@@ -806,8 +806,8 @@
             <span class='number'>0b00001000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>decode_period</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap</span>());
+        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
+        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap_period</span>());
         <span class='kw'>let</span> (<span class='ident'>amps</span>, _, <span class='ident'>gain_idx</span>) <span class='op'>=</span> <span class='ident'>descramble</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
         <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>Gains</span>::<span class='ident'>new</span>(<span class='ident'>gain_idx</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
         <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>Coefficients</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
@@ -855,8 +855,8 @@
             <span class='number'>0b00001000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>decode_period</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap</span>());
+        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
+        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap_period</span>());
         <span class='kw'>let</span> (<span class='ident'>amps</span>, <span class='kw-2'>mut</span> <span class='ident'>voice</span>, <span class='ident'>gain_idx</span>) <span class='op'>=</span> <span class='ident'>descramble</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
         <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>Gains</span>::<span class='ident'>new</span>(<span class='ident'>gain_idx</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
         <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>Coefficients</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);

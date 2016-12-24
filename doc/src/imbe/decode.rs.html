@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `decode.rs`.">
+    <meta name="description" content="Source to the Rust file `src/decode.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>decode.rs.html -- source</title>
@@ -191,6 +191,10 @@
 <span id="147">147</span>
 <span id="148">148</span>
 <span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Decode IMBE frames into an audio signal.</span>
 
@@ -202,7 +206,7 @@
 
 <span class='kw'>use</span> <span class='ident'>coefs</span>::<span class='ident'>Coefficients</span>;
 <span class='kw'>use</span> <span class='ident'>consts</span>::<span class='ident'>SAMPLES_PER_FRAME</span>;
-<span class='kw'>use</span> <span class='ident'>descramble</span>::{<span class='ident'>descramble</span>, <span class='ident'>decode_period</span>};
+<span class='kw'>use</span> <span class='ident'>descramble</span>::{<span class='ident'>descramble</span>, <span class='ident'>Bootstrap</span>};
 <span class='kw'>use</span> <span class='ident'>enhance</span>::{<span class='self'>self</span>, <span class='ident'>EnhancedSpectrals</span>, <span class='ident'>FrameEnergy</span>, <span class='ident'>EnhanceErrors</span>};
 <span class='kw'>use</span> <span class='ident'>frame</span>::{<span class='ident'>AudioBuf</span>, <span class='ident'>ReceivedFrame</span>};
 <span class='kw'>use</span> <span class='ident'>gain</span>::<span class='ident'>Gains</span>;
@@ -233,11 +237,15 @@
 
     <span class='doccomment'>/// Decode the given frame into the given audio sample buffer.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>frame</span>: <span class='ident'>ReceivedFrame</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AudioBuf</span>) {
-        <span class='kw'>let</span> <span class='ident'>period</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>decode_period</span>(<span class='kw-2'>&amp;</span><span class='ident'>frame</span>.<span class='ident'>chunks</span>) {
-            <span class='prelude-val'>Some</span>(<span class='ident'>p</span>) <span class='op'>=&gt;</span> <span class='ident'>p</span>,
-            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>period</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>frame</span>.<span class='ident'>chunks</span>) {
+            <span class='ident'>Bootstrap</span>::<span class='ident'>Period</span>(<span class='ident'>p</span>) <span class='op'>=&gt;</span> <span class='ident'>p</span>,
+            <span class='ident'>Bootstrap</span>::<span class='ident'>Invalid</span> <span class='op'>=&gt;</span> {
                 <span class='comment'>// Repeat previous frame on invalid period [p46].</span>
                 <span class='self'>self</span>.<span class='ident'>repeat</span>(<span class='ident'>buf</span>);
+                <span class='kw'>return</span>;
+            },
+            <span class='ident'>Bootstrap</span>::<span class='ident'>Silence</span> <span class='op'>=&gt;</span> {
+                <span class='self'>self</span>.<span class='ident'>silence</span>(<span class='ident'>buf</span>);
                 <span class='kw'>return</span>;
             },
         };

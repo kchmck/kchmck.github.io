@@ -47,14 +47,14 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-1214' class='srclink' href='../../../src/p25/src/data/header.rs.html#16-18' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/p25/data/header.rs.html#16-18' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait BufWrite {
-    fn <a href='#tymethod.write' class='fnname'>write</a>&lt;'a,&nbsp;'b,&nbsp;T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='core::iter::iterator::Iterator'>Iterator</a>&lt;Item=&amp;'a mut <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;&gt;(&amp;self, buf: &amp;'b mut T);
+    fn <a href='#tymethod.write' class='fnname'>write</a>&lt;'a, 'b, T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='core::iter::iterator::Iterator'>Iterator</a>&lt;Item=&amp;'a mut <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;&gt;(&amp;self, buf: &amp;'b mut T);
 }</pre><div class='docblock'><p>Write some bytes into a buffer.</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.write' class='method stab '><span id='write.v' class='invisible'><code>fn <a href='#tymethod.write' class='fnname'>write</a>&lt;'a,&nbsp;'b,&nbsp;T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='core::iter::iterator::Iterator'>Iterator</a>&lt;Item=&amp;'a mut <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;&gt;(&amp;self, buf: &amp;'b mut T)</code></span></h3></div>
+        <h3 id='tymethod.write' class='method stab '><span id='write.v' class='invisible'><code>fn <a href='#tymethod.write' class='fnname'>write</a>&lt;'a, 'b, T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='core::iter::iterator::Iterator'>Iterator</a>&lt;Item=&amp;'a mut <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;&gt;(&amp;self, buf: &amp;'b mut T)</code></span></h3></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
     <li><code>impl&lt;B:&nbsp;<a class='trait' href='../../../p25/data/header/trait.ByteField.html' title='p25::data::header::ByteField'>ByteField</a>&gt; BufWrite for B</code></li>
@@ -119,11 +119,9 @@
     <script>
         window.rootPath = "../../../";
         window.currentCrate = "p25";
-        window.playgroundUrl = "";
     </script>
     <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
-    
     <script defer src="../../../search-index.js"></script>
 </body>
 </html>
