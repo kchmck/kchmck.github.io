@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/quad_osc/lib.rs.html#1-483' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/quad_osc/lib.rs.html#1-485' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Given</p>
 
 <blockquote>
@@ -55,13 +55,13 @@
 </blockquote>
 
 <p>an oscillator is defined here to evaluate f(0), f(1), f(2), ... in sequence to
-generate a sinusoidal signal. Further, a quadrature oscillator also evaluates
-g(t) = sin(Φ(t)) at each step for the quadrature signal.</p>
+generate a sinusoidal signal. Further, a <em>quadrature</em> oscillator also evaluates
+g(t) = sin Φ(t) at each step for the quadrature signal.</p>
 
-<p>Computing these trig functions at each evaluation of f(t) and g(t) can be costly with
-a high sample rate or within a tight loop. As an alternative, this crate implements a
-quadrature oscillator that replaces the 2 trig function calls at each evaluation with
-6 arithmetic operations (4 multiplies, 1 addition, and 1 subtraction.)</p>
+<p>Calling out to these trig functions at each evaluation of f(t) and g(t) can be costly
+with a high sample rate or within a tight loop. As an alternative, this crate
+implements a quadrature oscillator that replaces the 2 trig function calls at each
+evaluation with 6 arithmetic operations (4 multiplies, 1 addition, and 1 subtraction.)</p>
 
 <h2 id='theory' class='section-header'><a href='#theory'>Theory</a></h2>
 <p>Using the definition of f(t) = cos Φ(t) from above, notice that</p>
@@ -97,18 +97,21 @@ quadrature oscillator that replaces the 2 trig function calls at each evaluation
 <p>and similarly for the quadrature signal,</p>
 
 <blockquote>
-<p>g(t) = sin(Φ(t - 1) + ω) = sin(Φ(t - 1))cos(ω) + cos(Φ(t - w))sin(ω)</p>
+<p>g(t) = sin(Φ(t - 1) + ω) = sin(Φ(t - 1))cos(ω) + cos(Φ(t - 1))sin(ω)</p>
 </blockquote>
 
-<p>These are the two equations computed at each evaluation in this implementation.</p>
+<p>If we compute sin ω, cos ω, sin θ<sub>0</sub>, and cos θ<sub>0</sub> at
+initialization, then we can compute f(t) and g(t) for t = 0, 1, 2, ... using just the
+arithmetic in the above equations.</p>
 
 <h2 id='error-accumulation' class='section-header'><a href='#error-accumulation'>Error Accumulation</a></h2>
 <p>Due to the accumulation of floating-point roundoff errors, the accuracy of returned
 sine/cosine evaulations will slowly degrade over phase steps. Using a very small phase
 step or running a <code>QuadOsc</code> through many, many cycles will make this problem more
 pronounced. As a workaround, the double-precision <code>QuadOsc&lt;f64&gt;</code> can be used, which
-provides a significant increase in accuracy over phase steps and has relatively little
-impact on speed (compare <code>bench_osc32</code> and <code>bench_osc64</code> in the output of<code>cargo bench</code>.)</p>
+provides a significant increase in accuracy across phase steps and has relatively
+little impact on speed (compare <code>bench_osc32</code> and <code>bench_osc64</code> in the output of
+<code>cargo bench</code>.)</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
