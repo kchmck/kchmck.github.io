@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["IQOsc","Quadrature oscillator with current phase Φ(t) and phase step ω."]]});
