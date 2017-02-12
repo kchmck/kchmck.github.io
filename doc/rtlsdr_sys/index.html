@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `rtlsdr_sys` crate.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, rtlsdr_sys">
+
+    <title>rtlsdr_sys - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'></p><script>window.sidebarCurrent = {name: 'rtlsdr_sys', ty: 'mod', relpath: '../'};</script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>rtlsdr_sys</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/rtlsdr_sys/lib.rs.html#1-84' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>This crate provides low-level <a href="https://doc.rust-lang.org/book/ffi.html">FFI</a> bindings
+for <a href="https://git.osmocom.org/rtl-sdr/">librtlsdr</a>. See the
+<a href="https://git.osmocom.org/rtl-sdr/tree/include/rtl-sdr.h"><code>rtl-sdr.h</code></a> header
+distributed with the library for a description of each corresponding binding.</p>
+</div><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.rtlsdr_tuner.html'
+                                  title='rtlsdr_sys::rtlsdr_tuner'>rtlsdr_tuner</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_cancel_async.html'
+                                  title='rtlsdr_sys::rtlsdr_cancel_async'>rtlsdr_cancel_async</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_close.html'
+                                  title='rtlsdr_sys::rtlsdr_close'>rtlsdr_close</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_center_freq.html'
+                                  title='rtlsdr_sys::rtlsdr_get_center_freq'>rtlsdr_get_center_freq</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_device_count.html'
+                                  title='rtlsdr_sys::rtlsdr_get_device_count'>rtlsdr_get_device_count</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_device_name.html'
+                                  title='rtlsdr_sys::rtlsdr_get_device_name'>rtlsdr_get_device_name</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_device_usb_strings.html'
+                                  title='rtlsdr_sys::rtlsdr_get_device_usb_strings'>rtlsdr_get_device_usb_strings</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_direct_sampling.html'
+                                  title='rtlsdr_sys::rtlsdr_get_direct_sampling'>rtlsdr_get_direct_sampling</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_freq_correction.html'
+                                  title='rtlsdr_sys::rtlsdr_get_freq_correction'>rtlsdr_get_freq_correction</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_index_by_serial.html'
+                                  title='rtlsdr_sys::rtlsdr_get_index_by_serial'>rtlsdr_get_index_by_serial</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_offset_tuning.html'
+                                  title='rtlsdr_sys::rtlsdr_get_offset_tuning'>rtlsdr_get_offset_tuning</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_sample_rate.html'
+                                  title='rtlsdr_sys::rtlsdr_get_sample_rate'>rtlsdr_get_sample_rate</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_tuner_gain.html'
+                                  title='rtlsdr_sys::rtlsdr_get_tuner_gain'>rtlsdr_get_tuner_gain</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_tuner_gains.html'
+                                  title='rtlsdr_sys::rtlsdr_get_tuner_gains'>rtlsdr_get_tuner_gains</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_tuner_type.html'
+                                  title='rtlsdr_sys::rtlsdr_get_tuner_type'>rtlsdr_get_tuner_type</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_usb_strings.html'
+                                  title='rtlsdr_sys::rtlsdr_get_usb_strings'>rtlsdr_get_usb_strings</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_get_xtal_freq.html'
+                                  title='rtlsdr_sys::rtlsdr_get_xtal_freq'>rtlsdr_get_xtal_freq</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_open.html'
+                                  title='rtlsdr_sys::rtlsdr_open'>rtlsdr_open</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_read_async.html'
+                                  title='rtlsdr_sys::rtlsdr_read_async'>rtlsdr_read_async</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_read_eeprom.html'
+                                  title='rtlsdr_sys::rtlsdr_read_eeprom'>rtlsdr_read_eeprom</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_read_sync.html'
+                                  title='rtlsdr_sys::rtlsdr_read_sync'>rtlsdr_read_sync</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_reset_buffer.html'
+                                  title='rtlsdr_sys::rtlsdr_reset_buffer'>rtlsdr_reset_buffer</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_set_agc_mode.html'
+                                  title='rtlsdr_sys::rtlsdr_set_agc_mode'>rtlsdr_set_agc_mode</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_set_center_freq.html'
+                                  title='rtlsdr_sys::rtlsdr_set_center_freq'>rtlsdr_set_center_freq</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_set_direct_sampling.html'
+                                  title='rtlsdr_sys::rtlsdr_set_direct_sampling'>rtlsdr_set_direct_sampling</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_set_freq_correction.html'
+                                  title='rtlsdr_sys::rtlsdr_set_freq_correction'>rtlsdr_set_freq_correction</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_set_offset_tuning.html'
+                                  title='rtlsdr_sys::rtlsdr_set_offset_tuning'>rtlsdr_set_offset_tuning</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_set_sample_rate.html'
+                                  title='rtlsdr_sys::rtlsdr_set_sample_rate'>rtlsdr_set_sample_rate</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_set_testmode.html'
+                                  title='rtlsdr_sys::rtlsdr_set_testmode'>rtlsdr_set_testmode</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_set_tuner_bandwidth.html'
+                                  title='rtlsdr_sys::rtlsdr_set_tuner_bandwidth'>rtlsdr_set_tuner_bandwidth</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_set_tuner_gain.html'
+                                  title='rtlsdr_sys::rtlsdr_set_tuner_gain'>rtlsdr_set_tuner_gain</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_set_tuner_gain_mode.html'
+                                  title='rtlsdr_sys::rtlsdr_set_tuner_gain_mode'>rtlsdr_set_tuner_gain_mode</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_set_tuner_if_gain.html'
+                                  title='rtlsdr_sys::rtlsdr_set_tuner_if_gain'>rtlsdr_set_tuner_if_gain</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_set_xtal_freq.html'
+                                  title='rtlsdr_sys::rtlsdr_set_xtal_freq'>rtlsdr_set_xtal_freq</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.rtlsdr_write_eeprom.html'
+                                  title='rtlsdr_sys::rtlsdr_write_eeprom'>rtlsdr_write_eeprom</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='type' href='type.rtlsdr_dev_t.html'
+                                  title='rtlsdr_sys::rtlsdr_dev_t'>rtlsdr_dev_t</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='type' href='type.rtlsdr_read_async_cb_t.html'
+                                  title='rtlsdr_sys::rtlsdr_read_async_cb_t'>rtlsdr_read_async_cb_t</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "rtlsdr_sys";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>
