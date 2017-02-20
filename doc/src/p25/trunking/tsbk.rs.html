@@ -9,6 +9,7 @@
 
     <title>tsbk.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -914,15 +915,15 @@
 <span class='doccomment'>/// 2. Descramble symbols using the same deinterleaver as data packets</span>
 <span class='doccomment'>/// 3. Decode 1/2-rate convolutional code and attempt to correct any errors</span>
 <span class='doccomment'>/// 4. Group dibits into a buffer of bytes for further interpretation</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>TSBKReceiver</span> {
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>TsbkReceiver</span> {
     <span class='doccomment'>/// Current buffered dibits.</span>
     <span class='ident'>dibits</span>: <span class='ident'>Buffer</span><span class='op'>&lt;</span><span class='ident'>DataPayloadStorage</span><span class='op'>&gt;</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>TSBKReceiver</span> {
-    <span class='doccomment'>/// Create a new `TSBKReceiver` in the initial state.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>TSBKReceiver</span> {
-        <span class='ident'>TSBKReceiver</span> {
+<span class='kw'>impl</span> <span class='ident'>TsbkReceiver</span> {
+    <span class='doccomment'>/// Create a new `TsbkReceiver` in the initial state.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>TsbkReceiver</span> {
+        <span class='ident'>TsbkReceiver</span> {
             <span class='ident'>dibits</span>: <span class='ident'>Buffer</span>::<span class='ident'>new</span>(<span class='ident'>DataPayloadStorage</span>::<span class='ident'>new</span>()),
         }
     }
@@ -930,7 +931,7 @@
     <span class='doccomment'>/// Feed in a baseband symbol, possibly producing a complete TSBK packet. Return</span>
     <span class='doccomment'>/// `Some(Ok(pkt))` if a packet was successfully received, `Some(Err(err))` if an</span>
     <span class='doccomment'>/// error occurred, and `None` in the case of no event.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>dibit</span>: <span class='ident'>Dibit</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>TSBKFields</span><span class='op'>&gt;&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>dibit</span>: <span class='ident'>Dibit</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>TsbkFields</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>let</span> (<span class='ident'>count</span>, <span class='ident'>dibits</span>) <span class='op'>=</span> {
             <span class='kw'>let</span> <span class='ident'>buf</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>dibits</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
                 <span class='prelude-val'>Some</span>(<span class='ident'>buf</span>) <span class='op'>=&gt;</span> <span class='ident'>buf</span>,
@@ -952,13 +953,13 @@
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>bytes</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='ident'>TSBK_BYTES</span>];
         <span class='ident'>DibitBytes</span>::<span class='ident'>new</span>(<span class='ident'>dibits</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>()).<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>bytes</span>[..]);
 
-        <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>TSBKFields</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>)))
+        <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>TsbkFields</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>)))
     }
 }
 
 <span class='doccomment'>/// Type of a TSBK payload.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>TSBKOpcode</span> {
+<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>TsbkOpcode</span> {
     <span class='ident'>GroupVoiceGrant</span>,
     <span class='ident'>GroupVoiceUpdate</span>,
     <span class='ident'>GroupVoiceUpdateExplicit</span>,
@@ -991,7 +992,7 @@
     <span class='ident'>RoamingAddrUpdate</span>,
     <span class='ident'>SystemServiceBroadcast</span>,
     <span class='ident'>AltControlChannel</span>,
-    <span class='ident'>RFSSStatusBroadcast</span>,
+    <span class='ident'>RfssStatusBroadcast</span>,
     <span class='ident'>NetworkStatusBroadcast</span>,
     <span class='ident'>AdjacentSite</span>,
     <span class='ident'>ChannelParamsUpdate</span>,
@@ -1000,10 +1001,10 @@
     <span class='ident'>Reserved</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>TSBKOpcode</span> {
+<span class='kw'>impl</span> <span class='ident'>TsbkOpcode</span> {
     <span class='doccomment'>/// Try to parse an opcode from the given 6 bits.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_bits</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>TSBKOpcode</span><span class='op'>&gt;</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>TSBKOpcode</span>::<span class='op'>*</span>;
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_bits</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>TsbkOpcode</span><span class='op'>&gt;</span> {
+        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>TsbkOpcode</span>::<span class='kw-2'>*</span>;
 
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bits</span> <span class='op'>&gt;&gt;</span> <span class='number'>6</span> <span class='op'>==</span> <span class='number'>0</span>);
 
@@ -1060,7 +1061,7 @@
 
             <span class='number'>0b111000</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>SystemServiceBroadcast</span>),
             <span class='number'>0b111001</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>AltControlChannel</span>),
-            <span class='number'>0b111010</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>RFSSStatusBroadcast</span>),
+            <span class='number'>0b111010</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>RfssStatusBroadcast</span>),
             <span class='number'>0b111011</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>NetworkStatusBroadcast</span>),
             <span class='number'>0b111100</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>AdjacentSite</span>),
             <span class='number'>0b111101</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>ChannelParamsUpdate</span>),
@@ -1077,18 +1078,18 @@
 
 <span class='doccomment'>/// A Trunking Signalling Block packet.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>TSBKFields</span>(<span class='ident'>Buf</span>);
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>TsbkFields</span>(<span class='ident'>Buf</span>);
 
-<span class='kw'>impl</span> <span class='ident'>TSBKFields</span> {
+<span class='kw'>impl</span> <span class='ident'>TsbkFields</span> {
     <span class='doccomment'>/// Interpret the given bytes as a TSBK packet.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>buf</span>: <span class='ident'>Buf</span>) <span class='op'>-&gt;</span> <span class='ident'>TSBKFields</span> { <span class='ident'>TSBKFields</span>(<span class='ident'>buf</span>) }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>buf</span>: <span class='ident'>Buf</span>) <span class='op'>-&gt;</span> <span class='ident'>TsbkFields</span> { <span class='ident'>TsbkFields</span>(<span class='ident'>buf</span>) }
 
     <span class='doccomment'>/// Whether this packet is the last one in the TSBK group.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_tail</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>&gt;&gt;</span> <span class='number'>7</span> <span class='op'>==</span> <span class='number'>1</span> }
     <span class='doccomment'>/// Whether the packet is encrypted.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>protected</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>&gt;&gt;</span> <span class='number'>6</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span> <span class='op'>==</span> <span class='number'>1</span> }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>protected</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>&gt;&gt;</span> <span class='number'>6</span> <span class='op'>&amp;</span> <span class='number'>1</span> <span class='op'>==</span> <span class='number'>1</span> }
     <span class='doccomment'>/// Type of data contained in the payload.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>opcode</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>TSBKOpcode</span><span class='op'>&gt;</span> { <span class='ident'>TSBKOpcode</span>::<span class='ident'>from_bits</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='kw-2'>&amp;</span> <span class='number'>0x3F</span>) }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>opcode</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>TsbkOpcode</span><span class='op'>&gt;</span> { <span class='ident'>TsbkOpcode</span>::<span class='ident'>from_bits</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>&amp;</span> <span class='number'>0x3F</span>) }
     <span class='doccomment'>/// Manufacturer ID, which determines if the packet is standardized.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>mfg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>1</span>] }
     <span class='doccomment'>/// Transmitted CRC.</span>
@@ -1115,10 +1116,10 @@
 
 <span class='kw'>impl</span> <span class='ident'>LocRegResponse</span> {
     <span class='doccomment'>/// Create a new `LocRegResponse` decoder from the base TSBK decoder.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TSBKFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>LocRegResponse</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TsbkFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>LocRegResponse</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
 
     <span class='doccomment'>/// System response to the registration request.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>response</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>RegResponse</span> { <span class='ident'>RegResponse</span>::<span class='ident'>from_bits</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>] <span class='kw-2'>&amp;</span> <span class='number'>0b11</span>) }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>response</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>RegResponse</span> { <span class='ident'>RegResponse</span>::<span class='ident'>from_bits</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>] <span class='op'>&amp;</span> <span class='number'>0b11</span>) }
     <span class='doccomment'>/// Talkgroup of requesting unit.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>talkgroup</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>)  <span class='op'>-&gt;</span> <span class='ident'>TalkGroup</span> { <span class='ident'>TalkGroup</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>3</span>...<span class='number'>4</span>]) }
     <span class='doccomment'>/// RF Subsystem ID of site within System.</span>
@@ -1134,15 +1135,15 @@
 
 <span class='kw'>impl</span> <span class='ident'>UnitRegResponse</span> {
     <span class='doccomment'>/// Create a new `UnitRegResponse` decoder from the base TSBK decoder.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TSBKFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>UnitRegResponse</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TsbkFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>UnitRegResponse</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
 
     <span class='doccomment'>/// System response to user registration request.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>response</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>RegResponse</span> {
-        <span class='ident'>RegResponse</span>::<span class='ident'>from_bits</span>((<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>] <span class='op'>&gt;&gt;</span> <span class='number'>4</span>) <span class='kw-2'>&amp;</span> <span class='number'>0b11</span>)
+        <span class='ident'>RegResponse</span>::<span class='ident'>from_bits</span>((<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>] <span class='op'>&gt;&gt;</span> <span class='number'>4</span>) <span class='op'>&amp;</span> <span class='number'>0b11</span>)
     }
 
     <span class='doccomment'>/// System ID within WACN.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>system</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> { <span class='ident'>slice_u16</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>...<span class='number'>3</span>]) <span class='kw-2'>&amp;</span> <span class='number'>0xFFF</span> }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>system</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> { <span class='ident'>slice_u16</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>...<span class='number'>3</span>]) <span class='op'>&amp;</span> <span class='number'>0xFFF</span> }
     <span class='doccomment'>/// Address of originating unit, which uniquely identifies the unit within the System.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>src_id</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> { <span class='ident'>slice_u24</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>4</span>...<span class='number'>6</span>]) }
     <span class='doccomment'>/// ID of originating unit which, along with the WACN and System ID, uniquely</span>
@@ -1155,12 +1156,12 @@
 
 <span class='kw'>impl</span> <span class='ident'>UnitDeregAck</span> {
     <span class='doccomment'>/// Create a new `UnitDeregAck` decoder from the base TSBK decoder.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TSBKFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>UnitDeregAck</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TsbkFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>UnitDeregAck</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
 
     <span class='doccomment'>/// WACN ID within the communication network.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>wacn</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> { <span class='ident'>slice_u24</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>3</span>...<span class='number'>5</span>]) <span class='op'>&gt;&gt;</span> <span class='number'>4</span> }
     <span class='doccomment'>/// System ID within WACN.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>system</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> { <span class='ident'>slice_u16</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>5</span>...<span class='number'>6</span>]) <span class='kw-2'>&amp;</span> <span class='number'>0xFFF</span> }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>system</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> { <span class='ident'>slice_u16</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>5</span>...<span class='number'>6</span>]) <span class='op'>&amp;</span> <span class='number'>0xFFF</span> }
     <span class='doccomment'>/// ID of affected unit.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>src_unit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> { <span class='ident'>slice_u24</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>7</span>...<span class='number'>9</span>]) }
 }
@@ -1170,7 +1171,7 @@
 
 <span class='kw'>impl</span> <span class='ident'>GroupVoiceGrant</span> {
     <span class='doccomment'>/// Create a new `GroupVoiceGrant` decoder from the base TSBK decoder.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TSBKFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>GroupVoiceGrant</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TsbkFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>GroupVoiceGrant</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
 
     <span class='doccomment'>/// Options requested/granted for the traffic channel.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>opts</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>ServiceOptions</span> { <span class='ident'>ServiceOptions</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>]) }
@@ -1190,7 +1191,7 @@
 
 <span class='kw'>impl</span> <span class='ident'>UnitTrafficChannel</span> {
     <span class='doccomment'>/// Create a new `UnitTrafficChannel` decoder from the base TSBK decoder.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TSBKFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>UnitTrafficChannel</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TsbkFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>UnitTrafficChannel</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
 
     <span class='doccomment'>/// Parameters for tuning to the traffic channel.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>channel</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Channel</span> { <span class='ident'>Channel</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>..]) }
@@ -1205,7 +1206,7 @@
 
 <span class='kw'>impl</span> <span class='ident'>PhoneGrant</span> {
     <span class='doccomment'>/// Create a new `PhoneGrant` decoder from the base TSBK decoder.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TSBKFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>PhoneGrant</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TsbkFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>PhoneGrant</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
 
     <span class='doccomment'>/// Options requested/granted for the traffic channel.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>opts</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>ServiceOptions</span> { <span class='ident'>ServiceOptions</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>]) }
@@ -1223,7 +1224,7 @@
 
 <span class='kw'>impl</span> <span class='ident'>GroupDataGrant</span> {
     <span class='doccomment'>/// Create a new `GroupDataGrant` decoder from the base TSBK decoder.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TSBKFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>GroupDataGrant</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>tsbk</span>: <span class='ident'>TsbkFields</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>GroupDataGrant</span>(<span class='ident'>tsbk</span>.<span class='number'>0</span>) }
 
     <span class='doccomment'>/// Options requested/granted for the traffic channel.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>opts</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>ServiceOptions</span> { <span class='ident'>ServiceOptions</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>]) }
@@ -1237,12 +1238,12 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
-    <span class='kw'>use</span> <span class='ident'>trunking</span>::<span class='ident'>fields</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
+    <span class='kw'>use</span> <span class='ident'>trunking</span>::<span class='ident'>fields</span>::<span class='kw-2'>*</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_tsbk_fields</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b10111001</span>,
             <span class='number'>0b00000001</span>,
             <span class='number'>0b11110000</span>,
@@ -1259,7 +1260,7 @@
 
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>is_tail</span>());
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>t</span>.<span class='ident'>protected</span>());
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>AltControlChannel</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>AltControlChannel</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>mfg</span>(), <span class='number'>0b00000001</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>crc</span>(), <span class='number'>0b1101011111010111</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>calc_crc</span>(), <span class='number'>0b0111010000111100</span>);
@@ -1278,7 +1279,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_adjacent_site</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00111100</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b11001100</span>,
@@ -1292,7 +1293,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>AdjacentSite</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>AdjacentSite</span>));
         <span class='kw'>let</span> <span class='ident'>a</span> <span class='op'>=</span> <span class='ident'>AdjacentSite</span>::<span class='ident'>new</span>(<span class='ident'>t</span>.<span class='ident'>payload</span>());
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>a</span>.<span class='ident'>area</span>(), <span class='number'>0b11001100</span>);
@@ -1317,7 +1318,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_channel_params_update</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00111101</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b0110_0011</span>,
@@ -1331,7 +1332,7 @@
             <span class='number'>0b11111111</span>,
             <span class='number'>0b11111111</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>ChannelParamsUpdate</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>ChannelParamsUpdate</span>));
         <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>ChannelParamsUpdate</span>::<span class='ident'>new</span>(<span class='ident'>t</span>.<span class='ident'>payload</span>());
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>id</span>(), <span class='number'>0b0110</span>);
@@ -1341,7 +1342,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_group_traffic_update</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00000010</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b01101111</span>,
@@ -1355,7 +1356,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>GroupVoiceUpdate</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>GroupVoiceUpdate</span>));
         <span class='kw'>let</span> <span class='ident'>u</span> <span class='op'>=</span> <span class='ident'>GroupTrafficUpdate</span>::<span class='ident'>new</span>(<span class='ident'>t</span>.<span class='ident'>payload</span>()).<span class='ident'>updates</span>();
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>u</span>[<span class='number'>0</span>].<span class='number'>0</span>.<span class='ident'>id</span>(), <span class='number'>0b0110</span>);
@@ -1368,7 +1369,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_alt_control_channel</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00111001</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b11100011</span>,
@@ -1382,7 +1383,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b11111111</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>AltControlChannel</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>AltControlChannel</span>));
         <span class='kw'>let</span> <span class='ident'>a</span> <span class='op'>=</span> <span class='ident'>AltControlChannel</span>::<span class='ident'>new</span>(<span class='ident'>t</span>.<span class='ident'>payload</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>a</span>.<span class='ident'>rfss</span>(), <span class='number'>0b11100011</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>a</span>.<span class='ident'>site</span>(), <span class='number'>0b01010101</span>);
@@ -1411,7 +1412,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_rfss_status_broadcast</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00111010</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b11001100</span>,
@@ -1425,8 +1426,8 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>RFSSStatusBroadcast</span>));
-        <span class='kw'>let</span> <span class='ident'>a</span> <span class='op'>=</span> <span class='ident'>RFSSStatusBroadcast</span>::<span class='ident'>new</span>(<span class='ident'>t</span>.<span class='ident'>payload</span>());
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>RfssStatusBroadcast</span>));
+        <span class='kw'>let</span> <span class='ident'>a</span> <span class='op'>=</span> <span class='ident'>RfssStatusBroadcast</span>::<span class='ident'>new</span>(<span class='ident'>t</span>.<span class='ident'>payload</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>a</span>.<span class='ident'>area</span>(), <span class='number'>0b11001100</span>);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>a</span>.<span class='ident'>networked</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>a</span>.<span class='ident'>system</span>(), <span class='number'>0b000010101010</span>);
@@ -1446,7 +1447,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_network_status_broadcast</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00111011</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b11001010</span>,
@@ -1460,7 +1461,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>NetworkStatusBroadcast</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>NetworkStatusBroadcast</span>));
         <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='ident'>NetworkStatusBroadcast</span>::<span class='ident'>new</span>(<span class='ident'>t</span>.<span class='ident'>payload</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>n</span>.<span class='ident'>area</span>(), <span class='number'>0b11001010</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>n</span>.<span class='ident'>wacn</span>(), <span class='number'>0b11111100001010111100</span>);
@@ -1479,7 +1480,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_unit_reg_response</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00101100</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b11011010</span>,
@@ -1493,7 +1494,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>UnitRegResponse</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>UnitRegResponse</span>));
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>UnitRegResponse</span>::<span class='ident'>new</span>(<span class='ident'>t</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>r</span>.<span class='ident'>response</span>(), <span class='ident'>RegResponse</span>::<span class='ident'>Fail</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>r</span>.<span class='ident'>system</span>(), <span class='number'>0b101011100111</span>);
@@ -1503,7 +1504,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_unit_dereg_ack</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00101111</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b11111111</span>,
@@ -1517,7 +1518,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>UnitDeregAck</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>UnitDeregAck</span>));
         <span class='kw'>let</span> <span class='ident'>a</span> <span class='op'>=</span> <span class='ident'>UnitDeregAck</span>::<span class='ident'>new</span>(<span class='ident'>t</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>a</span>.<span class='ident'>wacn</span>(), <span class='number'>0b11001100001100111010</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>a</span>.<span class='ident'>system</span>(), <span class='number'>0b000111110011</span>);
@@ -1526,7 +1527,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_loc_reg_response</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00101011</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b01010011</span>,
@@ -1540,7 +1541,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>LocRegResponse</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>LocRegResponse</span>));
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>LocRegResponse</span>::<span class='ident'>new</span>(<span class='ident'>t</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>r</span>.<span class='ident'>response</span>(), <span class='ident'>RegResponse</span>::<span class='ident'>Refuse</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>r</span>.<span class='ident'>talkgroup</span>(), <span class='ident'>TalkGroup</span>::<span class='ident'>Other</span>(<span class='number'>0b1111100000011100</span>));
@@ -1551,7 +1552,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_call_alert</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00011111</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b11111111</span>,
@@ -1565,7 +1566,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>UnitCallAlert</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>UnitCallAlert</span>));
         <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>UnitCallAlert</span>::<span class='ident'>new</span>(<span class='ident'>t</span>.<span class='ident'>payload</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>dest_unit</span>(), <span class='number'>0b010101011010101011001100</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>src_unit</span>(), <span class='number'>0b001100111110011100011000</span>);
@@ -1573,7 +1574,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_call_request</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00000101</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b01010101</span>,
@@ -1587,7 +1588,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>UnitCallRequest</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>UnitCallRequest</span>));
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>UnitCallRequest</span>::<span class='ident'>new</span>(<span class='ident'>t</span>.<span class='ident'>payload</span>());
         <span class='kw'>let</span> <span class='ident'>o</span> <span class='op'>=</span> <span class='ident'>r</span>.<span class='ident'>opts</span>();
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>o</span>.<span class='ident'>emergency</span>());
@@ -1601,7 +1602,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_group_voice_grant</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00000000</span>,
             <span class='number'>0b11111111</span>,
             <span class='number'>0b10100011</span>,
@@ -1615,7 +1616,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>GroupVoiceGrant</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>GroupVoiceGrant</span>));
         <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>GroupVoiceGrant</span>::<span class='ident'>new</span>(<span class='ident'>t</span>);
         <span class='kw'>let</span> <span class='ident'>o</span> <span class='op'>=</span> <span class='ident'>g</span>.<span class='ident'>opts</span>();
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>o</span>.<span class='ident'>emergency</span>());
@@ -1631,7 +1632,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_unit_traffic_channel</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00000100</span>,
             <span class='number'>0b11111111</span>,
             <span class='number'>0b11001110</span>,
@@ -1645,7 +1646,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>UnitVoiceGrant</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>UnitVoiceGrant</span>));
         <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>UnitTrafficChannel</span>::<span class='ident'>new</span>(<span class='ident'>t</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>g</span>.<span class='ident'>channel</span>().<span class='ident'>id</span>(), <span class='number'>0b1100</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>g</span>.<span class='ident'>channel</span>().<span class='ident'>number</span>(), <span class='number'>0b111010101010</span>);
@@ -1655,7 +1656,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_phone_alert</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00001010</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b11110011</span>,
@@ -1669,7 +1670,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>PhoneAlert</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>PhoneAlert</span>));
         <span class='kw'>let</span> <span class='ident'>a</span> <span class='op'>=</span> <span class='ident'>PhoneAlert</span>::<span class='ident'>new</span>(<span class='ident'>t</span>.<span class='ident'>payload</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>a</span>.<span class='ident'>digits</span>(), <span class='kw-2'>&amp;</span>[
             <span class='number'>0b11110011</span>,
@@ -1683,7 +1684,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_phone_grant</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00001000</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b10100011</span>,
@@ -1697,7 +1698,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>PhoneGrant</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>PhoneGrant</span>));
         <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>PhoneGrant</span>::<span class='ident'>new</span>(<span class='ident'>t</span>);
         <span class='kw'>let</span> <span class='ident'>o</span> <span class='op'>=</span> <span class='ident'>g</span>.<span class='ident'>opts</span>();
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>o</span>.<span class='ident'>emergency</span>());
@@ -1713,7 +1714,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_group_data_grant</span>() {
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TSBKFields</span>::<span class='ident'>new</span>([
+        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TsbkFields</span>::<span class='ident'>new</span>([
             <span class='number'>0b00010001</span>,
             <span class='number'>0b00000000</span>,
             <span class='number'>0b10100011</span>,
@@ -1727,7 +1728,7 @@
             <span class='number'>0b00000000</span>,
             <span class='number'>0b00000000</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TSBKOpcode</span>::<span class='ident'>GroupDataGrant</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>TsbkOpcode</span>::<span class='ident'>GroupDataGrant</span>));
         <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>GroupDataGrant</span>::<span class='ident'>new</span>(<span class='ident'>t</span>);
         <span class='kw'>let</span> <span class='ident'>o</span> <span class='op'>=</span> <span class='ident'>g</span>.<span class='ident'>opts</span>();
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>o</span>.<span class='ident'>emergency</span>());

@@ -9,6 +9,7 @@
 
     <title>crypto.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -120,6 +121,7 @@
 <span id="76">76</span>
 <span id="77">77</span>
 <span id="78">78</span>
+<span id="79">79</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Decode Cryptographic Control (CC) packets.</span>
 
@@ -146,6 +148,7 @@
 
 <span class='doccomment'>/// Type of cryptographic algorithm.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>)]</span>
+<span class='attribute'>#[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;ser&quot;</span>, <span class='ident'>derive</span>(<span class='ident'>Serialize</span>))]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>CryptoAlgorithm</span> {
     <span class='ident'>Accordion</span>,
     <span class='ident'>BatonEven</span>,
@@ -154,16 +157,16 @@
     <span class='ident'>Saville</span>,
     <span class='ident'>BatonOdd</span>,
     <span class='ident'>Unencrypted</span>,
-    <span class='ident'>DES</span>,
-    <span class='ident'>TripleDES</span>,
-    <span class='ident'>AES</span>,
+    <span class='ident'>Des</span>,
+    <span class='ident'>TripleDes</span>,
+    <span class='ident'>Aes</span>,
     <span class='ident'>Other</span>(<span class='ident'>u8</span>),
 }
 
 <span class='kw'>impl</span> <span class='ident'>CryptoAlgorithm</span> {
     <span class='doccomment'>/// Parse the given 8 bits into a crypto algorithm.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_bits</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>CryptoAlgorithm</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>CryptoAlgorithm</span>::<span class='op'>*</span>;
+        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>CryptoAlgorithm</span>::<span class='kw-2'>*</span>;
 
         <span class='kw'>match</span> <span class='ident'>bits</span> {
             <span class='number'>0x00</span> <span class='op'>=&gt;</span> <span class='ident'>Accordion</span>,
@@ -173,9 +176,9 @@
             <span class='number'>0x04</span> <span class='op'>=&gt;</span> <span class='ident'>Saville</span>,
             <span class='number'>0x41</span> <span class='op'>=&gt;</span> <span class='ident'>BatonOdd</span>,
             <span class='number'>0x80</span> <span class='op'>=&gt;</span> <span class='ident'>Unencrypted</span>,
-            <span class='number'>0x81</span> <span class='op'>=&gt;</span> <span class='ident'>DES</span>,
-            <span class='number'>0x83</span> <span class='op'>=&gt;</span> <span class='ident'>TripleDES</span>,
-            <span class='number'>0x84</span> <span class='op'>=&gt;</span> <span class='ident'>AES</span>,
+            <span class='number'>0x81</span> <span class='op'>=&gt;</span> <span class='ident'>Des</span>,
+            <span class='number'>0x83</span> <span class='op'>=&gt;</span> <span class='ident'>TripleDes</span>,
+            <span class='number'>0x84</span> <span class='op'>=&gt;</span> <span class='ident'>Aes</span>,
             <span class='ident'>b</span> <span class='op'>=&gt;</span> <span class='ident'>Other</span>(<span class='ident'>b</span>),
         }
     }
@@ -183,8 +186,8 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>CryptoAlgorithm</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>CryptoAlgorithm</span>::<span class='kw-2'>*</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_cypto</span>() {
@@ -195,7 +198,7 @@
         ]);
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>init</span>(), <span class='kw-2'>&amp;</span>[<span class='number'>0</span>,<span class='number'>0</span>,<span class='number'>0</span>,<span class='number'>1</span>,<span class='number'>0</span>,<span class='number'>0</span>,<span class='number'>0</span>,<span class='number'>2</span>,<span class='number'>0</span>]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>alg</span>(), <span class='ident'>AES</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>alg</span>(), <span class='ident'>Aes</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>key</span>(), <span class='number'>0xDEAD</span>);
     }
 }

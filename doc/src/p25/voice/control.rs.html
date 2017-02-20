@@ -9,6 +9,7 @@
 
     <title>control.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -548,7 +549,7 @@
     <span class='ident'>SystemServiceBroadcast</span>,
     <span class='ident'>AltControlChannel</span>,
     <span class='ident'>AdjacentSite</span>,
-    <span class='ident'>RFSSStatusBroadcast</span>,
+    <span class='ident'>RfssStatusBroadcast</span>,
     <span class='ident'>NetworkStatusBroadcast</span>,
     <span class='ident'>UnitStatusUpdate</span>,
     <span class='ident'>UnitShortMessage</span>,
@@ -559,14 +560,14 @@
     <span class='ident'>AltControlChannelExplicit</span>,
     <span class='ident'>AdjacentSiteExplicit</span>,
     <span class='ident'>ChannelParamsExplicit</span>,
-    <span class='ident'>RFSSStatusExplicit</span>,
+    <span class='ident'>RfssStatusExplicit</span>,
     <span class='ident'>NetworkStatusExplicit</span>,
 }
 
 <span class='kw'>impl</span> <span class='ident'>LinkControlOpcode</span> {
     <span class='doccomment'>/// Try to parse an opcode from the given 6 bits.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_bits</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>LinkControlOpcode</span><span class='op'>&gt;</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>LinkControlOpcode</span>::<span class='op'>*</span>;
+        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>LinkControlOpcode</span>::<span class='kw-2'>*</span>;
 
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bits</span> <span class='op'>&gt;&gt;</span> <span class='number'>6</span> <span class='op'>==</span> <span class='number'>0</span>);
 
@@ -586,7 +587,7 @@
             <span class='number'>0b100000</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>SystemServiceBroadcast</span>),
             <span class='number'>0b100001</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>AltControlChannel</span>),
             <span class='number'>0b100010</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>AdjacentSite</span>),
-            <span class='number'>0b100011</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>RFSSStatusBroadcast</span>),
+            <span class='number'>0b100011</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>RfssStatusBroadcast</span>),
             <span class='number'>0b100100</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>NetworkStatusBroadcast</span>),
             <span class='number'>0b010100</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>UnitStatusUpdate</span>),
             <span class='number'>0b010101</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>UnitShortMessage</span>),
@@ -597,7 +598,7 @@
             <span class='number'>0b100110</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>AltControlChannelExplicit</span>),
             <span class='number'>0b100111</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>AdjacentSiteExplicit</span>),
             <span class='number'>0b011001</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>ChannelParamsExplicit</span>),
-            <span class='number'>0b101000</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>RFSSStatusExplicit</span>),
+            <span class='number'>0b101000</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>RfssStatusExplicit</span>),
             <span class='number'>0b101001</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>NetworkStatusExplicit</span>),
             _ <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
         }
@@ -617,7 +618,7 @@
 
     <span class='doccomment'>/// Type of data contained in the payload.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>opcode</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>LinkControlOpcode</span><span class='op'>&gt;</span> {
-        <span class='ident'>LinkControlOpcode</span>::<span class='ident'>from_bits</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='kw-2'>&amp;</span> <span class='number'>0x3F</span>)
+        <span class='ident'>LinkControlOpcode</span>::<span class='ident'>from_bits</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>&amp;</span> <span class='number'>0x3F</span>)
     }
 
     <span class='doccomment'>/// Bytes that make up the payload.</span>
@@ -676,8 +677,8 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
-    <span class='kw'>use</span> <span class='ident'>trunking</span>::<span class='ident'>fields</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
+    <span class='kw'>use</span> <span class='ident'>trunking</span>::<span class='ident'>fields</span>::<span class='kw-2'>*</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_lc</span>() {
@@ -854,8 +855,8 @@
             <span class='number'>0b01110011</span>,
             <span class='number'>0b01010001</span>,
         ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>l</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>LinkControlOpcode</span>::<span class='ident'>RFSSStatusBroadcast</span>));
-        <span class='kw'>let</span> <span class='ident'>a</span> <span class='op'>=</span> <span class='ident'>RFSSStatusBroadcast</span>::<span class='ident'>new</span>(<span class='ident'>l</span>.<span class='ident'>payload</span>());
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>l</span>.<span class='ident'>opcode</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>LinkControlOpcode</span>::<span class='ident'>RfssStatusBroadcast</span>));
+        <span class='kw'>let</span> <span class='ident'>a</span> <span class='op'>=</span> <span class='ident'>RfssStatusBroadcast</span>::<span class='ident'>new</span>(<span class='ident'>l</span>.<span class='ident'>payload</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>a</span>.<span class='ident'>area</span>(), <span class='number'>0b11001100</span>);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>a</span>.<span class='ident'>networked</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>a</span>.<span class='ident'>system</span>(), <span class='number'>0b000010101010</span>);

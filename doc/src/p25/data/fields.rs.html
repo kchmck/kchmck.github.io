@@ -9,6 +9,7 @@
 
     <title>fields.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -203,7 +204,7 @@
 <span class='kw'>impl</span> <span class='ident'>DataPacketOpcode</span> {
     <span class='doccomment'>/// Convert packet type to its 5-bit representation.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_bits</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>DataPacketOpcode</span>::<span class='op'>*</span>;
+        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>DataPacketOpcode</span>::<span class='kw-2'>*</span>;
 
         <span class='kw'>match</span> <span class='self'>self</span> {
             <span class='ident'>ConfirmedPacket</span> <span class='op'>=&gt;</span> <span class='number'>0b10110</span>,
@@ -215,7 +216,7 @@
 
     <span class='doccomment'>/// Parse a packet type from the given 5 bits.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_bits</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>DataPacketOpcode</span><span class='op'>&gt;</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>DataPacketOpcode</span>::<span class='op'>*</span>;
+        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>DataPacketOpcode</span>::<span class='kw-2'>*</span>;
 
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bits</span> <span class='op'>&gt;&gt;</span> <span class='number'>5</span> <span class='op'>==</span> <span class='number'>0</span>);
 
@@ -257,7 +258,7 @@
 <span class='kw'>impl</span> <span class='ident'>ServiceAccessPoint</span> {
     <span class='doccomment'>/// Convert the given 6 bits to a SAP identifier.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_bits</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>ServiceAccessPoint</span><span class='op'>&gt;</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>ServiceAccessPoint</span>::<span class='op'>*</span>;
+        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>ServiceAccessPoint</span>::<span class='kw-2'>*</span>;
 
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bits</span> <span class='op'>&gt;&gt;</span> <span class='number'>6</span> <span class='op'>==</span> <span class='number'>0</span>);
 
@@ -288,7 +289,7 @@
 
     <span class='doccomment'>/// Convert SAP identifier to its 6-bit representation.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_bits</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>ServiceAccessPoint</span>::<span class='op'>*</span>;
+        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>ServiceAccessPoint</span>::<span class='kw-2'>*</span>;
 
         <span class='kw'>match</span> <span class='self'>self</span> {
             <span class='ident'>UnencryptedUserData</span> <span class='op'>=&gt;</span> <span class='number'>0x00</span>,
@@ -317,7 +318,7 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>

@@ -9,6 +9,7 @@
 
     <title>p25::trunking::fields::AdjacentSite - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -47,16 +48,16 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/p25/trunking/fields.rs.html#187' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/p25/trunking/fields.rs.html#201' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct AdjacentSite&lt;'a&gt;(_);</pre><div class='docblock'><p>Advertisement of an adjacent/nearby site within the same WACN (Wide Area Communication
 Network.)</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a&gt; <a class='struct' href='../../../p25/trunking/fields/struct.AdjacentSite.html' title='p25::trunking::fields::AdjacentSite'>AdjacentSite</a>&lt;'a&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/trunking/fields.rs.html#189-208' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a&gt; <a class='struct' href='../../../p25/trunking/fields/struct.AdjacentSite.html' title='struct p25::trunking::fields::AdjacentSite'>AdjacentSite</a>&lt;'a&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/trunking/fields.rs.html#203-222' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(payload: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Create a new <code>AdjacentSite</code> decoder from the given payload bytes.</p>
 </div><h4 id='method.area' class='method'><span id='area.v' class='invisible'><code>fn <a href='#method.area' class='fnname'>area</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h4>
 <div class='docblock'><p>Location registration area of adjacent site, which determines whether a subscriber
 must update the network before roaming to the site.</p>
-</div><h4 id='method.opts' class='method'><span id='opts.v' class='invisible'><code>fn <a href='#method.opts' class='fnname'>opts</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.SiteOptions.html' title='p25::trunking::fields::SiteOptions'>SiteOptions</a></code></span></h4>
+</div><h4 id='method.opts' class='method'><span id='opts.v' class='invisible'><code>fn <a href='#method.opts' class='fnname'>opts</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.SiteOptions.html' title='struct p25::trunking::fields::SiteOptions'>SiteOptions</a></code></span></h4>
 <div class='docblock'><p>Description of adjacent site.</p>
 </div><h4 id='method.system' class='method'><span id='system.v' class='invisible'><code>fn <a href='#method.system' class='fnname'>system</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a></code></span></h4>
 <div class='docblock'><p>System ID of adjacent site within WACN.</p>
@@ -64,9 +65,9 @@ must update the network before roaming to the site.</p>
 <div class='docblock'><p>RF Subsystem ID of adjacent site within the System.</p>
 </div><h4 id='method.site' class='method'><span id='site.v' class='invisible'><code>fn <a href='#method.site' class='fnname'>site</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h4>
 <div class='docblock'><p>Site ID of adjacent site within the RFSS.</p>
-</div><h4 id='method.channel' class='method'><span id='channel.v' class='invisible'><code>fn <a href='#method.channel' class='fnname'>channel</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.Channel.html' title='p25::trunking::fields::Channel'>Channel</a></code></span></h4>
+</div><h4 id='method.channel' class='method'><span id='channel.v' class='invisible'><code>fn <a href='#method.channel' class='fnname'>channel</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.Channel.html' title='struct p25::trunking::fields::Channel'>Channel</a></code></span></h4>
 <div class='docblock'><p>Channel information for computing TX/RX frequencies.</p>
-</div><h4 id='method.services' class='method'><span id='services.v' class='invisible'><code>fn <a href='#method.services' class='fnname'>services</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.SystemServices.html' title='p25::trunking::fields::SystemServices'>SystemServices</a></code></span></h4>
+</div><h4 id='method.services' class='method'><span id='services.v' class='invisible'><code>fn <a href='#method.services' class='fnname'>services</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.SystemServices.html' title='struct p25::trunking::fields::SystemServices'>SystemServices</a></code></span></h4>
 <div class='docblock'><p>Services supported by the adjacent site.</p>
 </div></div></section>
     <section id='search' class="content hidden"></section>

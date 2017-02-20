@@ -9,6 +9,7 @@
 
     <title>lib.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -67,6 +68,13 @@
 <span id="23">23</span>
 <span id="24">24</span>
 <span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Implements the Project 25 (P25) air interface radio protocol, including baseband frame</span>
 <span class='doccomment'>//! synchronization, symbol decoding, error correction coding, and packet reconstuction.</span>
@@ -77,6 +85,13 @@
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>collect_slice</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>num</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>static_ewma</span>;
+
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;ser&quot;</span>)]</span>
+<span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>serde_derive</span>;
+
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;ser&quot;</span>)]</span>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>serde</span>;
 
 <span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>static_fir</span>;

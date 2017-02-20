@@ -9,6 +9,7 @@
 
     <title>payload.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -477,7 +478,7 @@
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Range</span>;
 
 <span class='kw'>use</span> <span class='ident'>data</span>::<span class='ident'>crc</span>;
-<span class='kw'>use</span> <span class='ident'>data</span>::<span class='ident'>params</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>data</span>::<span class='ident'>params</span>::<span class='kw-2'>*</span>;
 
 <span class='doccomment'>/// Payload blocks for a confirmed data packet.</span>
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>ConfirmedPayload</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Payload</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>ConfirmedParams</span><span class='op'>&gt;</span>;
@@ -671,8 +672,8 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
-    <span class='kw'>use</span> <span class='ident'>data</span>::<span class='ident'>params</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
+    <span class='kw'>use</span> <span class='ident'>data</span>::<span class='ident'>params</span>::<span class='kw-2'>*</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_iter_nopad</span>() {

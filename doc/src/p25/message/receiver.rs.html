@@ -9,6 +9,7 @@
 
     <title>receiver.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -270,9 +271,9 @@
 
 <span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>P25Error</span>;
 <span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>data_unit</span>::{<span class='ident'>DataUnitReceiver</span>, <span class='ident'>ReceiverEvent</span>};
-<span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>nid</span>::<span class='ident'>NetworkID</span>;
+<span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>nid</span>::<span class='ident'>NetworkId</span>;
 <span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>status</span>::<span class='ident'>StreamSymbol</span>;
-<span class='kw'>use</span> <span class='ident'>trunking</span>::<span class='ident'>tsbk</span>::{<span class='ident'>TSBKFields</span>, <span class='ident'>TSBKReceiver</span>};
+<span class='kw'>use</span> <span class='ident'>trunking</span>::<span class='ident'>tsbk</span>::{<span class='ident'>TsbkFields</span>, <span class='ident'>TsbkReceiver</span>};
 <span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>control</span>::<span class='ident'>LinkControlFields</span>;
 <span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>crypto</span>::<span class='ident'>CryptoControlFields</span>;
 <span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>frame</span>::<span class='ident'>VoiceFrame</span>;
@@ -290,7 +291,7 @@
     <span class='doccomment'>/// A runtime error occured.</span>
     <span class='ident'>Error</span>(<span class='ident'>P25Error</span>),
     <span class='doccomment'>/// An NID at the start of a packet was decoded.</span>
-    <span class='ident'>PacketNID</span>(<span class='ident'>NetworkID</span>),
+    <span class='ident'>PacketNID</span>(<span class='ident'>NetworkId</span>),
     <span class='doccomment'>/// A voice header was received.</span>
     <span class='ident'>VoiceHeader</span>(<span class='ident'>VoiceHeaderFields</span>),
     <span class='doccomment'>/// A voice frame was received.</span>
@@ -302,7 +303,7 @@
     <span class='doccomment'>/// A voice low-speed data fragment was decoded.</span>
     <span class='ident'>LowSpeedDataFragment</span>(<span class='ident'>u32</span>),
     <span class='doccomment'>/// A trunking signalling packet was received.</span>
-    <span class='ident'>TrunkingControl</span>(<span class='ident'>TSBKFields</span>),
+    <span class='ident'>TrunkingControl</span>(<span class='ident'>TsbkFields</span>),
     <span class='doccomment'>/// A voice terminator link control was received.</span>
     <span class='ident'>VoiceTerm</span>(<span class='ident'>LinkControlFields</span>),
 }
@@ -320,7 +321,7 @@
     <span class='doccomment'>/// Decoding a link control voice terminator.</span>
     <span class='ident'>DecodeLCTerminator</span>(<span class='ident'>VoiceLCTerminatorReceiver</span>),
     <span class='doccomment'>/// Decoding a trunking signalling packet.</span>
-    <span class='ident'>DecodeTSBK</span>(<span class='ident'>TSBKReceiver</span>),
+    <span class='ident'>DecodeTSBK</span>(<span class='ident'>TsbkReceiver</span>),
 }
 
 <span class='doccomment'>/// Action the state machine should take.</span>
@@ -365,9 +366,9 @@
 
     <span class='doccomment'>/// Process the given sample and determine how to update state.</span>
     <span class='kw'>fn</span> <span class='ident'>handle</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>s</span>: <span class='ident'>f32</span>) <span class='op'>-&gt;</span> <span class='ident'>StateChange</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>State</span>::<span class='op'>*</span>;
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StateChange</span>::<span class='op'>*</span>;
-        <span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>nid</span>::<span class='ident'>DataUnit</span>::<span class='op'>*</span>;
+        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>State</span>::<span class='kw-2'>*</span>;
+        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StateChange</span>::<span class='kw-2'>*</span>;
+        <span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>nid</span>::<span class='ident'>DataUnit</span>::<span class='kw-2'>*</span>;
 
         <span class='kw'>let</span> <span class='ident'>event</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>feed</span>(<span class='ident'>s</span>) {
             <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>event</span>)) <span class='op'>=&gt;</span> <span class='ident'>event</span>,
@@ -379,7 +380,7 @@
         };
 
         <span class='kw'>let</span> <span class='ident'>dibit</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>event</span> {
-            <span class='ident'>ReceiverEvent</span>::<span class='ident'>NetworkID</span>(<span class='ident'>nid</span>) <span class='op'>=&gt;</span> {
+            <span class='ident'>ReceiverEvent</span>::<span class='ident'>NetworkId</span>(<span class='ident'>nid</span>) <span class='op'>=&gt;</span> {
                 <span class='kw'>let</span> <span class='ident'>next</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>nid</span>.<span class='ident'>data_unit</span> {
                     <span class='ident'>VoiceHeader</span> <span class='op'>=&gt;</span>
                         <span class='ident'>DecodeHeader</span>(<span class='ident'>VoiceHeaderReceiver</span>::<span class='ident'>new</span>()),
@@ -394,7 +395,7 @@
                     <span class='ident'>VoiceCCFrameGroup</span> <span class='op'>=&gt;</span>
                         <span class='ident'>DecodeCCFrameGroup</span>(<span class='ident'>VoiceCCFrameGroupReceiver</span>::<span class='ident'>new</span>()),
                     <span class='ident'>TrunkingSignaling</span> <span class='op'>=&gt;</span>
-                        <span class='ident'>DecodeTSBK</span>(<span class='ident'>TSBKReceiver</span>::<span class='ident'>new</span>()),
+                        <span class='ident'>DecodeTSBK</span>(<span class='ident'>TsbkReceiver</span>::<span class='ident'>new</span>()),
                     <span class='ident'>DataPacket</span> <span class='op'>=&gt;</span> {
                         <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>resync</span>();
                         <span class='ident'>Idle</span>

@@ -9,6 +9,7 @@
 
     <title>status.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -235,8 +236,8 @@
 <span class='kw'>use</span> <span class='ident'>bits</span>;
 <span class='kw'>use</span> <span class='ident'>consts</span>::<span class='ident'>SYNC_SYMBOLS</span>;
 
-<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StatusCode</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StreamSymbol</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StatusCode</span>::<span class='kw-2'>*</span>;
+<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StreamSymbol</span>::<span class='kw-2'>*</span>;
 
 <span class='doccomment'>/// Number of dibits output per status period, including the status symbol.</span>
 <span class='kw'>const</span> <span class='ident'>DIBITS_PER_UPDATE</span>: <span class='ident'>u32</span> <span class='op'>=</span> <span class='number'>70</span> <span class='op'>/</span> <span class='number'>2</span> <span class='op'>+</span> <span class='number'>1</span>;
@@ -367,7 +368,7 @@
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
     <span class='kw'>use</span> <span class='ident'>bits</span>;
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
     <span class='kw'>use</span> <span class='ident'>std</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>

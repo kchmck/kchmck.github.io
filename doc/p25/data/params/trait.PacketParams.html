@@ -9,6 +9,7 @@
 
     <title>p25::data::params::PacketParams - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -60,24 +61,24 @@
 }</pre>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.block_bytes' class='method stab '><span id='block_bytes.v' class='invisible'><code>fn <a href='#tymethod.block_bytes' class='fnname'>block_bytes</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Number of data bytes in a normal block.</p>
-</div><h3 id='tymethod.tail_bytes' class='method stab '><span id='tail_bytes.v' class='invisible'><code>fn <a href='#tymethod.tail_bytes' class='fnname'>tail_bytes</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Number of data bytes in the tail block.</p>
+        <h3 id='tymethod.block_bytes' class='method'><span id='block_bytes.v' class='invisible'><code>fn <a href='#tymethod.block_bytes' class='fnname'>block_bytes</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Number of data bytes in a normal block.</p>
+</div><h3 id='tymethod.tail_bytes' class='method'><span id='tail_bytes.v' class='invisible'><code>fn <a href='#tymethod.tail_bytes' class='fnname'>tail_bytes</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Number of data bytes in the tail block.</p>
 </div></div>
             <h2 id='provided-methods'>Provided Methods</h2>
             <div class='methods'>
-        <h3 id='method.max_blocks' class='method stab '><span id='max_blocks.v' class='invisible'><code>fn <a href='#method.max_blocks' class='fnname'>max_blocks</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Maximum number of blocks in the packet, including the tail block.</p>
-</div><h3 id='method.packet_bytes' class='method stab '><span id='packet_bytes.v' class='invisible'><code>fn <a href='#method.packet_bytes' class='fnname'>packet_bytes</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Maximum number of data bytes in the packet.</p>
-</div><h3 id='method.blocks' class='method stab '><span id='blocks.v' class='invisible'><code>fn <a href='#method.blocks' class='fnname'>blocks</a>(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Calculate the total number of data blocks (normal and tail) needed to hold the
+        <h3 id='method.max_blocks' class='method'><span id='max_blocks.v' class='invisible'><code>fn <a href='#method.max_blocks' class='fnname'>max_blocks</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Maximum number of blocks in the packet, including the tail block.</p>
+</div><h3 id='method.packet_bytes' class='method'><span id='packet_bytes.v' class='invisible'><code>fn <a href='#method.packet_bytes' class='fnname'>packet_bytes</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Maximum number of data bytes in the packet.</p>
+</div><h3 id='method.blocks' class='method'><span id='blocks.v' class='invisible'><code>fn <a href='#method.blocks' class='fnname'>blocks</a>(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Calculate the total number of data blocks (normal and tail) needed to hold the
 given amount of bytes.</p>
-</div><h3 id='method.pads' class='method stab '><span id='pads.v' class='invisible'><code>fn <a href='#method.pads' class='fnname'>pads</a>(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Calculate the number of pads needed for the tail block (and possibly
+</div><h3 id='method.pads' class='method'><span id='pads.v' class='invisible'><code>fn <a href='#method.pads' class='fnname'>pads</a>(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Calculate the number of pads needed for the tail block (and possibly
 second-to-last block) for the given amount of bytes.</p>
-</div><h3 id='method.full_blocks' class='method stab '><span id='full_blocks.v' class='invisible'><code>fn <a href='#method.full_blocks' class='fnname'>full_blocks</a>(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Calculate the number of normal data blocks (tail block not included) needed to
+</div><h3 id='method.full_blocks' class='method'><span id='full_blocks.v' class='invisible'><code>fn <a href='#method.full_blocks' class='fnname'>full_blocks</a>(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Calculate the number of normal data blocks (tail block not included) needed to
 hold the given amount of bytes.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl PacketParams for <a class='struct' href='../../../p25/data/params/struct.ConfirmedParams.html' title='p25::data::params::ConfirmedParams'>ConfirmedParams</a></code></li>
-<li><code>impl PacketParams for <a class='struct' href='../../../p25/data/params/struct.UnconfirmedParams.html' title='p25::data::params::UnconfirmedParams'>UnconfirmedParams</a></code></li>
+    <li><code>impl PacketParams for <a class='struct' href='../../../p25/data/params/struct.ConfirmedParams.html' title='struct p25::data::params::ConfirmedParams'>ConfirmedParams</a></code></li>
+<li><code>impl PacketParams for <a class='struct' href='../../../p25/data/params/struct.UnconfirmedParams.html' title='struct p25::data::params::UnconfirmedParams'>UnconfirmedParams</a></code></li>
 </ul><script type="text/javascript" async
                          src="../../../implementors/p25/data/params/trait.PacketParams.js">
                  </script></section>

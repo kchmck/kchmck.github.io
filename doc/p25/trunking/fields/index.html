@@ -9,6 +9,7 @@
 
     <title>p25::trunking::fields - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -47,13 +48,13 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/p25/trunking/fields.rs.html#1-420' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/p25/trunking/fields.rs.html#1-435' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Decode various trunking-related packet fields.</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.AdjacentSite.html'
-                                  title='p25::trunking::fields::AdjacentSite'>AdjacentSite</a></td>
+                                  title='struct p25::trunking::fields::AdjacentSite'>AdjacentSite</a></td>
                            <td class='docblock-short'>
                                 <p>Advertisement of an adjacent/nearby site within the same WACN (Wide Area Communication
 Network.)</p>
@@ -61,28 +62,35 @@ Network.)</p>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.AltControlChannel.html'
-                                  title='p25::trunking::fields::AltControlChannel'>AltControlChannel</a></td>
+                                  title='struct p25::trunking::fields::AltControlChannel'>AltControlChannel</a></td>
                            <td class='docblock-short'>
                                 <p>Advertisement of one or more alternative control channels for the current site.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.Channel.html'
-                                  title='p25::trunking::fields::Channel'>Channel</a></td>
+                                  title='struct p25::trunking::fields::Channel'>Channel</a></td>
                            <td class='docblock-short'>
                                 <p>Uniquely identifies a channel within a site.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.ChannelParams.html'
-                                  title='p25::trunking::fields::ChannelParams'>ChannelParams</a></td>
+                                  title='struct p25::trunking::fields::ChannelParams'>ChannelParams</a></td>
                            <td class='docblock-short'>
                                 <p>Computes TX/RX frequencies and bandwidth for channel numbers within a site.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='struct' href='struct.ChannelParamsMap.html'
+                                  title='struct p25::trunking::fields::ChannelParamsMap'>ChannelParamsMap</a></td>
+                           <td class='docblock-short'>
+                                <p>Maps channel identifiers (maximum 16 per control channel) to their tuning parameters.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='struct' href='struct.ChannelParamsUpdate.html'
-                                  title='p25::trunking::fields::ChannelParamsUpdate'>ChannelParamsUpdate</a></td>
+                                  title='struct p25::trunking::fields::ChannelParamsUpdate'>ChannelParamsUpdate</a></td>
                            <td class='docblock-short'>
                                 <p>Advertisement of parameters used to calculate TX/RX frequencies within the given
 associated channel.</p>
@@ -90,14 +98,14 @@ associated channel.</p>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.GroupTrafficUpdate.html'
-                                  title='p25::trunking::fields::GroupTrafficUpdate'>GroupTrafficUpdate</a></td>
+                                  title='struct p25::trunking::fields::GroupTrafficUpdate'>GroupTrafficUpdate</a></td>
                            <td class='docblock-short'>
                                 <p>Updates subscribers about new or ongoing talkgroup conversations.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.NetworkStatusBroadcast.html'
-                                  title='p25::trunking::fields::NetworkStatusBroadcast'>NetworkStatusBroadcast</a></td>
+                                  title='struct p25::trunking::fields::NetworkStatusBroadcast'>NetworkStatusBroadcast</a></td>
                            <td class='docblock-short'>
                                 <p>WACN (Wide Area Communication Network) and System ID information of current control
 channel.</p>
@@ -105,49 +113,49 @@ channel.</p>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.PhoneAlert.html'
-                                  title='p25::trunking::fields::PhoneAlert'>PhoneAlert</a></td>
+                                  title='struct p25::trunking::fields::PhoneAlert'>PhoneAlert</a></td>
                            <td class='docblock-short'>
                                 <p>Alerts a unit of a call from the public phone network.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.RFSSStatusBroadcast.html'
-                                  title='p25::trunking::fields::RFSSStatusBroadcast'>RFSSStatusBroadcast</a></td>
+                           <td><a class='struct' href='struct.RfssStatusBroadcast.html'
+                                  title='struct p25::trunking::fields::RfssStatusBroadcast'>RfssStatusBroadcast</a></td>
                            <td class='docblock-short'>
                                 <p>Site and RFSS information of current control channel.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.ServiceOptions.html'
-                                  title='p25::trunking::fields::ServiceOptions'>ServiceOptions</a></td>
+                                  title='struct p25::trunking::fields::ServiceOptions'>ServiceOptions</a></td>
                            <td class='docblock-short'>
                                 <p>Options that can be requested/granted by a service.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.SiteOptions.html'
-                                  title='p25::trunking::fields::SiteOptions'>SiteOptions</a></td>
+                                  title='struct p25::trunking::fields::SiteOptions'>SiteOptions</a></td>
                            <td class='docblock-short'>
                                 <p>Options for a P25 site.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.SystemServices.html'
-                                  title='p25::trunking::fields::SystemServices'>SystemServices</a></td>
+                                  title='struct p25::trunking::fields::SystemServices'>SystemServices</a></td>
                            <td class='docblock-short'>
                                 <p>Supported services of a control channel.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.UnitCallAlert.html'
-                                  title='p25::trunking::fields::UnitCallAlert'>UnitCallAlert</a></td>
+                                  title='struct p25::trunking::fields::UnitCallAlert'>UnitCallAlert</a></td>
                            <td class='docblock-short'>
                                 <p>Request for a target unit to call a source unit.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.UnitCallRequest.html'
-                                  title='p25::trunking::fields::UnitCallRequest'>UnitCallRequest</a></td>
+                                  title='struct p25::trunking::fields::UnitCallRequest'>UnitCallRequest</a></td>
                            <td class='docblock-short'>
                                 <p>Signals a target unit that a unit-to-unit all has been requested.</p>
                            </td>
@@ -155,24 +163,16 @@ channel.</p>
 <table>
                        <tr class=' module-item'>
                            <td><a class='enum' href='enum.RegResponse.html'
-                                  title='p25::trunking::fields::RegResponse'>RegResponse</a></td>
+                                  title='enum p25::trunking::fields::RegResponse'>RegResponse</a></td>
                            <td class='docblock-short'>
                                 <p>Registration response.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='enum' href='enum.TalkGroup.html'
-                                  title='p25::trunking::fields::TalkGroup'>TalkGroup</a></td>
+                                  title='enum p25::trunking::fields::TalkGroup'>TalkGroup</a></td>
                            <td class='docblock-short'>
                                 <p>Identifies which group a message belongs to.</p>
-                           </td>
-                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class='type' href='type.ChannelParamsMap.html'
-                                  title='p25::trunking::fields::ChannelParamsMap'>ChannelParamsMap</a></td>
-                           <td class='docblock-short'>
-                                <p>Maps channel identifiers (maximum 16 per control channel) to their tuning parameters.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

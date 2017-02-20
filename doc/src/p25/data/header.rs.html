@@ -9,6 +9,7 @@
 
     <title>header.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -512,7 +513,7 @@
 <span class='doccomment'>/// Just write the single byte.</span>
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>B</span>: <span class='ident'>ByteField</span><span class='op'>&gt;</span> <span class='ident'>BufWrite</span> <span class='kw'>for</span> <span class='ident'>B</span> {
     <span class='kw'>fn</span> <span class='ident'>write</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='lifetime'>&#39;b</span>, <span class='ident'>T</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>u8</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='kw-2'>mut</span> <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;b</span> <span class='kw-2'>mut</span> <span class='ident'>T</span>) {
-        <span class='op'>*</span><span class='ident'>buf</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>() <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>byte</span>();
+        <span class='kw-2'>*</span><span class='ident'>buf</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>() <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>byte</span>();
     }
 }
 
@@ -596,9 +597,9 @@
     <span class='kw'>fn</span> <span class='ident'>write</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='lifetime'>&#39;b</span>, <span class='ident'>T</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>u8</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='kw-2'>mut</span> <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;b</span> <span class='kw-2'>mut</span> <span class='ident'>T</span>) {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&gt;&gt;</span> <span class='number'>24</span> <span class='op'>==</span> <span class='number'>0</span>);
 
-        <span class='op'>*</span><span class='ident'>buf</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>() <span class='op'>=</span> (<span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&gt;&gt;</span> <span class='number'>16</span>) <span class='kw'>as</span> <span class='ident'>u8</span>;
-        <span class='op'>*</span><span class='ident'>buf</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>() <span class='op'>=</span> (<span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&gt;&gt;</span> <span class='number'>8</span>) <span class='kw'>as</span> <span class='ident'>u8</span>;
-        <span class='op'>*</span><span class='ident'>buf</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>() <span class='op'>=</span> <span class='self'>self</span>.<span class='number'>0</span> <span class='kw'>as</span> <span class='ident'>u8</span>;
+        <span class='kw-2'>*</span><span class='ident'>buf</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>() <span class='op'>=</span> (<span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&gt;&gt;</span> <span class='number'>16</span>) <span class='kw'>as</span> <span class='ident'>u8</span>;
+        <span class='kw-2'>*</span><span class='ident'>buf</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>() <span class='op'>=</span> (<span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&gt;&gt;</span> <span class='number'>8</span>) <span class='kw'>as</span> <span class='ident'>u8</span>;
+        <span class='kw-2'>*</span><span class='ident'>buf</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>() <span class='op'>=</span> <span class='self'>self</span>.<span class='number'>0</span> <span class='kw'>as</span> <span class='ident'>u8</span>;
     }
 }
 
@@ -701,7 +702,7 @@
         <span class='self'>self</span>.<span class='ident'>addr</span>.<span class='ident'>write</span>(<span class='ident'>buf</span>);
         <span class='self'>self</span>.<span class='ident'>blocks</span>.<span class='ident'>write</span>(<span class='ident'>buf</span>);
         <span class='self'>self</span>.<span class='ident'>pads</span>.<span class='ident'>write</span>(<span class='ident'>buf</span>);
-        <span class='op'>*</span><span class='ident'>buf</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>() <span class='op'>=</span> <span class='number'>0</span>;
+        <span class='kw-2'>*</span><span class='ident'>buf</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>() <span class='op'>=</span> <span class='number'>0</span>;
         <span class='self'>self</span>.<span class='ident'>data_offset</span>.<span class='ident'>write</span>(<span class='ident'>buf</span>);
     }
 }
@@ -749,7 +750,7 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
     <span class='kw'>use</span> <span class='ident'>data</span>::<span class='ident'>fields</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>

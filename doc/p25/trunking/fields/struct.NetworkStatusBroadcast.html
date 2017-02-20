@@ -9,6 +9,7 @@
 
     <title>p25::trunking::fields::NetworkStatusBroadcast - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -47,10 +48,10 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/p25/trunking/fields.rs.html#294' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/p25/trunking/fields.rs.html#308' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct NetworkStatusBroadcast&lt;'a&gt;(_);</pre><div class='docblock'><p>WACN (Wide Area Communication Network) and System ID information of current control
 channel.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a&gt; <a class='struct' href='../../../p25/trunking/fields/struct.NetworkStatusBroadcast.html' title='p25::trunking::fields::NetworkStatusBroadcast'>NetworkStatusBroadcast</a>&lt;'a&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/trunking/fields.rs.html#296-310' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a&gt; <a class='struct' href='../../../p25/trunking/fields/struct.NetworkStatusBroadcast.html' title='struct p25::trunking::fields::NetworkStatusBroadcast'>NetworkStatusBroadcast</a>&lt;'a&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/trunking/fields.rs.html#310-324' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(payload: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Create a new <code>NetworkStatusBroadcast</code> decoder from the given payload bytes.</p>
 </div><h4 id='method.area' class='method'><span id='area.v' class='invisible'><code>fn <a href='#method.area' class='fnname'>area</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h4>
@@ -59,9 +60,9 @@ channel.</p>
 <div class='docblock'><p>WACN ID within the communications network.</p>
 </div><h4 id='method.system' class='method'><span id='system.v' class='invisible'><code>fn <a href='#method.system' class='fnname'>system</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a></code></span></h4>
 <div class='docblock'><p>System ID of site within WACN.</p>
-</div><h4 id='method.channel' class='method'><span id='channel.v' class='invisible'><code>fn <a href='#method.channel' class='fnname'>channel</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.Channel.html' title='p25::trunking::fields::Channel'>Channel</a></code></span></h4>
+</div><h4 id='method.channel' class='method'><span id='channel.v' class='invisible'><code>fn <a href='#method.channel' class='fnname'>channel</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.Channel.html' title='struct p25::trunking::fields::Channel'>Channel</a></code></span></h4>
 <div class='docblock'><p>Channel information for computing TX/RX frequencies.</p>
-</div><h4 id='method.services' class='method'><span id='services.v' class='invisible'><code>fn <a href='#method.services' class='fnname'>services</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.SystemServices.html' title='p25::trunking::fields::SystemServices'>SystemServices</a></code></span></h4>
+</div><h4 id='method.services' class='method'><span id='services.v' class='invisible'><code>fn <a href='#method.services' class='fnname'>services</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.SystemServices.html' title='struct p25::trunking::fields::SystemServices'>SystemServices</a></code></span></h4>
 <div class='docblock'><p>Services supported by the current site.</p>
 </div></div></section>
     <section id='search' class="content hidden"></section>

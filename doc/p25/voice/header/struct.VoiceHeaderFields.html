@@ -9,6 +9,7 @@
 
     <title>p25::voice::header::VoiceHeaderFields - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -50,18 +51,18 @@
                </span><a class='srclink' href='../../../src/p25/voice/header.rs.html#71' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct VoiceHeaderFields(_);</pre><div class='docblock'><p>Begins each voice message with information necessary to decode the following
 superframes.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/voice/header/struct.VoiceHeaderFields.html' title='p25::voice::header::VoiceHeaderFields'>VoiceHeaderFields</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/voice/header.rs.html#73-90' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(buf: <a class='type' href='../../../p25/voice/header/type.Buf.html' title='p25::voice::header::Buf'>Buf</a>) -&gt; Self</code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/voice/header/struct.VoiceHeaderFields.html' title='struct p25::voice::header::VoiceHeaderFields'>VoiceHeaderFields</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/voice/header.rs.html#73-90' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(buf: <a class='type' href='../../../p25/voice/header/type.Buf.html' title='type p25::voice::header::Buf'>Buf</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Create a new <code>VoiceHeaderFields</code> decoder from the given bytes.</p>
 </div><h4 id='method.crypto_init' class='method'><span id='crypto_init.v' class='invisible'><code>fn <a href='#method.crypto_init' class='fnname'>crypto_init</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a></code></span></h4>
 <div class='docblock'><p>Initialization vector for cryptographic algorithm.</p>
 </div><h4 id='method.mfg' class='method'><span id='mfg.v' class='invisible'><code>fn <a href='#method.mfg' class='fnname'>mfg</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h4>
 <div class='docblock'><p>Manufacturer ID.</p>
-</div><h4 id='method.crypto_alg' class='method'><span id='crypto_alg.v' class='invisible'><code>fn <a href='#method.crypto_alg' class='fnname'>crypto_alg</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/voice/crypto/enum.CryptoAlgorithm.html' title='p25::voice::crypto::CryptoAlgorithm'>CryptoAlgorithm</a></code></span></h4>
+</div><h4 id='method.crypto_alg' class='method'><span id='crypto_alg.v' class='invisible'><code>fn <a href='#method.crypto_alg' class='fnname'>crypto_alg</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/voice/crypto/enum.CryptoAlgorithm.html' title='enum p25::voice::crypto::CryptoAlgorithm'>CryptoAlgorithm</a></code></span></h4>
 <div class='docblock'><p>Cryptographic algorithm in use, if any.</p>
 </div><h4 id='method.crypto_key' class='method'><span id='crypto_key.v' class='invisible'><code>fn <a href='#method.crypto_key' class='fnname'>crypto_key</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a></code></span></h4>
 <div class='docblock'><p>Encryption key to use.</p>
-</div><h4 id='method.talk_group' class='method'><span id='talk_group.v' class='invisible'><code>fn <a href='#method.talk_group' class='fnname'>talk_group</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/trunking/fields/enum.TalkGroup.html' title='p25::trunking::fields::TalkGroup'>TalkGroup</a></code></span></h4>
+</div><h4 id='method.talk_group' class='method'><span id='talk_group.v' class='invisible'><code>fn <a href='#method.talk_group' class='fnname'>talk_group</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/trunking/fields/enum.TalkGroup.html' title='enum p25::trunking::fields::TalkGroup'>TalkGroup</a></code></span></h4>
 <div class='docblock'><p>Talkgroup participating in the voice message.</p>
 </div></div></section>
     <section id='search' class="content hidden"></section>

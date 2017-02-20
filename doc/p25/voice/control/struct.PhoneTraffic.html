@@ -9,6 +9,7 @@
 
     <title>p25::voice::control::PhoneTraffic - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -49,10 +50,10 @@
                    </a>
                </span><a class='srclink' href='../../../src/p25/voice/control.rs.html#140' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct PhoneTraffic(_);</pre><div class='docblock'><p>Identity of unit participating in current phone call.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/voice/control/struct.PhoneTraffic.html' title='p25::voice::control::PhoneTraffic'>PhoneTraffic</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/voice/control.rs.html#142-153' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(lc: <a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='p25::voice::control::LinkControlFields'>LinkControlFields</a>) -&gt; Self</code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/voice/control/struct.PhoneTraffic.html' title='struct p25::voice::control::PhoneTraffic'>PhoneTraffic</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/voice/control.rs.html#142-153' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(lc: <a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='struct p25::voice::control::LinkControlFields'>LinkControlFields</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Create a new <code>PhoneTraffic</code> decoder from the base LC decoder.</p>
-</div><h4 id='method.opts' class='method'><span id='opts.v' class='invisible'><code>fn <a href='#method.opts' class='fnname'>opts</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.ServiceOptions.html' title='p25::trunking::fields::ServiceOptions'>ServiceOptions</a></code></span></h4>
+</div><h4 id='method.opts' class='method'><span id='opts.v' class='invisible'><code>fn <a href='#method.opts' class='fnname'>opts</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.ServiceOptions.html' title='struct p25::trunking::fields::ServiceOptions'>ServiceOptions</a></code></span></h4>
 <div class='docblock'><p>Options requested/granted for the traffic channel.</p>
 </div><h4 id='method.call_timer' class='method'><span id='call_timer.v' class='invisible'><code>fn <a href='#method.call_timer' class='fnname'>call_timer</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a></code></span></h4>
 <div class='docblock'><p>Maximum amount of time (in units of 100ms) that the phone call can occupy the

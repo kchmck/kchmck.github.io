@@ -9,6 +9,7 @@
 
     <title>p25::voice::rand::PseudoRand - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -49,8 +50,8 @@
                    </a>
                </span><a class='srclink' href='../../../src/p25/voice/rand.rs.html#4-7' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct PseudoRand { /* fields omitted */ }</pre><div class='docblock'><p>Generates 23-bit and 15-bit scrambling words using the P25 PN sequence algorithm.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/voice/rand/struct.PseudoRand.html' title='p25::voice::rand::PseudoRand'>PseudoRand</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/voice/rand.rs.html#9-53' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(init: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>) -&gt; <a class='struct' href='../../../p25/voice/rand/struct.PseudoRand.html' title='p25::voice::rand::PseudoRand'>PseudoRand</a></code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/voice/rand/struct.PseudoRand.html' title='struct p25::voice::rand::PseudoRand'>PseudoRand</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/voice/rand.rs.html#9-53' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(init: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>) -&gt; <a class='struct' href='../../../p25/voice/rand/struct.PseudoRand.html' title='struct p25::voice::rand::PseudoRand'>PseudoRand</a></code></span></h4>
 <div class='docblock'><p>Create a new <code>PseudoRand</code> generator using the given 12-bit seed.</p>
 </div><h4 id='method.next_23' class='method'><span id='next_23.v' class='invisible'><code>fn <a href='#method.next_23' class='fnname'>next_23</a>(&amp;mut self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></span></h4>
 <div class='docblock'><p>Retrieve the next 23-bit scrambling word.</p>

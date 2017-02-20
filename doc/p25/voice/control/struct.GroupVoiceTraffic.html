@@ -9,6 +9,7 @@
 
     <title>p25::voice::control::GroupVoiceTraffic - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -49,14 +50,14 @@
                    </a>
                </span><a class='srclink' href='../../../src/p25/voice/control.rs.html#106' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct GroupVoiceTraffic(_);</pre><div class='docblock'><p>Identity of unit transmitting on the current talkgroup traffic channel.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/voice/control/struct.GroupVoiceTraffic.html' title='p25::voice::control::GroupVoiceTraffic'>GroupVoiceTraffic</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/voice/control.rs.html#108-120' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(lc: <a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='p25::voice::control::LinkControlFields'>LinkControlFields</a>) -&gt; Self</code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/voice/control/struct.GroupVoiceTraffic.html' title='struct p25::voice::control::GroupVoiceTraffic'>GroupVoiceTraffic</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/voice/control.rs.html#108-120' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(lc: <a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='struct p25::voice::control::LinkControlFields'>LinkControlFields</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Create a new <code>GroupVoiceTraffic</code> from the base LC decoder.</p>
 </div><h4 id='method.mfg' class='method'><span id='mfg.v' class='invisible'><code>fn <a href='#method.mfg' class='fnname'>mfg</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h4>
 <div class='docblock'><p>Manufacturer ID of current packet.</p>
-</div><h4 id='method.opts' class='method'><span id='opts.v' class='invisible'><code>fn <a href='#method.opts' class='fnname'>opts</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.ServiceOptions.html' title='p25::trunking::fields::ServiceOptions'>ServiceOptions</a></code></span></h4>
+</div><h4 id='method.opts' class='method'><span id='opts.v' class='invisible'><code>fn <a href='#method.opts' class='fnname'>opts</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/trunking/fields/struct.ServiceOptions.html' title='struct p25::trunking::fields::ServiceOptions'>ServiceOptions</a></code></span></h4>
 <div class='docblock'><p>Service options provided by current traffic channel.</p>
-</div><h4 id='method.talkgroup' class='method'><span id='talkgroup.v' class='invisible'><code>fn <a href='#method.talkgroup' class='fnname'>talkgroup</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/trunking/fields/enum.TalkGroup.html' title='p25::trunking::fields::TalkGroup'>TalkGroup</a></code></span></h4>
+</div><h4 id='method.talkgroup' class='method'><span id='talkgroup.v' class='invisible'><code>fn <a href='#method.talkgroup' class='fnname'>talkgroup</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/trunking/fields/enum.TalkGroup.html' title='enum p25::trunking::fields::TalkGroup'>TalkGroup</a></code></span></h4>
 <div class='docblock'><p>Current resident talkgroup of traffic channel.</p>
 </div><h4 id='method.src_unit' class='method'><span id='src_unit.v' class='invisible'><code>fn <a href='#method.src_unit' class='fnname'>src_unit</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></span></h4>
 <div class='docblock'><p>Address of user currently transmitting.</p>

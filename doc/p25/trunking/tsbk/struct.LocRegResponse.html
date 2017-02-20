@@ -9,6 +9,7 @@
 
     <title>p25::trunking::tsbk::LocRegResponse - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -49,12 +50,12 @@
                    </a>
                </span><a class='srclink' href='../../../src/p25/trunking/tsbk.rs.html#220' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct LocRegResponse(_);</pre><div class='docblock'><p>Response given to a location registration request.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/trunking/tsbk/struct.LocRegResponse.html' title='p25::trunking::tsbk::LocRegResponse'>LocRegResponse</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/trunking/tsbk.rs.html#222-236' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(tsbk: <a class='struct' href='../../../p25/trunking/tsbk/struct.TSBKFields.html' title='p25::trunking::tsbk::TSBKFields'>TSBKFields</a>) -&gt; Self</code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/trunking/tsbk/struct.LocRegResponse.html' title='struct p25::trunking::tsbk::LocRegResponse'>LocRegResponse</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/trunking/tsbk.rs.html#222-236' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(tsbk: <a class='struct' href='../../../p25/trunking/tsbk/struct.TsbkFields.html' title='struct p25::trunking::tsbk::TsbkFields'>TsbkFields</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Create a new <code>LocRegResponse</code> decoder from the base TSBK decoder.</p>
-</div><h4 id='method.response' class='method'><span id='response.v' class='invisible'><code>fn <a href='#method.response' class='fnname'>response</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/trunking/fields/enum.RegResponse.html' title='p25::trunking::fields::RegResponse'>RegResponse</a></code></span></h4>
+</div><h4 id='method.response' class='method'><span id='response.v' class='invisible'><code>fn <a href='#method.response' class='fnname'>response</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/trunking/fields/enum.RegResponse.html' title='enum p25::trunking::fields::RegResponse'>RegResponse</a></code></span></h4>
 <div class='docblock'><p>System response to the registration request.</p>
-</div><h4 id='method.talkgroup' class='method'><span id='talkgroup.v' class='invisible'><code>fn <a href='#method.talkgroup' class='fnname'>talkgroup</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/trunking/fields/enum.TalkGroup.html' title='p25::trunking::fields::TalkGroup'>TalkGroup</a></code></span></h4>
+</div><h4 id='method.talkgroup' class='method'><span id='talkgroup.v' class='invisible'><code>fn <a href='#method.talkgroup' class='fnname'>talkgroup</a>(&amp;self) -&gt; <a class='enum' href='../../../p25/trunking/fields/enum.TalkGroup.html' title='enum p25::trunking::fields::TalkGroup'>TalkGroup</a></code></span></h4>
 <div class='docblock'><p>Talkgroup of requesting unit.</p>
 </div><h4 id='method.rfss' class='method'><span id='rfss.v' class='invisible'><code>fn <a href='#method.rfss' class='fnname'>rfss</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h4>
 <div class='docblock'><p>RF Subsystem ID of site within System.</p>

@@ -9,6 +9,7 @@
 
     <title>error.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -78,7 +79,7 @@
     <span class='doccomment'>/// Too many errors were detected when attempting a RS decode.</span>
     <span class='ident'>ReedSolomonUnrecoverable</span>,
     <span class='doccomment'>/// Too many errors were detected when attempting a BCH decode.</span>
-    <span class='ident'>BCHUnrecoverable</span>,
+    <span class='ident'>BchUnrecoverable</span>,
     <span class='doccomment'>/// Too many errors were detected when attempting a Golay decode.</span>
     <span class='ident'>GolayUnrecoverable</span>,
     <span class='doccomment'>/// Too many errors were detected when attempting a Hamming decode.</span>
@@ -88,7 +89,7 @@
     <span class='doccomment'>/// An ambiguous symbol or too many errors were detected when attempting convolutional decode.</span>
     <span class='ident'>ViterbiUnrecoverable</span>,
     <span class='doccomment'>/// An unknown or corrupted NID was encountered.</span>
-    <span class='ident'>UnknownNID</span>,
+    <span class='ident'>UnknownNid</span>,
 }
 
 <span class='doccomment'>/// Standard result using `P25Error`.</span>

@@ -9,6 +9,7 @@
 
     <title>data_unit.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -255,8 +256,8 @@
 <span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>nid</span>;
 <span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>status</span>::{<span class='ident'>StreamSymbol</span>, <span class='ident'>StatusDeinterleaver</span>};
 
-<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>State</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StateChange</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>State</span>::<span class='kw-2'>*</span>;
+<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StateChange</span>::<span class='kw-2'>*</span>;
 
 <span class='doccomment'>/// Number of samples used to initially prime the correlator&#39;s moving average before starting to</span>
 <span class='doccomment'>/// look for sync.</span>
@@ -297,7 +298,7 @@
     <span class='doccomment'>/// Data or status symbol.</span>
     <span class='ident'>Symbol</span>(<span class='ident'>StreamSymbol</span>),
     <span class='doccomment'>/// Decoded NID information.</span>
-    <span class='ident'>NetworkID</span>(<span class='ident'>nid</span>::<span class='ident'>NetworkID</span>),
+    <span class='ident'>NetworkId</span>(<span class='ident'>nid</span>::<span class='ident'>NetworkId</span>),
 }
 
 <span class='doccomment'>/// Internal state of the state machine.</span>
@@ -307,7 +308,7 @@
     <span class='doccomment'>/// Lock onto frame synchronization.</span>
     <span class='ident'>Sync</span>(<span class='ident'>SyncDetector</span>),
     <span class='doccomment'>/// Decode NID.</span>
-    <span class='ident'>DecodeNID</span>(<span class='ident'>SymbolReceiver</span>, <span class='ident'>nid</span>::<span class='ident'>NIDReceiver</span>),
+    <span class='ident'>DecodeNID</span>(<span class='ident'>SymbolReceiver</span>, <span class='ident'>nid</span>::<span class='ident'>NidReceiver</span>),
     <span class='doccomment'>/// Decode data and status symbols.</span>
     <span class='ident'>DecodePacket</span>(<span class='ident'>SymbolReceiver</span>),
     <span class='doccomment'>/// Flush pads at end of packet.</span>
@@ -337,7 +338,7 @@
 
     <span class='doccomment'>/// Initial NID decode state.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode_nid</span>(<span class='ident'>decoder</span>: <span class='ident'>Decoder</span>) <span class='op'>-&gt;</span> <span class='ident'>State</span> {
-        <span class='ident'>DecodeNID</span>(<span class='ident'>SymbolReceiver</span>::<span class='ident'>new</span>(<span class='ident'>decoder</span>), <span class='ident'>nid</span>::<span class='ident'>NIDReceiver</span>::<span class='ident'>new</span>())
+        <span class='ident'>DecodeNID</span>(<span class='ident'>SymbolReceiver</span>::<span class='ident'>new</span>(<span class='ident'>decoder</span>), <span class='ident'>nid</span>::<span class='ident'>NidReceiver</span>::<span class='ident'>new</span>())
     }
 
     <span class='doccomment'>/// Initial symbol decode state.</span>
@@ -411,8 +412,8 @@
                 };
 
                 <span class='kw'>match</span> <span class='ident'>nid</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
-                    <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>nid</span>)) <span class='op'>=&gt;</span> <span class='ident'>EventChange</span>(<span class='ident'>ReceiverEvent</span>::<span class='ident'>NetworkID</span>(<span class='ident'>nid</span>),
-                                                 <span class='ident'>State</span>::<span class='ident'>decode_packet</span>(<span class='op'>*</span><span class='ident'>recv</span>)),
+                    <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>nid</span>)) <span class='op'>=&gt;</span> <span class='ident'>EventChange</span>(<span class='ident'>ReceiverEvent</span>::<span class='ident'>NetworkId</span>(<span class='ident'>nid</span>),
+                                                 <span class='ident'>State</span>::<span class='ident'>decode_packet</span>(<span class='kw-2'>*</span><span class='ident'>recv</span>)),
                     <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>e</span>)) <span class='op'>=&gt;</span> <span class='ident'>Error</span>(<span class='ident'>e</span>),
                     <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='ident'>NoChange</span>,
                 }

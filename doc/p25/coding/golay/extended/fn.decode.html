@@ -9,6 +9,7 @@
 
     <title>p25::coding::golay::extended::decode - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../../main.css">
     
@@ -48,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../../../src/p25/coding/golay.rs.html#56-59' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn decode(word: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a>&gt;</pre><div class='docblock'><p>Try to decode the given  24-bit word to the nearest codeword, correcting up to 3
+<pre class='rust fn'>pub fn decode(word: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='enum core::option::Option'>Option</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a>&gt;</pre><div class='docblock'><p>Try to decode the given  24-bit word to the nearest codeword, correcting up to 3
 errors.</p>
 
 <p>If decoding was successful, return <code>Some((data, err))</code>, where <code>data</code> is the 12

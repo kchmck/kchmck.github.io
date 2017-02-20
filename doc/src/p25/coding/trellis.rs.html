@@ -9,6 +9,7 @@
 
     <title>trellis.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -611,7 +612,7 @@
 
 <span class='kw'>use</span> <span class='ident'>bits</span>;
 
-<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>Decision</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>Decision</span>::<span class='kw-2'>*</span>;
 
 <span class='doccomment'>/// Half-rate convolutional (&quot;trellis&quot;) code state machine.</span>
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>DibitFSM</span> <span class='op'>=</span> <span class='ident'>TrellisFSM</span><span class='op'>&lt;</span><span class='ident'>DibitStates</span><span class='op'>&gt;</span>;
@@ -981,7 +982,7 @@
 
         <span class='kw'>for</span> (<span class='ident'>dest</span>, <span class='ident'>src</span>) <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>iter_mut</span>().<span class='ident'>zip</span>(<span class='ident'>other</span>.<span class='ident'>iter</span>()) {
             <span class='kw'>if</span> <span class='ident'>src</span> <span class='op'>!=</span> <span class='ident'>dest</span> {
-                <span class='op'>*</span><span class='ident'>dest</span> <span class='op'>=</span> <span class='prelude-val'>None</span>;
+                <span class='kw-2'>*</span><span class='ident'>dest</span> <span class='op'>=</span> <span class='prelude-val'>None</span>;
             }
         }
 
@@ -1024,9 +1025,9 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
     <span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>Edge</span>};
-    <span class='kw'>use</span> <span class='ident'>bits</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='ident'>bits</span>::<span class='kw-2'>*</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_dibit_code</span>() {

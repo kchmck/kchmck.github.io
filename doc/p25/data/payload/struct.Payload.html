@@ -9,6 +9,7 @@
 
     <title>p25::data::payload::Payload - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -48,17 +49,17 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../../src/p25/data/payload.rs.html#16-20' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct Payload&lt;'a, P:&nbsp;<a class='trait' href='../../../p25/data/params/trait.PacketParams.html' title='p25::data::params::PacketParams'>PacketParams</a>&gt; { /* fields omitted */ }</pre><div class='docblock'><p>Wraps a buffer of bytes, splitting them over payload blocks.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a, P:&nbsp;<a class='trait' href='../../../p25/data/params/trait.PacketParams.html' title='p25::data::params::PacketParams'>PacketParams</a>&gt; <a class='struct' href='../../../p25/data/payload/struct.Payload.html' title='p25::data::payload::Payload'>Payload</a>&lt;'a, P&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/payload.rs.html#22-62' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(data: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='struct' href='../../../p25/data/payload/struct.Payload.html' title='p25::data::payload::Payload'>Payload</a>&lt;'a, P&gt;</code></span></h4>
+<pre class='rust struct'>pub struct Payload&lt;'a, P:&nbsp;<a class='trait' href='../../../p25/data/params/trait.PacketParams.html' title='trait p25::data::params::PacketParams'>PacketParams</a>&gt; { /* fields omitted */ }</pre><div class='docblock'><p>Wraps a buffer of bytes, splitting them over payload blocks.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a, P:&nbsp;<a class='trait' href='../../../p25/data/params/trait.PacketParams.html' title='trait p25::data::params::PacketParams'>PacketParams</a>&gt; <a class='struct' href='../../../p25/data/payload/struct.Payload.html' title='struct p25::data::payload::Payload'>Payload</a>&lt;'a, P&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/payload.rs.html#22-62' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(data: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='struct' href='../../../p25/data/payload/struct.Payload.html' title='struct p25::data::payload::Payload'>Payload</a>&lt;'a, P&gt;</code></span></h4>
 <div class='docblock'><p>Construct a new <code>Payload</code> over the given data bytes.</p>
 </div><h4 id='method.blocks' class='method'><span id='blocks.v' class='invisible'><code>fn <a href='#method.blocks' class='fnname'>blocks</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
 <div class='docblock'><p>Total number of blocks in the payload.</p>
 </div><h4 id='method.pads' class='method'><span id='pads.v' class='invisible'><code>fn <a href='#method.pads' class='fnname'>pads</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
 <div class='docblock'><p>Number of pad bytes in the payload.</p>
-</div><h4 id='method.iter' class='method'><span id='iter.v' class='invisible'><code>fn <a href='#method.iter' class='fnname'>iter</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/data/payload/struct.PayloadIter.html' title='p25::data::payload::PayloadIter'>PayloadIter</a>&lt;'a, P&gt;</code></span></h4>
+</div><h4 id='method.iter' class='method'><span id='iter.v' class='invisible'><code>fn <a href='#method.iter' class='fnname'>iter</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/data/payload/struct.PayloadIter.html' title='struct p25::data::payload::PayloadIter'>PayloadIter</a>&lt;'a, P&gt;</code></span></h4>
 <div class='docblock'><p>Construct an iterator over the normal blocks for the payload.</p>
-</div><h4 id='method.tail' class='method'><span id='tail.v' class='invisible'><code>fn <a href='#method.tail' class='fnname'>tail</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/data/payload/struct.TailBlock.html' title='p25::data::payload::TailBlock'>TailBlock</a>&lt;'a, P&gt;</code></span></h4>
+</div><h4 id='method.tail' class='method'><span id='tail.v' class='invisible'><code>fn <a href='#method.tail' class='fnname'>tail</a>(&amp;self) -&gt; <a class='struct' href='../../../p25/data/payload/struct.TailBlock.html' title='struct p25::data::payload::TailBlock'>TailBlock</a>&lt;'a, P&gt;</code></span></h4>
 <div class='docblock'><p>Get the tail block of the payload.</p>
 </div></div></section>
     <section id='search' class="content hidden"></section>

@@ -9,6 +9,7 @@
 
     <title>term.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -119,7 +120,7 @@
 <span class='kw'>use</span> <span class='ident'>error</span>::<span class='prelude-ty'>Result</span>;
 <span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>control</span>::<span class='ident'>LinkControlFields</span>;
 
-<span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>P25Error</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>P25Error</span>::<span class='kw-2'>*</span>;
 
 <span class='doccomment'>/// State machine for receiving a link control voice terminator.</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>VoiceLCTerminatorReceiver</span> {
@@ -147,7 +148,7 @@
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>None</span>,
         };
 
-        <span class='kw'>let</span> <span class='ident'>data</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>golay</span>::<span class='ident'>extended</span>::<span class='ident'>decode</span>(<span class='op'>*</span><span class='ident'>buf</span> <span class='kw'>as</span> <span class='ident'>u32</span>) {
+        <span class='kw'>let</span> <span class='ident'>data</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>golay</span>::<span class='ident'>extended</span>::<span class='ident'>decode</span>(<span class='kw-2'>*</span><span class='ident'>buf</span> <span class='kw'>as</span> <span class='ident'>u32</span>) {
             <span class='prelude-val'>Some</span>((<span class='ident'>data</span>, <span class='ident'>err</span>)) <span class='op'>=&gt;</span> <span class='ident'>data</span>,
             <span class='comment'>// Let the following RS code attempt to correct these errors.</span>
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='number'>0</span>,
@@ -156,7 +157,7 @@
         <span class='comment'>// Each 12-bit word is turned into 2 hexbits.</span>
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>inner</span>.<span class='ident'>feed</span>(<span class='ident'>Hexbit</span>::<span class='ident'>new</span>((<span class='ident'>data</span> <span class='op'>&gt;&gt;</span> <span class='number'>6</span>) <span class='kw'>as</span> <span class='ident'>u8</span>)).<span class='ident'>is_none</span>());
 
-        <span class='kw'>let</span> <span class='ident'>hexbits</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>inner</span>.<span class='ident'>feed</span>(<span class='ident'>Hexbit</span>::<span class='ident'>new</span>((<span class='ident'>data</span> <span class='kw-2'>&amp;</span> <span class='number'>0x3F</span>) <span class='kw'>as</span> <span class='ident'>u8</span>)) {
+        <span class='kw'>let</span> <span class='ident'>hexbits</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>inner</span>.<span class='ident'>feed</span>(<span class='ident'>Hexbit</span>::<span class='ident'>new</span>((<span class='ident'>data</span> <span class='op'>&amp;</span> <span class='number'>0x3F</span>) <span class='kw'>as</span> <span class='ident'>u8</span>)) {
             <span class='prelude-val'>Some</span>(<span class='ident'>buf</span>) <span class='op'>=&gt;</span> <span class='ident'>buf</span>,
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>None</span>,
         };

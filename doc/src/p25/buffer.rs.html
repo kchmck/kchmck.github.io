@@ -9,6 +9,7 @@
 
     <title>buffer.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -322,7 +323,7 @@
 <span class='doccomment'>/// Stores dibits that make up a data/TSBK payload packet.</span>
 <span class='macro'>storage_type</span><span class='macro'>!</span>(<span class='ident'>DataPayloadStorage</span>, [<span class='ident'>bits</span>::<span class='ident'>Dibit</span>; <span class='ident'>consts</span>::<span class='ident'>CODING_DIBITS</span>]);
 <span class='doccomment'>/// Stores dibits that make up the NID word.</span>
-<span class='macro'>small_storage_type</span><span class='macro'>!</span>(<span class='ident'>NIDStorage</span>, <span class='ident'>consts</span>::<span class='ident'>NID_DIBITS</span>);
+<span class='macro'>small_storage_type</span><span class='macro'>!</span>(<span class='ident'>NidStorage</span>, <span class='ident'>consts</span>::<span class='ident'>NID_DIBITS</span>);
 <span class='doccomment'>/// Stores dibits that make up each coded word in a voice extra component.</span>
 <span class='macro'>small_storage_type</span><span class='macro'>!</span>(<span class='ident'>VoiceExtraWordStorage</span>, <span class='ident'>consts</span>::<span class='ident'>EXTRA_WORD_DIBITS</span>);
 <span class='doccomment'>/// Stores dibits that make up a voice data fragment.</span>

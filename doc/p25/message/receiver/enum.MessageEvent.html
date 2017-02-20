@@ -9,6 +9,7 @@
 
     <title>p25::message::receiver::MessageEvent - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -49,26 +50,26 @@
                    </a>
                </span><a class='srclink' href='../../../src/p25/message/receiver.rs.html#21-40' title='goto source code'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum MessageEvent {
-    Error(<a class='enum' href='../../../p25/error/enum.P25Error.html' title='p25::error::P25Error'>P25Error</a>),
-    PacketNID(<a class='struct' href='../../../p25/message/nid/struct.NetworkID.html' title='p25::message::nid::NetworkID'>NetworkID</a>),
-    VoiceHeader(<a class='struct' href='../../../p25/voice/header/struct.VoiceHeaderFields.html' title='p25::voice::header::VoiceHeaderFields'>VoiceHeaderFields</a>),
-    VoiceFrame(<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='p25::voice::frame::VoiceFrame'>VoiceFrame</a>),
-    LinkControl(<a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='p25::voice::control::LinkControlFields'>LinkControlFields</a>),
-    CryptoControl(<a class='struct' href='../../../p25/voice/crypto/struct.CryptoControlFields.html' title='p25::voice::crypto::CryptoControlFields'>CryptoControlFields</a>),
+    Error(<a class='enum' href='../../../p25/error/enum.P25Error.html' title='enum p25::error::P25Error'>P25Error</a>),
+    PacketNID(<a class='struct' href='../../../p25/message/nid/struct.NetworkId.html' title='struct p25::message::nid::NetworkId'>NetworkId</a>),
+    VoiceHeader(<a class='struct' href='../../../p25/voice/header/struct.VoiceHeaderFields.html' title='struct p25::voice::header::VoiceHeaderFields'>VoiceHeaderFields</a>),
+    VoiceFrame(<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='struct p25::voice::frame::VoiceFrame'>VoiceFrame</a>),
+    LinkControl(<a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='struct p25::voice::control::LinkControlFields'>LinkControlFields</a>),
+    CryptoControl(<a class='struct' href='../../../p25/voice/crypto/struct.CryptoControlFields.html' title='struct p25::voice::crypto::CryptoControlFields'>CryptoControlFields</a>),
     LowSpeedDataFragment(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>),
-    TrunkingControl(<a class='struct' href='../../../p25/trunking/tsbk/struct.TSBKFields.html' title='p25::trunking::tsbk::TSBKFields'>TSBKFields</a>),
-    VoiceTerm(<a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='p25::voice::control::LinkControlFields'>LinkControlFields</a>),
+    TrunkingControl(<a class='struct' href='../../../p25/trunking/tsbk/struct.TsbkFields.html' title='struct p25::trunking::tsbk::TsbkFields'>TsbkFields</a>),
+    VoiceTerm(<a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='struct p25::voice::control::LinkControlFields'>LinkControlFields</a>),
 }</pre><div class='docblock'><p>Events that can occur when receiving P25 messages.</p>
 </div><h2 class='variants'>Variants</h2>
-<span id='variant.Error' class='variant'><span id='Error.v' class='invisible'><code>Error(<a class='enum' href='../../../p25/error/enum.P25Error.html' title='p25::error::P25Error'>P25Error</a>)</code></span></span><div class='docblock'><p>A runtime error occured.</p>
-</div><span id='variant.PacketNID' class='variant'><span id='PacketNID.v' class='invisible'><code>PacketNID(<a class='struct' href='../../../p25/message/nid/struct.NetworkID.html' title='p25::message::nid::NetworkID'>NetworkID</a>)</code></span></span><div class='docblock'><p>An NID at the start of a packet was decoded.</p>
-</div><span id='variant.VoiceHeader' class='variant'><span id='VoiceHeader.v' class='invisible'><code>VoiceHeader(<a class='struct' href='../../../p25/voice/header/struct.VoiceHeaderFields.html' title='p25::voice::header::VoiceHeaderFields'>VoiceHeaderFields</a>)</code></span></span><div class='docblock'><p>A voice header was received.</p>
-</div><span id='variant.VoiceFrame' class='variant'><span id='VoiceFrame.v' class='invisible'><code>VoiceFrame(<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='p25::voice::frame::VoiceFrame'>VoiceFrame</a>)</code></span></span><div class='docblock'><p>A voice frame was received.</p>
-</div><span id='variant.LinkControl' class='variant'><span id='LinkControl.v' class='invisible'><code>LinkControl(<a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='p25::voice::control::LinkControlFields'>LinkControlFields</a>)</code></span></span><div class='docblock'><p>A link control word was decoded.</p>
-</div><span id='variant.CryptoControl' class='variant'><span id='CryptoControl.v' class='invisible'><code>CryptoControl(<a class='struct' href='../../../p25/voice/crypto/struct.CryptoControlFields.html' title='p25::voice::crypto::CryptoControlFields'>CryptoControlFields</a>)</code></span></span><div class='docblock'><p>A crypto control word was decoded.</p>
+<span id='variant.Error' class='variant'><span id='Error.v' class='invisible'><code>Error(<a class='enum' href='../../../p25/error/enum.P25Error.html' title='enum p25::error::P25Error'>P25Error</a>)</code></span></span><div class='docblock'><p>A runtime error occured.</p>
+</div><span id='variant.PacketNID' class='variant'><span id='PacketNID.v' class='invisible'><code>PacketNID(<a class='struct' href='../../../p25/message/nid/struct.NetworkId.html' title='struct p25::message::nid::NetworkId'>NetworkId</a>)</code></span></span><div class='docblock'><p>An NID at the start of a packet was decoded.</p>
+</div><span id='variant.VoiceHeader' class='variant'><span id='VoiceHeader.v' class='invisible'><code>VoiceHeader(<a class='struct' href='../../../p25/voice/header/struct.VoiceHeaderFields.html' title='struct p25::voice::header::VoiceHeaderFields'>VoiceHeaderFields</a>)</code></span></span><div class='docblock'><p>A voice header was received.</p>
+</div><span id='variant.VoiceFrame' class='variant'><span id='VoiceFrame.v' class='invisible'><code>VoiceFrame(<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='struct p25::voice::frame::VoiceFrame'>VoiceFrame</a>)</code></span></span><div class='docblock'><p>A voice frame was received.</p>
+</div><span id='variant.LinkControl' class='variant'><span id='LinkControl.v' class='invisible'><code>LinkControl(<a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='struct p25::voice::control::LinkControlFields'>LinkControlFields</a>)</code></span></span><div class='docblock'><p>A link control word was decoded.</p>
+</div><span id='variant.CryptoControl' class='variant'><span id='CryptoControl.v' class='invisible'><code>CryptoControl(<a class='struct' href='../../../p25/voice/crypto/struct.CryptoControlFields.html' title='struct p25::voice::crypto::CryptoControlFields'>CryptoControlFields</a>)</code></span></span><div class='docblock'><p>A crypto control word was decoded.</p>
 </div><span id='variant.LowSpeedDataFragment' class='variant'><span id='LowSpeedDataFragment.v' class='invisible'><code>LowSpeedDataFragment(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>)</code></span></span><div class='docblock'><p>A voice low-speed data fragment was decoded.</p>
-</div><span id='variant.TrunkingControl' class='variant'><span id='TrunkingControl.v' class='invisible'><code>TrunkingControl(<a class='struct' href='../../../p25/trunking/tsbk/struct.TSBKFields.html' title='p25::trunking::tsbk::TSBKFields'>TSBKFields</a>)</code></span></span><div class='docblock'><p>A trunking signalling packet was received.</p>
-</div><span id='variant.VoiceTerm' class='variant'><span id='VoiceTerm.v' class='invisible'><code>VoiceTerm(<a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='p25::voice::control::LinkControlFields'>LinkControlFields</a>)</code></span></span><div class='docblock'><p>A voice terminator link control was received.</p>
+</div><span id='variant.TrunkingControl' class='variant'><span id='TrunkingControl.v' class='invisible'><code>TrunkingControl(<a class='struct' href='../../../p25/trunking/tsbk/struct.TsbkFields.html' title='struct p25::trunking::tsbk::TsbkFields'>TsbkFields</a>)</code></span></span><div class='docblock'><p>A trunking signalling packet was received.</p>
+</div><span id='variant.VoiceTerm' class='variant'><span id='VoiceTerm.v' class='invisible'><code>VoiceTerm(<a class='struct' href='../../../p25/voice/control/struct.LinkControlFields.html' title='struct p25::voice::control::LinkControlFields'>LinkControlFields</a>)</code></span></span><div class='docblock'><p>A voice terminator link control was received.</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 

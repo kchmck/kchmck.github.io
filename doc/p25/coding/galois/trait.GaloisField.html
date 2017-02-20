@@ -9,6 +9,7 @@
 
     <title>p25::coding::galois::GaloisField - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -59,19 +60,19 @@
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.size' class='method stab '><span id='size.v' class='invisible'><code>fn <a href='#tymethod.size' class='fnname'>size</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Number of unique codewords in the field: 2<sup>r</sup> - 1.</p>
-</div><h3 id='tymethod.valid_codeword' class='method stab '><span id='valid_codeword.v' class='invisible'><code>fn <a href='#tymethod.valid_codeword' class='fnname'>valid_codeword</a>(bits: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h3><div class='docblock'><p>Check if the given bit pattern is a valid codeword in the field.</p>
-</div><h3 id='tymethod.codeword' class='method stab '><span id='codeword.v' class='invisible'><code>fn <a href='#tymethod.codeword' class='fnname'>codeword</a>(pow: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h3><div class='docblock'><p>Map the given power i to codeword α<sup>i</sup>.</p>
-</div><h3 id='tymethod.power' class='method stab '><span id='power.v' class='invisible'><code>fn <a href='#tymethod.power' class='fnname'>power</a>(codeword: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Map the given codeword a<sup>i</sup> to its power i.</p>
+        <h3 id='tymethod.size' class='method'><span id='size.v' class='invisible'><code>fn <a href='#tymethod.size' class='fnname'>size</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Number of unique codewords in the field: 2<sup>r</sup> - 1.</p>
+</div><h3 id='tymethod.valid_codeword' class='method'><span id='valid_codeword.v' class='invisible'><code>fn <a href='#tymethod.valid_codeword' class='fnname'>valid_codeword</a>(bits: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h3><div class='docblock'><p>Check if the given bit pattern is a valid codeword in the field.</p>
+</div><h3 id='tymethod.codeword' class='method'><span id='codeword.v' class='invisible'><code>fn <a href='#tymethod.codeword' class='fnname'>codeword</a>(pow: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h3><div class='docblock'><p>Map the given power i to codeword α<sup>i</sup>.</p>
+</div><h3 id='tymethod.power' class='method'><span id='power.v' class='invisible'><code>fn <a href='#tymethod.power' class='fnname'>power</a>(codeword: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><div class='docblock'><p>Map the given codeword a<sup>i</sup> to its power i.</p>
 </div></div>
             <h2 id='provided-methods'>Provided Methods</h2>
             <div class='methods'>
-        <h3 id='method.codeword_modded' class='method stab '><span id='codeword_modded.v' class='invisible'><code>fn <a href='#method.codeword_modded' class='fnname'>codeword_modded</a>(pow: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h3><div class='docblock'><p>Map the given power i to codeword α<sup>m</sup> ≡ α<sup>i</sup> (modulo the size
+        <h3 id='method.codeword_modded' class='method'><span id='codeword_modded.v' class='invisible'><code>fn <a href='#method.codeword_modded' class='fnname'>codeword_modded</a>(pow: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a></code></span></h3><div class='docblock'><p>Map the given power i to codeword α<sup>m</sup> ≡ α<sup>i</sup> (modulo the size
 of the field.)</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl GaloisField for <a class='struct' href='../../../p25/coding/galois/struct.P25Field.html' title='p25::coding::galois::P25Field'>P25Field</a></code></li>
+    <li><code>impl GaloisField for <a class='struct' href='../../../p25/coding/galois/struct.P25Field.html' title='struct p25::coding::galois::P25Field'>P25Field</a></code></li>
 </ul><script type="text/javascript" async
                          src="../../../implementors/p25/coding/galois/trait.GaloisField.js">
                  </script></section>

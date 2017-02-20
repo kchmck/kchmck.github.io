@@ -9,6 +9,7 @@
 
     <title>p25::coding::bmcf::ErrorDescriptions - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -48,16 +49,16 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../../src/p25/coding/bmcf.rs.html#225-230' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct ErrorDescriptions&lt;P:&nbsp;<a class='trait' href='../../../p25/coding/galois/trait.PolynomialCoefs.html' title='p25::coding::galois::PolynomialCoefs'>PolynomialCoefs</a>&gt; { /* fields omitted */ }</pre><div class='docblock'><p>Computes error locations and patterns from the roots of the error locator polynomial
+<pre class='rust struct'>pub struct ErrorDescriptions&lt;P:&nbsp;<a class='trait' href='../../../p25/coding/galois/trait.PolynomialCoefs.html' title='trait p25::coding::galois::PolynomialCoefs'>PolynomialCoefs</a>&gt; { /* fields omitted */ }</pre><div class='docblock'><p>Computes error locations and patterns from the roots of the error locator polynomial
 Λ(x).</p>
 
 <p>This uses the Forney algorithm for error pattern evaluation, which avoids polynomial
 long division.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;P:&nbsp;<a class='trait' href='../../../p25/coding/galois/trait.PolynomialCoefs.html' title='p25::coding::galois::PolynomialCoefs'>PolynomialCoefs</a>&gt; <a class='struct' href='../../../p25/coding/bmcf/struct.ErrorDescriptions.html' title='p25::coding::bmcf::ErrorDescriptions'>ErrorDescriptions</a>&lt;P&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/coding/bmcf.rs.html#232-254' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(syn: <a class='struct' href='../../../p25/coding/galois/struct.Polynomial.html' title='p25::coding::galois::Polynomial'>Polynomial</a>&lt;P&gt;, loc: <a class='struct' href='../../../p25/coding/galois/struct.Polynomial.html' title='p25::coding::galois::Polynomial'>Polynomial</a>&lt;P&gt;) -&gt; Self</code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;P:&nbsp;<a class='trait' href='../../../p25/coding/galois/trait.PolynomialCoefs.html' title='trait p25::coding::galois::PolynomialCoefs'>PolynomialCoefs</a>&gt; <a class='struct' href='../../../p25/coding/bmcf/struct.ErrorDescriptions.html' title='struct p25::coding::bmcf::ErrorDescriptions'>ErrorDescriptions</a>&lt;P&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/coding/bmcf.rs.html#232-254' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(syn: <a class='struct' href='../../../p25/coding/galois/struct.Polynomial.html' title='struct p25::coding::galois::Polynomial'>Polynomial</a>&lt;P&gt;, loc: <a class='struct' href='../../../p25/coding/galois/struct.Polynomial.html' title='struct p25::coding::galois::Polynomial'>Polynomial</a>&lt;P&gt;) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Create a new <code>ErrorDescriptions</code> from the given syndrome polynomial s(x) and error
 locator polynomial Λ(x).</p>
-</div><h4 id='method.for_root' class='method'><span id='for_root.v' class='invisible'><code>fn <a href='#method.for_root' class='fnname'>for_root</a>(&amp;self, root: <a class='type' href='../../../p25/coding/galois/type.P25Codeword.html' title='p25::coding::galois::P25Codeword'>P25Codeword</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, <a class='type' href='../../../p25/coding/galois/type.P25Codeword.html' title='p25::coding::galois::P25Codeword'>P25Codeword</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a></code></span></h4>
+</div><h4 id='method.for_root' class='method'><span id='for_root.v' class='invisible'><code>fn <a href='#method.for_root' class='fnname'>for_root</a>(&amp;self, root: <a class='type' href='../../../p25/coding/galois/type.P25Codeword.html' title='type p25::coding::galois::P25Codeword'>P25Codeword</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, <a class='type' href='../../../p25/coding/galois/type.P25Codeword.html' title='type p25::coding::galois::P25Codeword'>P25Codeword</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a></code></span></h4>
 <div class='docblock'><p>Compute the error location and pattern for the given root
 a<sub>i</sub><sup>-1</sup> of Λ(x).</p>
 </div></div></section>

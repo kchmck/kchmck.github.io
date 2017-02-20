@@ -9,6 +9,7 @@
 
     <title>header.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -172,7 +173,7 @@
 <span class='kw'>use</span> <span class='ident'>util</span>::<span class='ident'>slice_u16</span>;
 <span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>crypto</span>::<span class='ident'>CryptoAlgorithm</span>;
 
-<span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>P25Error</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>P25Error</span>::<span class='kw-2'>*</span>;
 
 <span class='doccomment'>/// State machine for receiving a voice header packet.</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>VoiceHeaderReceiver</span> {
@@ -196,7 +197,7 @@
     <span class='doccomment'>/// error occurred, and `None` in the case of no event.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>dibit</span>: <span class='ident'>Dibit</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>VoiceHeaderFields</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>buf</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>dibits</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
-            <span class='prelude-val'>Some</span>(<span class='ident'>buf</span>) <span class='op'>=&gt;</span> <span class='op'>*</span><span class='ident'>buf</span> <span class='kw'>as</span> <span class='ident'>u32</span>,
+            <span class='prelude-val'>Some</span>(<span class='ident'>buf</span>) <span class='op'>=&gt;</span> <span class='kw-2'>*</span><span class='ident'>buf</span> <span class='kw'>as</span> <span class='ident'>u32</span>,
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>None</span>,
         };
 
@@ -252,8 +253,8 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
-    <span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>crypto</span>::<span class='ident'>CryptoAlgorithm</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
+    <span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>crypto</span>::<span class='ident'>CryptoAlgorithm</span>::<span class='kw-2'>*</span>;
     <span class='kw'>use</span> <span class='ident'>trunking</span>::<span class='ident'>fields</span>::<span class='ident'>TalkGroup</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>

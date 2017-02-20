@@ -9,6 +9,7 @@
 
     <title>galois.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -1379,7 +1380,7 @@
 <span class='doccomment'>/// Check equality of the codeword&#39;s bit pattern with raw bits.</span>
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>F</span>: <span class='ident'>GaloisField</span><span class='op'>&gt;</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::<span class='ident'>PartialEq</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>Codeword</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>eq</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>bits</span> <span class='op'>==</span> <span class='op'>*</span><span class='ident'>other</span>
+        <span class='self'>self</span>.<span class='ident'>bits</span> <span class='op'>==</span> <span class='kw-2'>*</span><span class='ident'>other</span>
     }
 }
 
@@ -1621,7 +1622,7 @@
 
     <span class='kw'>fn</span> <span class='ident'>mul</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='ident'>P25Codeword</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Output</span> {
         <span class='kw'>for</span> <span class='ident'>coef</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>coefs</span>.<span class='ident'>iter_mut</span>() {
-            <span class='op'>*</span><span class='ident'>coef</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>coef</span> <span class='op'>*</span> <span class='ident'>rhs</span>;
+            <span class='kw-2'>*</span><span class='ident'>coef</span> <span class='op'>=</span> <span class='kw-2'>*</span><span class='ident'>coef</span> <span class='op'>*</span> <span class='ident'>rhs</span>;
         }
 
         <span class='self'>self</span>
@@ -1642,7 +1643,7 @@
         <span class='kw'>for</span> (<span class='ident'>i</span>, <span class='kw-2'>&amp;</span><span class='ident'>coef</span>) <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>iter</span>().<span class='ident'>enumerate</span>() {
             <span class='kw'>for</span> (<span class='ident'>j</span>, <span class='kw-2'>&amp;</span><span class='ident'>mult</span>) <span class='kw'>in</span> <span class='ident'>rhs</span>.<span class='ident'>iter</span>().<span class='ident'>enumerate</span>() {
                 <span class='kw'>match</span> <span class='ident'>out</span>.<span class='ident'>coefs</span>.<span class='ident'>get_mut</span>(<span class='ident'>i</span> <span class='op'>+</span> <span class='ident'>j</span>) {
-                    <span class='prelude-val'>Some</span>(<span class='ident'>c</span>) <span class='op'>=&gt;</span> <span class='op'>*</span><span class='ident'>c</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>c</span> <span class='op'>+</span> <span class='ident'>coef</span> <span class='op'>*</span> <span class='ident'>mult</span>,
+                    <span class='prelude-val'>Some</span>(<span class='ident'>c</span>) <span class='op'>=&gt;</span> <span class='kw-2'>*</span><span class='ident'>c</span> <span class='op'>=</span> <span class='kw-2'>*</span><span class='ident'>c</span> <span class='op'>+</span> <span class='ident'>coef</span> <span class='op'>*</span> <span class='ident'>mult</span>,
                     <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> {},
                 }
             }
@@ -1661,7 +1662,7 @@
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
     <span class='kw'>use</span> <span class='ident'>std</span>;
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
 
     <span class='macro'>impl_polynomial_coefs</span><span class='macro'>!</span>(<span class='ident'>TestCoefs</span>, <span class='number'>23</span>);
     <span class='kw'>type</span> <span class='ident'>TestPolynomial</span> <span class='op'>=</span> <span class='ident'>Polynomial</span><span class='op'>&lt;</span><span class='ident'>TestCoefs</span><span class='op'>&gt;</span>;

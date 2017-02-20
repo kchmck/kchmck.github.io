@@ -9,6 +9,7 @@
 
     <title>bch.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -401,21 +402,21 @@
 ];
 
 <span class='doccomment'>/// Polynomial coefficients for BCH decoding.</span>
-<span class='macro'>impl_polynomial_coefs</span><span class='macro'>!</span>(<span class='ident'>BCHCoefs</span>, <span class='number'>23</span>);
+<span class='macro'>impl_polynomial_coefs</span><span class='macro'>!</span>(<span class='ident'>BchCoefs</span>, <span class='number'>23</span>);
 
 <span class='doccomment'>/// Polynomial with BCH coefficients.</span>
-<span class='kw'>type</span> <span class='ident'>BCHPolynomial</span> <span class='op'>=</span> <span class='ident'>Polynomial</span><span class='op'>&lt;</span><span class='ident'>BCHCoefs</span><span class='op'>&gt;</span>;
+<span class='kw'>type</span> <span class='ident'>BchPolynomial</span> <span class='op'>=</span> <span class='ident'>Polynomial</span><span class='op'>&lt;</span><span class='ident'>BchCoefs</span><span class='op'>&gt;</span>;
 
 <span class='doccomment'>/// Generate the syndrome polynomial s(x) from the given received word r(x).</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// The resulting polynomial has the form s(x) = s&lt;sub&gt;1&lt;/sub&gt; + s&lt;sub&gt;2&lt;/sub&gt;x + ··· +</span>
 <span class='doccomment'>/// s&lt;sub&gt;2t&lt;/sub&gt;x&lt;sup&gt;2t&lt;/sup&gt;, where s&lt;sub&gt;i&lt;/sub&gt; = r(α&lt;sup&gt;i&lt;/sup&gt;).</span>
-<span class='kw'>fn</span> <span class='ident'>syndromes</span>(<span class='ident'>word</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='ident'>BCHPolynomial</span> {
-    <span class='ident'>BCHPolynomial</span>::<span class='ident'>new</span>((<span class='number'>1</span>...<span class='ident'>BCHCoefs</span>::<span class='ident'>syndromes</span>()).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>p</span><span class='op'>|</span> {
+<span class='kw'>fn</span> <span class='ident'>syndromes</span>(<span class='ident'>word</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='ident'>BchPolynomial</span> {
+    <span class='ident'>BchPolynomial</span>::<span class='ident'>new</span>((<span class='number'>1</span>...<span class='ident'>BchCoefs</span>::<span class='ident'>syndromes</span>()).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>p</span><span class='op'>|</span> {
         <span class='comment'>// Compute r(α^p) with the polynomial representation of the bitmap. The LSB of</span>
         <span class='comment'>// `word` maps to the coefficient of the degree-0 term.</span>
         (<span class='number'>0</span>..<span class='ident'>P25Field</span>::<span class='ident'>size</span>()).<span class='ident'>fold</span>(<span class='ident'>P25Codeword</span>::<span class='ident'>default</span>(), <span class='op'>|</span><span class='ident'>s</span>, <span class='ident'>b</span><span class='op'>|</span> {
-            <span class='kw'>if</span> <span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='ident'>b</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span> <span class='op'>==</span> <span class='number'>0</span> {
+            <span class='kw'>if</span> <span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='ident'>b</span> <span class='op'>&amp;</span> <span class='number'>1</span> <span class='op'>==</span> <span class='number'>0</span> {
                 <span class='ident'>s</span>
             } <span class='kw'>else</span> {
                 <span class='ident'>s</span> <span class='op'>+</span> <span class='ident'>P25Codeword</span>::<span class='ident'>for_power</span>(<span class='ident'>b</span> <span class='op'>*</span> <span class='ident'>p</span>)
@@ -427,8 +428,8 @@
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
     <span class='kw'>use</span> <span class='ident'>std</span>;
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
-    <span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>syndromes</span>, <span class='ident'>BCHCoefs</span>};
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>syndromes</span>, <span class='ident'>BchCoefs</span>};
     <span class='kw'>use</span> <span class='ident'>coding</span>::<span class='ident'>galois</span>::{<span class='ident'>PolynomialCoefs</span>, <span class='ident'>P25Codeword</span>, <span class='ident'>Polynomial</span>};
 
     <span class='macro'>impl_polynomial_coefs</span><span class='macro'>!</span>(<span class='ident'>TestCoefs</span>, <span class='number'>23</span>, <span class='number'>50</span>);
@@ -436,7 +437,7 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>validate_coefs</span>() {
-        <span class='ident'>BCHCoefs</span>::<span class='ident'>default</span>().<span class='ident'>validate</span>();
+        <span class='ident'>BchCoefs</span>::<span class='ident'>default</span>().<span class='ident'>validate</span>();
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -515,7 +516,7 @@
         <span class='kw'>let</span> <span class='ident'>gen</span> <span class='op'>=</span> <span class='number'>0o6331_1413_6723_5453u64</span>;
 
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>...<span class='number'>47</span> {
-            <span class='kw'>let</span> <span class='ident'>coef</span> <span class='op'>=</span> <span class='ident'>gen</span> <span class='op'>&gt;&gt;</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;
+            <span class='kw'>let</span> <span class='ident'>coef</span> <span class='op'>=</span> <span class='ident'>gen</span> <span class='op'>&gt;&gt;</span> <span class='ident'>i</span> <span class='op'>&amp;</span> <span class='number'>1</span>;
 
             <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>[<span class='ident'>i</span>].<span class='ident'>power</span>(), <span class='kw'>if</span> <span class='ident'>coef</span> <span class='op'>==</span> <span class='number'>0</span> {
                 <span class='prelude-val'>None</span>

@@ -9,6 +9,7 @@
 
     <title>p25::voice::frame_group::FrameGroupEvent - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -48,14 +49,14 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../../src/p25/voice/frame_group.rs.html#77-84' title='goto source code'>[src]</a></span></h1>
-<pre class='rust enum'>pub enum FrameGroupEvent&lt;E:&nbsp;<a class='trait' href='../../../p25/voice/frame_group/trait.Extra.html' title='p25::voice::frame_group::Extra'>Extra</a>&gt; {
-    VoiceFrame(<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='p25::voice::frame::VoiceFrame'>VoiceFrame</a>),
-    Extra(E::<a class='trait' href='../../../p25/voice/frame_group/trait.Extra.html' title='p25::voice::frame_group::Extra'>Fields</a>),
+<pre class='rust enum'>pub enum FrameGroupEvent&lt;E:&nbsp;<a class='trait' href='../../../p25/voice/frame_group/trait.Extra.html' title='trait p25::voice::frame_group::Extra'>Extra</a>&gt; {
+    VoiceFrame(<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='struct p25::voice::frame::VoiceFrame'>VoiceFrame</a>),
+    Extra(E::<a class='trait' href='../../../p25/voice/frame_group/trait.Extra.html' title='trait p25::voice::frame_group::Extra'>Fields</a>),
     DataFragment(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>),
 }</pre><div class='docblock'><p>Events that can occur when receiving a frame group.</p>
 </div><h2 class='variants'>Variants</h2>
-<span id='variant.VoiceFrame' class='variant'><span id='VoiceFrame.v' class='invisible'><code>VoiceFrame(<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='p25::voice::frame::VoiceFrame'>VoiceFrame</a>)</code></span></span><div class='docblock'><p>Decoded a voice frame.</p>
-</div><span id='variant.Extra' class='variant'><span id='Extra.v' class='invisible'><code>Extra(E::<a class='trait' href='../../../p25/voice/frame_group/trait.Extra.html' title='p25::voice::frame_group::Extra'>Fields</a>)</code></span></span><div class='docblock'><p>Decoded an &quot;extra&quot; packet.</p>
+<span id='variant.VoiceFrame' class='variant'><span id='VoiceFrame.v' class='invisible'><code>VoiceFrame(<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='struct p25::voice::frame::VoiceFrame'>VoiceFrame</a>)</code></span></span><div class='docblock'><p>Decoded a voice frame.</p>
+</div><span id='variant.Extra' class='variant'><span id='Extra.v' class='invisible'><code>Extra(E::<a class='trait' href='../../../p25/voice/frame_group/trait.Extra.html' title='trait p25::voice::frame_group::Extra'>Fields</a>)</code></span></span><div class='docblock'><p>Decoded an &quot;extra&quot; packet.</p>
 </div><span id='variant.DataFragment' class='variant'><span id='DataFragment.v' class='invisible'><code>DataFragment(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>)</code></span></span><div class='docblock'><p>Decoded a 16-bit fragment of the low-speed data word.</p>
 </div></section>
     <section id='search' class="content hidden"></section>

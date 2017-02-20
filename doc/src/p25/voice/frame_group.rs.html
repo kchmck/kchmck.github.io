@@ -9,6 +9,7 @@
 
     <title>frame_group.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -416,9 +417,9 @@
     <span class='ident'>LINK_CONTROL_BYTES</span>,
 };
 
-<span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>P25Error</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>State</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StateChange</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>P25Error</span>::<span class='kw-2'>*</span>;
+<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>State</span>::<span class='kw-2'>*</span>;
+<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StateChange</span>::<span class='kw-2'>*</span>;
 
 <span class='doccomment'>/// Receiver for Link Control (LC) frame group.</span>
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>VoiceLCFrameGroupReceiver</span> <span class='op'>=</span> <span class='ident'>FrameGroupReceiver</span><span class='op'>&lt;</span><span class='ident'>LinkControlExtra</span><span class='op'>&gt;</span>;
@@ -658,7 +659,7 @@
         <span class='self'>self</span>.<span class='ident'>dibit</span> <span class='op'>+=</span> <span class='number'>1</span>;
 
         <span class='kw'>let</span> <span class='ident'>buf</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>dibits</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
-            <span class='prelude-val'>Some</span>(<span class='ident'>buf</span>) <span class='op'>=&gt;</span> <span class='op'>*</span><span class='ident'>buf</span> <span class='kw'>as</span> <span class='ident'>u16</span>,
+            <span class='prelude-val'>Some</span>(<span class='ident'>buf</span>) <span class='op'>=&gt;</span> <span class='kw-2'>*</span><span class='ident'>buf</span> <span class='kw'>as</span> <span class='ident'>u16</span>,
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>None</span>,
         };
 
@@ -708,7 +709,7 @@
     <span class='doccomment'>/// error occurred, and `None` in the case of no event.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>dibit</span>: <span class='ident'>Dibit</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>buf</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>dibits</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
-            <span class='prelude-val'>Some</span>(<span class='ident'>buf</span>) <span class='op'>=&gt;</span> <span class='op'>*</span><span class='ident'>buf</span> <span class='kw'>as</span> <span class='ident'>u16</span>,
+            <span class='prelude-val'>Some</span>(<span class='ident'>buf</span>) <span class='op'>=&gt;</span> <span class='kw-2'>*</span><span class='ident'>buf</span> <span class='kw'>as</span> <span class='ident'>u16</span>,
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>None</span>,
         };
 

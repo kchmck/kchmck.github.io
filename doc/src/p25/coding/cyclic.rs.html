@@ -9,6 +9,7 @@
 
     <title>cyclic.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -310,13 +311,13 @@
 
 <span class='doccomment'>/// Cyclically rotate the word right as if it was 17 bits long.</span>
 <span class='kw'>fn</span> <span class='ident'>rotate_17</span>(<span class='ident'>word</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
-    <span class='kw'>let</span> <span class='ident'>lsb</span> <span class='op'>=</span> <span class='ident'>word</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;
+    <span class='kw'>let</span> <span class='ident'>lsb</span> <span class='op'>=</span> <span class='ident'>word</span> <span class='op'>&amp;</span> <span class='number'>1</span>;
     <span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span> <span class='op'>|</span> <span class='ident'>lsb</span> <span class='op'>&lt;&lt;</span> <span class='number'>16</span>
 }
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
     <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>rotate_17</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>

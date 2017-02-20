@@ -9,6 +9,7 @@
 
     <title>p25::baseband::sync::SyncCorrelator - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
     
@@ -49,8 +50,8 @@
                    </a>
                </span><a class='srclink' href='../../../src/p25/baseband/sync.rs.html#27-32' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct SyncCorrelator { /* fields omitted */ }</pre><div class='docblock'><p>Continuously cross-correlates input signal with frame sync fingerprint.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/baseband/sync/struct.SyncCorrelator.html' title='p25::baseband::sync::SyncCorrelator'>SyncCorrelator</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/baseband/sync.rs.html#34-66' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../../../p25/baseband/sync/struct.SyncCorrelator.html' title='p25::baseband::sync::SyncCorrelator'>SyncCorrelator</a></code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../p25/baseband/sync/struct.SyncCorrelator.html' title='struct p25::baseband::sync::SyncCorrelator'>SyncCorrelator</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/baseband/sync.rs.html#34-66' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../../../p25/baseband/sync/struct.SyncCorrelator.html' title='struct p25::baseband::sync::SyncCorrelator'>SyncCorrelator</a></code></span></h4>
 <div class='docblock'><p>Create a new <code>SyncCorrelator</code> with default state.</p>
 </div><h4 id='method.feed' class='method'><span id='feed.v' class='invisible'><code>fn <a href='#method.feed' class='fnname'>feed</a>(&amp;mut self, sample: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a></code></span></h4>
 <div class='docblock'><p>Cross-correlate with the given sample and return the current correlation power and
