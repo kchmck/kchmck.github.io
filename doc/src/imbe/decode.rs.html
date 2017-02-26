@@ -9,6 +9,7 @@
 
     <title>decode.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -213,7 +214,7 @@
 <span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
 <span class='kw'>use</span> <span class='ident'>prev</span>::<span class='ident'>PrevFrame</span>;
 <span class='kw'>use</span> <span class='ident'>spectral</span>::<span class='ident'>Spectrals</span>;
-<span class='kw'>use</span> <span class='ident'>unvoiced</span>::{<span class='ident'>UnvoicedDFT</span>, <span class='ident'>Unvoiced</span>};
+<span class='kw'>use</span> <span class='ident'>unvoiced</span>::{<span class='ident'>UnvoicedDft</span>, <span class='ident'>Unvoiced</span>};
 <span class='kw'>use</span> <span class='ident'>voiced</span>::{<span class='ident'>Phase</span>, <span class='ident'>PhaseBase</span>, <span class='ident'>Voiced</span>};
 
 <span class='doccomment'>/// Number of threads to spin up per frame.</span>
@@ -222,15 +223,15 @@
 <span class='kw'>const</span> <span class='ident'>SAMPLES_PER_THREAD</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='ident'>SAMPLES_PER_FRAME</span> <span class='op'>/</span> <span class='ident'>THREADS</span>;
 
 <span class='doccomment'>/// Decodes a stream of IMBE frames.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>IMBEDecoder</span> {
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ImbeDecoder</span> {
     <span class='doccomment'>/// Tracks saved parameters across frames.</span>
     <span class='ident'>prev</span>: <span class='ident'>PrevFrame</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>IMBEDecoder</span> {
-    <span class='doccomment'>/// Create a new `IMBEDecoder` in the default state.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>IMBEDecoder</span> {
-        <span class='ident'>IMBEDecoder</span> {
+<span class='kw'>impl</span> <span class='ident'>ImbeDecoder</span> {
+    <span class='doccomment'>/// Create a new `ImbeDecoder` in the default state.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>ImbeDecoder</span> {
+        <span class='ident'>ImbeDecoder</span> {
             <span class='ident'>prev</span>: <span class='ident'>PrevFrame</span>::<span class='ident'>default</span>(),
         }
     }
@@ -273,7 +274,7 @@
         <span class='kw'>let</span> <span class='ident'>amp_thresh</span> <span class='op'>=</span> <span class='ident'>enhance</span>::<span class='ident'>amp_thresh</span>(<span class='kw-2'>&amp;</span><span class='ident'>errors</span>, <span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>amp_thresh</span>);
         <span class='ident'>enhance</span>::<span class='ident'>smooth</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>enhanced</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>errors</span>, <span class='kw-2'>&amp;</span><span class='ident'>energy</span>, <span class='ident'>amp_thresh</span>);
 
-        <span class='kw'>let</span> <span class='ident'>udft</span> <span class='op'>=</span> <span class='ident'>UnvoicedDFT</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>enhanced</span>, <span class='ident'>rand</span>::<span class='ident'>weak_rng</span>());
+        <span class='kw'>let</span> <span class='ident'>udft</span> <span class='op'>=</span> <span class='ident'>UnvoicedDft</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>enhanced</span>, <span class='ident'>rand</span>::<span class='ident'>weak_rng</span>());
         <span class='kw'>let</span> <span class='ident'>vbase</span> <span class='op'>=</span> <span class='ident'>PhaseBase</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>);
         <span class='kw'>let</span> <span class='ident'>vphase</span> <span class='op'>=</span> <span class='ident'>Phase</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>vbase</span>, <span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='ident'>rand</span>::<span class='ident'>weak_rng</span>());
 
@@ -324,7 +325,7 @@
         <span class='kw'>let</span> <span class='ident'>voice</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>voice</span>.<span class='ident'>clone</span>();
         <span class='kw'>let</span> <span class='ident'>enhanced</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>enhanced</span>.<span class='ident'>clone</span>();
 
-        <span class='kw'>let</span> <span class='ident'>udft</span> <span class='op'>=</span> <span class='ident'>UnvoicedDFT</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>enhanced</span>, <span class='ident'>rand</span>::<span class='ident'>weak_rng</span>());
+        <span class='kw'>let</span> <span class='ident'>udft</span> <span class='op'>=</span> <span class='ident'>UnvoicedDft</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>enhanced</span>, <span class='ident'>rand</span>::<span class='ident'>weak_rng</span>());
         <span class='kw'>let</span> <span class='ident'>vbase</span> <span class='op'>=</span> <span class='ident'>PhaseBase</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>);
         <span class='kw'>let</span> <span class='ident'>vphase</span> <span class='op'>=</span> <span class='ident'>Phase</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>vbase</span>, <span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='ident'>rand</span>::<span class='ident'>weak_rng</span>());
 

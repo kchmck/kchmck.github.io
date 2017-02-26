@@ -9,6 +9,7 @@
 
     <title>imbe::voiced::PhaseBase - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -49,12 +50,12 @@
                    </a>
                </span><a class='srclink' href='../../src/imbe/voiced.rs.html#18' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct PhaseBase(_);</pre><div class='docblock'><p>Computes the base phase offsets Ψ<sub>l</sub>.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/voiced/struct.PhaseBase.html' title='imbe::voiced::PhaseBase'>PhaseBase</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#20-39' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='imbe::params::BaseParams'>BaseParams</a>, prev: &amp;<a class='struct' href='../../imbe/prev/struct.PrevFrame.html' title='imbe::prev::PrevFrame'>PrevFrame</a>) -&gt; Self</code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/voiced/struct.PhaseBase.html' title='struct imbe::voiced::PhaseBase'>PhaseBase</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#20-39' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='struct imbe::params::BaseParams'>BaseParams</a>, prev: &amp;<a class='struct' href='../../imbe/prev/struct.PrevFrame.html' title='struct imbe::prev::PrevFrame'>PrevFrame</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Create a new <code>PhaseBase</code> from the given current and previous frame parameters.</p>
 </div><h4 id='method.get' class='method'><span id='get.v' class='invisible'><code>fn <a href='#method.get' class='fnname'>get</a>(&amp;self, l: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a></code></span></h4>
 <div class='docblock'><p>Retrieve the phase term Ψ<sub>l</sub>, 1 ≤ l ≤ 56.</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='core::default::Default'>Default</a> for <a class='struct' href='../../imbe/voiced/struct.PhaseBase.html' title='imbe::voiced::PhaseBase'>PhaseBase</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#41-47' title='goto source code'>[src]</a></span></h3>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='trait core::default::Default'>Default</a> for <a class='struct' href='../../imbe/voiced/struct.PhaseBase.html' title='struct imbe::voiced::PhaseBase'>PhaseBase</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#41-47' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.default' class='method'><span id='default.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default' class='fnname'>default</a>() -&gt; Self</code></span></h4>
 <div class='docblock'><p>Create a new <code>PhaseBase</code> in the default state.</p>
 </div></div></section>

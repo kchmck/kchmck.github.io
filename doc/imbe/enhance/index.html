@@ -9,6 +9,7 @@
 
     <title>imbe::enhance - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -53,14 +54,14 @@
 <table>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.EnhanceErrors.html'
-                                  title='imbe::enhance::EnhanceErrors'>EnhanceErrors</a></td>
+                                  title='struct imbe::enhance::EnhanceErrors'>EnhanceErrors</a></td>
                            <td class='docblock-short'>
                                 <p>Values derived from error correction decoding.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.EnhancedSpectrals.html'
-                                  title='imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></td>
+                                  title='struct imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></td>
                            <td class='docblock-short'>
                                 <p>Enhanced spectral amplitudes, &quot;overbar&quot; M<sub>l</sub>, are derived from the decoded
 spectral amplitudes, &quot;tilde&quot; M<sub>l</sub>.</p>
@@ -68,7 +69,7 @@ spectral amplitudes, &quot;tilde&quot; M<sub>l</sub>.</p>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.FrameEnergy.html'
-                                  title='imbe::enhance::FrameEnergy'>FrameEnergy</a></td>
+                                  title='struct imbe::enhance::FrameEnergy'>FrameEnergy</a></td>
                            <td class='docblock-short'>
                                 <p>Energy-related parameters for a voice frame.</p>
                            </td>
@@ -76,7 +77,7 @@ spectral amplitudes, &quot;tilde&quot; M<sub>l</sub>.</p>
 <table>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.amp_thresh.html'
-                                  title='imbe::enhance::amp_thresh'>amp_thresh</a></td>
+                                  title='fn imbe::enhance::amp_thresh'>amp_thresh</a></td>
                            <td class='docblock-short'>
                                 <p>Compute the spectral amplitude threshold τ<sub>M</sub> used in adaptive smoothing from
 the given error characteristics and previous amplitude threshold.</p>
@@ -84,7 +85,7 @@ the given error characteristics and previous amplitude threshold.</p>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.should_mute.html'
-                                  title='imbe::enhance::should_mute'>should_mute</a></td>
+                                  title='fn imbe::enhance::should_mute'>should_mute</a></td>
                            <td class='docblock-short'>
                                 <p>Check if the current frame should be discarded and replaced with silence/comfort noise
 based on the given error characteristics of the current frame.</p>
@@ -92,7 +93,7 @@ based on the given error characteristics of the current frame.</p>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.should_repeat.html'
-                                  title='imbe::enhance::should_repeat'>should_repeat</a></td>
+                                  title='fn imbe::enhance::should_repeat'>should_repeat</a></td>
                            <td class='docblock-short'>
                                 <p>Check whether the current frame should be discarded and the previous repeated based on
 the given error characteristics of the current frame.</p>
@@ -100,7 +101,7 @@ the given error characteristics of the current frame.</p>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.smooth.html'
-                                  title='imbe::enhance::smooth'>smooth</a></td>
+                                  title='fn imbe::enhance::smooth'>smooth</a></td>
                            <td class='docblock-short'>
                                 <p>Smooth the given enhanced spectral amplitudes M<sub>l</sub> and voiced/unvoiced
 decisions v<sub>l</sub> based on the given error characteristics, current frame

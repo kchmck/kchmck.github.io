@@ -9,6 +9,7 @@
 
     <title>imbe::descramble::descramble - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -48,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../src/imbe/descramble.rs.html#13-25' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn descramble(chunks: &amp;<a class='type' href='../../imbe/frame/type.Chunks.html' title='imbe::frame::Chunks'>Chunks</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='imbe::params::BaseParams'>BaseParams</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='struct' href='../../imbe/descramble/struct.QuantizedAmplitudes.html' title='imbe::descramble::QuantizedAmplitudes'>QuantizedAmplitudes</a>, <a class='struct' href='../../imbe/descramble/struct.VoiceDecisions.html' title='imbe::descramble::VoiceDecisions'>VoiceDecisions</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a></pre><div class='docblock'><p>Descramble the given prioritized chunks u<sub>i</sub> into the underlying quantized
+<pre class='rust fn'>pub fn descramble(chunks: &amp;<a class='type' href='../../imbe/frame/type.Chunks.html' title='type imbe::frame::Chunks'>Chunks</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='struct imbe::params::BaseParams'>BaseParams</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='struct' href='../../imbe/descramble/struct.QuantizedAmplitudes.html' title='struct imbe::descramble::QuantizedAmplitudes'>QuantizedAmplitudes</a>, <a class='struct' href='../../imbe/descramble/struct.VoiceDecisions.html' title='struct imbe::descramble::VoiceDecisions'>VoiceDecisions</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a></pre><div class='docblock'><p>Descramble the given prioritized chunks u<sub>i</sub> into the underlying quantized
 amplitudes b<sub>m</sub>, voiced/unvoiced decisions v<sub>l</sub>, and initial gain
 index b<sub>2</sub>.</p>
 </div></section>

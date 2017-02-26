@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["IMBEDecoder","Decodes a stream of IMBE frames."]]});
+initSidebarItems({"struct":[["ImbeDecoder","Decodes a stream of IMBE frames."]]});

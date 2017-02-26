@@ -9,6 +9,7 @@
 
     <title>imbe::coefs::Coefficients - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -49,8 +50,8 @@
                    </a>
                </span><a class='srclink' href='../../src/imbe/coefs.rs.html#14' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Coefficients(_);</pre><div class='docblock'><p>Higher order DCT coefficients vector T<sub>l</sub>, 1 ≤ l ≤ L.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/coefs/struct.Coefficients.html' title='imbe::coefs::Coefficients'>Coefficients</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/coefs.rs.html#16-43' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(gains: &amp;<a class='struct' href='../../imbe/gain/struct.Gains.html' title='imbe::gain::Gains'>Gains</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; amps: &amp;<a class='struct' href='../../imbe/descramble/struct.QuantizedAmplitudes.html' title='imbe::descramble::QuantizedAmplitudes'>QuantizedAmplitudes</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='imbe::params::BaseParams'>BaseParams</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='../../imbe/coefs/struct.Coefficients.html' title='imbe::coefs::Coefficients'>Coefficients</a></code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/coefs/struct.Coefficients.html' title='struct imbe::coefs::Coefficients'>Coefficients</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/coefs.rs.html#16-43' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(gains: &amp;<a class='struct' href='../../imbe/gain/struct.Gains.html' title='struct imbe::gain::Gains'>Gains</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; amps: &amp;<a class='struct' href='../../imbe/descramble/struct.QuantizedAmplitudes.html' title='struct imbe::descramble::QuantizedAmplitudes'>QuantizedAmplitudes</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='struct imbe::params::BaseParams'>BaseParams</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='../../imbe/coefs/struct.Coefficients.html' title='struct imbe::coefs::Coefficients'>Coefficients</a></code></span></h4>
 <div class='docblock'><p>Create a new <code>Coefficients</code> vector from the given gains G<sub>m</sub>, quantized
 amplitudes b<sub>m</sub>, and frame parameters.</p>
 </div><h4 id='method.get' class='method'><span id='get.v' class='invisible'><code>fn <a href='#method.get' class='fnname'>get</a>(&amp;self, l: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a></code></span></h4>

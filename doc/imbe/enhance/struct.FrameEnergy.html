@@ -9,6 +9,7 @@
 
     <title>imbe::enhance::FrameEnergy - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -56,21 +57,21 @@
 </div><h2 class='fields'>Fields</h2><span id='structfield.energy' class='structfield'>
                            <span id='energy.v' class='invisible'>
                            <code>energy: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a></code>
-                           </span></span><span class='stab '></span><div class='docblock'><p>Spectral amplitude energy, R<sub>M0</sub>.</p>
+                           </span></span><div class='docblock'><p>Spectral amplitude energy, R<sub>M0</sub>.</p>
 </div><span id='structfield.scaled' class='structfield'>
                            <span id='scaled.v' class='invisible'>
                            <code>scaled: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a></code>
-                           </span></span><span class='stab '></span><div class='docblock'><p>Scaled energy value, R<sub>M1</sub>.</p>
+                           </span></span><div class='docblock'><p>Scaled energy value, R<sub>M1</sub>.</p>
 </div><span id='structfield.tracking' class='structfield'>
                            <span id='tracking.v' class='invisible'>
                            <code>tracking: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a></code>
-                           </span></span><span class='stab '></span><div class='docblock'><p>Moving average energy tracker, S<sub>E</sub>.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/enhance/struct.FrameEnergy.html' title='imbe::enhance::FrameEnergy'>FrameEnergy</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#53-76' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(spectrals: &amp;<a class='struct' href='../../imbe/spectral/struct.Spectrals.html' title='imbe::spectral::Spectrals'>Spectrals</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; prev: &amp;<a class='struct' href='../../imbe/enhance/struct.FrameEnergy.html' title='imbe::enhance::FrameEnergy'>FrameEnergy</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='imbe::params::BaseParams'>BaseParams</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='../../imbe/enhance/struct.FrameEnergy.html' title='imbe::enhance::FrameEnergy'>FrameEnergy</a></code></span></h4>
+                           </span></span><div class='docblock'><p>Moving average energy tracker, S<sub>E</sub>.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/enhance/struct.FrameEnergy.html' title='struct imbe::enhance::FrameEnergy'>FrameEnergy</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#53-76' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(spectrals: &amp;<a class='struct' href='../../imbe/spectral/struct.Spectrals.html' title='struct imbe::spectral::Spectrals'>Spectrals</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; prev: &amp;<a class='struct' href='../../imbe/enhance/struct.FrameEnergy.html' title='struct imbe::enhance::FrameEnergy'>FrameEnergy</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='struct imbe::params::BaseParams'>BaseParams</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='../../imbe/enhance/struct.FrameEnergy.html' title='struct imbe::enhance::FrameEnergy'>FrameEnergy</a></code></span></h4>
 <div class='docblock'><p>Create a new <code>FrameEnergy</code> from the given spectral amplitudes M<sub>l</sub>,
 previous frame energy values, and current frame parameters.</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='core::default::Default'>Default</a> for <a class='struct' href='../../imbe/enhance/struct.FrameEnergy.html' title='imbe::enhance::FrameEnergy'>FrameEnergy</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#78-89' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.default' class='method'><span id='default.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default' class='fnname'>default</a>() -&gt; <a class='struct' href='../../imbe/enhance/struct.FrameEnergy.html' title='imbe::enhance::FrameEnergy'>FrameEnergy</a></code></span></h4>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='trait core::default::Default'>Default</a> for <a class='struct' href='../../imbe/enhance/struct.FrameEnergy.html' title='struct imbe::enhance::FrameEnergy'>FrameEnergy</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#78-89' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.default' class='method'><span id='default.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default' class='fnname'>default</a>() -&gt; <a class='struct' href='../../imbe/enhance/struct.FrameEnergy.html' title='struct imbe::enhance::FrameEnergy'>FrameEnergy</a></code></span></h4>
 <div class='docblock'><p>Create a new <code>FrameEnergy</code> with default initial values.</p>
 </div></div></section>
     <section id='search' class="content hidden"></section>

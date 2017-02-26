@@ -9,6 +9,7 @@
 
     <title>imbe::unvoiced::Unvoiced - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -49,8 +50,8 @@
                    </a>
                </span><a class='srclink' href='../../src/imbe/unvoiced.rs.html#186-193' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Unvoiced&lt;'a, 'b&gt; { /* fields omitted */ }</pre><div class='docblock'><p>Synthesizes unvoiced spectrum signal s<sub>uv</sub>(n).</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a, 'b&gt; <a class='struct' href='../../imbe/unvoiced/struct.Unvoiced.html' title='imbe::unvoiced::Unvoiced'>Unvoiced</a>&lt;'a, 'b&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/unvoiced.rs.html#195-224' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(cur: &amp;'a <a class='struct' href='../../imbe/unvoiced/struct.UnvoicedDFT.html' title='imbe::unvoiced::UnvoicedDFT'>UnvoicedDFT</a>, prev: &amp;'b <a class='struct' href='../../imbe/unvoiced/struct.UnvoicedDFT.html' title='imbe::unvoiced::UnvoicedDFT'>UnvoicedDFT</a>) -&gt; Self</code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a, 'b&gt; <a class='struct' href='../../imbe/unvoiced/struct.Unvoiced.html' title='struct imbe::unvoiced::Unvoiced'>Unvoiced</a>&lt;'a, 'b&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/unvoiced.rs.html#195-224' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(cur: &amp;'a <a class='struct' href='../../imbe/unvoiced/struct.UnvoicedDft.html' title='struct imbe::unvoiced::UnvoicedDft'>UnvoicedDft</a>, prev: &amp;'b <a class='struct' href='../../imbe/unvoiced/struct.UnvoicedDft.html' title='struct imbe::unvoiced::UnvoicedDft'>UnvoicedDft</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Create a new <code>Unvoiced</code> from the given unvoiced spectrums of the current and
 previous frames.</p>
 </div><h4 id='method.get' class='method'><span id='get.v' class='invisible'><code>fn <a href='#method.get' class='fnname'>get</a>(&amp;self, n: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a></code></span></h4>

@@ -9,6 +9,7 @@
 
     <title>imbe::enhance::EnhanceErrors - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -57,21 +58,21 @@
 </div><h2 class='fields'>Fields</h2><span id='structfield.total' class='structfield'>
                            <span id='total.v' class='invisible'>
                            <code>total: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code>
-                           </span></span><span class='stab '></span><div class='docblock'><p>Total number of errors corrected in the current frame, ϵ<sub>T</sub> [p45].</p>
+                           </span></span><div class='docblock'><p>Total number of errors corrected in the current frame, ϵ<sub>T</sub> [p45].</p>
 </div><span id='structfield.rate' class='structfield'>
                            <span id='rate.v' class='invisible'>
                            <code>rate: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a></code>
-                           </span></span><span class='stab '></span><div class='docblock'><p>Error rate tracking term, ϵ<sub>R</sub> [p45].</p>
+                           </span></span><div class='docblock'><p>Error rate tracking term, ϵ<sub>R</sub> [p45].</p>
 </div><span id='structfield.golay_init' class='structfield'>
                            <span id='golay_init.v' class='invisible'>
                            <code>golay_init: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code>
-                           </span></span><span class='stab '></span><div class='docblock'><p>Errors corrected in first (u<sub>0</sub>) Golay-coded chunk, ϵ<sub>0</sub>.</p>
+                           </span></span><div class='docblock'><p>Errors corrected in first (u<sub>0</sub>) Golay-coded chunk, ϵ<sub>0</sub>.</p>
 </div><span id='structfield.hamming_init' class='structfield'>
                            <span id='hamming_init.v' class='invisible'>
                            <code>hamming_init: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code>
-                           </span></span><span class='stab '></span><div class='docblock'><p>Errors corrected in first (u<sub>4</sub>) Hamming-coded chunk, ϵ<sub>4</sub>.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/enhance/struct.EnhanceErrors.html' title='imbe::enhance::EnhanceErrors'>EnhanceErrors</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#27-41' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(errors: &amp;<a class='type' href='../../imbe/frame/type.Errors.html' title='imbe::frame::Errors'>Errors</a>, prev_rate: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a>) -&gt; <a class='struct' href='../../imbe/enhance/struct.EnhanceErrors.html' title='imbe::enhance::EnhanceErrors'>EnhanceErrors</a></code></span></h4>
+                           </span></span><div class='docblock'><p>Errors corrected in first (u<sub>4</sub>) Hamming-coded chunk, ϵ<sub>4</sub>.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/enhance/struct.EnhanceErrors.html' title='struct imbe::enhance::EnhanceErrors'>EnhanceErrors</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/enhance.rs.html#27-41' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(errors: &amp;<a class='type' href='../../imbe/frame/type.Errors.html' title='type imbe::frame::Errors'>Errors</a>, prev_rate: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a>) -&gt; <a class='struct' href='../../imbe/enhance/struct.EnhanceErrors.html' title='struct imbe::enhance::EnhanceErrors'>EnhanceErrors</a></code></span></h4>
 <div class='docblock'><p>Create a new <code>EnhanceErrors</code> from the errors corrected in the current frame,
 ϵ<sub>i</sub>, and the previous frame&#39;s ϵ<sub>R</sub> value.</p>
 </div></div></section>

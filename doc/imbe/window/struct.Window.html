@@ -9,6 +9,7 @@
 
     <title>imbe::window::Window - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -49,8 +50,8 @@
                    </a>
                </span><a class='srclink' href='../../src/imbe/window.rs.html#9-14' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Window { /* fields omitted */ }</pre><div class='docblock'><p>Wraps a set of window coefficients and remaps the center coefficient to index 0.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/window/struct.Window.html' title='imbe::window::Window'>Window</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/window.rs.html#16-32' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(coefs: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'static [</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='struct' href='../../imbe/window/struct.Window.html' title='imbe::window::Window'>Window</a></code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/window/struct.Window.html' title='struct imbe::window::Window'>Window</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/window.rs.html#16-32' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(coefs: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'static [</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='struct' href='../../imbe/window/struct.Window.html' title='struct imbe::window::Window'>Window</a></code></span></h4>
 <div class='docblock'><p>Create a new <code>Window</code> with the given coefficients.</p>
 </div><h4 id='method.get' class='method'><span id='get.v' class='invisible'><code>fn <a href='#method.get' class='fnname'>get</a>(&amp;self, n: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.isize.html'>isize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a></code></span></h4>
 <div class='docblock'><p>Retrieve the coefficient w(n) for the given n.</p>

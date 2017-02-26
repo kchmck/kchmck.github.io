@@ -9,6 +9,7 @@
 
     <title>imbe::gain::Gains - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -49,8 +50,8 @@
                    </a>
                </span><a class='srclink' href='../../src/imbe/gain.rs.html#15' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Gains(_);</pre><div class='docblock'><p>The gain vector G<sub>m</sub>, 1 ≤ m ≤ 6, gives a coarse envelope for the voice frame.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/gain/struct.Gains.html' title='imbe::gain::Gains'>Gains</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/gain.rs.html#17-54' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(gain_idx: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; amps: &amp;<a class='struct' href='../../imbe/descramble/struct.QuantizedAmplitudes.html' title='imbe::descramble::QuantizedAmplitudes'>QuantizedAmplitudes</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='imbe::params::BaseParams'>BaseParams</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='../../imbe/gain/struct.Gains.html' title='imbe::gain::Gains'>Gains</a></code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/gain/struct.Gains.html' title='struct imbe::gain::Gains'>Gains</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/gain.rs.html#17-54' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(gain_idx: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; amps: &amp;<a class='struct' href='../../imbe/descramble/struct.QuantizedAmplitudes.html' title='struct imbe::descramble::QuantizedAmplitudes'>QuantizedAmplitudes</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='struct imbe::params::BaseParams'>BaseParams</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='../../imbe/gain/struct.Gains.html' title='struct imbe::gain::Gains'>Gains</a></code></span></h4>
 <div class='docblock'><p>Create a new <code>Gains</code> vector from the given initial gain index b<sub>2</sub>,
 quantized amplitudes b<sub>m</sub>, 3 ≤ m ≤ L + 1, and frame parameters.</p>
 </div><h4 id='method.idct' class='method'><span id='idct.v' class='invisible'><code>fn <a href='#method.idct' class='fnname'>idct</a>(&amp;self, i: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a></code></span></h4>

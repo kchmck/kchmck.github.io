@@ -9,6 +9,7 @@
 
     <title>unvoiced.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -1115,10 +1116,10 @@
 <span class='kw'>const</span> <span class='ident'>IDFT_HALF</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='ident'>IDFT_SIZE</span> <span class='op'>/</span> <span class='number'>2</span>;
 
 <span class='doccomment'>/// Constructs unvoiced DFT/IDFT.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>UnvoicedDFT</span>([<span class='ident'>Complex32</span>; <span class='ident'>DFT_HALF</span>]);
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>UnvoicedDft</span>([<span class='ident'>Complex32</span>; <span class='ident'>DFT_HALF</span>]);
 
-<span class='kw'>impl</span> <span class='ident'>UnvoicedDFT</span> {
-    <span class='doccomment'>/// Construct a new `UnvoicedDFT` from the given frame parameters and noise generator.</span>
+<span class='kw'>impl</span> <span class='ident'>UnvoicedDft</span> {
+    <span class='doccomment'>/// Construct a new `UnvoicedDft` from the given frame parameters and noise generator.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span><span class='op'>&lt;</span><span class='ident'>R</span>: <span class='ident'>Rng</span><span class='op'>&gt;</span>(<span class='ident'>params</span>: <span class='kw-2'>&amp;</span><span class='ident'>BaseParams</span>, <span class='ident'>voice</span>: <span class='kw-2'>&amp;</span><span class='ident'>VoiceDecisions</span>,
                        <span class='ident'>amps</span>: <span class='kw-2'>&amp;</span><span class='ident'>EnhancedSpectrals</span>, <span class='kw-2'>mut</span> <span class='ident'>rng</span>: <span class='ident'>R</span>)
         <span class='op'>-&gt;</span> <span class='self'>Self</span>
@@ -1158,7 +1159,7 @@
             (<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>dft</span>[<span class='ident'>lower</span>..<span class='ident'>upper</span>]).<span class='ident'>map_in_place</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>x</span><span class='op'>|</span> <span class='ident'>scale</span> <span class='op'>*</span> <span class='ident'>x</span>);
         }
 
-        <span class='ident'>UnvoicedDFT</span>(<span class='ident'>dft</span>)
+        <span class='ident'>UnvoicedDft</span>(<span class='ident'>dft</span>)
     }
 
     <span class='doccomment'>/// Compute the IDFT u&lt;sub&gt;w&lt;/sub&gt;(n) at the given point n.</span>
@@ -1177,21 +1178,21 @@
     }
 }
 
-<span class='kw'>impl</span> <span class='ident'>Default</span> <span class='kw'>for</span> <span class='ident'>UnvoicedDFT</span> {
-    <span class='doccomment'>/// Create a new `UnvoicedDFT` in the default state.</span>
+<span class='kw'>impl</span> <span class='ident'>Default</span> <span class='kw'>for</span> <span class='ident'>UnvoicedDft</span> {
+    <span class='doccomment'>/// Create a new `UnvoicedDft` in the default state.</span>
     <span class='kw'>fn</span> <span class='ident'>default</span>() <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='comment'>// By default all IDFT values are zero [p64]. Setting the DFT values to zero will</span>
         <span class='comment'>// derive this effect.</span>
-        <span class='ident'>UnvoicedDFT</span>([<span class='ident'>Complex32</span>::<span class='ident'>zero</span>(); <span class='ident'>DFT_HALF</span>])
+        <span class='ident'>UnvoicedDft</span>([<span class='ident'>Complex32</span>::<span class='ident'>zero</span>(); <span class='ident'>DFT_HALF</span>])
     }
 }
 
 <span class='doccomment'>/// Synthesizes unvoiced spectrum signal s&lt;sub&gt;uv&lt;/sub&gt;(n).</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Unvoiced</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='lifetime'>&#39;b</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Unvoiced DFT/IDFT for current frame.</span>
-    <span class='ident'>cur</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>UnvoicedDFT</span>,
+    <span class='ident'>cur</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>UnvoicedDft</span>,
     <span class='doccomment'>/// Unvoiced DFT/IDFT for previous frame.</span>
-    <span class='ident'>prev</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;b</span> <span class='ident'>UnvoicedDFT</span>,
+    <span class='ident'>prev</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;b</span> <span class='ident'>UnvoicedDft</span>,
     <span class='doccomment'>/// Synthesis window w&lt;sub&gt;s&lt;/sub&gt;(n) for &quot;weighted overlap add&quot;.</span>
     <span class='ident'>window</span>: <span class='ident'>window</span>::<span class='ident'>Window</span>,
 }
@@ -1199,7 +1200,7 @@
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='lifetime'>&#39;b</span><span class='op'>&gt;</span> <span class='ident'>Unvoiced</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='lifetime'>&#39;b</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Create a new `Unvoiced` from the given unvoiced spectrums of the current and</span>
     <span class='doccomment'>/// previous frames.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>cur</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>UnvoicedDFT</span>, <span class='ident'>prev</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;b</span> <span class='ident'>UnvoicedDFT</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>cur</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>UnvoicedDft</span>, <span class='ident'>prev</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;b</span> <span class='ident'>UnvoicedDft</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='ident'>Unvoiced</span> {
             <span class='ident'>cur</span>: <span class='ident'>cur</span>,
             <span class='ident'>prev</span>: <span class='ident'>prev</span>,
@@ -1242,7 +1243,7 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
     <span class='kw'>use</span> <span class='ident'>descramble</span>::{<span class='ident'>VoiceDecisions</span>, <span class='ident'>Bootstrap</span>};
     <span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
     <span class='kw'>use</span> <span class='ident'>num</span>::<span class='ident'>complex</span>::<span class='ident'>Complex32</span>;
@@ -1339,7 +1340,7 @@
         <span class='ident'>amps</span>.<span class='ident'>push</span>(<span class='number'>9.0</span>);
         <span class='ident'>amps</span>.<span class='ident'>push</span>(<span class='number'>18.0</span>);
 
-        <span class='kw'>let</span> <span class='ident'>dft</span> <span class='op'>=</span> <span class='ident'>UnvoicedDFT</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>p</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='ident'>XorShiftRng</span>::<span class='ident'>new_unseeded</span>());
+        <span class='kw'>let</span> <span class='ident'>dft</span> <span class='op'>=</span> <span class='ident'>UnvoicedDft</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>p</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='ident'>XorShiftRng</span>::<span class='ident'>new_unseeded</span>());
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dft</span>.<span class='number'>0</span>[<span class='number'>0</span>], <span class='ident'>Complex32</span>::<span class='ident'>zero</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dft</span>.<span class='number'>0</span>[<span class='number'>1</span>], <span class='ident'>Complex32</span>::<span class='ident'>zero</span>());
@@ -1796,7 +1797,7 @@
         <span class='ident'>amps</span>.<span class='ident'>push</span>(<span class='number'>9.0</span>);
         <span class='ident'>amps</span>.<span class='ident'>push</span>(<span class='number'>18.0</span>);
 
-        <span class='kw'>let</span> <span class='ident'>dft</span> <span class='op'>=</span> <span class='ident'>UnvoicedDFT</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>p</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='ident'>XorShiftRng</span>::<span class='ident'>new_unseeded</span>());
+        <span class='kw'>let</span> <span class='ident'>dft</span> <span class='op'>=</span> <span class='ident'>UnvoicedDft</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>p</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='ident'>XorShiftRng</span>::<span class='ident'>new_unseeded</span>());
         <span class='kw'>let</span> <span class='ident'>uv</span> <span class='op'>=</span> <span class='ident'>Unvoiced</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>dft</span>, <span class='kw-2'>&amp;</span><span class='ident'>dft</span>);
 
         <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>uv</span>.<span class='ident'>get</span>(<span class='number'>0</span>) <span class='op'>-</span> <span class='number'>25.30613912637092255408788332715631</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);

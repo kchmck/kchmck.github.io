@@ -9,6 +9,7 @@
 
     <title>prev.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -93,7 +94,7 @@
 <span class='kw'>use</span> <span class='ident'>enhance</span>::{<span class='ident'>FrameEnergy</span>, <span class='ident'>EnhancedSpectrals</span>};
 <span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
 <span class='kw'>use</span> <span class='ident'>spectral</span>::<span class='ident'>Spectrals</span>;
-<span class='kw'>use</span> <span class='ident'>unvoiced</span>::<span class='ident'>UnvoicedDFT</span>;
+<span class='kw'>use</span> <span class='ident'>unvoiced</span>::<span class='ident'>UnvoicedDft</span>;
 <span class='kw'>use</span> <span class='ident'>voiced</span>::{<span class='ident'>Phase</span>, <span class='ident'>PhaseBase</span>};
 
 <span class='doccomment'>/// Various parameters saved from the previous frame, used when constructing the current</span>
@@ -106,7 +107,7 @@
     <span class='kw'>pub</span> <span class='ident'>err_rate</span>: <span class='ident'>f32</span>,
     <span class='kw'>pub</span> <span class='ident'>energy</span>: <span class='ident'>FrameEnergy</span>,
     <span class='kw'>pub</span> <span class='ident'>amp_thresh</span>: <span class='ident'>f32</span>,
-    <span class='kw'>pub</span> <span class='ident'>unvoiced</span>: <span class='ident'>UnvoicedDFT</span>,
+    <span class='kw'>pub</span> <span class='ident'>unvoiced</span>: <span class='ident'>UnvoicedDft</span>,
     <span class='kw'>pub</span> <span class='ident'>phase_base</span>: <span class='ident'>PhaseBase</span>,
     <span class='kw'>pub</span> <span class='ident'>phase</span>: <span class='ident'>Phase</span>,
 }
@@ -125,7 +126,7 @@
             <span class='ident'>energy</span>: <span class='ident'>FrameEnergy</span>::<span class='ident'>default</span>(),
             <span class='comment'>// This value is arbitrary and not given in the standard.</span>
             <span class='ident'>amp_thresh</span>: <span class='number'>0.0</span>,
-            <span class='ident'>unvoiced</span>: <span class='ident'>UnvoicedDFT</span>::<span class='ident'>default</span>(),
+            <span class='ident'>unvoiced</span>: <span class='ident'>UnvoicedDft</span>::<span class='ident'>default</span>(),
             <span class='ident'>phase_base</span>: <span class='ident'>PhaseBase</span>::<span class='ident'>default</span>(),
             <span class='ident'>phase</span>: <span class='ident'>Phase</span>::<span class='ident'>default</span>(),
         }

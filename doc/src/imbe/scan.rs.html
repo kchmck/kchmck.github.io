@@ -9,6 +9,7 @@
 
     <title>scan.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -517,10 +518,10 @@
             <span class='comment'>// Take first K MSBs as the voiced/unvoiced vector [p39].</span>
             <span class='ident'>voiced</span>: <span class='ident'>parts</span> <span class='op'>&gt;&gt;</span> (<span class='number'>22</span> <span class='op'>-</span> <span class='ident'>params</span>.<span class='ident'>bands</span>),
             <span class='comment'>// Take next 2 bits as bit 1 and 2 of b_2 [p39].</span>
-            <span class='ident'>idx_part</span>: <span class='ident'>parts</span> <span class='op'>&gt;&gt;</span> (<span class='number'>20</span> <span class='op'>-</span> <span class='ident'>params</span>.<span class='ident'>bands</span>) <span class='kw-2'>&amp;</span> <span class='number'>0b11</span>,
+            <span class='ident'>idx_part</span>: <span class='ident'>parts</span> <span class='op'>&gt;&gt;</span> (<span class='number'>20</span> <span class='op'>-</span> <span class='ident'>params</span>.<span class='ident'>bands</span>) <span class='op'>&amp;</span> <span class='number'>0b11</span>,
             <span class='comment'>// Take the remaining K-2 LSBs as part of the scanning procedure [p39].</span>
             <span class='comment'>// Since the underlying word is 32 bits, (32-22) + K+2 = 12 + K.</span>
-            <span class='ident'>scanned</span>: <span class='ident'>parts</span> <span class='kw-2'>&amp;</span> <span class='op'>!</span><span class='number'>0</span> <span class='op'>&gt;&gt;</span> (<span class='number'>12</span> <span class='op'>+</span> <span class='ident'>params</span>.<span class='ident'>bands</span>),
+            <span class='ident'>scanned</span>: <span class='ident'>parts</span> <span class='op'>&amp;</span> <span class='op'>!</span><span class='number'>0</span> <span class='op'>&gt;&gt;</span> (<span class='number'>12</span> <span class='op'>+</span> <span class='ident'>params</span>.<span class='ident'>bands</span>),
         }
     }
 }
@@ -557,7 +558,7 @@
         <span class='self'>self</span>.<span class='ident'>pos</span>.<span class='ident'>next</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>n</span><span class='op'>|</span> {
             <span class='kw'>match</span> <span class='ident'>n</span> {
                 <span class='comment'>// Last 3 LSBs of u_0.</span>
-                <span class='number'>0</span> <span class='op'>=&gt;</span> (<span class='self'>self</span>.<span class='ident'>chunks</span>[<span class='number'>0</span>] <span class='kw-2'>&amp;</span> <span class='number'>0b111</span>, <span class='number'>3</span>),
+                <span class='number'>0</span> <span class='op'>=&gt;</span> (<span class='self'>self</span>.<span class='ident'>chunks</span>[<span class='number'>0</span>] <span class='op'>&amp;</span> <span class='number'>0b111</span>, <span class='number'>3</span>),
                 <span class='comment'>// All of u_1, u_2, and u_3.</span>
                 <span class='number'>1</span> <span class='op'>=&gt;</span> (<span class='self'>self</span>.<span class='ident'>chunks</span>[<span class='number'>1</span>], <span class='number'>12</span>),
                 <span class='number'>2</span> <span class='op'>=&gt;</span> (<span class='self'>self</span>.<span class='ident'>chunks</span>[<span class='number'>2</span>], <span class='number'>12</span>),
@@ -624,7 +625,7 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
     <span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>

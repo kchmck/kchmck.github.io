@@ -9,6 +9,7 @@
 
     <title>imbe - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
     <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
     
@@ -50,109 +51,109 @@
                </span><a class='srclink' href='../src/imbe/lib.rs.html#1-30' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Decode the Improved Multi-Band Excitation (IMBE) digital voice codec.</p>
 </div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
-<table><tr><td><code>pub use decode::<a class='struct' href='../imbe/decode/struct.IMBEDecoder.html' title='imbe::decode::IMBEDecoder'>IMBEDecoder</a>;</code></td></tr><tr><td><code>pub use frame::<a class='struct' href='../imbe/frame/struct.ReceivedFrame.html' title='imbe::frame::ReceivedFrame'>ReceivedFrame</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr><td><code>pub use decode::<a class='struct' href='../imbe/decode/struct.ImbeDecoder.html' title='struct imbe::decode::ImbeDecoder'>ImbeDecoder</a>;</code></td></tr><tr><td><code>pub use frame::<a class='struct' href='../imbe/frame/struct.ReceivedFrame.html' title='struct imbe::frame::ReceivedFrame'>ReceivedFrame</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class='mod' href='allocs/index.html'
-                                  title='imbe::allocs'>allocs</a></td>
+                                  title='mod imbe::allocs'>allocs</a></td>
                            <td class='docblock-short'>
                                 <p>Bit allocations for quantized amplitudes.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='coefs/index.html'
-                                  title='imbe::coefs'>coefs</a></td>
+                                  title='mod imbe::coefs'>coefs</a></td>
                            <td class='docblock-short'>
                                 <p>Higher order DCT coefficients.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='consts/index.html'
-                                  title='imbe::consts'>consts</a></td>
+                                  title='mod imbe::consts'>consts</a></td>
                            <td class='docblock-short'>
                                 <p>Constants used in the codec.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='decode/index.html'
-                                  title='imbe::decode'>decode</a></td>
+                                  title='mod imbe::decode'>decode</a></td>
                            <td class='docblock-short'>
                                 <p>Decode IMBE frames into an audio signal.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='descramble/index.html'
-                                  title='imbe::descramble'>descramble</a></td>
+                                  title='mod imbe::descramble'>descramble</a></td>
                            <td class='docblock-short'>
                                 <p>Initial descrambling of prioritized chunks.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='enhance/index.html'
-                                  title='imbe::enhance'>enhance</a></td>
+                                  title='mod imbe::enhance'>enhance</a></td>
                            <td class='docblock-short'>
                                 <p>Frame repeat/muting, spectral amplitude enhancement, and adaptive smoothing.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='frame/index.html'
-                                  title='imbe::frame'>frame</a></td>
+                                  title='mod imbe::frame'>frame</a></td>
                            <td class='docblock-short'>
                                 <p>Received IMBE voice frame.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='gain/index.html'
-                                  title='imbe::gain'>gain</a></td>
+                                  title='mod imbe::gain'>gain</a></td>
                            <td class='docblock-short'>
                                 <p>Quantized gain vector.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='params/index.html'
-                                  title='imbe::params'>params</a></td>
+                                  title='mod imbe::params'>params</a></td>
                            <td class='docblock-short'>
                                 <p>Frame parameters.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='prev/index.html'
-                                  title='imbe::prev'>prev</a></td>
+                                  title='mod imbe::prev'>prev</a></td>
                            <td class='docblock-short'>
                                 <p>Previous frame saved parameters.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='scan/index.html'
-                                  title='imbe::scan'>scan</a></td>
+                                  title='mod imbe::scan'>scan</a></td>
                            <td class='docblock-short'>
                                 <p>Scanning procedure used in descrambling.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='spectral/index.html'
-                                  title='imbe::spectral'>spectral</a></td>
+                                  title='mod imbe::spectral'>spectral</a></td>
                            <td class='docblock-short'>
                                 <p>Spectral amplitudes.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='unvoiced/index.html'
-                                  title='imbe::unvoiced'>unvoiced</a></td>
+                                  title='mod imbe::unvoiced'>unvoiced</a></td>
                            <td class='docblock-short'>
                                 <p>Unvoiced spectrum synthesis.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='voiced/index.html'
-                                  title='imbe::voiced'>voiced</a></td>
+                                  title='mod imbe::voiced'>voiced</a></td>
                            <td class='docblock-short'>
                                 <p>Voiced spectrum synthesis.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='window/index.html'
-                                  title='imbe::window'>window</a></td>
+                                  title='mod imbe::window'>window</a></td>
                            <td class='docblock-short'>
                                 <p>Signal windowing.</p>
                            </td>

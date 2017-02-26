@@ -9,6 +9,7 @@
 
     <title>descramble.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
     
@@ -576,7 +577,7 @@
 
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>unwrap_period</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> {
-        <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Bootstrap</span>::<span class='ident'>Period</span>(<span class='ident'>period</span>) <span class='op'>=</span> <span class='op'>*</span><span class='self'>self</span> {
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Bootstrap</span>::<span class='ident'>Period</span>(<span class='ident'>period</span>) <span class='op'>=</span> <span class='kw-2'>*</span><span class='self'>self</span> {
             <span class='ident'>period</span>
         } <span class='kw'>else</span> {
             <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;attempted unwrap of invalid/silence period&quot;</span>);
@@ -588,13 +589,13 @@
 <span class='doccomment'>/// s&lt;sub&gt;7&lt;/sub&gt;.</span>
 <span class='kw'>fn</span> <span class='ident'>period</span>(<span class='ident'>chunks</span>: <span class='kw-2'>&amp;</span><span class='ident'>Chunks</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> {
     <span class='comment'>// Concatenate MSBs of u_0 with bits 2 and 1 of u_7 [p39].</span>
-    (<span class='ident'>chunks</span>[<span class='number'>0</span>] <span class='op'>&gt;&gt;</span> <span class='number'>4</span>) <span class='kw'>as</span> <span class='ident'>u8</span> <span class='kw-2'>&amp;</span> <span class='number'>0b11111100</span> <span class='op'>|</span> (<span class='ident'>chunks</span>[<span class='number'>7</span>] <span class='op'>&gt;&gt;</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u8</span> <span class='kw-2'>&amp;</span> <span class='number'>0b11</span>
+    (<span class='ident'>chunks</span>[<span class='number'>0</span>] <span class='op'>&gt;&gt;</span> <span class='number'>4</span>) <span class='kw'>as</span> <span class='ident'>u8</span> <span class='op'>&amp;</span> <span class='number'>0b11111100</span> <span class='op'>|</span> (<span class='ident'>chunks</span>[<span class='number'>7</span>] <span class='op'>&gt;&gt;</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u8</span> <span class='op'>&amp;</span> <span class='number'>0b11</span>
 }
 
 <span class='doccomment'>/// Compute the 6-bit index, b&lt;sub&gt;2&lt;/sub&gt;, used to look up the quantized gain value [p30].</span>
 <span class='kw'>fn</span> <span class='ident'>gain_idx</span>(<span class='ident'>chunks</span>: <span class='kw-2'>&amp;</span><span class='ident'>Chunks</span>, <span class='ident'>idx_part</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
     <span class='comment'>// Concatenate bits 5 through 3 of u_0, the two index bits, and bit 3 of u_7 [p39].</span>
-    (<span class='ident'>chunks</span>[<span class='number'>0</span>] <span class='kw-2'>&amp;</span> <span class='number'>0b111000</span> <span class='op'>|</span> <span class='ident'>idx_part</span> <span class='op'>&lt;&lt;</span> <span class='number'>1</span> <span class='op'>|</span> <span class='ident'>chunks</span>[<span class='number'>7</span>] <span class='op'>&gt;&gt;</span> <span class='number'>3</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>usize</span>
+    (<span class='ident'>chunks</span>[<span class='number'>0</span>] <span class='op'>&amp;</span> <span class='number'>0b111000</span> <span class='op'>|</span> <span class='ident'>idx_part</span> <span class='op'>&lt;&lt;</span> <span class='number'>1</span> <span class='op'>|</span> <span class='ident'>chunks</span>[<span class='number'>7</span>] <span class='op'>&gt;&gt;</span> <span class='number'>3</span> <span class='op'>&amp;</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>usize</span>
 }
 
 <span class='doccomment'>/// Reconstructs quantized amplitudes b&lt;sub&gt;3&lt;/sub&gt;, ..., b&lt;sub&gt;L+1&lt;/sub&gt;.</span>
@@ -675,7 +676,7 @@
         <span class='kw'>if</span> <span class='ident'>l</span> <span class='kw'>as</span> <span class='ident'>u32</span> <span class='op'>&gt;</span> <span class='self'>self</span>.<span class='ident'>params</span>.<span class='ident'>harmonics</span> {
             <span class='bool-val'>false</span>
         } <span class='kw'>else</span> {
-            <span class='self'>self</span>.<span class='ident'>voiced</span> <span class='kw-2'>&amp;</span> <span class='self'>self</span>.<span class='ident'>mask</span>(<span class='ident'>l</span>) <span class='op'>!=</span> <span class='number'>0</span>
+            <span class='self'>self</span>.<span class='ident'>voiced</span> <span class='op'>&amp;</span> <span class='self'>self</span>.<span class='ident'>mask</span>(<span class='ident'>l</span>) <span class='op'>!=</span> <span class='number'>0</span>
         }
     }
 
@@ -701,7 +702,7 @@
 <span class='kw'>fn</span> <span class='ident'>gen_harmonics_bitmap</span>(<span class='ident'>voiced</span>: <span class='ident'>u32</span>, <span class='ident'>params</span>: <span class='kw-2'>&amp;</span><span class='ident'>BaseParams</span>) <span class='op'>-&gt;</span> <span class='ident'>u64</span> {
     <span class='comment'>// Each voiced/unvoiced band (except possibly the last) contains 3 harmonics.</span>
     <span class='kw'>let</span> <span class='ident'>bits</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='ident'>params</span>.<span class='ident'>bands</span>).<span class='ident'>rev</span>().<span class='ident'>fold</span>(<span class='number'>0</span>, <span class='op'>|</span><span class='ident'>bits</span>, <span class='ident'>i</span><span class='op'>|</span> {
-        <span class='ident'>bits</span> <span class='op'>&lt;&lt;</span> <span class='number'>3</span> <span class='op'>|</span> <span class='kw'>if</span> <span class='ident'>voiced</span> <span class='op'>&gt;&gt;</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span> <span class='op'>==</span> <span class='number'>1</span> {
+        <span class='ident'>bits</span> <span class='op'>&lt;&lt;</span> <span class='number'>3</span> <span class='op'>|</span> <span class='kw'>if</span> <span class='ident'>voiced</span> <span class='op'>&gt;&gt;</span> <span class='ident'>i</span> <span class='op'>&amp;</span> <span class='number'>1</span> <span class='op'>==</span> <span class='number'>1</span> {
             <span class='number'>0b111</span>
         } <span class='kw'>else</span> {
             <span class='number'>0</span>
@@ -721,7 +722,7 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
     <span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>

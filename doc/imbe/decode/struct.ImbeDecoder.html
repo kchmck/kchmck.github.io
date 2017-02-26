@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `scan` mod in crate `imbe`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, scan">
+    <meta name="description" content="API documentation for the Rust `ImbeDecoder` struct in crate `imbe`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ImbeDecoder">
 
-    <title>imbe::scan - Rust</title>
+    <title>imbe::decode::ImbeDecoder - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='../index.html'>imbe</a></p><script>window.sidebarCurrent = {name: 'scan', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'><a href='../index.html'>imbe</a>::<wbr><a href='index.html'>decode</a></p><script>window.sidebarCurrent = {name: 'ImbeDecoder', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -43,37 +43,19 @@
         </form>
     </nav>
 
-    <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>imbe</a>::<wbr><a class='mod' href=''>scan</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>imbe</a>::<wbr><a href='index.html'>decode</a>::<wbr><a class='struct' href=''>ImbeDecoder</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/imbe/scan.rs.html#1-440' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'><p>Scanning procedure used in descrambling.</p>
-</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.ScanBits.html'
-                                  title='struct imbe::scan::ScanBits'>ScanBits</a></td>
-                           <td class='docblock-short'>
-                                <p>Sequentially extracts the bits scanned into prioritized chunks.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.ScanChunks.html'
-                                  title='struct imbe::scan::ScanChunks'>ScanChunks</a></td>
-                           <td class='docblock-short'>
-                                <p>Iterates over the chunks covered in the scanning procedure [p39].</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.ScanSep.html'
-                                  title='struct imbe::scan::ScanSep'>ScanSep</a></td>
-                           <td class='docblock-short'>
-                                <p>Decodes voiced/unvoiced decisions and the quantized gain index fragment from
-prioritized chunks.</p>
-                           </td>
-                       </tr></table></section>
+               </span><a class='srclink' href='../../src/imbe/decode.rs.html#27-30' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct ImbeDecoder { /* fields omitted */ }</pre><div class='docblock'><p>Decodes a stream of IMBE frames.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/decode/struct.ImbeDecoder.html' title='struct imbe::decode::ImbeDecoder'>ImbeDecoder</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/decode.rs.html#32-141' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../../imbe/decode/struct.ImbeDecoder.html' title='struct imbe::decode::ImbeDecoder'>ImbeDecoder</a></code></span></h4>
+<div class='docblock'><p>Create a new <code>ImbeDecoder</code> in the default state.</p>
+</div><h4 id='method.decode' class='method'><span id='decode.v' class='invisible'><code>fn <a href='#method.decode' class='fnname'>decode</a>(&amp;mut self, frame: <a class='struct' href='../../imbe/frame/struct.ReceivedFrame.html' title='struct imbe::frame::ReceivedFrame'>ReceivedFrame</a>, buf: &amp;mut <a class='type' href='../../imbe/frame/type.AudioBuf.html' title='type imbe::frame::AudioBuf'>AudioBuf</a>)</code></span></h4>
+<div class='docblock'><p>Decode the given frame into the given audio sample buffer.</p>
+</div></div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
