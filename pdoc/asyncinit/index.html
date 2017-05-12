@@ -1092,6 +1092,12 @@ to be called like any other asynchronous function.</p>
 <span class="n">obj</span> <span class="o">=</span> <span class="k">await</span> <span class="n">MyClass</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">obj</span><span class="o">.</span><span class="n">val</span> <span class="o">==</span> <span class="mi">44</span>
 </pre></div>
+
+
+<h2>Inheritance</h2>
+<p>Note that if a parent class is decorated with <code>@asyncinit</code>, its child classes
+automatically inherit async <code>__init__</code> functionality and don't require decoration
+themselves (as long as they don't override <code>__new__</code>.)</p>
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-asyncinit', this);">Show source &equiv;</a></p>
   <div id="source-asyncinit" class="source">
@@ -1116,6 +1122,12 @@ to be called like any other asynchronous function.</p>
 <span class="sd">obj = await MyClass(42)</span>
 <span class="sd">assert obj.val == 44</span>
 <span class="sd">```</span>
+
+<span class="sd">## Inheritance</span>
+
+<span class="sd">Note that if a parent class is decorated with `@asyncinit`, its child classes</span>
+<span class="sd">automatically inherit async `__init__` functionality and don&#39;t require decoration</span>
+<span class="sd">themselves (as long as they don&#39;t override `__new__`.)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">functools</span>
@@ -1134,12 +1146,12 @@ to be called like any other asynchronous function.</p>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">cls_new</span> <span class="o">=</span> <span class="n">_force_async</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="fm">__new__</span><span class="p">)</span>
 
-    <span class="n">cls_init</span> <span class="o">=</span> <span class="n">_force_async</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
-
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="fm">__new__</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span> <span class="o">=</span> <span class="k">await</span> <span class="n">cls_new</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">await</span> <span class="n">cls_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">cls_init</span> <span class="o">=</span> <span class="n">_force_async</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">cls_init</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span>
 
@@ -1181,6 +1193,17 @@ to be called like any other asynchronous function.</p>
             <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="n">x</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">derived</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">x</span>
 
+    <span class="nd">@asyncinit</span>
+    <span class="k">class</span> <span class="nc">SuperClass</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+
+    <span class="k">class</span> <span class="nc">SubClass</span><span class="p">(</span><span class="n">SuperClass</span><span class="p">):</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+            <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">a</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span>
+
     <span class="k">async</span> <span class="k">def</span> <span class="nf">mainTask</span><span class="p">():</span>
         <span class="n">test</span> <span class="o">=</span> <span class="k">await</span> <span class="n">TestAsyncInit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">test</span><span class="o">.</span><span class="n">num</span> <span class="o">==</span> <span class="mi">3</span>
@@ -1189,6 +1212,11 @@ to be called like any other asynchronous function.</p>
         <span class="n">test</span> <span class="o">=</span> <span class="k">await</span> <span class="n">TestNormalInit</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">test</span><span class="o">.</span><span class="n">num</span> <span class="o">==</span> <span class="mi">42</span>
         <span class="k">assert</span> <span class="n">test</span><span class="o">.</span><span class="n">derived</span> <span class="o">==</span> <span class="mi">168</span>
+
+        <span class="n">test</span> <span class="o">=</span> <span class="k">await</span> <span class="n">SubClass</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">test</span><span class="o">.</span><span class="n">a</span> <span class="o">==</span> <span class="mi">4</span>
+        <span class="k">assert</span> <span class="n">test</span><span class="o">.</span><span class="n">b</span> <span class="o">==</span> <span class="mi">8</span>
+        <span class="k">assert</span> <span class="n">test</span><span class="o">.</span><span class="n">c</span> <span class="o">==</span> <span class="mi">12</span>
 
     <span class="n">eventLoop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
     <span class="n">eventLoop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">mainTask</span><span class="p">())</span>
@@ -1227,12 +1255,12 @@ to be called like any other asynchronous function.</p>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">cls_new</span> <span class="o">=</span> <span class="n">_force_async</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="fm">__new__</span><span class="p">)</span>
 
-    <span class="n">cls_init</span> <span class="o">=</span> <span class="n">_force_async</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
-
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="fm">__new__</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span> <span class="o">=</span> <span class="k">await</span> <span class="n">cls_new</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">await</span> <span class="n">cls_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">cls_init</span> <span class="o">=</span> <span class="n">_force_async</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">cls_init</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span>
 
