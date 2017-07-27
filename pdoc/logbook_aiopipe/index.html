@@ -1,0 +1,2246 @@
+<!doctype html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+    <title>logbook_aiopipe API documentation</title>
+    <meta name="description" content="This package provides a handler and subscriber for multiprocess
+[`logbook`](http://logbook.readthedo..." />
+
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+  
+  <style type="text/css">
+  
+* {
+  box-sizing: border-box;
+}
+/*! normalize.css v1.1.1 | MIT License | git.io/normalize */
+
+/* ==========================================================================
+   HTML5 display definitions
+   ========================================================================== */
+
+/**
+ * Correct `block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+/**
+ * Correct `inline-block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+audio,
+canvas,
+video {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+
+audio:not([controls]) {
+    display: none;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Firefox 3, and Safari 4.
+ * Known issue: no IE 6 support.
+ */
+
+[hidden] {
+    display: none;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+/**
+ * 1. Prevent system color scheme's background color being used in Firefox, IE,
+ *    and Opera.
+ * 2. Prevent system color scheme's text color being used in Firefox, IE, and
+ *    Opera.
+ * 3. Correct text resizing oddly in IE 6/7 when body `font-size` is set using
+ *    `em` units.
+ * 4. Prevent iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+
+html {
+    background: #fff; /* 1 */
+    color: #000; /* 2 */
+    font-size: 100%; /* 3 */
+    -webkit-text-size-adjust: 100%; /* 4 */
+    -ms-text-size-adjust: 100%; /* 4 */
+}
+
+/**
+ * Address `font-family` inconsistency between `textarea` and other form
+ * elements.
+ */
+
+html,
+button,
+input,
+select,
+textarea {
+    font-family: sans-serif;
+}
+
+/**
+ * Address margins handled incorrectly in IE 6/7.
+ */
+
+body {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+
+a:focus {
+    outline: thin dotted;
+}
+
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+
+a:active,
+a:hover {
+    outline: 0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+/**
+ * Address font sizes and margins set differently in IE 6/7.
+ * Address font sizes within `section` and `article` in Firefox 4+, Safari 5,
+ * and Chrome.
+ */
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 0.83em 0;
+}
+
+h3 {
+    font-size: 1.17em;
+    margin: 1em 0;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 1.33em 0;
+}
+
+h5 {
+    font-size: 0.83em;
+    margin: 1.67em 0;
+}
+
+h6 {
+    font-size: 0.67em;
+    margin: 2.33em 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Safari 5, and Chrome.
+ */
+
+abbr[title] {
+    border-bottom: 1px dotted;
+}
+
+/**
+ * Address style set to `bolder` in Firefox 3+, Safari 4/5, and Chrome.
+ */
+
+b,
+strong {
+    font-weight: bold;
+}
+
+blockquote {
+    margin: 1em 40px;
+}
+
+/**
+ * Address styling not present in Safari 5 and Chrome.
+ */
+
+dfn {
+    font-style: italic;
+}
+
+/**
+ * Address differences between Firefox and other browsers.
+ * Known issue: no IE 6/7 normalization.
+ */
+
+hr {
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 6/7/8/9.
+ */
+
+mark {
+    background: #ff0;
+    color: #000;
+}
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+p,
+pre {
+    margin: 1em 0;
+}
+
+/**
+ * Correct font family set oddly in IE 6, Safari 4/5, and Chrome.
+ */
+
+code,
+kbd,
+pre,
+samp {
+    font-family: monospace, serif;
+    _font-family: 'courier new', monospace;
+    font-size: 1em;
+}
+
+/**
+ * Improve readability of pre-formatted text in all browsers.
+ */
+
+pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/**
+ * Address CSS quotes not supported in IE 6/7.
+ */
+
+q {
+    quotes: none;
+}
+
+/**
+ * Address `quotes` property not supported in Safari 4.
+ */
+
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+
+small {
+    font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+/* ==========================================================================
+   Lists
+   ========================================================================== */
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+dl,
+menu,
+ol,
+ul {
+    margin: 1em 0;
+}
+
+dd {
+    margin: 0 0 0 40px;
+}
+
+/**
+ * Address paddings set differently in IE 6/7.
+ */
+
+menu,
+ol,
+ul {
+    padding: 0 0 0 40px;
+}
+
+/**
+ * Correct list images handled incorrectly in IE 7.
+ */
+
+nav ul,
+nav ol {
+    list-style: none;
+    list-style-image: none;
+}
+
+/* ==========================================================================
+   Embedded content
+   ========================================================================== */
+
+/**
+ * 1. Remove border when inside `a` element in IE 6/7/8/9 and Firefox 3.
+ * 2. Improve image quality when scaled in IE 7.
+ */
+
+img {
+    border: 0; /* 1 */
+    -ms-interpolation-mode: bicubic; /* 2 */
+}
+
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Figures
+   ========================================================================== */
+
+/**
+ * Address margin not present in IE 6/7/8/9, Safari 5, and Opera 11.
+ */
+
+figure {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+/**
+ * Correct margin displayed oddly in IE 6/7.
+ */
+
+form {
+    margin: 0;
+}
+
+/**
+ * Define consistent border, margin, and padding.
+ */
+
+fieldset {
+    border: 1px solid #c0c0c0;
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct color not being inherited in IE 6/7/8/9.
+ * 2. Correct text not wrapping in Firefox 3.
+ * 3. Correct alignment displayed oddly in IE 6/7.
+ */
+
+legend {
+    border: 0; /* 1 */
+    padding: 0;
+    white-space: normal; /* 2 */
+    *margin-left: -7px; /* 3 */
+}
+
+/**
+ * 1. Correct font size not being inherited in all browsers.
+ * 2. Address margins set differently in IE 6/7, Firefox 3+, Safari 5,
+ *    and Chrome.
+ * 3. Improve appearance and consistency in all browsers.
+ */
+
+button,
+input,
+select,
+textarea {
+    font-size: 100%; /* 1 */
+    margin: 0; /* 2 */
+    vertical-align: baseline; /* 3 */
+    *vertical-align: middle; /* 3 */
+}
+
+/**
+ * Address Firefox 3+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+
+button,
+input {
+    line-height: normal;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Chrome, Safari 5+, and IE 6+.
+ * Correct `select` style inheritance in Firefox 4+ and Opera.
+ */
+
+button,
+select {
+    text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ * 4. Remove inner spacing in IE 7 without affecting normal text inputs.
+ *    Known issue: inner spacing remains in IE 6.
+ */
+
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+    -webkit-appearance: button; /* 2 */
+    cursor: pointer; /* 3 */
+    *overflow: visible;  /* 4 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+
+button[disabled],
+html input[disabled] {
+    cursor: default;
+}
+
+/**
+ * 1. Address box sizing set to content-box in IE 8/9.
+ * 2. Remove excess padding in IE 8/9.
+ * 3. Remove excess padding in IE 7.
+ *    Known issue: excess padding remains in IE 6.
+ */
+
+input[type="checkbox"],
+input[type="radio"] {
+    box-sizing: border-box; /* 1 */
+    padding: 0; /* 2 */
+    *height: 13px; /* 3 */
+    *width: 13px; /* 3 */
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+
+input[type="search"] {
+    -webkit-appearance: textfield; /* 1 */
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box; /* 2 */
+    box-sizing: content-box;
+}
+
+/**
+ * Remove inner padding and search cancel button in Safari 5 and Chrome
+ * on OS X.
+ */
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+
+/**
+ * Remove inner padding and border in Firefox 3+.
+ */
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/**
+ * 1. Remove default vertical scrollbar in IE 6/7/8/9.
+ * 2. Improve readability and alignment in all browsers.
+ */
+
+textarea {
+    overflow: auto; /* 1 */
+    vertical-align: top; /* 2 */
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+/**
+ * Remove most spacing between table cells.
+ */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+  </style>
+
+  <style type="text/css">
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+  }
+  body {
+    background: #fff;
+    font-family: "Source Sans Pro", "Helvetica Neueue", Helvetica, sans;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.6em;
+  }
+  #content {
+    width: 70%;
+    max-width: 850px;
+    float: left;
+    padding: 30px 60px;
+    border-left: 1px solid #ddd;
+  }
+  #sidebar {
+    width: 25%;
+    float: left;
+    padding: 30px;
+    overflow: hidden;
+  }
+  #nav {
+    font-size: 130%;
+    margin: 0 0 15px 0;
+  }
+
+  #top {
+    display: block;
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    font-size: .85em;
+    text-transform: uppercase;
+  }
+
+  #footer {
+    font-size: .75em;
+    padding: 5px 30px;
+    border-top: 1px solid #ddd;
+    text-align: right;
+  }
+    #footer p {
+      margin: 0 0 0 30px;
+      display: inline-block;
+    }
+
+  h1, h2, h3, h4, h5 {
+    font-weight: 300;
+  }
+  h1 {
+    font-size: 2.5em;
+    line-height: 1.1em;
+    margin: 0 0 .50em 0;
+  }
+
+  h2 {
+    font-size: 1.75em;
+    margin: 1em 0 .50em 0;
+  }
+
+  h3 {
+    margin: 25px 0 10px 0;
+  }
+
+  h4 {
+    margin: 1em 0 0.5em 0;
+    font-size: 120%;
+  }
+
+  a {
+    color: #058;
+    text-decoration: none;
+    transition: color .3s ease-in-out;
+  }
+
+  a:hover {
+    color: #e08524;
+    transition: color .3s ease-in-out;
+  }
+
+  pre, code, .mono, .name {
+    font-family: "Ubuntu Mono", "Cousine", "DejaVu Sans Mono", monospace;
+  }
+
+  .title .name {
+    font-weight: bold;
+  }
+  .section-title {
+    margin-top: 2em;
+  }
+  .ident {
+    color: #900;
+  }
+  .type {
+    color: #000;
+  }
+  .spec {
+    color: #000;
+  }
+
+  code {
+    background: #f9f9f9;
+  } 
+
+  pre {
+    background: #fefefe;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 0 #f3f3f3;
+    margin: 0 30px;
+    padding: 15px 30px;
+  }
+
+  .codehilite {
+    margin: 0 30px 10px 30px;
+  }
+
+    .codehilite pre {
+      margin: 0;
+    }
+    .codehilite .err { background: #ff3300; color: #fff !important; } 
+
+  table#module-list {
+    font-size: 110%;
+  }
+
+    table#module-list tr td:first-child {
+      padding-right: 10px;
+      white-space: nowrap;
+    }
+
+    table#module-list td {
+      vertical-align: top;
+      padding-bottom: 8px;
+    }
+
+      table#module-list td p {
+        margin: 0 0 7px 0;
+      }
+
+  .def {
+    display: table;
+  }
+
+    .def p {
+      display: table-cell;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .def p:first-child {
+      white-space: nowrap;
+    }
+
+    .def p:last-child {
+      width: 100%;
+    }
+
+
+  #index {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+    ul#index .class_name {
+      /* font-size: 110%; */
+      font-weight: bold;
+    }
+    #index ul {
+      margin: 0;
+    }
+
+  .item {
+    margin: 0 0 15px 0;
+  }
+
+    .item .class {
+      margin: 0 0 25px 30px;
+    }
+
+      .item .class ul.class_list {
+        margin: 0 0 20px 0;
+      }
+
+    .item .name {
+      background: #fafafa;
+      margin: 0;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 3px;
+      display: inline-block;
+      min-width: 40%;
+    }
+      .item .name:hover {
+        background: #f6f6f6;
+      }
+
+    .item .empty_desc {
+      margin: 0 0 5px 0;
+      padding: 0;
+    }
+
+    .item .inheritance {
+      margin: 3px 0 0 30px;
+    }
+
+    .item .inherited {
+      color: #666;
+    }
+
+    .item .desc {
+      padding: 0 8px;
+      margin: 0;
+    }
+
+      .item .desc p {
+        margin: 0 0 10px 0;
+      }
+
+    .source_cont {
+      margin: 0;
+      padding: 0;
+    }
+
+    .source_link a {
+      background: #ffc300;
+      font-weight: 400;
+      font-size: .75em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 1px 1px 0 #f4b700;
+      
+      padding: 3px 8px;
+      border-radius: 2px;
+      transition: background .3s ease-in-out;
+    }
+      .source_link a:hover {
+        background: #FF7200;
+        text-shadow: none;
+        transition: background .3s ease-in-out;
+      }
+
+    .source {
+      display: none;
+      max-height: 600px;
+      overflow-y: scroll;
+      margin-bottom: 15px;
+    }
+
+      .source .codehilite {
+        margin: 0;
+      }
+
+  .desc h1, .desc h2, .desc h3 {
+    font-size: 100% !important;
+  }
+  .clear {
+    clear: both;
+  }
+
+  @media all and (max-width: 950px) {
+    #sidebar {
+      width: 35%;
+    }
+    #content {
+      width: 65%;
+    }
+  }
+  @media all and (max-width: 650px) {
+    #top {
+      display: none;
+    }
+    #sidebar {
+      float: none;
+      width: auto;
+    }
+    #content {
+      float: none;
+      width: auto;
+      padding: 30px;
+    }
+
+    #index ul {
+      padding: 0;
+      margin-bottom: 15px;
+    }
+    #index ul li {
+      display: inline-block;
+      margin-right: 30px;
+    }
+    #footer {
+      text-align: left;
+    }
+    #footer p {
+      display: block;
+      margin: inherit;
+    }
+  }
+
+  /*****************************/
+
+  </style>
+
+  <style type="text/css">
+  .codehilite .hll { background-color: #ffffcc }
+.codehilite  { background: #f8f8f8; }
+.codehilite .c { color: #408080; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #FF0000 } /* Error */
+.codehilite .k { color: #008000; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666666 } /* Operator */
+.codehilite .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #BC7A00 } /* Comment.Preproc */
+.codehilite .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #408080; font-style: italic } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .gr { color: #FF0000 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #00A000 } /* Generic.Inserted */
+.codehilite .go { color: #888888 } /* Generic.Output */
+.codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #0044DD } /* Generic.Traceback */
+.codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #008000 } /* Keyword.Pseudo */
+.codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #B00040 } /* Keyword.Type */
+.codehilite .m { color: #666666 } /* Literal.Number */
+.codehilite .s { color: #BA2121 } /* Literal.String */
+.codehilite .na { color: #7D9029 } /* Name.Attribute */
+.codehilite .nb { color: #008000 } /* Name.Builtin */
+.codehilite .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #880000 } /* Name.Constant */
+.codehilite .nd { color: #AA22FF } /* Name.Decorator */
+.codehilite .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.codehilite .nf { color: #0000FF } /* Name.Function */
+.codehilite .nl { color: #A0A000 } /* Name.Label */
+.codehilite .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #19177C } /* Name.Variable */
+.codehilite .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #bbbbbb } /* Text.Whitespace */
+.codehilite .mb { color: #666666 } /* Literal.Number.Bin */
+.codehilite .mf { color: #666666 } /* Literal.Number.Float */
+.codehilite .mh { color: #666666 } /* Literal.Number.Hex */
+.codehilite .mi { color: #666666 } /* Literal.Number.Integer */
+.codehilite .mo { color: #666666 } /* Literal.Number.Oct */
+.codehilite .sa { color: #BA2121 } /* Literal.String.Affix */
+.codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
+.codehilite .sc { color: #BA2121 } /* Literal.String.Char */
+.codehilite .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
+.codehilite .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.codehilite .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.codehilite .sx { color: #008000 } /* Literal.String.Other */
+.codehilite .sr { color: #BB6688 } /* Literal.String.Regex */
+.codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
+.codehilite .ss { color: #19177C } /* Literal.String.Symbol */
+.codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #0000FF } /* Name.Function.Magic */
+.codehilite .vc { color: #19177C } /* Name.Variable.Class */
+.codehilite .vg { color: #19177C } /* Name.Variable.Global */
+.codehilite .vi { color: #19177C } /* Name.Variable.Instance */
+.codehilite .vm { color: #19177C } /* Name.Variable.Magic */
+.codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
+  </style>
+
+  <style type="text/css">
+  
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+  </style>
+
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+              inlineMath: [['$','$'], ['\\(','\\)']]
+          }
+      });
+  </script>
+
+  <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+
+  <script type="text/javascript">
+  function toggle(id, $link) {
+    $node = document.getElementById(id);
+    if (!$node)
+    return;
+    if (!$node.style.display || $node.style.display == 'none') {
+    $node.style.display = 'block';
+    $link.innerHTML = 'Hide source &nequiv;';
+    } else {
+    $node.style.display = 'none';
+    $link.innerHTML = 'Show source &equiv;';
+    }
+  }
+  </script>
+</head>
+<body>
+<a href="#" id="top">Top</a>
+
+<div id="container">
+    
+  
+  <div id="sidebar">
+    <h1>Index</h1>
+    <ul id="index">
+
+
+    <li class="set"><h3><a href="#header-classes">Classes</a></h3>
+      <ul>
+        <li class="mono">
+        <span class="class_name"><a href="#logbook_aiopipe.AioPipeHandler">AioPipeHandler</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.__init__">__init__</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.applicationbound">applicationbound</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.close">close</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.emit">emit</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.emit_batch">emit_batch</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.format">format</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.greenletbound">greenletbound</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.handle">handle</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.handle_error">handle_error</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.pop_application">pop_application</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.pop_greenlet">pop_greenlet</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.pop_thread">pop_thread</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.push_application">push_application</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.push_greenlet">push_greenlet</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.push_thread">push_thread</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.should_handle">should_handle</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeHandler.threadbound">threadbound</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#logbook_aiopipe.AioPipeSubscriber">AioPipeSubscriber</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeSubscriber.__init__">__init__</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeSubscriber.close">close</a></li>
+    <li class="mono"><a href="#logbook_aiopipe.AioPipeSubscriber.run">run</a></li>
+  </ul>
+
+        </li>
+      </ul>
+    </li>
+
+    </ul>
+  </div>
+
+    <article id="content">
+      
+  
+
+  
+
+
+  <header id="section-intro">
+  <h1 class="title"><span class="name">logbook_aiopipe</span> module</h1>
+  <p>This package provides a handler and subscriber for multiprocess
+<a href="http://logbook.readthedocs.io"><code>logbook</code></a> logging that runs on the
+<a href="https://docs.python.org/3/library/asyncio.html"><code>asyncio</code></a> event loop. It uses
+<a href="https://github.com/kchmck/aiopipe"><code>aiopipe</code></a> to transfer log messages from the child to
+the parent process.</p>
+<h4>Example</h4>
+<p>The following example shows a typical application of logging from a child process to a
+parent process. It results in two log messages, <code>hello from parent process</code> and <code>hello
+from child process</code>, being printed in some order.</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">closing</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Process</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">aiopipe</span> <span class="k">import</span> <span class="n">aiopipe</span>
+<span class="kn">from</span> <span class="nn">logbook_aiopipe</span> <span class="k">import</span> <span class="n">AioPipeSubscriber</span><span class="p">,</span> \
+        <span class="n">AioPipeHandler</span>
+<span class="kn">from</span> <span class="nn">logbook</span> <span class="k">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">StderrHandler</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">mainTask</span><span class="p">(</span><span class="n">eventLoop</span><span class="p">):</span>
+    <span class="c1"># The parent process logger can be set up as normal.</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StderrHandler</span><span class="p">())</span>
+
+    <span class="n">rx</span><span class="p">,</span> <span class="n">tx</span> <span class="o">=</span> <span class="n">aiopipe</span><span class="p">()</span>
+    <span class="n">sub</span> <span class="o">=</span> <span class="n">AioPipeSubscriber</span><span class="p">(</span><span class="k">await</span> <span class="n">rx</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">eventLoop</span><span class="p">),</span> <span class="n">log</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">sub</span><span class="p">):</span>
+        <span class="n">subTask</span> <span class="o">=</span> <span class="n">eventLoop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">sub</span><span class="o">.</span><span class="n">run</span><span class="p">())</span>
+
+        <span class="k">with</span> <span class="n">tx</span><span class="o">.</span><span class="n">send</span><span class="p">()</span> <span class="k">as</span> <span class="n">tx</span><span class="p">:</span>
+            <span class="n">proc</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">childProc</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">tx</span><span class="p">,))</span>
+            <span class="n">proc</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;hello from parent process&quot;</span><span class="p">)</span>
+
+        <span class="n">proc</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">subTask</span>
+
+<span class="k">def</span> <span class="nf">childProc</span><span class="p">(</span><span class="n">tx</span><span class="p">):</span>
+    <span class="n">eventLoop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
+    <span class="n">eventLoop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">childTask</span><span class="p">(</span><span class="n">eventLoop</span><span class="p">,</span> <span class="n">tx</span><span class="p">))</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">childTask</span><span class="p">(</span><span class="n">eventLoop</span><span class="p">,</span> <span class="n">tx</span><span class="p">):</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
+
+    <span class="c1"># The child process should use only `AioPipeHandler` as</span>
+    <span class="c1"># its handler.</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="n">AioPipeHandler</span><span class="p">(</span><span class="k">await</span> <span class="n">tx</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">eventLoop</span><span class="p">))</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;hello from child process&quot;</span><span class="p">)</span>
+
+<span class="n">eventLoop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="n">eventLoop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">mainTask</span><span class="p">(</span><span class="n">eventLoop</span><span class="p">))</span>
+</pre></div>
+  
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe" class="source">
+    <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This package provides a handler and subscriber for multiprocess</span>
+<span class="sd">[`logbook`](http://logbook.readthedocs.io) logging that runs on the</span>
+<span class="sd">[`asyncio`](https://docs.python.org/3/library/asyncio.html) event loop. It uses</span>
+<span class="sd">[`aiopipe`](https://github.com/kchmck/aiopipe) to transfer log messages from the child to</span>
+<span class="sd">the parent process.</span>
+
+<span class="sd">#### Example</span>
+
+<span class="sd">The following example shows a typical application of logging from a child process to a</span>
+<span class="sd">parent process. It results in two log messages, `hello from parent process` and `hello</span>
+<span class="sd">from child process`, being printed in some order.</span>
+
+<span class="sd">```python3</span>
+<span class="sd">from contextlib import closing</span>
+<span class="sd">from multiprocessing import Process</span>
+<span class="sd">import asyncio</span>
+
+<span class="sd">from aiopipe import aiopipe</span>
+<span class="sd">from logbook_aiopipe import AioPipeSubscriber, \\</span>
+<span class="sd">        AioPipeHandler</span>
+<span class="sd">from logbook import Logger, StderrHandler</span>
+
+<span class="sd">async def mainTask(eventLoop):</span>
+<span class="sd">    # The parent process logger can be set up as normal.</span>
+<span class="sd">    log = Logger()</span>
+<span class="sd">    log.handlers.append(StderrHandler())</span>
+
+<span class="sd">    rx, tx = aiopipe()</span>
+<span class="sd">    sub = AioPipeSubscriber(await rx.open(eventLoop), log)</span>
+
+<span class="sd">    with closing(sub):</span>
+<span class="sd">        subTask = eventLoop.create_task(sub.run())</span>
+
+<span class="sd">        with tx.send() as tx:</span>
+<span class="sd">            proc = Process(target=childProc, args=(tx,))</span>
+<span class="sd">            proc.start()</span>
+
+<span class="sd">        log.info(&quot;hello from parent process&quot;)</span>
+
+<span class="sd">        proc.join()</span>
+<span class="sd">        await subTask</span>
+
+<span class="sd">def childProc(tx):</span>
+<span class="sd">    eventLoop = asyncio.new_event_loop()</span>
+<span class="sd">    eventLoop.run_until_complete(childTask(eventLoop, tx))</span>
+
+<span class="sd">async def childTask(eventLoop, tx):</span>
+<span class="sd">    log = Logger()</span>
+
+<span class="sd">    # The child process should use only `AioPipeHandler` as</span>
+<span class="sd">    # its handler.</span>
+<span class="sd">    handler = AioPipeHandler(await tx.open(eventLoop))</span>
+<span class="sd">    log.handlers.append(handler)</span>
+
+<span class="sd">    with closing(handler):</span>
+<span class="sd">        log.info(&quot;hello from child process&quot;)</span>
+
+<span class="sd">eventLoop = asyncio.get_event_loop()</span>
+<span class="sd">eventLoop.run_until_complete(mainTask(eventLoop))</span>
+<span class="sd">```</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">asyncio</span> <span class="k">import</span> <span class="n">IncompleteReadError</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">from</span> <span class="nn">logbook</span> <span class="k">import</span> <span class="n">Handler</span><span class="p">,</span> <span class="n">LogRecord</span>
+
+<span class="k">class</span> <span class="nc">AioPipeHandler</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Forwards log messages in a child process to the parent process.</span>
+
+<span class="sd">    This should be pushed on the stack or added to a `Logger` in the [typical</span>
+<span class="sd">    manner](https://logbook.readthedocs.io/en/stable/quickstart.html#registering-handlers).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new `AioPipeHandler` that forwards log messages over the given pipe</span>
+<span class="sd">        transmit end. The other arguments are passed to</span>
+<span class="sd">        [`logbook.Handler`](https://logbook.readthedocs.io/en/stable/api/handlers.html#logbook.Handler).</span>
+<span class="sd">        This object takes ownership of `tx`.</span>
+
+<span class="sd">        This handler should be attached to a `logbook.Logger` instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tx</span> <span class="o">=</span> <span class="n">tx</span>
+
+    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">json_safe</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tx</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">AioPipeSubscriber</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Receives log messages in the parent process and emits them to a</span>
+<span class="sd">    [`Logger`](https://logbook.readthedocs.io/en/stable/api/base.html#logbook.Logger)</span>
+<span class="sd">    instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new `AioPipeSubscriber` to listen for messages on the given pipe receive</span>
+<span class="sd">        end and emit them to the given</span>
+<span class="sd">        [`Logger`](https://logbook.readthedocs.io/en/stable/api/base.html#logbook.Logger)</span>
+<span class="sd">        instance. This object takes ownership of `rx`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rx</span> <span class="o">=</span> <span class="n">rx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the subcribing task to continuously receive and emit log messages.</span>
+
+<span class="sd">        This can be ran in the background of the event loop using</span>
+<span class="sd">        [`create_task`](https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.AbstractEventLoop.create_task).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rx</span><span class="o">.</span><span class="n">readuntil</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">IncompleteReadError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">expected</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+                <span class="k">raise</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="n">LogRecord</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">())))</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close the subscriber and receiving pipe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rx</span><span class="o">.</span><span class="n">_transport</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+  </div>
+
+  </header>
+
+  <section id="section-items">
+
+
+    <h2 class="section-title" id="header-classes">Classes</h2>
+      
+      <div class="item">
+      
+  <a href="#logbook_aiopipe.AioPipeHandler" id="logbook_aiopipe.AioPipeHandler" class="name">
+    <span class="type">class</span> <span class="ident">AioPipeHandler</span>
+  </a>
+
+      
+  
+    <div class="desc"><p>Forwards log messages in a child process to the parent process.</p>
+<p>This should be pushed on the stack or added to a <code>Logger</code> in the <a href="https://logbook.readthedocs.io/en/stable/quickstart.html#registering-handlers">typical
+manner</a>.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">AioPipeHandler</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Forwards log messages in a child process to the parent process.</span>
+
+<span class="sd">    This should be pushed on the stack or added to a `Logger` in the [typical</span>
+<span class="sd">    manner](https://logbook.readthedocs.io/en/stable/quickstart.html#registering-handlers).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new `AioPipeHandler` that forwards log messages over the given pipe</span>
+<span class="sd">        transmit end. The other arguments are passed to</span>
+<span class="sd">        [`logbook.Handler`](https://logbook.readthedocs.io/en/stable/api/handlers.html#logbook.Handler).</span>
+<span class="sd">        This object takes ownership of `tx`.</span>
+
+<span class="sd">        This handler should be attached to a `logbook.Logger` instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tx</span> <span class="o">=</span> <span class="n">tx</span>
+
+    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">json_safe</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tx</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#logbook_aiopipe.AioPipeHandler">AioPipeHandler</a></li>
+          <li>logbook.handlers.Handler</li>
+          <li>logbook.helpers._WithMetaclassBase</li>
+          <li>logbook.base.ContextObject</li>
+          <li>logbook._fallback.StackedObject</li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Class variables</h3>
+            <div class="item">
+            
+  <a href="#logbook_aiopipe.AioPipeHandler.blackhole" id="logbook_aiopipe.AioPipeHandler.blackhole" class="name">
+    <span class="type">var</span> <span class="ident">blackhole</span>
+  </a>
+
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            
+  <a href="#logbook_aiopipe.AioPipeHandler.stack_manager" id="logbook_aiopipe.AioPipeHandler.stack_manager" class="name">
+    <span class="type">var</span> <span class="ident">stack_manager</span>
+  </a>
+
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.__init__" class="name def" id="logbook_aiopipe.AioPipeHandler.__init__">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">__init__</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self, tx, *args, **kwargs)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Create a new <a href="#logbook_aiopipe.AioPipeHandler"><code>AioPipeHandler</code></a> that forwards log messages over the given pipe
+transmit end. The other arguments are passed to
+<a href="https://logbook.readthedocs.io/en/stable/api/handlers.html#logbook.Handler"><code>logbook.Handler</code></a>.
+This object takes ownership of <code>tx</code>.</p>
+<p>This handler should be attached to a <code>logbook.Logger</code> instance.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.__init__" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a new `AioPipeHandler` that forwards log messages over the given pipe</span>
+<span class="sd">    transmit end. The other arguments are passed to</span>
+<span class="sd">    [`logbook.Handler`](https://logbook.readthedocs.io/en/stable/api/handlers.html#logbook.Handler).</span>
+<span class="sd">    This object takes ownership of `tx`.</span>
+<span class="sd">    This handler should be attached to a `logbook.Logger` instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_tx</span> <span class="o">=</span> <span class="n">tx</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.applicationbound" class="name def" id="logbook_aiopipe.AioPipeHandler.applicationbound">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">applicationbound</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self, _cls=&lt;class &#39;logbook._fallback._StackBound&#39;&gt;)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Can be used in combination with the <code>with</code> statement to
+execute code while the object is bound to the application.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.applicationbound', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.applicationbound" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">applicationbound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_cls</span><span class="o">=</span><span class="n">_StackBound</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Can be used in combination with the `with` statement to</span>
+<span class="sd">    execute code while the object is bound to the application.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_application</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pop_application</span><span class="p">)</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.close" class="name def" id="logbook_aiopipe.AioPipeHandler.close">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">close</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Tidy up any resources used by the handler.  This is automatically
+called by the destructor of the class as well, but explicit calls are
+encouraged.  Make sure that multiple calls to close are possible.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.close', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.close" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_tx</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.emit" class="name def" id="logbook_aiopipe.AioPipeHandler.emit">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">emit</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self, record)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Emit the specified logging record.  This should take the
+record and deliver it to whereever the handler sends formatted
+log records.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.emit', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.emit" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_tx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">json_safe</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_tx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.emit_batch" class="name def" id="logbook_aiopipe.AioPipeHandler.emit_batch">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">emit_batch</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self, records, reason)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Some handlers may internally queue up records and want to forward
+them at once to another handler.  For example the
+:class:<code>~logbook.FingersCrossedHandler</code> internally buffers
+records until a level threshold is reached in which case the buffer
+is sent to this method and not :meth:<a href="#logbook_aiopipe.AioPipeHandler.emit"><code>emit</code></a> for each record.</p>
+<p>The default behaviour is to call :meth:<a href="#logbook_aiopipe.AioPipeHandler.emit"><code>emit</code></a> for each record in
+the buffer, but handlers can use this to optimize log handling.  For
+instance the mail handler will try to batch up items into one mail
+and not to emit mails for each record in the buffer.</p>
+<p>Note that unlike :meth:<a href="#logbook_aiopipe.AioPipeHandler.emit"><code>emit</code></a> there is no wrapper method like
+:meth:<a href="#logbook_aiopipe.AioPipeHandler.handle"><code>handle</code></a> that does error handling.  The reason is that this
+is intended to be used by other handlers which are already protected
+against internal breakage.</p>
+<p><code>reason</code> is a string that specifies the rason why :meth:<a href="#logbook_aiopipe.AioPipeHandler.emit_batch"><code>emit_batch</code></a>
+was called, and not :meth:<a href="#logbook_aiopipe.AioPipeHandler.emit"><code>emit</code></a>.  The following are valid values:</p>
+<p><code>'buffer'</code>
+    Records were buffered for performance reasons or because the
+    records were sent to another process and buffering was the only
+    possible way.  For most handlers this should be equivalent to
+    calling :meth:<code>emit</code> for each record.</p>
+<p><code>'escalation'</code>
+    Escalation means that records were buffered in case the threshold
+    was exceeded.  In this case, the last record in the iterable is the
+    record that triggered the call.</p>
+<p><code>'group'</code>
+    All the records in the iterable belong to the same logical
+    component and happened in the same process.  For example there was
+    a long running computation and the handler is invoked with a bunch
+    of records that happened there.  This is similar to the escalation
+    reason, just that the first one is the significant one, not the
+    last.</p>
+<p>If a subclass overrides this and does not want to handle a specific
+reason it must call into the superclass because more reasons might
+appear in future releases.</p>
+<p>Example implementation::</p>
+<div class="codehilite"><pre><span></span>def emit_batch(self, records, reason):
+    if reason not in (&#39;escalation&#39;, &#39;group&#39;):
+        Handler.emit_batch(self, records, reason)
+    ...
+</pre></div></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.emit_batch', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.emit_batch" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">emit_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Some handlers may internally queue up records and want to forward</span>
+<span class="sd">    them at once to another handler.  For example the</span>
+<span class="sd">    :class:`~logbook.FingersCrossedHandler` internally buffers</span>
+<span class="sd">    records until a level threshold is reached in which case the buffer</span>
+<span class="sd">    is sent to this method and not :meth:`emit` for each record.</span>
+<span class="sd">    The default behaviour is to call :meth:`emit` for each record in</span>
+<span class="sd">    the buffer, but handlers can use this to optimize log handling.  For</span>
+<span class="sd">    instance the mail handler will try to batch up items into one mail</span>
+<span class="sd">    and not to emit mails for each record in the buffer.</span>
+<span class="sd">    Note that unlike :meth:`emit` there is no wrapper method like</span>
+<span class="sd">    :meth:`handle` that does error handling.  The reason is that this</span>
+<span class="sd">    is intended to be used by other handlers which are already protected</span>
+<span class="sd">    against internal breakage.</span>
+<span class="sd">    `reason` is a string that specifies the rason why :meth:`emit_batch`</span>
+<span class="sd">    was called, and not :meth:`emit`.  The following are valid values:</span>
+<span class="sd">    ``&#39;buffer&#39;``</span>
+<span class="sd">        Records were buffered for performance reasons or because the</span>
+<span class="sd">        records were sent to another process and buffering was the only</span>
+<span class="sd">        possible way.  For most handlers this should be equivalent to</span>
+<span class="sd">        calling :meth:`emit` for each record.</span>
+<span class="sd">    ``&#39;escalation&#39;``</span>
+<span class="sd">        Escalation means that records were buffered in case the threshold</span>
+<span class="sd">        was exceeded.  In this case, the last record in the iterable is the</span>
+<span class="sd">        record that triggered the call.</span>
+<span class="sd">    ``&#39;group&#39;``</span>
+<span class="sd">        All the records in the iterable belong to the same logical</span>
+<span class="sd">        component and happened in the same process.  For example there was</span>
+<span class="sd">        a long running computation and the handler is invoked with a bunch</span>
+<span class="sd">        of records that happened there.  This is similar to the escalation</span>
+<span class="sd">        reason, just that the first one is the significant one, not the</span>
+<span class="sd">        last.</span>
+<span class="sd">    If a subclass overrides this and does not want to handle a specific</span>
+<span class="sd">    reason it must call into the superclass because more reasons might</span>
+<span class="sd">    appear in future releases.</span>
+<span class="sd">    Example implementation::</span>
+<span class="sd">        def emit_batch(self, records, reason):</span>
+<span class="sd">            if reason not in (&#39;escalation&#39;, &#39;group&#39;):</span>
+<span class="sd">                Handler.emit_batch(self, records, reason)</span>
+<span class="sd">            ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.format" class="name def" id="logbook_aiopipe.AioPipeHandler.format">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">format</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self, record)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Formats a record with the given formatter.  If no formatter
+is set, the record message is returned.  Generally speaking the
+return value is most likely a unicode string, but nothing in
+the handler interface requires a formatter to return a unicode
+string.</p>
+<p>The combination of a handler and formatter might have the
+formatter return an XML element tree for example.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.format', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.format" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Formats a record with the given formatter.  If no formatter</span>
+<span class="sd">    is set, the record message is returned.  Generally speaking the</span>
+<span class="sd">    return value is most likely a unicode string, but nothing in</span>
+<span class="sd">    the handler interface requires a formatter to return a unicode</span>
+<span class="sd">    string.</span>
+<span class="sd">    The combination of a handler and formatter might have the</span>
+<span class="sd">    formatter return an XML element tree for example.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">record</span><span class="o">.</span><span class="n">message</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.greenletbound" class="name def" id="logbook_aiopipe.AioPipeHandler.greenletbound">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">greenletbound</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self, _cls=&lt;class &#39;logbook._fallback._StackBound&#39;&gt;)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Can be used in combination with the <code>with</code> statement to
+execute code while the object is bound to the greenlet.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.greenletbound', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.greenletbound" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">greenletbound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_cls</span><span class="o">=</span><span class="n">_StackBound</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Can be used in combination with the `with` statement to</span>
+<span class="sd">    execute code while the object is bound to the greenlet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_greenlet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pop_greenlet</span><span class="p">)</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.handle" class="name def" id="logbook_aiopipe.AioPipeHandler.handle">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">handle</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self, record)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Emits the record and falls back.  It tries to :meth:<a href="#logbook_aiopipe.AioPipeHandler.emit"><code>emit</code></a> the
+record and if that fails, it will call into :meth:<a href="#logbook_aiopipe.AioPipeHandler.handle_error"><code>handle_error</code></a> with
+the record and traceback.  This function itself will always emit
+when called, even if the logger level is higher than the record's
+level.</p>
+<p>If this method returns <code>False</code> it signals to the calling function that
+no recording took place in which case it will automatically bubble.
+This should not be used to signal error situations.  The default
+implementation always returns <code>True</code>.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.handle', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.handle" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Emits the record and falls back.  It tries to :meth:`emit` the</span>
+<span class="sd">    record and if that fails, it will call into :meth:`handle_error` with</span>
+<span class="sd">    the record and traceback.  This function itself will always emit</span>
+<span class="sd">    when called, even if the logger level is higher than the record&#39;s</span>
+<span class="sd">    level.</span>
+<span class="sd">    If this method returns `False` it signals to the calling function that</span>
+<span class="sd">    no recording took place in which case it will automatically bubble.</span>
+<span class="sd">    This should not be used to signal error situations.  The default</span>
+<span class="sd">    implementation always returns `True`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.handle_error" class="name def" id="logbook_aiopipe.AioPipeHandler.handle_error">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">handle_error</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self, record, exc_info)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Handle errors which occur during an emit() call.  The behaviour of
+this function depends on the current <code>errors</code> setting.</p>
+<p>Check :class:<code>Flags</code> for more information.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.handle_error', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.handle_error" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">handle_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle errors which occur during an emit() call.  The behaviour of</span>
+<span class="sd">    this function depends on the current `errors` setting.</span>
+<span class="sd">    Check :class:`Flags` for more information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">behaviour</span> <span class="o">=</span> <span class="n">Flags</span><span class="o">.</span><span class="n">get_flag</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">,</span> <span class="s1">&#39;print&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">behaviour</span> <span class="o">==</span> <span class="s1">&#39;raise&#39;</span><span class="p">:</span>
+            <span class="n">reraise</span><span class="p">(</span><span class="n">exc_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">behaviour</span> <span class="o">==</span> <span class="s1">&#39;print&#39;</span><span class="p">:</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exception</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">exc_info</span> <span class="o">+</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)))</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Logged from file </span><span class="si">%s</span><span class="s1">, line </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                             <span class="n">record</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">lineno</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="k">pass</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.pop_application" class="name def" id="logbook_aiopipe.AioPipeHandler.pop_application">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">pop_application</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Pops the context object from the stack.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.pop_application', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.pop_application" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">pop_application</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pops the context object from the stack.&quot;&quot;&quot;</span>
+    <span class="n">popped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_manager</span><span class="o">.</span><span class="n">pop_application</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">popped</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;popped unexpected object&#39;</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.pop_greenlet" class="name def" id="logbook_aiopipe.AioPipeHandler.pop_greenlet">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">pop_greenlet</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Pops the context object from the stack.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.pop_greenlet', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.pop_greenlet" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">pop_greenlet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pops the context object from the stack.&quot;&quot;&quot;</span>
+    <span class="n">popped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_manager</span><span class="o">.</span><span class="n">pop_greenlet</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">popped</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;popped unexpected object&#39;</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.pop_thread" class="name def" id="logbook_aiopipe.AioPipeHandler.pop_thread">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">pop_thread</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Pops the context object from the stack.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.pop_thread', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.pop_thread" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">pop_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pops the context object from the stack.&quot;&quot;&quot;</span>
+    <span class="n">popped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_manager</span><span class="o">.</span><span class="n">pop_thread</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">popped</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;popped unexpected object&#39;</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.push_application" class="name def" id="logbook_aiopipe.AioPipeHandler.push_application">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">push_application</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Pushes the context object to the application stack.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.push_application', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.push_application" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">push_application</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pushes the context object to the application stack.&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stack_manager</span><span class="o">.</span><span class="n">push_application</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.push_greenlet" class="name def" id="logbook_aiopipe.AioPipeHandler.push_greenlet">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">push_greenlet</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Pushes the context object to the greenlet stack.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.push_greenlet', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.push_greenlet" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">push_greenlet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pushes the context object to the greenlet stack.&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stack_manager</span><span class="o">.</span><span class="n">push_greenlet</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.push_thread" class="name def" id="logbook_aiopipe.AioPipeHandler.push_thread">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">push_thread</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Pushes the context object to the thread stack.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.push_thread', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.push_thread" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">push_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pushes the context object to the thread stack.&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stack_manager</span><span class="o">.</span><span class="n">push_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.should_handle" class="name def" id="logbook_aiopipe.AioPipeHandler.should_handle">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">should_handle</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self, record)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Returns <code>True</code> if this handler wants to handle the record.  The
+default implementation checks the level.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.should_handle', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.should_handle" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">should_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns `True` if this handler wants to handle the record.  The</span>
+<span class="sd">    default implementation checks the level.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">record</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeHandler.threadbound" class="name def" id="logbook_aiopipe.AioPipeHandler.threadbound">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">threadbound</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self, _cls=&lt;class &#39;logbook._fallback._StackBound&#39;&gt;)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Can be used in combination with the <code>with</code> statement to
+execute code while the object is bound to the thread.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeHandler.threadbound', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeHandler.threadbound" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">threadbound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_cls</span><span class="o">=</span><span class="n">_StackBound</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Can be used in combination with the `with` statement to</span>
+<span class="sd">    execute code while the object is bound to the thread.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_thread</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pop_thread</span><span class="p">)</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+          <h3>Instance variables</h3>
+            <div class="item">
+            
+  <a href="#logbook_aiopipe.AioPipeHandler.level_name" id="logbook_aiopipe.AioPipeHandler.level_name" class="name">
+    <span class="type">var</span> <span class="ident">level_name</span>
+  </a>
+
+            
+
+            
+  
+    <div class="desc"><p>The level as unicode string</p></div>
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
+      
+      <div class="item">
+      
+  <a href="#logbook_aiopipe.AioPipeSubscriber" id="logbook_aiopipe.AioPipeSubscriber" class="name">
+    <span class="type">class</span> <span class="ident">AioPipeSubscriber</span>
+  </a>
+
+      
+  
+    <div class="desc"><p>Receives log messages in the parent process and emits them to a
+<a href="https://logbook.readthedocs.io/en/stable/api/base.html#logbook.Logger"><code>Logger</code></a>
+instance.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeSubscriber', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeSubscriber" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">AioPipeSubscriber</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Receives log messages in the parent process and emits them to a</span>
+<span class="sd">    [`Logger`](https://logbook.readthedocs.io/en/stable/api/base.html#logbook.Logger)</span>
+<span class="sd">    instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new `AioPipeSubscriber` to listen for messages on the given pipe receive</span>
+<span class="sd">        end and emit them to the given</span>
+<span class="sd">        [`Logger`](https://logbook.readthedocs.io/en/stable/api/base.html#logbook.Logger)</span>
+<span class="sd">        instance. This object takes ownership of `rx`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rx</span> <span class="o">=</span> <span class="n">rx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the subcribing task to continuously receive and emit log messages.</span>
+
+<span class="sd">        This can be ran in the background of the event loop using</span>
+<span class="sd">        [`create_task`](https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.AbstractEventLoop.create_task).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rx</span><span class="o">.</span><span class="n">readuntil</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">IncompleteReadError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">expected</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+                <span class="k">raise</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="n">LogRecord</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">())))</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close the subscriber and receiving pipe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rx</span><span class="o">.</span><span class="n">_transport</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#logbook_aiopipe.AioPipeSubscriber">AioPipeSubscriber</a></li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeSubscriber.__init__" class="name def" id="logbook_aiopipe.AioPipeSubscriber.__init__">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">__init__</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self, rx, logger)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Create a new <a href="#logbook_aiopipe.AioPipeSubscriber"><code>AioPipeSubscriber</code></a> to listen for messages on the given pipe receive
+end and emit them to the given
+<a href="https://logbook.readthedocs.io/en/stable/api/base.html#logbook.Logger"><code>Logger</code></a>
+instance. This object takes ownership of <code>rx</code>.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeSubscriber.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeSubscriber.__init__" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a new `AioPipeSubscriber` to listen for messages on the given pipe receive</span>
+<span class="sd">    end and emit them to the given</span>
+<span class="sd">    [`Logger`](https://logbook.readthedocs.io/en/stable/api/base.html#logbook.Logger)</span>
+<span class="sd">    instance. This object takes ownership of `rx`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_rx</span> <span class="o">=</span> <span class="n">rx</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeSubscriber.close" class="name def" id="logbook_aiopipe.AioPipeSubscriber.close">
+      <p>
+        <span class="type">def</span>
+        <span class="ident">close</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Close the subscriber and receiving pipe.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeSubscriber.close', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeSubscriber.close" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Close the subscriber and receiving pipe.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_rx</span><span class="o">.</span><span class="n">_transport</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <a href="#logbook_aiopipe.AioPipeSubscriber.run" class="name def" id="logbook_aiopipe.AioPipeSubscriber.run">
+      <p>
+        <span class="type">async def</span>
+        <span class="ident">run</span><span class="spec">(</span>
+      </p>
+      <p class="spec">self)</p>
+    </a>
+    
+
+    
+  
+    <div class="desc"><p>Run the subcribing task to continuously receive and emit log messages.</p>
+<p>This can be ran in the background of the event loop using
+<a href="https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.AbstractEventLoop.create_task"><code>create_task</code></a>.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-logbook_aiopipe.AioPipeSubscriber.run', this);">Show source &equiv;</a></p>
+  <div id="source-logbook_aiopipe.AioPipeSubscriber.run" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run the subcribing task to continuously receive and emit log messages.</span>
+<span class="sd">    This can be ran in the background of the event loop using</span>
+<span class="sd">    [`create_task`](https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.AbstractEventLoop.create_task).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rx</span><span class="o">.</span><span class="n">readuntil</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">IncompleteReadError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">expected</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">raise</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="n">LogRecord</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">())))</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+
+  </section>
+
+    </article>
+  <div class="clear"> </div>
+  <footer id="footer">
+    <p>
+      Documentation generated by
+      <a href="https://github.com/BurntSushi/pdoc">pdoc 0.3.2</a>
+    </p>
+
+    <p>pdoc is in the public domain with the
+      <a href="http://unlicense.org">UNLICENSE</a></p>
+
+    <p>Design by <a href="http://nadh.in">Kailash Nadh</a></p>
+  </footer>
+</div>
+</body>
+</html>
