@@ -1117,12 +1117,12 @@ table {
   <p>This package provides a handler and subscriber for multiprocess
 <a href="http://logbook.readthedocs.io"><code>logbook</code></a> logging that runs on the
 <a href="https://docs.python.org/3/library/asyncio.html"><code>asyncio</code></a> event loop. It uses
-<a href="https://github.com/kchmck/aiopipe"><code>aiopipe</code></a> to transfer log messages from the child to
-the parent process.</p>
+<a href="https://github.com/kchmck/aiopipe"><code>aiopipe</code></a> to transfer log messages from the child
+process to the parent process.</p>
 <h4>Example</h4>
-<p>The following example shows a typical application of logging from a child process to a
-parent process. It results in two log messages, <code>hello from parent process</code> and <code>hello
-from child process</code>, being printed in some order.</p>
+<p>The following example shows a typical application of multiprocess logging. It results in
+two log messages, <code>hello from parent process</code> and <code>hello from child process</code>, being
+printed in some order.</p>
 <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">closing</span>
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Process</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
@@ -1177,14 +1177,14 @@ from child process</code>, being printed in some order.</p>
 <span class="sd">This package provides a handler and subscriber for multiprocess</span>
 <span class="sd">[`logbook`](http://logbook.readthedocs.io) logging that runs on the</span>
 <span class="sd">[`asyncio`](https://docs.python.org/3/library/asyncio.html) event loop. It uses</span>
-<span class="sd">[`aiopipe`](https://github.com/kchmck/aiopipe) to transfer log messages from the child to</span>
-<span class="sd">the parent process.</span>
+<span class="sd">[`aiopipe`](https://github.com/kchmck/aiopipe) to transfer log messages from the child</span>
+<span class="sd">process to the parent process.</span>
 
 <span class="sd">#### Example</span>
 
-<span class="sd">The following example shows a typical application of logging from a child process to a</span>
-<span class="sd">parent process. It results in two log messages, `hello from parent process` and `hello</span>
-<span class="sd">from child process`, being printed in some order.</span>
+<span class="sd">The following example shows a typical application of multiprocess logging. It results in</span>
+<span class="sd">two log messages, `hello from parent process` and `hello from child process`, being</span>
+<span class="sd">printed in some order.</span>
 
 <span class="sd">```python3</span>
 <span class="sd">from contextlib import closing</span>
