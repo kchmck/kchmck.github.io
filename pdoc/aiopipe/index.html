@@ -1135,6 +1135,7 @@ end in the parent process:</p>
     <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">stream</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
     <span class="k">assert</span> <span class="n">msg</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;hi from child process</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">proc</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
 <span class="k">def</span> <span class="nf">childProc</span><span class="p">(</span><span class="n">tx</span><span class="p">):</span>
     <span class="n">eventLoop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
@@ -1180,6 +1181,7 @@ end in the parent process:</p>
 <span class="sd">    msg = await stream.readline()</span>
 
 <span class="sd">    assert msg == b&quot;hi from child process\\n&quot;</span>
+<span class="sd">    proc.join()</span>
 
 <span class="sd">def childProc(tx):</span>
 <span class="sd">    eventLoop = asyncio.new_event_loop()</span>
