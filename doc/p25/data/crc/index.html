@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc mod">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a></p><script>window.sidebarCurrent = {name: 'crc', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'>Module crc</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a></p><script>window.sidebarCurrent = {name: 'crc', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,8 +44,8 @@
         </form>
     </nav>
 
-    <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a class='mod' href=''>crc</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a class="mod" href=''>crc</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
@@ -56,28 +57,28 @@ lengths to use only a 64-bit word as a buffer, allowing simple bitwise operation
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.CRC.html'
+                           <td><a class="struct" href="struct.CRC.html"
                                   title='struct p25::data::crc::CRC'>CRC</a></td>
                            <td class='docblock-short'>
                                 <p>CRC calculator using long division.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.CRC16Params.html'
+                           <td><a class="struct" href="struct.CRC16Params.html"
                                   title='struct p25::data::crc::CRC16Params'>CRC16Params</a></td>
                            <td class='docblock-short'>
                                 <p>Params for 16-bit CRC.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.CRC32Params.html'
+                           <td><a class="struct" href="struct.CRC32Params.html"
                                   title='struct p25::data::crc::CRC32Params'>CRC32Params</a></td>
                            <td class='docblock-short'>
                                 <p>Params for 32-bit CRC.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.CRC9Params.html'
+                           <td><a class="struct" href="struct.CRC9Params.html"
                                   title='struct p25::data::crc::CRC9Params'>CRC9Params</a></td>
                            <td class='docblock-short'>
                                 <p>Params for 9-bit CRC.</p>
@@ -85,7 +86,7 @@ lengths to use only a 64-bit word as a buffer, allowing simple bitwise operation
                        </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='trait' href='trait.CRCParams.html'
+                           <td><a class="trait" href="trait.CRCParams.html"
                                   title='trait p25::data::crc::CRCParams'>CRCParams</a></td>
                            <td class='docblock-short'>
                                 
@@ -93,24 +94,24 @@ lengths to use only a 64-bit word as a buffer, allowing simple bitwise operation
                        </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='type' href='type.CRC16.html'
+                           <td><a class="type" href="type.CRC9.html"
+                                  title='type p25::data::crc::CRC9'>CRC9</a></td>
+                           <td class='docblock-short'>
+                                <p>9-bit CRC calculator.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.CRC16.html"
                                   title='type p25::data::crc::CRC16'>CRC16</a></td>
                            <td class='docblock-short'>
                                 <p>16-bit CRC calculator.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='type' href='type.CRC32.html'
+                           <td><a class="type" href="type.CRC32.html"
                                   title='type p25::data::crc::CRC32'>CRC32</a></td>
                            <td class='docblock-short'>
                                 <p>32-bit CRC calculator.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='type' href='type.CRC9.html'
-                                  title='type p25::data::crc::CRC9'>CRC9</a></td>
-                           <td class='docblock-short'>
-                                <p>9-bit CRC calculator.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>
@@ -129,13 +130,15 @@ lengths to use only a 64-bit word as a buffer, allowing simple bitwise operation
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -169,7 +172,6 @@ lengths to use only a 64-bit word as a buffer, allowing simple bitwise operation
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

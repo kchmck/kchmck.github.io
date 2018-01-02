@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc struct">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>header</a></p><script>window.sidebarCurrent = {name: 'LogicalLink', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct LogicalLink</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-BufWrite">BufWrite</a></div></div><p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>header</a></p><script>window.sidebarCurrent = {name: 'LogicalLink', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,15 +44,19 @@
         </form>
     </nav>
 
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>header</a>::<wbr><a class='struct' href=''>LogicalLink</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>header</a>::<wbr><a class="struct" href=''>LogicalLink</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../../src/p25/data/header.rs.html#106' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct LogicalLink(pub <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>);</pre><div class='docblock'><p>Logical link ID field for addressing source or destination subscriber.</p>
-</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../../../p25/data/header/trait.BufWrite.html' title='trait p25::data::header::BufWrite'>BufWrite</a> for <a class='struct' href='../../../p25/data/header/struct.LogicalLink.html' title='struct p25::data::header::LogicalLink'>LogicalLink</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/header.rs.html#108-116' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.write' class='method'><span id='write.v' class='invisible'><code>fn <a href='../../../p25/data/header/trait.BufWrite.html#tymethod.write' class='fnname'>write</a>&lt;'a, 'b, T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='trait core::iter::iterator::Iterator'>Iterator</a>&lt;Item=&amp;'a mut <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;&gt;(&amp;self, buf: &amp;'b mut T)</code></span></h4>
+<pre class='rust struct'>pub struct LogicalLink(pub <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>);</pre><div class='docblock'><p>Logical link ID field for addressing source or destination subscriber.</p>
+</div>
+            <h2 id='implementations' class='small-section-header'>
+              Trait Implementations<a href='#implementations' class='anchor'></a>
+            </h2>
+        <h3 id='impl-BufWrite' class='impl'><span class='in-band'><code>impl <a class="trait" href="../../../p25/data/header/trait.BufWrite.html" title="trait p25::data::header::BufWrite">BufWrite</a> for <a class="struct" href="../../../p25/data/header/struct.LogicalLink.html" title="struct p25::data::header::LogicalLink">LogicalLink</a></code><a href='#impl-BufWrite' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/header.rs.html#108-116' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.write' class="method"><span id='write.v' class='invisible'><code>fn <a href='../../../p25/data/header/trait.BufWrite.html#tymethod.write' class='fnname'>write</a>&lt;'a, 'b, T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html" title="trait core::iter::iterator::Iterator">Iterator</a>&lt;Item = &amp;'a mut <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;&gt;(&amp;self, buf: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;'b mut </a>T)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/header.rs.html#109-115' title='goto source code'>[src]</a></span></h4>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -69,13 +74,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -109,7 +116,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

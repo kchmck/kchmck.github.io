@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Stats","Records various runtime statistics."]],"trait":[["HasStats","Indicates that a type captures statistics."]]});

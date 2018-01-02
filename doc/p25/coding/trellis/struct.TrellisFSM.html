@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc struct">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a>::<wbr><a href='index.html'>trellis</a></p><script>window.sidebarCurrent = {name: 'TrellisFSM', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct TrellisFSM</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.new">new</a><a href="#method.feed">feed</a><a href="#method.finish">finish</a></div></div><p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a>::<wbr><a href='index.html'>trellis</a></p><script>window.sidebarCurrent = {name: 'TrellisFSM', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,21 +44,25 @@
         </form>
     </nav>
 
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a>::<wbr><a href='index.html'>trellis</a>::<wbr><a class='struct' href=''>TrellisFSM</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a>::<wbr><a href='index.html'>trellis</a>::<wbr><a class="struct" href=''>TrellisFSM</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../../src/p25/coding/trellis.rs.html#128-132' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct TrellisFSM&lt;S:&nbsp;<a class='trait' href='../../../p25/coding/trellis/trait.States.html' title='trait p25::coding::trellis::States'>States</a>&gt; { /* fields omitted */ }</pre><div class='docblock'><p>Convolutional code finite state machine with the given transition table. Each fed-in
+<pre class='rust struct'>pub struct TrellisFSM&lt;S:&nbsp;<a class="trait" href="../../../p25/coding/trellis/trait.States.html" title="trait p25::coding::trellis::States">States</a>&gt; { /* fields omitted */ }</pre><div class='docblock'><p>Convolutional code finite state machine with the given transition table. Each fed-in
 symbol is used as the next state.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;S:&nbsp;<a class='trait' href='../../../p25/coding/trellis/trait.States.html' title='trait p25::coding::trellis::States'>States</a>&gt; <a class='struct' href='../../../p25/coding/trellis/struct.TrellisFSM.html' title='struct p25::coding::trellis::TrellisFSM'>TrellisFSM</a>&lt;S&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/coding/trellis.rs.html#134-158' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../../../p25/coding/trellis/struct.TrellisFSM.html' title='struct p25::coding::trellis::TrellisFSM'>TrellisFSM</a>&lt;S&gt;</code></span></h4>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl&lt;S:&nbsp;<a class="trait" href="../../../p25/coding/trellis/trait.States.html" title="trait p25::coding::trellis::States">States</a>&gt; <a class="struct" href="../../../p25/coding/trellis/struct.TrellisFSM.html" title="struct p25::coding::trellis::TrellisFSM">TrellisFSM</a>&lt;S&gt;</code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/coding/trellis.rs.html#134-158' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>pub fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class="struct" href="../../../p25/coding/trellis/struct.TrellisFSM.html" title="struct p25::coding::trellis::TrellisFSM">TrellisFSM</a>&lt;S&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/coding/trellis.rs.html#136-141' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Construct a new <code>TrellisFSM</code> at the initial state.</p>
-</div><h4 id='method.feed' class='method'><span id='feed.v' class='invisible'><code>fn <a href='#method.feed' class='fnname'>feed</a>(&amp;mut self, input: S::<a class='trait' href='../../../p25/coding/trellis/trait.States.html' title='trait p25::coding::trellis::States'>Symbol</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='struct' href='../../../p25/bits/struct.Dibit.html' title='struct p25::bits::Dibit'>Dibit</a>, <a class='struct' href='../../../p25/bits/struct.Dibit.html' title='struct p25::bits::Dibit'>Dibit</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a></code></span></h4>
+</div><h4 id='method.feed' class="method"><span id='feed.v' class='invisible'><code>pub fn <a href='#method.feed' class='fnname'>feed</a>(&amp;mut self, input: S::<a class="type" href="../../../p25/coding/trellis/trait.States.html#associatedtype.Symbol" title="type p25::coding::trellis::States::Symbol">Symbol</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="struct" href="../../../p25/bits/struct.Dibit.html" title="struct p25::bits::Dibit">Dibit</a>, <a class="struct" href="../../../p25/bits/struct.Dibit.html" title="struct p25::bits::Dibit">Dibit</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/coding/trellis.rs.html#145-152' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Apply the given symbol to the state machine and return the dibit pair on the
 transition.</p>
-</div><h4 id='method.finish' class='method'><span id='finish.v' class='invisible'><code>fn <a href='#method.finish' class='fnname'>finish</a>(&amp;mut self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='struct' href='../../../p25/bits/struct.Dibit.html' title='struct p25::bits::Dibit'>Dibit</a>, <a class='struct' href='../../../p25/bits/struct.Dibit.html' title='struct p25::bits::Dibit'>Dibit</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a></code></span></h4>
+</div><h4 id='method.finish' class="method"><span id='finish.v' class='invisible'><code>pub fn <a href='#method.finish' class='fnname'>finish</a>(&amp;mut self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="struct" href="../../../p25/bits/struct.Dibit.html" title="struct p25::bits::Dibit">Dibit</a>, <a class="struct" href="../../../p25/bits/struct.Dibit.html" title="struct p25::bits::Dibit">Dibit</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/coding/trellis.rs.html#155-157' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Flush the state machine with the finishing symbol and return the final transition.</p>
 </div></div></section>
     <section id='search' class="content hidden"></section>
@@ -76,13 +81,15 @@ transition.</p>
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -116,7 +123,6 @@ transition.</p>
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

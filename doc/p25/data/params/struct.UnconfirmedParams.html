@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc struct">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>params</a></p><script>window.sidebarCurrent = {name: 'UnconfirmedParams', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct UnconfirmedParams</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-PacketParams">PacketParams</a></div></div><p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>params</a></p><script>window.sidebarCurrent = {name: 'UnconfirmedParams', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,27 +44,31 @@
         </form>
     </nav>
 
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>params</a>::<wbr><a class='struct' href=''>UnconfirmedParams</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>params</a>::<wbr><a class="struct" href=''>UnconfirmedParams</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../../src/p25/data/params.rs.html#49' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct UnconfirmedParams;</pre><div class='docblock'><p>Params for unconfirmed data packets.</p>
-</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../../../p25/data/params/trait.PacketParams.html' title='trait p25::data::params::PacketParams'>PacketParams</a> for <a class='struct' href='../../../p25/data/params/struct.UnconfirmedParams.html' title='struct p25::data::params::UnconfirmedParams'>UnconfirmedParams</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/params.rs.html#51-54' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.block_bytes' class='method'><span id='block_bytes.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#tymethod.block_bytes' class='fnname'>block_bytes</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
+</div>
+            <h2 id='implementations' class='small-section-header'>
+              Trait Implementations<a href='#implementations' class='anchor'></a>
+            </h2>
+        <h3 id='impl-PacketParams' class='impl'><span class='in-band'><code>impl <a class="trait" href="../../../p25/data/params/trait.PacketParams.html" title="trait p25::data::params::PacketParams">PacketParams</a> for <a class="struct" href="../../../p25/data/params/struct.UnconfirmedParams.html" title="struct p25::data::params::UnconfirmedParams">UnconfirmedParams</a></code><a href='#impl-PacketParams' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/params.rs.html#51-54' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.block_bytes' class="method"><span id='block_bytes.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#tymethod.block_bytes' class='fnname'>block_bytes</a>() -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/params.rs.html#52' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Number of data bytes in a normal block.</p>
-</div><h4 id='method.tail_bytes' class='method'><span id='tail_bytes.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#tymethod.tail_bytes' class='fnname'>tail_bytes</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
+</div><h4 id='method.tail_bytes' class="method"><span id='tail_bytes.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#tymethod.tail_bytes' class='fnname'>tail_bytes</a>() -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/params.rs.html#53' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Number of data bytes in the tail block.</p>
-</div><h4 id='method.max_blocks' class='method'><span id='max_blocks.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#method.max_blocks' class='fnname'>max_blocks</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
+</div><h4 id='method.max_blocks' class="method"><span id='max_blocks.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#method.max_blocks' class='fnname'>max_blocks</a>() -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/params.rs.html#13' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Maximum number of blocks in the packet, including the tail block.</p>
-</div><h4 id='method.packet_bytes' class='method'><span id='packet_bytes.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#method.packet_bytes' class='fnname'>packet_bytes</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
+</div><h4 id='method.packet_bytes' class="method"><span id='packet_bytes.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#method.packet_bytes' class='fnname'>packet_bytes</a>() -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/params.rs.html#16-18' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Maximum number of data bytes in the packet.</p>
-</div><h4 id='method.blocks' class='method'><span id='blocks.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#method.blocks' class='fnname'>blocks</a>(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
+</div><h4 id='method.blocks' class="method"><span id='blocks.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#method.blocks' class='fnname'>blocks</a>(bytes: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/params.rs.html#22-24' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Calculate the total number of data blocks (normal and tail) needed to hold the given amount of bytes. <a href="../../../p25/data/params/trait.PacketParams.html#method.blocks">Read more</a></p>
-</div><h4 id='method.pads' class='method'><span id='pads.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#method.pads' class='fnname'>pads</a>(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
+</div><h4 id='method.pads' class="method"><span id='pads.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#method.pads' class='fnname'>pads</a>(bytes: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/params.rs.html#28-31' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Calculate the number of pads needed for the tail block (and possibly second-to-last block) for the given amount of bytes. <a href="../../../p25/data/params/trait.PacketParams.html#method.pads">Read more</a></p>
-</div><h4 id='method.full_blocks' class='method'><span id='full_blocks.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#method.full_blocks' class='fnname'>full_blocks</a>(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
+</div><h4 id='method.full_blocks' class="method"><span id='full_blocks.v' class='invisible'><code>fn <a href='../../../p25/data/params/trait.PacketParams.html#method.full_blocks' class='fnname'>full_blocks</a>(bytes: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/params.rs.html#35-37' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Calculate the number of normal data blocks (tail block not included) needed to hold the given amount of bytes. <a href="../../../p25/data/params/trait.PacketParams.html#method.full_blocks">Read more</a></p>
 </div></div></section>
     <section id='search' class="content hidden"></section>
@@ -82,13 +87,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -122,7 +129,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

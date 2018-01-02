@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc type">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a>::<wbr><a href='index.html'>trellis</a></p><script>window.sidebarCurrent = {name: 'TribitDecoder', ty: 'type', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Type Definition TribitDecoder</p><div class="sidebar-elems"><p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a>::<wbr><a href='index.html'>trellis</a></p><script>window.sidebarCurrent = {name: 'TribitDecoder', ty: 'type', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,13 +44,13 @@
         </form>
     </nav>
 
-    <section id='main' class="content type">
-<h1 class='fqn'><span class='in-band'>Type Definition <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a>::<wbr><a href='index.html'>trellis</a>::<wbr><a class='type' href=''>TribitDecoder</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Type Definition <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a>::<wbr><a href='index.html'>trellis</a>::<wbr><a class="type" href=''>TribitDecoder</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../../src/p25/coding/trellis.rs.html#27' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type TribitDecoder&lt;T&gt; = <a class='struct' href='../../../p25/coding/trellis/struct.ViterbiDecoder.html' title='struct p25::coding::trellis::ViterbiDecoder'>ViterbiDecoder</a>&lt;<a class='struct' href='../../../p25/coding/trellis/struct.TribitStates.html' title='struct p25::coding::trellis::TribitStates'>TribitStates</a>, <a class='struct' href='../../../p25/coding/trellis/struct.TribitHistory.html' title='struct p25::coding::trellis::TribitHistory'>TribitHistory</a>, <a class='struct' href='../../../p25/coding/trellis/struct.TribitWalks.html' title='struct p25::coding::trellis::TribitWalks'>TribitWalks</a>, T&gt;;</pre><div class='docblock'><p>3/4-rate convolution (&quot;trellis&quot;) code decoder.</p>
+<pre class='rust typedef'>type TribitDecoder&lt;T&gt; = <a class="struct" href="../../../p25/coding/trellis/struct.ViterbiDecoder.html" title="struct p25::coding::trellis::ViterbiDecoder">ViterbiDecoder</a>&lt;<a class="struct" href="../../../p25/coding/trellis/struct.TribitStates.html" title="struct p25::coding::trellis::TribitStates">TribitStates</a>, <a class="struct" href="../../../p25/coding/trellis/struct.TribitHistory.html" title="struct p25::coding::trellis::TribitHistory">TribitHistory</a>, <a class="struct" href="../../../p25/coding/trellis/struct.TribitWalks.html" title="struct p25::coding::trellis::TribitWalks">TribitWalks</a>, T&gt;;</pre><div class='docblock'><p>3/4-rate convolution (&quot;trellis&quot;) code decoder.</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -67,13 +68,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -107,7 +110,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

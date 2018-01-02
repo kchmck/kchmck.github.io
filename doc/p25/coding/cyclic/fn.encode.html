@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc fn">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a>::<wbr><a href='index.html'>cyclic</a></p><script>window.sidebarCurrent = {name: 'encode', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
@@ -43,13 +44,13 @@
         </form>
     </nav>
 
-    <section id='main' class="content fn">
-<h1 class='fqn'><span class='in-band'>Function <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a>::<wbr><a href='index.html'>cyclic</a>::<wbr><a class='fn' href=''>encode</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Function <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>coding</a>::<wbr><a href='index.html'>cyclic</a>::<wbr><a class="fn" href=''>encode</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/p25/coding/cyclic.rs.html#10-12' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn encode(data: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a></pre><div class='docblock'><p>Encode the given 8 data bits into a 16-bit codeword.</p>
+               </span><a class='srclink' href='../../../src/p25/coding/cyclic.rs.html#9-11' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn encode(data: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u16.html">u16</a></pre><div class='docblock'><p>Encode the given 8 data bits into a 16-bit codeword.</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -67,13 +68,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -107,7 +110,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

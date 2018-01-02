@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc mod">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>voice</a></p><script>window.sidebarCurrent = {name: 'control', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'>Module control</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>voice</a></p><script>window.sidebarCurrent = {name: 'control', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,8 +44,8 @@
         </form>
     </nav>
 
-    <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>voice</a>::<wbr><a class='mod' href=''>control</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>voice</a>::<wbr><a class="mod" href=''>control</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
@@ -53,28 +54,28 @@
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.GroupVoiceTraffic.html'
+                           <td><a class="struct" href="struct.GroupVoiceTraffic.html"
                                   title='struct p25::voice::control::GroupVoiceTraffic'>GroupVoiceTraffic</a></td>
                            <td class='docblock-short'>
                                 <p>Identity of unit transmitting on the current talkgroup traffic channel.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.LinkControlFields.html'
+                           <td><a class="struct" href="struct.LinkControlFields.html"
                                   title='struct p25::voice::control::LinkControlFields'>LinkControlFields</a></td>
                            <td class='docblock-short'>
                                 <p>Base link control decoder, common to all packets.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.PhoneTraffic.html'
+                           <td><a class="struct" href="struct.PhoneTraffic.html"
                                   title='struct p25::voice::control::PhoneTraffic'>PhoneTraffic</a></td>
                            <td class='docblock-short'>
                                 <p>Identity of unit participating in current phone call.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.UnitVoiceTraffic.html'
+                           <td><a class="struct" href="struct.UnitVoiceTraffic.html"
                                   title='struct p25::voice::control::UnitVoiceTraffic'>UnitVoiceTraffic</a></td>
                            <td class='docblock-short'>
                                 <p>Identity of units transmitting on current unit-to-unit traffic channel.</p>
@@ -82,7 +83,7 @@
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='enum' href='enum.LinkControlOpcode.html'
+                           <td><a class="enum" href="enum.LinkControlOpcode.html"
                                   title='enum p25::voice::control::LinkControlOpcode'>LinkControlOpcode</a></td>
                            <td class='docblock-short'>
                                 <p>Type of a link control payload.</p>
@@ -90,7 +91,7 @@
                        </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='type' href='type.Buf.html'
+                           <td><a class="type" href="type.Buf.html"
                                   title='type p25::voice::control::Buf'>Buf</a></td>
                            <td class='docblock-short'>
                                 <p>Buffer of bytes that represents a link control packet.</p>
@@ -112,13 +113,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -152,7 +155,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

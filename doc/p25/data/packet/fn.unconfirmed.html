@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc fn">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>packet</a></p><script>window.sidebarCurrent = {name: 'unconfirmed', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
@@ -43,13 +44,13 @@
         </form>
     </nav>
 
-    <section id='main' class="content fn">
-<h1 class='fqn'><span class='in-band'>Function <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>packet</a>::<wbr><a class='fn' href=''>unconfirmed</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Function <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>packet</a>::<wbr><a class="fn" href=''>unconfirmed</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../../src/p25/data/packet.rs.html#60-97' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn unconfirmed(header: <a class='type' href='../../../p25/data/header/type.UnconfirmedHeader.html' title='type p25::data::header::UnconfirmedHeader'>UnconfirmedHeader</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; payload: <a class='type' href='../../../p25/data/payload/type.UnconfirmedPayload.html' title='type p25::data::payload::UnconfirmedPayload'>UnconfirmedPayload</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='struct collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../../p25/bits/struct.Dibit.html' title='struct p25::bits::Dibit'>Dibit</a>&gt;</pre><div class='docblock'><p>Construct an unconfirmed data packet with the given header and payload blocks. The
+<pre class='rust fn'>pub fn unconfirmed(<br>&nbsp;&nbsp;&nbsp;&nbsp;header: <a class="type" href="../../../p25/data/header/type.UnconfirmedHeader.html" title="type p25::data::header::UnconfirmedHeader">UnconfirmedHeader</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;payload: <a class="type" href="../../../p25/data/payload/type.UnconfirmedPayload.html" title="type p25::data::payload::UnconfirmedPayload">UnconfirmedPayload</a><br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="../../../p25/bits/struct.Dibit.html" title="struct p25::bits::Dibit">Dibit</a>&gt;</pre><div class='docblock'><p>Construct an unconfirmed data packet with the given header and payload blocks. The
 returned value is the coded, interleaved set of dibit symbols that make up the packet.</p>
 </div></section>
     <section id='search' class="content hidden"></section>
@@ -68,13 +69,15 @@ returned value is the coded, interleaved set of dibit symbols that make up the p
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -108,7 +111,6 @@ returned value is the coded, interleaved set of dibit symbols that make up the p
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

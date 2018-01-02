@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Stats` struct in crate `p25`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Stats">
+
+    <title>p25::stats::Stats - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc struct">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
+        
+        <p class='location'>Struct Stats</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.merge">merge</a><a href="#method.clear">clear</a><a href="#method.record_err">record_err</a><a href="#method.record_bch">record_bch</a><a href="#method.record_cyclic">record_cyclic</a><a href="#method.record_golay_std">record_golay_std</a><a href="#method.record_golay_ext">record_golay_ext</a><a href="#method.record_golay_short">record_golay_short</a><a href="#method.record_hamming_std">record_hamming_std</a><a href="#method.record_hamming_short">record_hamming_short</a><a href="#method.record_rs_short">record_rs_short</a><a href="#method.record_rs_med">record_rs_med</a><a href="#method.record_rs_long">record_rs_long</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Copy">Copy</a><a href="#impl-Clone">Clone</a><a href="#impl-Default">Default</a></div></div><p class='location'><a href='../index.html'>p25</a>::<wbr><a href='index.html'>stats</a></p><script>window.sidebarCurrent = {name: 'Stats', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>p25</a>::<wbr><a href='index.html'>stats</a>::<wbr><a class="struct" href=''>Stats</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/p25/stats.rs.html#7-37' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Stats { /* fields omitted */ }</pre><div class='docblock'><p>Records various runtime statistics.</p>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../../p25/stats/struct.Stats.html" title="struct p25::stats::Stats">Stats</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#75-198' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.merge' class="method"><span id='merge.v' class='invisible'><code>pub fn <a href='#method.merge' class='fnname'>merge</a>&lt;T:&nbsp;<a class="trait" href="../../p25/stats/trait.HasStats.html" title="trait p25::stats::HasStats">HasStats</a>&gt;(&amp;mut self, other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>T)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#78-112' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Merge in the stats from the given object and reset the other stats back to
+default.</p>
+</div><h4 id='method.clear' class="method"><span id='clear.v' class='invisible'><code>pub fn <a href='#method.clear' class='fnname'>clear</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#115-117' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Clear all stats.</p>
+</div><h4 id='method.record_err' class="method"><span id='record_err.v' class='invisible'><code>pub fn <a href='#method.record_err' class='fnname'>record_err</a>(&amp;mut self, err: <a class="enum" href="../../p25/error/enum.P25Error.html" title="enum p25::error::P25Error">P25Error</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#120-137' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Record the given error into the current stats.</p>
+</div><h4 id='method.record_bch' class="method"><span id='record_bch.v' class='invisible'><code>pub fn <a href='#method.record_bch' class='fnname'>record_bch</a>(&amp;mut self, err: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#140-143' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Record BCH errors.</p>
+</div><h4 id='method.record_cyclic' class="method"><span id='record_cyclic.v' class='invisible'><code>pub fn <a href='#method.record_cyclic' class='fnname'>record_cyclic</a>(&amp;mut self, err: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#146-149' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Record cyclic code errors.</p>
+</div><h4 id='method.record_golay_std' class="method"><span id='record_golay_std.v' class='invisible'><code>pub fn <a href='#method.record_golay_std' class='fnname'>record_golay_std</a>(&amp;mut self, err: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#152-155' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Record standard Golay errors.</p>
+</div><h4 id='method.record_golay_ext' class="method"><span id='record_golay_ext.v' class='invisible'><code>pub fn <a href='#method.record_golay_ext' class='fnname'>record_golay_ext</a>(&amp;mut self, err: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#158-161' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Record extended Golay errors.</p>
+</div><h4 id='method.record_golay_short' class="method"><span id='record_golay_short.v' class='invisible'><code>pub fn <a href='#method.record_golay_short' class='fnname'>record_golay_short</a>(&amp;mut self, err: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#164-167' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Record short Golay errors.</p>
+</div><h4 id='method.record_hamming_std' class="method"><span id='record_hamming_std.v' class='invisible'><code>pub fn <a href='#method.record_hamming_std' class='fnname'>record_hamming_std</a>(&amp;mut self, err: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#170-173' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Record standard Hamming code errors.</p>
+</div><h4 id='method.record_hamming_short' class="method"><span id='record_hamming_short.v' class='invisible'><code>pub fn <a href='#method.record_hamming_short' class='fnname'>record_hamming_short</a>(&amp;mut self, err: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#176-179' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Record short Hamming code errors.</p>
+</div><h4 id='method.record_rs_short' class="method"><span id='record_rs_short.v' class='invisible'><code>pub fn <a href='#method.record_rs_short' class='fnname'>record_rs_short</a>(&amp;mut self, err: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#182-185' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Record short Reed-Solomon code errors.</p>
+</div><h4 id='method.record_rs_med' class="method"><span id='record_rs_med.v' class='invisible'><code>pub fn <a href='#method.record_rs_med' class='fnname'>record_rs_med</a>(&amp;mut self, err: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#188-191' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Record medium Reed-Solomon code errors.</p>
+</div><h4 id='method.record_rs_long' class="method"><span id='record_rs_long.v' class='invisible'><code>pub fn <a href='#method.record_rs_long' class='fnname'>record_rs_long</a>(&amp;mut self, err: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#194-197' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Record long Reed-Solomon code errors.</p>
+</div></div>
+            <h2 id='implementations' class='small-section-header'>
+              Trait Implementations<a href='#implementations' class='anchor'></a>
+            </h2>
+        <h3 id='impl-Copy' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> for <a class="struct" href="../../p25/stats/struct.Stats.html" title="struct p25::stats::Stats">Stats</a></code><a href='#impl-Copy' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#6' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 id='impl-Clone' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="../../p25/stats/struct.Stats.html" title="struct p25::stats::Stats">Stats</a></code><a href='#impl-Clone' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#6' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class="method"><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class="struct" href="../../p25/stats/struct.Stats.html" title="struct p25::stats::Stats">Stats</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#6' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
+</div><h4 id='method.clone_from' class="method"><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Self)</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/clone.rs.html#112-114' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
+</div></div><h3 id='impl-Default' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html" title="trait core::default::Default">Default</a> for <a class="struct" href="../../p25/stats/struct.Stats.html" title="struct p25::stats::Stats">Stats</a></code><a href='#impl-Default' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#39-73' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.default' class="method"><span id='default.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default' class='fnname'>default</a>() -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/p25/stats.rs.html#40-72' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Returns the &quot;default value&quot; for a type. <a href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default">Read more</a></p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>↑</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>↓</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt style="width:31px;">+ / -</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "p25";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

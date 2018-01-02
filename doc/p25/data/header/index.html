@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc mod">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a></p><script>window.sidebarCurrent = {name: 'header', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'>Module header</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a></p><script>window.sidebarCurrent = {name: 'header', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,8 +44,8 @@
         </form>
     </nav>
 
-    <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a class='mod' href=''>header</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a class="mod" href=''>header</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
@@ -56,91 +57,91 @@ fields.</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.BlockCount.html'
+                           <td><a class="struct" href="struct.BlockCount.html"
                                   title='struct p25::data::header::BlockCount'>BlockCount</a></td>
                            <td class='docblock-short'>
                                 <p>FMF and blocks-to-follow fields.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.ConfirmedFields.html'
+                           <td><a class="struct" href="struct.ConfirmedFields.html"
                                   title='struct p25::data::header::ConfirmedFields'>ConfirmedFields</a></td>
                            <td class='docblock-short'>
                                 <p>Header fields for confirmed packet.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.ConfirmedPreamble.html'
+                           <td><a class="struct" href="struct.ConfirmedPreamble.html"
                                   title='struct p25::data::header::ConfirmedPreamble'>ConfirmedPreamble</a></td>
                            <td class='docblock-short'>
                                 <p>Preamble for confirmed data packet.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.DataOffset.html'
+                           <td><a class="struct" href="struct.DataOffset.html"
                                   title='struct p25::data::header::DataOffset'>DataOffset</a></td>
                            <td class='docblock-short'>
                                 <p>Byte offset into data payload where data header stops and data information begins.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.Header.html'
+                           <td><a class="struct" href="struct.Header.html"
                                   title='struct p25::data::header::Header'>Header</a></td>
                            <td class='docblock-short'>
                                 <p>Builds a checksummed header based on the given fields.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.HeaderPreamble.html'
+                           <td><a class="struct" href="struct.HeaderPreamble.html"
                                   title='struct p25::data::header::HeaderPreamble'>HeaderPreamble</a></td>
                            <td class='docblock-short'>
                                 <p>Preamble header field.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.LogicalLink.html'
+                           <td><a class="struct" href="struct.LogicalLink.html"
                                   title='struct p25::data::header::LogicalLink'>LogicalLink</a></td>
                            <td class='docblock-short'>
                                 <p>Logical link ID field for addressing source or destination subscriber.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.Manufacturer.html'
+                           <td><a class="struct" href="struct.Manufacturer.html"
                                   title='struct p25::data::header::Manufacturer'>Manufacturer</a></td>
                            <td class='docblock-short'>
                                 <p>Manufacturer&#39;s ID field.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.PadCount.html'
+                           <td><a class="struct" href="struct.PadCount.html"
                                   title='struct p25::data::header::PadCount'>PadCount</a></td>
                            <td class='docblock-short'>
                                 <p>Number of pad bytes at the end of the data.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.Sequencing.html'
+                           <td><a class="struct" href="struct.Sequencing.html"
                                   title='struct p25::data::header::Sequencing'>Sequencing</a></td>
                            <td class='docblock-short'>
                                 <p>Syn, N(S), and FSNF fields.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.ServiceAccessPoint.html'
+                           <td><a class="struct" href="struct.ServiceAccessPoint.html"
                                   title='struct p25::data::header::ServiceAccessPoint'>ServiceAccessPoint</a></td>
                            <td class='docblock-short'>
                                 <p>Service access point (SAP) field.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.UnconfirmedFields.html'
+                           <td><a class="struct" href="struct.UnconfirmedFields.html"
                                   title='struct p25::data::header::UnconfirmedFields'>UnconfirmedFields</a></td>
                            <td class='docblock-short'>
                                 <p>Header fields for unconfirmed packet.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.UnconfirmedPreamble.html'
+                           <td><a class="struct" href="struct.UnconfirmedPreamble.html"
                                   title='struct p25::data::header::UnconfirmedPreamble'>UnconfirmedPreamble</a></td>
                            <td class='docblock-short'>
                                 <p>Preamble for unconfirmed data packet.</p>
@@ -148,14 +149,14 @@ fields.</p>
                        </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='trait' href='trait.BufWrite.html'
+                           <td><a class="trait" href="trait.BufWrite.html"
                                   title='trait p25::data::header::BufWrite'>BufWrite</a></td>
                            <td class='docblock-short'>
                                 <p>Write some bytes into a buffer.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='trait' href='trait.ByteField.html'
+                           <td><a class="trait" href="trait.ByteField.html"
                                   title='trait p25::data::header::ByteField'>ByteField</a></td>
                            <td class='docblock-short'>
                                 <p>Field is only a single byte.</p>
@@ -163,14 +164,14 @@ fields.</p>
                        </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='type' href='type.ConfirmedHeader.html'
+                           <td><a class="type" href="type.ConfirmedHeader.html"
                                   title='type p25::data::header::ConfirmedHeader'>ConfirmedHeader</a></td>
                            <td class='docblock-short'>
                                 <p>Packet header block for confirmed data packet.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='type' href='type.UnconfirmedHeader.html'
+                           <td><a class="type" href="type.UnconfirmedHeader.html"
                                   title='type p25::data::header::UnconfirmedHeader'>UnconfirmedHeader</a></td>
                            <td class='docblock-short'>
                                 <p>Packet header block for unconfirmed data packet.</p>
@@ -192,13 +193,15 @@ fields.</p>
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -232,7 +235,6 @@ fields.</p>
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

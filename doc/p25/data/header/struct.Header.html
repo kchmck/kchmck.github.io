@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc struct">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>header</a></p><script>window.sidebarCurrent = {name: 'Header', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct Header</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.new">new</a><a href="#method.build">build</a></div></div><p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>header</a></p><script>window.sidebarCurrent = {name: 'Header', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,17 +44,21 @@
         </form>
     </nav>
 
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>header</a>::<wbr><a class='struct' href=''>Header</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>data</a>::<wbr><a href='index.html'>header</a>::<wbr><a class="struct" href=''>Header</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../../src/p25/data/header.rs.html#223' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct Header&lt;F:&nbsp;<a class='trait' href='../../../p25/data/header/trait.BufWrite.html' title='trait p25::data::header::BufWrite'>BufWrite</a>&gt;(_);</pre><div class='docblock'><p>Builds a checksummed header based on the given fields.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;F:&nbsp;<a class='trait' href='../../../p25/data/header/trait.BufWrite.html' title='trait p25::data::header::BufWrite'>BufWrite</a>&gt; <a class='struct' href='../../../p25/data/header/struct.Header.html' title='struct p25::data::header::Header'>Header</a>&lt;F&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/header.rs.html#225-256' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(fields: F) -&gt; <a class='struct' href='../../../p25/data/header/struct.Header.html' title='struct p25::data::header::Header'>Header</a>&lt;F&gt;</code></span></h4>
+<pre class='rust struct'>pub struct Header&lt;F:&nbsp;<a class="trait" href="../../../p25/data/header/trait.BufWrite.html" title="trait p25::data::header::BufWrite">BufWrite</a>&gt;(_);</pre><div class='docblock'><p>Builds a checksummed header based on the given fields.</p>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl&lt;F:&nbsp;<a class="trait" href="../../../p25/data/header/trait.BufWrite.html" title="trait p25::data::header::BufWrite">BufWrite</a>&gt; <a class="struct" href="../../../p25/data/header/struct.Header.html" title="struct p25::data::header::Header">Header</a>&lt;F&gt;</code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/header.rs.html#225-256' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>pub fn <a href='#method.new' class='fnname'>new</a>(fields: F) -&gt; <a class="struct" href="../../../p25/data/header/struct.Header.html" title="struct p25::data::header::Header">Header</a>&lt;F&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/header.rs.html#227-229' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Construct a new <code>Header</code> with the given fields.</p>
-</div><h4 id='method.build' class='method'><span id='build.v' class='invisible'><code>fn <a href='#method.build' class='fnname'>build</a>(self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>; 10]</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>; 2]</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a></code></span></h4>
+</div><h4 id='method.build' class="method"><span id='build.v' class='invisible'><code>pub fn <a href='#method.build' class='fnname'>build</a>(self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 10]</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 2]</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/p25/data/header.rs.html#232-237' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Get the fields and checksum that make up the header, in that order.</p>
 </div></div></section>
     <section id='search' class="content hidden"></section>
@@ -72,13 +77,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -112,7 +119,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

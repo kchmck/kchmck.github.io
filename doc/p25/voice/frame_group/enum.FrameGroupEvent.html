@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc enum">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>voice</a>::<wbr><a href='index.html'>frame_group</a></p><script>window.sidebarCurrent = {name: 'FrameGroupEvent', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Enum FrameGroupEvent</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#variants">Variants</a><div class="sidebar-links"><a href="#variant.VoiceFrame">VoiceFrame</a><a href="#variant.Extra">Extra</a><a href="#variant.DataFragment">DataFragment</a></div></div><p class='location'><a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>voice</a>::<wbr><a href='index.html'>frame_group</a></p><script>window.sidebarCurrent = {name: 'FrameGroupEvent', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,21 +44,22 @@
         </form>
     </nav>
 
-    <section id='main' class="content enum">
-<h1 class='fqn'><span class='in-band'>Enum <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>voice</a>::<wbr><a href='index.html'>frame_group</a>::<wbr><a class='enum' href=''>FrameGroupEvent</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../../index.html'>p25</a>::<wbr><a href='../index.html'>voice</a>::<wbr><a href='index.html'>frame_group</a>::<wbr><a class="enum" href=''>FrameGroupEvent</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/p25/voice/frame_group.rs.html#77-84' title='goto source code'>[src]</a></span></h1>
-<pre class='rust enum'>pub enum FrameGroupEvent&lt;E:&nbsp;<a class='trait' href='../../../p25/voice/frame_group/trait.Extra.html' title='trait p25::voice::frame_group::Extra'>Extra</a>&gt; {
-    VoiceFrame(<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='struct p25::voice::frame::VoiceFrame'>VoiceFrame</a>),
-    Extra(E::<a class='trait' href='../../../p25/voice/frame_group/trait.Extra.html' title='trait p25::voice::frame_group::Extra'>Fields</a>),
-    DataFragment(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>),
+               </span><a class='srclink' href='../../../src/p25/voice/frame_group.rs.html#78-85' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum FrameGroupEvent&lt;E:&nbsp;<a class="trait" href="../../../p25/voice/frame_group/trait.Extra.html" title="trait p25::voice::frame_group::Extra">Extra</a>&gt; {
+    VoiceFrame(<a class="struct" href="../../../p25/voice/frame/struct.VoiceFrame.html" title="struct p25::voice::frame::VoiceFrame">VoiceFrame</a>),
+    Extra(E::<a class="type" href="../../../p25/voice/frame_group/trait.Extra.html#associatedtype.Fields" title="type p25::voice::frame_group::Extra::Fields">Fields</a>),
+    DataFragment(<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>),
 }</pre><div class='docblock'><p>Events that can occur when receiving a frame group.</p>
-</div><h2 class='variants'>Variants</h2>
-<span id='variant.VoiceFrame' class='variant'><span id='VoiceFrame.v' class='invisible'><code>VoiceFrame(<a class='struct' href='../../../p25/voice/frame/struct.VoiceFrame.html' title='struct p25::voice::frame::VoiceFrame'>VoiceFrame</a>)</code></span></span><div class='docblock'><p>Decoded a voice frame.</p>
-</div><span id='variant.Extra' class='variant'><span id='Extra.v' class='invisible'><code>Extra(E::<a class='trait' href='../../../p25/voice/frame_group/trait.Extra.html' title='trait p25::voice::frame_group::Extra'>Fields</a>)</code></span></span><div class='docblock'><p>Decoded an &quot;extra&quot; packet.</p>
-</div><span id='variant.DataFragment' class='variant'><span id='DataFragment.v' class='invisible'><code>DataFragment(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>)</code></span></span><div class='docblock'><p>Decoded a 16-bit fragment of the low-speed data word.</p>
+</div><h2 id='variants' class='variants small-section-header'>
+                   Variants<a href='#variants' class='anchor'></a></h2>
+<span id="variant.VoiceFrame" class="variant small-section-header"><a href="#variant.VoiceFrame" class="anchor field"></a><span id='VoiceFrame.v' class='invisible'><code>VoiceFrame(<a class="struct" href="../../../p25/voice/frame/struct.VoiceFrame.html" title="struct p25::voice::frame::VoiceFrame">VoiceFrame</a>)</code></span></span><div class='docblock'><p>Decoded a voice frame.</p>
+</div><span id="variant.Extra" class="variant small-section-header"><a href="#variant.Extra" class="anchor field"></a><span id='Extra.v' class='invisible'><code>Extra(E::<a class="type" href="../../../p25/voice/frame_group/trait.Extra.html#associatedtype.Fields" title="type p25::voice::frame_group::Extra::Fields">Fields</a>)</code></span></span><div class='docblock'><p>Decoded an &quot;extra&quot; packet.</p>
+</div><span id="variant.DataFragment" class="variant small-section-header"><a href="#variant.DataFragment" class="anchor field"></a><span id='DataFragment.v' class='invisible'><code>DataFragment(<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>)</code></span></span><div class='docblock'><p>Decoded a 16-bit fragment of the low-speed data word.</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -75,13 +77,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -115,7 +119,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>
