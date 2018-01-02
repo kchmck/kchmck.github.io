@@ -49,8 +49,10 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/iq_osc/lib.rs.html#1-498' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'><p>Given</p>
+               </span><a class='srclink' href='../src/iq_osc/lib.rs.html#1-500' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>I/Q oscillator without trig function calls.</p>
+
+<p>Given</p>
 
 <blockquote>
 <p>f(t) = cos(θ<sub>0</sub> + ωt) = cos Φ(t),</p>
@@ -108,7 +110,7 @@ arithmetic in the above equations.</p>
 
 <h2 id='error-accumulation' class='section-header'><a href='#error-accumulation'>Error Accumulation</a></h2>
 <p>Due to the accumulation of floating-point roundoff errors, the accuracy of returned
-sine/cosine evaulations will slowly degrade over phase steps. Using a very small phase
+sine/cosine evaluations will slowly degrade over phase steps. Using a very small phase
 step or running an <code>IQOsc</code> through many, many cycles will make this problem more
 pronounced. As a workaround, the double-precision <code>IQOsc&lt;f64&gt;</code> can be used, which
 provides a significant increase in accuracy across phase steps and has relatively

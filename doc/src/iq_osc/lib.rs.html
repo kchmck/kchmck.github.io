@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/mick/.cargo/git/checkouts/iq_osc.rs-aa54f8257e5473ee/d4b0ad9/src/lib.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/mick/.cargo/registry/src/github.com-1ecc6299db9ec823/iq_osc-3.0.0/src/lib.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>lib.rs.html -- source</title>
@@ -542,7 +542,11 @@
 <span id="496">496</span>
 <span id="497">497</span>
 <span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
 </pre><pre class="rust ">
+<span class="doccomment">//! I/Q oscillator without trig function calls.</span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! Given</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! &gt; f(t) = cos(θ&lt;sub&gt;0&lt;/sub&gt; + ωt) = cos Φ(t),</span>
@@ -591,7 +595,7 @@
 <span class="doccomment">//! ## Error Accumulation</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Due to the accumulation of floating-point roundoff errors, the accuracy of returned</span>
-<span class="doccomment">//! sine/cosine evaulations will slowly degrade over phase steps. Using a very small phase</span>
+<span class="doccomment">//! sine/cosine evaluations will slowly degrade over phase steps. Using a very small phase</span>
 <span class="doccomment">//! step or running an `IQOsc` through many, many cycles will make this problem more</span>
 <span class="doccomment">//! pronounced. As a workaround, the double-precision `IQOsc&lt;f64&gt;` can be used, which</span>
 <span class="doccomment">//! provides a significant increase in accuracy across phase steps and has relatively</span>
@@ -605,9 +609,9 @@
 <span class="doccomment">//! test bench_trig64 ... bench:   2,365,592 ns/iter (+/- 148,062)</span>
 <span class="doccomment">//! ```</span>
 
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">num</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">num_traits</span>;
 
-<span class="kw">use</span> <span class="ident">num</span>::<span class="ident">Float</span>;
+<span class="kw">use</span> <span class="ident">num_traits</span>::<span class="ident">Float</span>;
 
 <span class="doccomment">/// Quadrature oscillator with current phase Φ(t) and phase step ω.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
