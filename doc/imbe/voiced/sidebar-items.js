@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Phase","Computes the random phase terms Φ<sub>l</sub>."],["PhaseBase","Computes the base phase offsets Ψ<sub>l</sub>."],["Voiced","Synthesizes voiced spectrum signal s<sub>v</sub>(n)."]]});
+initSidebarItems({"struct":[["Phase","Computes the random phase terms Φl."],["PhaseBase","Computes the base phase offsets Ψl."],["Voiced","Synthesizes voiced spectrum signal sv(n)."]]});

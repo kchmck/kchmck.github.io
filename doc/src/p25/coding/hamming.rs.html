@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -237,258 +238,198 @@
 <span id="192">192</span>
 <span id="193">193</span>
 <span id="194">194</span>
-<span id="195">195</span>
-<span id="196">196</span>
-<span id="197">197</span>
-<span id="198">198</span>
-<span id="199">199</span>
-<span id="200">200</span>
-<span id="201">201</span>
-<span id="202">202</span>
-<span id="203">203</span>
-<span id="204">204</span>
-<span id="205">205</span>
-<span id="206">206</span>
-<span id="207">207</span>
-<span id="208">208</span>
-<span id="209">209</span>
-<span id="210">210</span>
-<span id="211">211</span>
-<span id="212">212</span>
-<span id="213">213</span>
-<span id="214">214</span>
-<span id="215">215</span>
-<span id="216">216</span>
-<span id="217">217</span>
-<span id="218">218</span>
-<span id="219">219</span>
-<span id="220">220</span>
-<span id="221">221</span>
-<span id="222">222</span>
-<span id="223">223</span>
-<span id="224">224</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Encoding and decoding of the (15, 11, 3) standard and (10, 6, 3) shortened Hamming</span>
-<span class='doccomment'>//! codes described by P25.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! Both codes can correct up to 1 error. These algorithms are sourced from *Coding Theory</span>
-<span class='doccomment'>//! and Cryptography: The Essentials*, Hankerson, Hoffman, et al, 2000.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Encoding and decoding of the (15, 11, 3) standard and (10, 6, 3) shortened Hamming</span>
+<span class="doccomment">//! codes described by P25.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Both codes can correct up to 1 error. These algorithms are sourced from *Coding Theory</span>
+<span class="doccomment">//! and Cryptography: The Essentials*, Hankerson, Hoffman, et al, 2000.</span>
 
-<span class='doccomment'>/// Encoding and decoding of the (15, 11, 3) code.</span>
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>standard</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>HammingDecoder</span>;
+<span class="kw">use</span> <span class="ident">binfield_matrix</span>::{<span class="ident">matrix_mul</span>, <span class="ident">matrix_mul_systematic</span>};
+<span class="kw">use</span> <span class="ident">num</span>::<span class="ident">PrimInt</span>;
 
-    <span class='doccomment'>/// Encode the given 11 bits of data into a 15-bit codeword.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>encode</span>(<span class='ident'>data</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>data</span> <span class='op'>&gt;&gt;</span> <span class='number'>11</span> <span class='op'>==</span> <span class='number'>0</span>);
-        <span class='macro'>matrix_mul_systematic</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='ident'>GEN</span>, <span class='ident'>u16</span>)
+<span class="doccomment">/// Encoding and decoding of the (15, 11, 3) code.</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">standard</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+
+    <span class="doccomment">/// Encode the given 11 bits of data into a 15-bit codeword.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">encode</span>(<span class="ident">data</span>: <span class="ident">u16</span>) <span class="op">-&gt;</span> <span class="ident">u16</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">data</span> <span class="op">&gt;&gt;</span> <span class="number">11</span> <span class="op">==</span> <span class="number">0</span>);
+        <span class="ident">matrix_mul_systematic</span>(<span class="ident">data</span>, <span class="ident">GEN</span>)
     }
 
-    <span class='doccomment'>/// Try to decode the given 15-bit word to the nearest codeword, correcting up to 1</span>
-    <span class='doccomment'>/// error.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// If decoding was successful, return `Some((data, err))`, where `data` is the 11</span>
-    <span class='doccomment'>/// data bits and `err` is the number of corrected bits. Otherwise, return `None` to</span>
-    <span class='doccomment'>/// indicate an unrecoverable error.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode</span>(<span class='ident'>word</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>u16</span>, <span class='ident'>usize</span>)<span class='op'>&gt;</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='number'>15</span> <span class='op'>==</span> <span class='number'>0</span>);
-        <span class='ident'>StandardHamming</span>::<span class='ident'>decode</span>(<span class='ident'>word</span>)
+    <span class="doccomment">/// Try to decode the given 15-bit word to the nearest codeword, correcting up to 1</span>
+    <span class="doccomment">/// error.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If decoding was successful, return `Some((data, err))`, where `data` is the 11</span>
+    <span class="doccomment">/// data bits and `err` is the number of corrected bits. Otherwise, return `None` to</span>
+    <span class="doccomment">/// indicate an unrecoverable error.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decode</span>(<span class="ident">word</span>: <span class="ident">u16</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">u16</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">word</span> <span class="op">&gt;&gt;</span> <span class="number">15</span> <span class="op">==</span> <span class="number">0</span>);
+        <span class="kw">super</span>::<span class="ident">decode</span>(<span class="ident">word</span>, <span class="ident">PAR</span>, <span class="ident">LOCATIONS</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">w</span>, <span class="ident">n</span>)<span class="op">|</span> (<span class="ident">w</span> <span class="op">&gt;&gt;</span> <span class="number">4</span>, <span class="ident">n</span>))
     }
 
-    <span class='doccomment'>/// Generator patterns for 4 parity bits.</span>
-    <span class='kw'>const</span> <span class='ident'>GEN</span>: [<span class='ident'>u16</span>; <span class='number'>4</span>] <span class='op'>=</span> [
-        <span class='number'>0b11111110000</span>,
-        <span class='number'>0b11110001110</span>,
-        <span class='number'>0b11001101101</span>,
-        <span class='number'>0b10101011011</span>,
+    <span class="doccomment">/// Generator matrix from the standard, without identity part.</span>
+    <span class="kw">const</span> <span class="ident">GEN</span>: <span class="kw-2">&amp;</span>[<span class="ident">u16</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[
+        <span class="number">0b11111110000</span>,
+        <span class="number">0b11110001110</span>,
+        <span class="number">0b11001101101</span>,
+        <span class="number">0b10101011011</span>,
     ];
 
-    <span class='doccomment'>/// Parity-check patterns for 4 syndromes.</span>
-    <span class='kw'>const</span> <span class='ident'>PAR</span>: [<span class='ident'>u16</span>; <span class='number'>4</span>] <span class='op'>=</span> [
-        <span class='number'>0b111111100001000</span>,
-        <span class='number'>0b111100011100100</span>,
-        <span class='number'>0b110011011010010</span>,
-        <span class='number'>0b101010110110001</span>,
+    <span class="doccomment">/// Parity-check matrix derived from generator using standard method.</span>
+    <span class="kw">const</span> <span class="ident">PAR</span>: <span class="kw-2">&amp;</span>[<span class="ident">u16</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[
+        <span class="number">0b111111100001000</span>,
+        <span class="number">0b111100011100100</span>,
+        <span class="number">0b110011011010010</span>,
+        <span class="number">0b101010110110001</span>,
     ];
 
-    <span class='doccomment'>/// Maps 4-bit syndrome values to bit error locations.</span>
-    <span class='kw'>const</span> <span class='ident'>LOCATIONS</span>: [<span class='ident'>u16</span>; <span class='number'>16</span>] <span class='op'>=</span> [
-        <span class='number'>0</span>,
-        <span class='number'>0b0000000000000001</span>,
-        <span class='number'>0b0000000000000010</span>,
-        <span class='number'>0b0000000000010000</span>,
-        <span class='number'>0b0000000000000100</span>,
-        <span class='number'>0b0000000000100000</span>,
-        <span class='number'>0b0000000001000000</span>,
-        <span class='number'>0b0000000010000000</span>,
-        <span class='number'>0b0000000000001000</span>,
-        <span class='number'>0b0000000100000000</span>,
-        <span class='number'>0b0000001000000000</span>,
-        <span class='number'>0b0000010000000000</span>,
-        <span class='number'>0b0000100000000000</span>,
-        <span class='number'>0b0001000000000000</span>,
-        <span class='number'>0b0010000000000000</span>,
-        <span class='number'>0b0100000000000000</span>,
+    <span class="doccomment">/// Maps 4-bit syndrome values to bit error locations.</span>
+    <span class="kw">const</span> <span class="ident">LOCATIONS</span>: <span class="kw-2">&amp;</span>[<span class="ident">u16</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[
+        <span class="number">0</span>,
+        <span class="number">0b0000000000000001</span>,
+        <span class="number">0b0000000000000010</span>,
+        <span class="number">0b0000000000010000</span>,
+        <span class="number">0b0000000000000100</span>,
+        <span class="number">0b0000000000100000</span>,
+        <span class="number">0b0000000001000000</span>,
+        <span class="number">0b0000000010000000</span>,
+        <span class="number">0b0000000000001000</span>,
+        <span class="number">0b0000000100000000</span>,
+        <span class="number">0b0000001000000000</span>,
+        <span class="number">0b0000010000000000</span>,
+        <span class="number">0b0000100000000000</span>,
+        <span class="number">0b0001000000000000</span>,
+        <span class="number">0b0010000000000000</span>,
+        <span class="number">0b0100000000000000</span>,
     ];
-
-    <span class='kw'>struct</span> <span class='ident'>StandardHamming</span>;
-
-    <span class='kw'>impl</span> <span class='kw'>super</span>::<span class='ident'>HammingDecoder</span> <span class='kw'>for</span> <span class='ident'>StandardHamming</span> {
-        <span class='kw'>type</span> <span class='ident'>Data</span> <span class='op'>=</span> <span class='ident'>u16</span>;
-
-        <span class='kw'>fn</span> <span class='ident'>data</span>(<span class='ident'>word</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> { <span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='number'>4</span> }
-        <span class='kw'>fn</span> <span class='ident'>par</span>() <span class='op'>-&gt;</span> [<span class='ident'>u16</span>; <span class='number'>4</span>] { <span class='ident'>PAR</span> }
-        <span class='kw'>fn</span> <span class='ident'>locs</span>() <span class='op'>-&gt;</span> [<span class='ident'>u16</span>; <span class='number'>16</span>] { <span class='ident'>LOCATIONS</span> }
-    }
 }
 
-<span class='doccomment'>/// Encoding and decoding of the (10, 6, 3) code.</span>
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>shortened</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>HammingDecoder</span>;
+<span class="doccomment">/// Encoding and decoding of the (10, 6, 3) code.</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">shortened</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-    <span class='doccomment'>/// Encode the given 6 data bits into a 10-bit codeword.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>encode</span>(<span class='ident'>data</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>data</span> <span class='op'>&gt;&gt;</span> <span class='number'>6</span> <span class='op'>==</span> <span class='number'>0</span>);
-        <span class='macro'>matrix_mul_systematic</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='ident'>GEN</span>, <span class='ident'>u16</span>)
+    <span class="doccomment">/// Encode the given 6 data bits into a 10-bit codeword.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">encode</span>(<span class="ident">data</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">u16</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">data</span> <span class="op">&gt;&gt;</span> <span class="number">6</span> <span class="op">==</span> <span class="number">0</span>);
+        <span class="ident">matrix_mul_systematic</span>(<span class="ident">data</span>, <span class="ident">GEN</span>)
     }
 
-    <span class='doccomment'>/// Try to decode the given 10-bit word to the nearest codeword, correcting up to 1</span>
-    <span class='doccomment'>/// error.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// If decoding was successful, return `Some((data, err))`, where `data` is the 6</span>
-    <span class='doccomment'>/// data bits and `err` is the number of corrected bits. Otherwise, return `None` to</span>
-    <span class='doccomment'>/// indicate an unrecoverable error.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode</span>(<span class='ident'>word</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>u8</span>, <span class='ident'>usize</span>)<span class='op'>&gt;</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='number'>10</span> <span class='op'>==</span> <span class='number'>0</span>);
-        <span class='ident'>ShortHamming</span>::<span class='ident'>decode</span>(<span class='ident'>word</span>)
+    <span class="doccomment">/// Try to decode the given 10-bit word to the nearest codeword, correcting up to 1</span>
+    <span class="doccomment">/// error.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If decoding was successful, return `Some((data, err))`, where `data` is the 6</span>
+    <span class="doccomment">/// data bits and `err` is the number of corrected bits. Otherwise, return `None` to</span>
+    <span class="doccomment">/// indicate an unrecoverable error.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decode</span>(<span class="ident">word</span>: <span class="ident">u16</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">u8</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">word</span> <span class="op">&gt;&gt;</span> <span class="number">10</span> <span class="op">==</span> <span class="number">0</span>);
+        <span class="kw">super</span>::<span class="ident">decode</span>(<span class="ident">word</span>, <span class="ident">PAR</span>, <span class="ident">LOCATIONS</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">w</span>, <span class="ident">n</span>)<span class="op">|</span> ((<span class="ident">w</span> <span class="op">&gt;&gt;</span> <span class="number">4</span>) <span class="kw">as</span> <span class="ident">u8</span>, <span class="ident">n</span>))
     }
 
-    <span class='kw'>const</span> <span class='ident'>GEN</span>: [<span class='ident'>u8</span>; <span class='number'>4</span>] <span class='op'>=</span> [
-        <span class='number'>0b111001</span>,
-        <span class='number'>0b110101</span>,
-        <span class='number'>0b101110</span>,
-        <span class='number'>0b011110</span>,
+    <span class="kw">const</span> <span class="ident">GEN</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[
+        <span class="number">0b111001</span>,
+        <span class="number">0b110101</span>,
+        <span class="number">0b101110</span>,
+        <span class="number">0b011110</span>,
     ];
 
-    <span class='kw'>const</span> <span class='ident'>PAR</span>: [<span class='ident'>u16</span>; <span class='number'>4</span>] <span class='op'>=</span> [
-        <span class='number'>0b1110011000</span>,
-        <span class='number'>0b1101010100</span>,
-        <span class='number'>0b1011100010</span>,
-        <span class='number'>0b0111100001</span>,
+    <span class="kw">const</span> <span class="ident">PAR</span>: <span class="kw-2">&amp;</span>[<span class="ident">u16</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[
+        <span class="number">0b1110011000</span>,
+        <span class="number">0b1101010100</span>,
+        <span class="number">0b1011100010</span>,
+        <span class="number">0b0111100001</span>,
     ];
 
-    <span class='kw'>const</span> <span class='ident'>LOCATIONS</span>: [<span class='ident'>u16</span>; <span class='number'>16</span>] <span class='op'>=</span> [
-        <span class='number'>0</span>,
-        <span class='number'>0b0000000000000001</span>,
-        <span class='number'>0b0000000000000010</span>,
-        <span class='number'>0b0000000000100000</span>,
-        <span class='number'>0b0000000000000100</span>,
-        <span class='number'>0</span>,
-        <span class='number'>0</span>,
-        <span class='number'>0b0000000001000000</span>,
-        <span class='number'>0b0000000000001000</span>,
-        <span class='number'>0</span>,
-        <span class='number'>0</span>,
-        <span class='number'>0b0000000010000000</span>,
-        <span class='number'>0b0000000000010000</span>,
-        <span class='number'>0b0000000100000000</span>,
-        <span class='number'>0b0000001000000000</span>,
-        <span class='number'>0</span>,
+    <span class="kw">const</span> <span class="ident">LOCATIONS</span>: <span class="kw-2">&amp;</span>[<span class="ident">u16</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[
+        <span class="number">0</span>,
+        <span class="number">0b0000000000000001</span>,
+        <span class="number">0b0000000000000010</span>,
+        <span class="number">0b0000000000100000</span>,
+        <span class="number">0b0000000000000100</span>,
+        <span class="number">0</span>,
+        <span class="number">0</span>,
+        <span class="number">0b0000000001000000</span>,
+        <span class="number">0b0000000000001000</span>,
+        <span class="number">0</span>,
+        <span class="number">0</span>,
+        <span class="number">0b0000000010000000</span>,
+        <span class="number">0b0000000000010000</span>,
+        <span class="number">0b0000000100000000</span>,
+        <span class="number">0b0000001000000000</span>,
+        <span class="number">0</span>,
     ];
-
-    <span class='kw'>struct</span> <span class='ident'>ShortHamming</span>;
-
-    <span class='kw'>impl</span> <span class='kw'>super</span>::<span class='ident'>HammingDecoder</span> <span class='kw'>for</span> <span class='ident'>ShortHamming</span> {
-        <span class='kw'>type</span> <span class='ident'>Data</span> <span class='op'>=</span> <span class='ident'>u8</span>;
-
-        <span class='kw'>fn</span> <span class='ident'>data</span>(<span class='ident'>word</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { (<span class='ident'>word</span> <span class='op'>&gt;&gt;</span> <span class='number'>4</span>) <span class='kw'>as</span> <span class='ident'>u8</span> }
-        <span class='kw'>fn</span> <span class='ident'>par</span>() <span class='op'>-&gt;</span> [<span class='ident'>u16</span>; <span class='number'>4</span>] { <span class='ident'>PAR</span> }
-        <span class='kw'>fn</span> <span class='ident'>locs</span>() <span class='op'>-&gt;</span> [<span class='ident'>u16</span>; <span class='number'>16</span>] { <span class='ident'>LOCATIONS</span> }
-    }
 }
 
-<span class='doccomment'>/// Defines code-specific decoding functions.</span>
-<span class='kw'>trait</span> <span class='ident'>HammingDecoder</span> {
-    <span class='doccomment'>/// The type of the data bit output.</span>
-    <span class='kw'>type</span> <span class='ident'>Data</span>;
+<span class="kw">fn</span> <span class="ident">decode</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">word</span>: <span class="ident">T</span>, <span class="ident">par</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">locs</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">T</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">s</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">matrix_mul</span>(<span class="ident">word</span>, <span class="ident">par</span>);
 
-    <span class='doccomment'>/// Convert the codeword to data bits.</span>
-    <span class='kw'>fn</span> <span class='ident'>data</span>(<span class='ident'>word</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Data</span>;
+    <span class="kw">if</span> <span class="ident">s</span> <span class="op">==</span> <span class="number">0</span> {
+        <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="ident">word</span>, <span class="number">0</span>));
+    }
 
-    <span class='doccomment'>/// Return the parity-check patterns for 4 syndromes.</span>
-    <span class='kw'>fn</span> <span class='ident'>par</span>() <span class='op'>-&gt;</span> [<span class='ident'>u16</span>; <span class='number'>4</span>];
+    <span class="ident">locs</span>.<span class="ident">get</span>(<span class="ident">s</span>).<span class="ident">and_then</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">loc</span><span class="op">|</span> <span class="kw">if</span> <span class="ident">loc</span> <span class="op">==</span> <span class="ident">T</span>::<span class="ident">zero</span>() {
+        <span class="prelude-val">None</span>
+    } <span class="kw">else</span> {
+        <span class="prelude-val">Some</span>((<span class="ident">word</span> <span class="op">^</span> <span class="ident">loc</span>, <span class="number">1</span>))
+    })
+}
 
-    <span class='doccomment'>/// Return the syndrome-error location map.</span>
-    <span class='kw'>fn</span> <span class='ident'>locs</span>() <span class='op'>-&gt;</span> [<span class='ident'>u16</span>; <span class='number'>16</span>];
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-    <span class='doccomment'>/// Use the current decoder to decode the given word.</span>
-    <span class='kw'>fn</span> <span class='ident'>decode</span>(<span class='ident'>word</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='self'>Self</span>::<span class='ident'>Data</span>, <span class='ident'>usize</span>)<span class='op'>&gt;</span> {
-        <span class='comment'>// Compute the 4-bit syndrome.</span>
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='macro'>matrix_mul</span><span class='macro'>!</span>(<span class='ident'>word</span>, <span class='self'>Self</span>::<span class='ident'>par</span>(), <span class='ident'>u8</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_standard</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">standard</span>::<span class="ident">encode</span>(<span class="number">0</span>), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">standard</span>::<span class="ident">encode</span>(<span class="number">0b11111111111</span>), <span class="number">0b11111111111_1111</span>);
 
-        <span class='comment'>// A zero syndrome means it&#39;s a valid codeword (possibly different from the</span>
-        <span class='comment'>// transmitted codeword.)</span>
-        <span class='kw'>if</span> <span class='ident'>s</span> <span class='op'>==</span> <span class='number'>0</span> {
-            <span class='kw'>return</span> <span class='prelude-val'>Some</span>((<span class='self'>Self</span>::<span class='ident'>data</span>(<span class='ident'>word</span>), <span class='number'>0</span>));
+        <span class="kw">for</span> <span class="ident">w</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">1</span><span class="op">&lt;&lt;</span><span class="number">11</span> {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">standard</span>::<span class="ident">decode</span>(<span class="ident">standard</span>::<span class="ident">encode</span>(<span class="ident">w</span>)), <span class="prelude-val">Some</span>((<span class="ident">w</span>, <span class="number">0</span>)));
         }
 
-        <span class='kw'>match</span> <span class='self'>Self</span>::<span class='ident'>locs</span>().<span class='ident'>get</span>(<span class='ident'>s</span> <span class='kw'>as</span> <span class='ident'>usize</span>) {
-            <span class='comment'>// More than one error/unrecoverable error.</span>
-            <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='number'>0</span>) <span class='op'>|</span> <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
-            <span class='comment'>// Valid location means the error can be corrected.</span>
-            <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>loc</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>((<span class='self'>Self</span>::<span class='ident'>data</span>(<span class='ident'>word</span> <span class='op'>^</span> <span class='ident'>loc</span>), <span class='number'>1</span>)),
+        <span class="kw">let</span> <span class="ident">w</span> <span class="op">=</span> <span class="ident">standard</span>::<span class="ident">encode</span>(<span class="number">0b10101010101</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="number">0b10101010101_0101</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">standard</span>::<span class="ident">decode</span>(<span class="ident">w</span>), <span class="prelude-val">Some</span>((<span class="number">0b10101010101</span>, <span class="number">0</span>)));
+
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">15</span> {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">standard</span>::<span class="ident">decode</span>(<span class="ident">w</span> <span class="op">^</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="ident">i</span>), <span class="prelude-val">Some</span>((<span class="number">0b10101010101</span>, <span class="number">1</span>)));
         }
-    }
-}
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
-
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_standard</span>() {
-        <span class='kw'>let</span> <span class='ident'>w</span> <span class='op'>=</span> <span class='number'>0b10101010101</span>;
-        <span class='kw'>let</span> <span class='ident'>e</span> <span class='op'>=</span> <span class='ident'>standard</span>::<span class='ident'>encode</span>(<span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000000000000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000000000000001</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000000000000010</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000000000000100</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000000000001000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000000000010000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000000000100000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000000001000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000000010000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000000100000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000001000000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000010000000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b000100000000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b001000000000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b010000000000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>e</span><span class='op'>^</span><span class='number'>0b100000000000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-
-        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>1</span><span class='op'>&lt;&lt;</span><span class='number'>11</span> {
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>standard</span>::<span class='ident'>decode</span>(<span class='ident'>standard</span>::<span class='ident'>encode</span>(<span class='ident'>i</span>)).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>i</span>);
+        <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">j</span>) <span class="kw">in</span> (<span class="number">0</span>..<span class="number">15</span>).<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">15</span>) {
+            <span class="kw">if</span> <span class="ident">i</span> <span class="op">!=</span> <span class="ident">j</span> {
+                <span class="comment">// Two-bit errors are detected as one-bit errors with an incorrect bit</span>
+                <span class="comment">// correction, so just check for the detection.</span>
+                <span class="kw">let</span> (_, <span class="ident">n</span>) <span class="op">=</span> <span class="ident">standard</span>::<span class="ident">decode</span>(<span class="ident">w</span> <span class="op">^</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="ident">i</span>) <span class="op">^</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="ident">j</span>)).<span class="ident">unwrap</span>();
+                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">n</span>, <span class="number">1</span>);
+            }
         }
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_shortened</span>() {
-        <span class='kw'>let</span> <span class='ident'>w</span> <span class='op'>=</span> <span class='number'>0b110011</span>;
-        <span class='kw'>let</span> <span class='ident'>e</span> <span class='op'>=</span> <span class='ident'>shortened</span>::<span class='ident'>encode</span>(<span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>e</span> <span class='op'>^</span> <span class='number'>0b0000000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>e</span> <span class='op'>^</span> <span class='number'>0b0000000001</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>e</span> <span class='op'>^</span> <span class='number'>0b0000000010</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>e</span> <span class='op'>^</span> <span class='number'>0b0000000100</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>e</span> <span class='op'>^</span> <span class='number'>0b0000001000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>e</span> <span class='op'>^</span> <span class='number'>0b0000010000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>e</span> <span class='op'>^</span> <span class='number'>0b0000100000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>e</span> <span class='op'>^</span> <span class='number'>0b0001000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>e</span> <span class='op'>^</span> <span class='number'>0b0010000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>e</span> <span class='op'>^</span> <span class='number'>0b0100000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>e</span> <span class='op'>^</span> <span class='number'>0b1000000000</span>).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>w</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_shortened</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">shortened</span>::<span class="ident">encode</span>(<span class="number">0</span>), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">shortened</span>::<span class="ident">encode</span>(<span class="number">0b111111</span>), <span class="number">0b111111_0000</span>);
 
-        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>1</span><span class='op'>&lt;&lt;</span><span class='number'>6</span> {
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>shortened</span>::<span class='ident'>decode</span>(<span class='ident'>shortened</span>::<span class='ident'>encode</span>(<span class='ident'>i</span>)).<span class='ident'>unwrap</span>().<span class='number'>0</span>, <span class='ident'>i</span>);
+        <span class="kw">for</span> <span class="ident">w</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">1</span><span class="op">&lt;&lt;</span><span class="number">6</span> {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">shortened</span>::<span class="ident">decode</span>(<span class="ident">shortened</span>::<span class="ident">encode</span>(<span class="ident">w</span>)), <span class="prelude-val">Some</span>((<span class="ident">w</span>, <span class="number">0</span>)));
+        }
+
+        <span class="kw">let</span> <span class="ident">w</span> <span class="op">=</span> <span class="ident">shortened</span>::<span class="ident">encode</span>(<span class="number">0b101010</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="number">0b101010_0110</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">shortened</span>::<span class="ident">decode</span>(<span class="ident">w</span>), <span class="prelude-val">Some</span>((<span class="number">0b101010</span>, <span class="number">0</span>)));
+
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">10</span> {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">shortened</span>::<span class="ident">decode</span>(<span class="ident">w</span> <span class="op">^</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="ident">i</span>), <span class="prelude-val">Some</span>((<span class="number">0b101010</span>, <span class="number">1</span>)));
+        }
+
+        <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">j</span>) <span class="kw">in</span> (<span class="number">0</span>..<span class="number">10</span>).<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">10</span>) {
+            <span class="kw">if</span> <span class="ident">i</span> <span class="op">!=</span> <span class="ident">j</span> {
+                <span class="comment">// Two-bit errors are detected as one-bit errors with an incorrect bit</span>
+                <span class="comment">// correction, so just check for the detection.</span>
+                <span class="kw">let</span> (_, <span class="ident">n</span>) <span class="op">=</span> <span class="ident">shortened</span>::<span class="ident">decode</span>(<span class="ident">w</span> <span class="op">^</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="ident">i</span>) <span class="op">^</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="ident">j</span>)).<span class="ident">unwrap</span>();
+                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">n</span>, <span class="number">1</span>);
+            }
         }
     }
 }
@@ -510,13 +451,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -550,7 +493,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

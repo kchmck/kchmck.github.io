@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Spectrals","Spectral amplitudes M<sub>l</sub>, 1 ≤ l ≤ L, measure the spectral envelope of the voiced/unvoiced signal spectrum."]]});
+initSidebarItems({"struct":[["Spectrals","Spectral amplitudes Ml, 1 ≤ l ≤ L, measure the spectral envelope of the voiced/unvoiced signal spectrum."]]});

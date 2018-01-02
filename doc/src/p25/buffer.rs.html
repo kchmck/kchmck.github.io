@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -240,202 +241,202 @@
 <span id="195">195</span>
 <span id="196">196</span>
 <span id="197">197</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! State machine for buffering items until a buffer is full.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! State machine for buffering items until a buffer is full.</span>
 
-<span class='kw'>use</span> <span class='ident'>bits</span>;
-<span class='kw'>use</span> <span class='ident'>consts</span>;
+<span class="kw">use</span> <span class="ident">bits</span>;
+<span class="kw">use</span> <span class="ident">consts</span>;
 
-<span class='doccomment'>/// Backing storage for a Buffer.</span>
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Storage</span> {
-    <span class='doccomment'>/// Type of item stored.</span>
-    <span class='kw'>type</span> <span class='ident'>Input</span>: <span class='ident'>Copy</span>;
-    <span class='doccomment'>/// Type of backing storage.</span>
-    <span class='kw'>type</span> <span class='ident'>Buf</span>;
+<span class="doccomment">/// Backing storage for a Buffer.</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Storage</span> {
+    <span class="doccomment">/// Type of item stored.</span>
+    <span class="kw">type</span> <span class="ident">Input</span>: <span class="ident">Copy</span>;
+    <span class="doccomment">/// Type of backing storage.</span>
+    <span class="kw">type</span> <span class="ident">Buf</span>;
 
-    <span class='doccomment'>/// Number of items that can be stored.</span>
-    <span class='kw'>fn</span> <span class='ident'>size</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
-    <span class='doccomment'>/// Get the storage buffer.</span>
-    <span class='kw'>fn</span> <span class='ident'>buf</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>Self</span>::<span class='ident'>Buf</span>;
-    <span class='doccomment'>/// Add an item to the buffer at the given position.</span>
-    <span class='kw'>fn</span> <span class='ident'>add</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>item</span>: <span class='self'>Self</span>::<span class='ident'>Input</span>, <span class='ident'>pos</span>: <span class='ident'>usize</span>);
-    <span class='doccomment'>/// Reset buffer to &quot;empty&quot; state.</span>
-    <span class='kw'>fn</span> <span class='ident'>reset</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>);
+    <span class="doccomment">/// Number of items that can be stored.</span>
+    <span class="kw">fn</span> <span class="ident">size</span>() <span class="op">-&gt;</span> <span class="ident">usize</span>;
+    <span class="doccomment">/// Get the storage buffer.</span>
+    <span class="kw">fn</span> <span class="ident">buf</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Buf</span>;
+    <span class="doccomment">/// Add an item to the buffer at the given position.</span>
+    <span class="kw">fn</span> <span class="ident">add</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">item</span>: <span class="self">Self</span>::<span class="ident">Input</span>, <span class="ident">pos</span>: <span class="ident">usize</span>);
+    <span class="doccomment">/// Reset buffer to &quot;empty&quot; state.</span>
+    <span class="kw">fn</span> <span class="ident">reset</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>);
 }
 
-<span class='doccomment'>/// Create a storage buffer backed by a fixed array.</span>
-<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>storage_type</span> {
-    (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>:<span class='ident'>ident</span>, [<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>input</span>:<span class='ident'>ty</span>; <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>size</span>:<span class='ident'>expr</span>]) <span class='op'>=&gt;</span> {
-        <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>([<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>input</span>; <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>size</span>]);
+<span class="doccomment">/// Create a storage buffer backed by a fixed array.</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">storage_type</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>:<span class="ident">ty</span>; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">size</span>:<span class="ident">expr</span>]) <span class="op">=&gt;</span> {
+        <span class="kw">pub</span> <span class="kw">struct</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>([<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">size</span>]);
 
-        <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span> {
-            <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>([<span class='ident'>Default</span>::<span class='ident'>default</span>(); <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>size</span>]) }
+        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>([<span class="ident">Default</span>::<span class="ident">default</span>(); <span class="macro-nonterminal">$</span><span class="macro-nonterminal">size</span>]) }
         }
 
-        <span class='kw'>impl</span> <span class='ident'>Storage</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span> {
-            <span class='kw'>type</span> <span class='ident'>Input</span> <span class='op'>=</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>input</span>;
-            <span class='kw'>type</span> <span class='ident'>Buf</span> <span class='op'>=</span> [<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>input</span>; <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>size</span>];
+        <span class="kw">impl</span> <span class="ident">Storage</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
+            <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>;
+            <span class="kw">type</span> <span class="ident">Buf</span> <span class="op">=</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">size</span>];
 
-            <span class='kw'>fn</span> <span class='ident'>size</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>size</span> }
-            <span class='kw'>fn</span> <span class='ident'>buf</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>Self</span>::<span class='ident'>Buf</span> { <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='number'>0</span> }
-            <span class='kw'>fn</span> <span class='ident'>add</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>item</span>: <span class='self'>Self</span>::<span class='ident'>Input</span>, <span class='ident'>pos</span>: <span class='ident'>usize</span>) { <span class='self'>self</span>.<span class='number'>0</span>[<span class='ident'>pos</span>] <span class='op'>=</span> <span class='ident'>item</span>; }
-            <span class='comment'>// No need to reset because the buffer won&#39;t be seen in a non-full state.</span>
-            <span class='kw'>fn</span> <span class='ident'>reset</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {}
+            <span class="kw">fn</span> <span class="ident">size</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">size</span> }
+            <span class="kw">fn</span> <span class="ident">buf</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Buf</span> { <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="number">0</span> }
+            <span class="kw">fn</span> <span class="ident">add</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">item</span>: <span class="self">Self</span>::<span class="ident">Input</span>, <span class="ident">pos</span>: <span class="ident">usize</span>) { <span class="self">self</span>.<span class="number">0</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="ident">item</span>; }
+            <span class="comment">// No need to reset because the buffer won&#39;t be seen in a non-full state.</span>
+            <span class="kw">fn</span> <span class="ident">reset</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {}
         }
     };
 }
 
-<span class='doccomment'>/// Create a storage buffer for buffers smaller than 32 dibits.</span>
-<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>small_storage_type</span> {
-    (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>:<span class='ident'>ident</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>size</span>:<span class='ident'>expr</span>) <span class='op'>=&gt;</span> {
-        <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>(<span class='ident'>u64</span>);
+<span class="doccomment">/// Create a storage buffer for buffers smaller than 32 dibits.</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">small_storage_type</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">size</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {
+        <span class="kw">pub</span> <span class="kw">struct</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>(<span class="ident">u64</span>);
 
-        <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span> {
-            <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-                <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>Self</span>::<span class='ident'>size</span>() <span class='op'>&lt;=</span> <span class='number'>32</span>);
-                <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>(<span class='number'>0</span>)
+        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
+                <span class="macro">assert</span><span class="macro">!</span>(<span class="self">Self</span>::<span class="ident">size</span>() <span class="op">&lt;=</span> <span class="number">32</span>);
+                <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>(<span class="number">0</span>)
             }
         }
 
-        <span class='kw'>impl</span> <span class='ident'>Storage</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span> {
-            <span class='kw'>type</span> <span class='ident'>Input</span> <span class='op'>=</span> <span class='ident'>bits</span>::<span class='ident'>Dibit</span>;
-            <span class='kw'>type</span> <span class='ident'>Buf</span> <span class='op'>=</span> <span class='ident'>u64</span>;
+        <span class="kw">impl</span> <span class="ident">Storage</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
+            <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">bits</span>::<span class="ident">Dibit</span>;
+            <span class="kw">type</span> <span class="ident">Buf</span> <span class="op">=</span> <span class="ident">u64</span>;
 
-            <span class='kw'>fn</span> <span class='ident'>size</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>size</span> }
-            <span class='kw'>fn</span> <span class='ident'>buf</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>u64</span> { <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='number'>0</span> }
+            <span class="kw">fn</span> <span class="ident">size</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">size</span> }
+            <span class="kw">fn</span> <span class="ident">buf</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">u64</span> { <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="number">0</span> }
 
-            <span class='kw'>fn</span> <span class='ident'>add</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>item</span>: <span class='self'>Self</span>::<span class='ident'>Input</span>, _: <span class='ident'>usize</span>) {
-                <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&lt;&lt;=</span> <span class='number'>2</span>;
-                <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>|=</span> <span class='ident'>item</span>.<span class='ident'>bits</span>() <span class='kw'>as</span> <span class='ident'>u64</span>;
+            <span class="kw">fn</span> <span class="ident">add</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">item</span>: <span class="self">Self</span>::<span class="ident">Input</span>, _: <span class="ident">usize</span>) {
+                <span class="self">self</span>.<span class="number">0</span> <span class="op">&lt;&lt;=</span> <span class="number">2</span>;
+                <span class="self">self</span>.<span class="number">0</span> <span class="op">|=</span> <span class="ident">item</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="ident">u64</span>;
             }
 
-            <span class='kw'>fn</span> <span class='ident'>reset</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>=</span> <span class='number'>0</span>; }
+            <span class="kw">fn</span> <span class="ident">reset</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) { <span class="self">self</span>.<span class="number">0</span> <span class="op">=</span> <span class="number">0</span>; }
         }
     };
 }
 
-<span class='doccomment'>/// Stores hexbits that make up a voice header packet.</span>
-<span class='macro'>storage_type</span><span class='macro'>!</span>(<span class='ident'>VoiceHeaderStorage</span>, [<span class='ident'>bits</span>::<span class='ident'>Hexbit</span>; <span class='ident'>consts</span>::<span class='ident'>HEADER_HEXBITS</span>]);
-<span class='doccomment'>/// Stores dibits that make up a voice frame packet.</span>
-<span class='macro'>storage_type</span><span class='macro'>!</span>(<span class='ident'>VoiceFrameStorage</span>, [<span class='ident'>bits</span>::<span class='ident'>Dibit</span>; <span class='ident'>consts</span>::<span class='ident'>FRAME_DIBITS</span>]);
-<span class='doccomment'>/// Stores hexbits that make up a voice extra packet.</span>
-<span class='macro'>storage_type</span><span class='macro'>!</span>(<span class='ident'>VoiceExtraStorage</span>, [<span class='ident'>bits</span>::<span class='ident'>Hexbit</span>; <span class='ident'>consts</span>::<span class='ident'>EXTRA_HEXBITS</span>]);
-<span class='doccomment'>/// Stores dibits that make up a data/TSBK payload packet.</span>
-<span class='macro'>storage_type</span><span class='macro'>!</span>(<span class='ident'>DataPayloadStorage</span>, [<span class='ident'>bits</span>::<span class='ident'>Dibit</span>; <span class='ident'>consts</span>::<span class='ident'>CODING_DIBITS</span>]);
-<span class='doccomment'>/// Stores dibits that make up the NID word.</span>
-<span class='macro'>small_storage_type</span><span class='macro'>!</span>(<span class='ident'>NidStorage</span>, <span class='ident'>consts</span>::<span class='ident'>NID_DIBITS</span>);
-<span class='doccomment'>/// Stores dibits that make up each coded word in a voice extra component.</span>
-<span class='macro'>small_storage_type</span><span class='macro'>!</span>(<span class='ident'>VoiceExtraWordStorage</span>, <span class='ident'>consts</span>::<span class='ident'>EXTRA_WORD_DIBITS</span>);
-<span class='doccomment'>/// Stores dibits that make up a voice data fragment.</span>
-<span class='macro'>small_storage_type</span><span class='macro'>!</span>(<span class='ident'>VoiceDataFragStorage</span>, <span class='ident'>consts</span>::<span class='ident'>DATA_FRAG_DIBITS</span>);
-<span class='doccomment'>/// Stores dibits that make up a coded word in a voice header packet.</span>
-<span class='macro'>small_storage_type</span><span class='macro'>!</span>(<span class='ident'>VoiceHeaderWordStorage</span>, <span class='ident'>consts</span>::<span class='ident'>HEADER_WORD_DIBITS</span>);
-<span class='doccomment'>/// Stores dibits that make up a coded word in a voice LC terminator packet.</span>
-<span class='macro'>small_storage_type</span><span class='macro'>!</span>(<span class='ident'>VoiceLCTermWordStorage</span>, <span class='ident'>consts</span>::<span class='ident'>LC_TERM_WORD_DIBITS</span>);
+<span class="doccomment">/// Stores hexbits that make up a voice header packet.</span>
+<span class="macro">storage_type</span><span class="macro">!</span>(<span class="ident">VoiceHeaderStorage</span>, [<span class="ident">bits</span>::<span class="ident">Hexbit</span>; <span class="ident">consts</span>::<span class="ident">HEADER_HEXBITS</span>]);
+<span class="doccomment">/// Stores dibits that make up a voice frame packet.</span>
+<span class="macro">storage_type</span><span class="macro">!</span>(<span class="ident">VoiceFrameStorage</span>, [<span class="ident">bits</span>::<span class="ident">Dibit</span>; <span class="ident">consts</span>::<span class="ident">FRAME_DIBITS</span>]);
+<span class="doccomment">/// Stores hexbits that make up a voice extra packet.</span>
+<span class="macro">storage_type</span><span class="macro">!</span>(<span class="ident">VoiceExtraStorage</span>, [<span class="ident">bits</span>::<span class="ident">Hexbit</span>; <span class="ident">consts</span>::<span class="ident">EXTRA_HEXBITS</span>]);
+<span class="doccomment">/// Stores dibits that make up a data/TSBK payload packet.</span>
+<span class="macro">storage_type</span><span class="macro">!</span>(<span class="ident">DataPayloadStorage</span>, [<span class="ident">bits</span>::<span class="ident">Dibit</span>; <span class="ident">consts</span>::<span class="ident">CODING_DIBITS</span>]);
+<span class="doccomment">/// Stores dibits that make up the NID word.</span>
+<span class="macro">small_storage_type</span><span class="macro">!</span>(<span class="ident">NidStorage</span>, <span class="ident">consts</span>::<span class="ident">NID_DIBITS</span>);
+<span class="doccomment">/// Stores dibits that make up each coded word in a voice extra component.</span>
+<span class="macro">small_storage_type</span><span class="macro">!</span>(<span class="ident">VoiceExtraWordStorage</span>, <span class="ident">consts</span>::<span class="ident">EXTRA_WORD_DIBITS</span>);
+<span class="doccomment">/// Stores dibits that make up a voice data fragment.</span>
+<span class="macro">small_storage_type</span><span class="macro">!</span>(<span class="ident">VoiceDataFragStorage</span>, <span class="ident">consts</span>::<span class="ident">DATA_FRAG_DIBITS</span>);
+<span class="doccomment">/// Stores dibits that make up a coded word in a voice header packet.</span>
+<span class="macro">small_storage_type</span><span class="macro">!</span>(<span class="ident">VoiceHeaderWordStorage</span>, <span class="ident">consts</span>::<span class="ident">HEADER_WORD_DIBITS</span>);
+<span class="doccomment">/// Stores dibits that make up a coded word in a voice LC terminator packet.</span>
+<span class="macro">small_storage_type</span><span class="macro">!</span>(<span class="ident">VoiceLCTermWordStorage</span>, <span class="ident">consts</span>::<span class="ident">LC_TERM_WORD_DIBITS</span>);
 
-<span class='doccomment'>/// Implements a state machine that buffers items to a backing store and notifies the caller when</span>
-<span class='doccomment'>/// the buffer is full.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Buffer</span><span class='op'>&lt;</span><span class='ident'>S</span>: <span class='ident'>Storage</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Backing storage.</span>
-    <span class='ident'>storage</span>: <span class='ident'>S</span>,
-    <span class='doccomment'>/// Current number of buffered items.</span>
-    <span class='ident'>pos</span>: <span class='ident'>usize</span>,
+<span class="doccomment">/// Implements a state machine that buffers items to a backing store and notifies the caller when</span>
+<span class="doccomment">/// the buffer is full.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Storage</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Backing storage.</span>
+    <span class="ident">storage</span>: <span class="ident">S</span>,
+    <span class="doccomment">/// Current number of buffered items.</span>
+    <span class="ident">pos</span>: <span class="ident">usize</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>S</span>: <span class='ident'>Storage</span><span class='op'>&gt;</span> <span class='ident'>Buffer</span><span class='op'>&lt;</span><span class='ident'>S</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `Buffer` with the given backing storage.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>storage</span>: <span class='ident'>S</span>) <span class='op'>-&gt;</span> <span class='ident'>Buffer</span><span class='op'>&lt;</span><span class='ident'>S</span><span class='op'>&gt;</span> {
-        <span class='ident'>Buffer</span> {
-            <span class='ident'>storage</span>: <span class='ident'>storage</span>,
-            <span class='ident'>pos</span>: <span class='number'>0</span>,
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Storage</span><span class="op">&gt;</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `Buffer` with the given backing storage.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">storage</span>: <span class="ident">S</span>) <span class="op">-&gt;</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
+        <span class="ident">Buffer</span> {
+            <span class="ident">storage</span>: <span class="ident">storage</span>,
+            <span class="ident">pos</span>: <span class="number">0</span>,
         }
     }
 
-    <span class='doccomment'>/// Add the given item to the buffer and return the buffer if it&#39;s completed.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>item</span>: <span class='ident'>S</span>::<span class='ident'>Input</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>S</span>::<span class='ident'>Buf</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>pos</span> <span class='op'>==</span> <span class='number'>0</span> {
-            <span class='self'>self</span>.<span class='ident'>storage</span>.<span class='ident'>reset</span>();
+    <span class="doccomment">/// Add the given item to the buffer and return the buffer if it&#39;s completed.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">feed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">item</span>: <span class="ident">S</span>::<span class="ident">Input</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">S</span>::<span class="ident">Buf</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">pos</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="self">self</span>.<span class="ident">storage</span>.<span class="ident">reset</span>();
         }
 
-        <span class='self'>self</span>.<span class='ident'>storage</span>.<span class='ident'>add</span>(<span class='ident'>item</span>, <span class='self'>self</span>.<span class='ident'>pos</span>);
+        <span class="self">self</span>.<span class="ident">storage</span>.<span class="ident">add</span>(<span class="ident">item</span>, <span class="self">self</span>.<span class="ident">pos</span>);
 
-        <span class='self'>self</span>.<span class='ident'>pos</span> <span class='op'>+=</span> <span class='number'>1</span>;
-        <span class='self'>self</span>.<span class='ident'>pos</span> <span class='op'>%=</span> <span class='ident'>S</span>::<span class='ident'>size</span>();
+        <span class="self">self</span>.<span class="ident">pos</span> <span class="op">+=</span> <span class="number">1</span>;
+        <span class="self">self</span>.<span class="ident">pos</span> <span class="op">%=</span> <span class="ident">S</span>::<span class="ident">size</span>();
 
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>pos</span> <span class='op'>==</span> <span class='number'>0</span> {
-            <span class='prelude-val'>Some</span>(<span class='self'>self</span>.<span class='ident'>storage</span>.<span class='ident'>buf</span>())
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>None</span>
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">pos</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">storage</span>.<span class="ident">buf</span>())
+        } <span class="kw">else</span> {
+            <span class="prelude-val">None</span>
         }
     }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>Buffer</span>, <span class='ident'>Storage</span>};
-    <span class='kw'>use</span> <span class='ident'>bits</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">Buffer</span>, <span class="ident">Storage</span>};
+    <span class="kw">use</span> <span class="ident">bits</span>;
 
-    <span class='macro'>storage_type</span><span class='macro'>!</span>(<span class='ident'>TestStorage</span>, [<span class='ident'>u8</span>; <span class='number'>5</span>]);
-    <span class='macro'>small_storage_type</span><span class='macro'>!</span>(<span class='ident'>TestSmallStorage</span>, <span class='number'>7</span>);
+    <span class="macro">storage_type</span><span class="macro">!</span>(<span class="ident">TestStorage</span>, [<span class="ident">u8</span>; <span class="number">5</span>]);
+    <span class="macro">small_storage_type</span><span class="macro">!</span>(<span class="ident">TestSmallStorage</span>, <span class="number">7</span>);
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_storage</span>() {
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>TestStorage</span>::<span class='ident'>size</span>(), <span class='number'>5</span>);
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>TestStorage</span>::<span class='ident'>new</span>();
-        <span class='ident'>s</span>.<span class='ident'>add</span>(<span class='number'>42</span>, <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>buf</span>()[<span class='number'>0</span>], <span class='number'>42</span>);
-        <span class='ident'>s</span>.<span class='ident'>add</span>(<span class='number'>37</span>, <span class='number'>0</span>);
-        <span class='ident'>s</span>.<span class='ident'>add</span>(<span class='number'>64</span>, <span class='number'>4</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>buf</span>()[<span class='number'>0</span>], <span class='number'>37</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>buf</span>()[<span class='number'>4</span>], <span class='number'>64</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_storage</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">TestStorage</span>::<span class="ident">size</span>(), <span class="number">5</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">TestStorage</span>::<span class="ident">new</span>();
+        <span class="ident">s</span>.<span class="ident">add</span>(<span class="number">42</span>, <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">buf</span>()[<span class="number">0</span>], <span class="number">42</span>);
+        <span class="ident">s</span>.<span class="ident">add</span>(<span class="number">37</span>, <span class="number">0</span>);
+        <span class="ident">s</span>.<span class="ident">add</span>(<span class="number">64</span>, <span class="number">4</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">buf</span>()[<span class="number">0</span>], <span class="number">37</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">buf</span>()[<span class="number">4</span>], <span class="number">64</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_small_storage</span>() {
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>TestSmallStorage</span>::<span class='ident'>size</span>(), <span class='number'>7</span>);
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>TestSmallStorage</span>::<span class='ident'>new</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>buf</span>(), <span class='kw-2'>&amp;</span><span class='number'>0</span>);
-        <span class='ident'>s</span>.<span class='ident'>add</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>), <span class='number'>0</span>);
-        <span class='ident'>s</span>.<span class='ident'>add</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b01</span>), <span class='number'>1</span>);
-        <span class='comment'>// Doesn&#39;t take position into account.</span>
-        <span class='ident'>s</span>.<span class='ident'>add</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b10</span>), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>buf</span>(), <span class='kw-2'>&amp;</span><span class='number'>0b110110</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_small_storage</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">TestSmallStorage</span>::<span class="ident">size</span>(), <span class="number">7</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">TestSmallStorage</span>::<span class="ident">new</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">buf</span>(), <span class="kw-2">&amp;</span><span class="number">0</span>);
+        <span class="ident">s</span>.<span class="ident">add</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>), <span class="number">0</span>);
+        <span class="ident">s</span>.<span class="ident">add</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b01</span>), <span class="number">1</span>);
+        <span class="comment">// Doesn&#39;t take position into account.</span>
+        <span class="ident">s</span>.<span class="ident">add</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b10</span>), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">buf</span>(), <span class="kw-2">&amp;</span><span class="number">0b110110</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_buffer_storage</span>() {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Buffer</span>::<span class='ident'>new</span>(<span class='ident'>TestStorage</span>::<span class='ident'>new</span>());
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='number'>13</span>), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='number'>17</span>), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='number'>23</span>), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='number'>31</span>), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='number'>37</span>), <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='number'>13</span>, <span class='number'>17</span>, <span class='number'>23</span>, <span class='number'>31</span>, <span class='number'>37</span>]));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='number'>42</span>), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='number'>52</span>), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='number'>62</span>), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='number'>72</span>), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='number'>82</span>), <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='number'>42</span>, <span class='number'>52</span>, <span class='number'>62</span>, <span class='number'>72</span>, <span class='number'>82</span>]));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='number'>92</span>), <span class='prelude-val'>None</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_buffer_storage</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">Buffer</span>::<span class="ident">new</span>(<span class="ident">TestStorage</span>::<span class="ident">new</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="number">13</span>), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="number">17</span>), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="number">23</span>), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="number">31</span>), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="number">37</span>), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="number">13</span>, <span class="number">17</span>, <span class="number">23</span>, <span class="number">31</span>, <span class="number">37</span>]));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="number">42</span>), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="number">52</span>), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="number">62</span>), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="number">72</span>), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="number">82</span>), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="number">42</span>, <span class="number">52</span>, <span class="number">62</span>, <span class="number">72</span>, <span class="number">82</span>]));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="number">92</span>), <span class="prelude-val">None</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_buffer_small</span>() {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Buffer</span>::<span class='ident'>new</span>(<span class='ident'>TestSmallStorage</span>::<span class='ident'>new</span>());
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>)), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b01</span>)), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b01</span>)), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b00</span>)), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>)), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b10</span>)), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b01</span>)), <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='number'>0b11010100111001</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b10</span>)), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>)), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>)), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>)), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b00</span>)), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b00</span>)), <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b10</span>)), <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='number'>0b10111111000010</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>feed</span>(<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b00</span>)), <span class='prelude-val'>None</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_buffer_small</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">Buffer</span>::<span class="ident">new</span>(<span class="ident">TestSmallStorage</span>::<span class="ident">new</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>)), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b01</span>)), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b01</span>)), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b00</span>)), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>)), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b10</span>)), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b01</span>)), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="number">0b11010100111001</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b10</span>)), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>)), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>)), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>)), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b00</span>)), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b00</span>)), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b10</span>)), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="number">0b10111111000010</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">feed</span>(<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b00</span>)), <span class="prelude-val">None</span>);
     }
 }
 </pre>
@@ -456,13 +457,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -496,7 +499,6 @@
         window.rootPath = "../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

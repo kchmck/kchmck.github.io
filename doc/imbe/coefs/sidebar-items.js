@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Coefficients","Higher order DCT coefficients vector T<sub>l</sub>, 1 ≤ l ≤ L."]]});
+initSidebarItems({"struct":[["Coefficients","Higher order DCT coefficients vector Tl, 1 ≤ l ≤ L."]]});

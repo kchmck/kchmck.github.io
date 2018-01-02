@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc mod">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'></p><script>window.sidebarCurrent = {name: 'imbe', ty: 'mod', relpath: '../'};</script>
+        <p class='location'>Crate imbe</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#reexports">Reexports</a></li><li><a href="#modules">Modules</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'imbe', ty: 'mod', relpath: '../'};</script></div>
     </nav>
 
     <nav class="sub">
@@ -43,116 +44,116 @@
         </form>
     </nav>
 
-    <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>imbe</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Crate <a class="mod" href=''>imbe</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/imbe/lib.rs.html#1-30' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Decode the Improved Multi-Band Excitation (IMBE) digital voice codec.</p>
 </div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
-<table><tr><td><code>pub use decode::<a class='struct' href='../imbe/decode/struct.ImbeDecoder.html' title='struct imbe::decode::ImbeDecoder'>ImbeDecoder</a>;</code></td></tr><tr><td><code>pub use frame::<a class='struct' href='../imbe/frame/struct.ReceivedFrame.html' title='struct imbe::frame::ReceivedFrame'>ReceivedFrame</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr><td><code>pub use decode::<a class="struct" href="../imbe/decode/struct.ImbeDecoder.html" title="struct imbe::decode::ImbeDecoder">ImbeDecoder</a>;</code></td></tr><tr><td><code>pub use frame::<a class="struct" href="../imbe/frame/struct.ReceivedFrame.html" title="struct imbe::frame::ReceivedFrame">ReceivedFrame</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='allocs/index.html'
+                           <td><a class="mod" href="allocs/index.html"
                                   title='mod imbe::allocs'>allocs</a></td>
                            <td class='docblock-short'>
                                 <p>Bit allocations for quantized amplitudes.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='coefs/index.html'
+                           <td><a class="mod" href="coefs/index.html"
                                   title='mod imbe::coefs'>coefs</a></td>
                            <td class='docblock-short'>
                                 <p>Higher order DCT coefficients.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='consts/index.html'
+                           <td><a class="mod" href="consts/index.html"
                                   title='mod imbe::consts'>consts</a></td>
                            <td class='docblock-short'>
                                 <p>Constants used in the codec.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='decode/index.html'
+                           <td><a class="mod" href="decode/index.html"
                                   title='mod imbe::decode'>decode</a></td>
                            <td class='docblock-short'>
                                 <p>Decode IMBE frames into an audio signal.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='descramble/index.html'
+                           <td><a class="mod" href="descramble/index.html"
                                   title='mod imbe::descramble'>descramble</a></td>
                            <td class='docblock-short'>
                                 <p>Initial descrambling of prioritized chunks.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='enhance/index.html'
+                           <td><a class="mod" href="enhance/index.html"
                                   title='mod imbe::enhance'>enhance</a></td>
                            <td class='docblock-short'>
                                 <p>Frame repeat/muting, spectral amplitude enhancement, and adaptive smoothing.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='frame/index.html'
+                           <td><a class="mod" href="frame/index.html"
                                   title='mod imbe::frame'>frame</a></td>
                            <td class='docblock-short'>
                                 <p>Received IMBE voice frame.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='gain/index.html'
+                           <td><a class="mod" href="gain/index.html"
                                   title='mod imbe::gain'>gain</a></td>
                            <td class='docblock-short'>
                                 <p>Quantized gain vector.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='params/index.html'
+                           <td><a class="mod" href="params/index.html"
                                   title='mod imbe::params'>params</a></td>
                            <td class='docblock-short'>
                                 <p>Frame parameters.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='prev/index.html'
+                           <td><a class="mod" href="prev/index.html"
                                   title='mod imbe::prev'>prev</a></td>
                            <td class='docblock-short'>
                                 <p>Previous frame saved parameters.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='scan/index.html'
+                           <td><a class="mod" href="scan/index.html"
                                   title='mod imbe::scan'>scan</a></td>
                            <td class='docblock-short'>
                                 <p>Scanning procedure used in descrambling.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='spectral/index.html'
+                           <td><a class="mod" href="spectral/index.html"
                                   title='mod imbe::spectral'>spectral</a></td>
                            <td class='docblock-short'>
                                 <p>Spectral amplitudes.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='unvoiced/index.html'
+                           <td><a class="mod" href="unvoiced/index.html"
                                   title='mod imbe::unvoiced'>unvoiced</a></td>
                            <td class='docblock-short'>
                                 <p>Unvoiced spectrum synthesis.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='voiced/index.html'
+                           <td><a class="mod" href="voiced/index.html"
                                   title='mod imbe::voiced'>voiced</a></td>
                            <td class='docblock-short'>
                                 <p>Voiced spectrum synthesis.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='mod' href='window/index.html'
+                           <td><a class="mod" href="window/index.html"
                                   title='mod imbe::window'>window</a></td>
                            <td class='docblock-short'>
                                 <p>Signal windowing.</p>
@@ -174,13 +175,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -214,7 +217,6 @@
         window.rootPath = "../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

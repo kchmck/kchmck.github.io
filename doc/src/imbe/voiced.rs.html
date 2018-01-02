@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -394,356 +395,356 @@
 <span id="349">349</span>
 <span id="350">350</span>
 <span id="351">351</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Voiced spectrum synthesis.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Voiced spectrum synthesis.</span>
 
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::<span class='ident'>max</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>f32</span>::<span class='ident'>consts</span>::<span class='ident'>PI</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">max</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">f32</span>::<span class="ident">consts</span>::<span class="ident">PI</span>;
 
-<span class='kw'>use</span> <span class='ident'>collect_slice</span>::<span class='ident'>CollectSlice</span>;
-<span class='kw'>use</span> <span class='ident'>map_in_place</span>::<span class='ident'>MapInPlace</span>;
-<span class='kw'>use</span> <span class='ident'>rand</span>::<span class='ident'>Rng</span>;
+<span class="kw">use</span> <span class="ident">collect_slice</span>::<span class="ident">CollectSlice</span>;
+<span class="kw">use</span> <span class="ident">slice_mip</span>::<span class="ident">MapInPlace</span>;
+<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">Rng</span>;
 
-<span class='kw'>use</span> <span class='ident'>consts</span>::{<span class='ident'>SAMPLES_PER_FRAME</span>, <span class='ident'>MAX_HARMONICS</span>};
-<span class='kw'>use</span> <span class='ident'>descramble</span>::<span class='ident'>VoiceDecisions</span>;
-<span class='kw'>use</span> <span class='ident'>enhance</span>::<span class='ident'>EnhancedSpectrals</span>;
-<span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
-<span class='kw'>use</span> <span class='ident'>prev</span>::<span class='ident'>PrevFrame</span>;
-<span class='kw'>use</span> <span class='ident'>window</span>;
+<span class="kw">use</span> <span class="ident">consts</span>::{<span class="ident">SAMPLES_PER_FRAME</span>, <span class="ident">MAX_HARMONICS</span>};
+<span class="kw">use</span> <span class="ident">descramble</span>::<span class="ident">VoiceDecisions</span>;
+<span class="kw">use</span> <span class="ident">enhance</span>::<span class="ident">EnhancedSpectrals</span>;
+<span class="kw">use</span> <span class="ident">params</span>::<span class="ident">BaseParams</span>;
+<span class="kw">use</span> <span class="ident">prev</span>::<span class="ident">PrevFrame</span>;
+<span class="kw">use</span> <span class="ident">window</span>;
 
-<span class='doccomment'>/// Computes the base phase offsets Ψ&lt;sub&gt;l&lt;/sub&gt;.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>PhaseBase</span>([<span class='ident'>f32</span>; <span class='ident'>MAX_HARMONICS</span>]);
+<span class="doccomment">/// Computes the base phase offsets Ψ&lt;sub&gt;l&lt;/sub&gt;.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PhaseBase</span>([<span class="ident">f32</span>; <span class="ident">MAX_HARMONICS</span>]);
 
-<span class='kw'>impl</span> <span class='ident'>PhaseBase</span> {
-    <span class='doccomment'>/// Create a new `PhaseBase` from the given current and previous frame parameters.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>params</span>: <span class='kw-2'>&amp;</span><span class='ident'>BaseParams</span>, <span class='ident'>prev</span>: <span class='kw-2'>&amp;</span><span class='ident'>PrevFrame</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>base</span> <span class='op'>=</span> [<span class='number'>0.0</span>; <span class='ident'>MAX_HARMONICS</span>];
+<span class="kw">impl</span> <span class="ident">PhaseBase</span> {
+    <span class="doccomment">/// Create a new `PhaseBase` from the given current and previous frame parameters.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">params</span>: <span class="kw-2">&amp;</span><span class="ident">BaseParams</span>, <span class="ident">prev</span>: <span class="kw-2">&amp;</span><span class="ident">PrevFrame</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">base</span> <span class="op">=</span> [<span class="number">0.0</span>; <span class="ident">MAX_HARMONICS</span>];
 
-        <span class='comment'>// Compute common scaling factor in Eq 139.</span>
-        <span class='kw'>let</span> <span class='ident'>scale</span> <span class='op'>=</span> (<span class='ident'>prev</span>.<span class='ident'>params</span>.<span class='ident'>fundamental</span> <span class='op'>+</span> <span class='ident'>params</span>.<span class='ident'>fundamental</span>) <span class='op'>*</span>
-            <span class='ident'>SAMPLES_PER_FRAME</span> <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>/</span> <span class='number'>2.0</span>;
+        <span class="comment">// Compute common scaling factor in Eq 139.</span>
+        <span class="kw">let</span> <span class="ident">scale</span> <span class="op">=</span> (<span class="ident">prev</span>.<span class="ident">params</span>.<span class="ident">fundamental</span> <span class="op">+</span> <span class="ident">params</span>.<span class="ident">fundamental</span>) <span class="op">*</span>
+            <span class="ident">SAMPLES_PER_FRAME</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">2.0</span>;
 
-        <span class='comment'>// Compute Eq 139.</span>
-        (<span class='number'>1</span>...<span class='ident'>MAX_HARMONICS</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>l</span><span class='op'>|</span> {
-            <span class='ident'>prev</span>.<span class='ident'>phase_base</span>.<span class='ident'>get</span>(<span class='ident'>l</span>) <span class='op'>+</span> <span class='ident'>scale</span> <span class='op'>*</span> <span class='ident'>l</span> <span class='kw'>as</span> <span class='ident'>f32</span>
-        }).<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>base</span>[..]);
+        <span class="comment">// Compute Eq 139.</span>
+        (<span class="number">1</span>..=<span class="ident">MAX_HARMONICS</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> {
+            <span class="ident">prev</span>.<span class="ident">phase_base</span>.<span class="ident">get</span>(<span class="ident">l</span>) <span class="op">+</span> <span class="ident">scale</span> <span class="op">*</span> <span class="ident">l</span> <span class="kw">as</span> <span class="ident">f32</span>
+        }).<span class="ident">collect_slice_checked</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">base</span>[..]);
 
-        <span class='ident'>PhaseBase</span>(<span class='ident'>base</span>)
+        <span class="ident">PhaseBase</span>(<span class="ident">base</span>)
     }
 
-    <span class='doccomment'>/// Retrieve the phase term Ψ&lt;sub&gt;l&lt;/sub&gt;, 1 ≤ l ≤ 56.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>l</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>f32</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='ident'>l</span> <span class='op'>-</span> <span class='number'>1</span>] }
+    <span class="doccomment">/// Retrieve the phase term Ψ&lt;sub&gt;l&lt;/sub&gt;, 1 ≤ l ≤ 56.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">f32</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="ident">l</span> <span class="op">-</span> <span class="number">1</span>] }
 }
 
-<span class='kw'>impl</span> <span class='ident'>Default</span> <span class='kw'>for</span> <span class='ident'>PhaseBase</span> {
-    <span class='doccomment'>/// Create a new `PhaseBase` in the default state.</span>
-    <span class='kw'>fn</span> <span class='ident'>default</span>() <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='comment'>// By default all phase terms are 0 [p64].</span>
-        <span class='ident'>PhaseBase</span>([<span class='number'>0.0</span>; <span class='ident'>MAX_HARMONICS</span>])
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">PhaseBase</span> {
+    <span class="doccomment">/// Create a new `PhaseBase` in the default state.</span>
+    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="comment">// By default all phase terms are 0 [p64].</span>
+        <span class="ident">PhaseBase</span>([<span class="number">0.0</span>; <span class="ident">MAX_HARMONICS</span>])
     }
 }
 
-<span class='doccomment'>/// Computes the random phase terms Φ&lt;sub&gt;l&lt;/sub&gt;.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Phase</span>([<span class='ident'>f32</span>; <span class='ident'>MAX_HARMONICS</span>]);
+<span class="doccomment">/// Computes the random phase terms Φ&lt;sub&gt;l&lt;/sub&gt;.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Phase</span>([<span class="ident">f32</span>; <span class="ident">MAX_HARMONICS</span>]);
 
-<span class='kw'>impl</span> <span class='ident'>Phase</span> {
-    <span class='doccomment'>/// Create a new `Phase` building on the given base phase terms.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span><span class='op'>&lt;</span><span class='ident'>R</span>: <span class='ident'>Rng</span><span class='op'>&gt;</span>(<span class='ident'>base</span>: <span class='kw-2'>&amp;</span><span class='ident'>PhaseBase</span>, <span class='ident'>params</span>: <span class='kw-2'>&amp;</span><span class='ident'>BaseParams</span>, <span class='ident'>prev</span>: <span class='kw-2'>&amp;</span><span class='ident'>PrevFrame</span>,
-                       <span class='ident'>voice</span>: <span class='kw-2'>&amp;</span><span class='ident'>VoiceDecisions</span>, <span class='kw-2'>mut</span> <span class='ident'>noise</span>: <span class='ident'>R</span>)
-        <span class='op'>-&gt;</span> <span class='self'>Self</span>
+<span class="kw">impl</span> <span class="ident">Phase</span> {
+    <span class="doccomment">/// Create a new `Phase` building on the given base phase terms.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">&gt;</span>(<span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">PhaseBase</span>, <span class="ident">params</span>: <span class="kw-2">&amp;</span><span class="ident">BaseParams</span>, <span class="ident">prev</span>: <span class="kw-2">&amp;</span><span class="ident">PrevFrame</span>,
+                       <span class="ident">voice</span>: <span class="kw-2">&amp;</span><span class="ident">VoiceDecisions</span>, <span class="kw-2">mut</span> <span class="ident">noise</span>: <span class="ident">R</span>)
+        <span class="op">-&gt;</span> <span class="self">Self</span>
     {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>phase</span> <span class='op'>=</span> [<span class='number'>0.0</span>; <span class='ident'>MAX_HARMONICS</span>];
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">phase</span> <span class="op">=</span> [<span class="number">0.0</span>; <span class="ident">MAX_HARMONICS</span>];
 
-        <span class='comment'>// Derive phase terms from base phase offsets according to Eq 140.</span>
-        (<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>phase</span>[..]).<span class='ident'>copy_from_slice</span>(<span class='kw-2'>&amp;</span><span class='ident'>base</span>.<span class='number'>0</span>[..]);
+        <span class="comment">// Derive phase terms from base phase offsets according to Eq 140.</span>
+        (<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">phase</span>[..]).<span class="ident">copy_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">base</span>.<span class="number">0</span>[..]);
 
-        <span class='comment'>// Compute bounds for modification used in Eq 140.</span>
-        <span class='kw'>let</span> <span class='ident'>start</span> <span class='op'>=</span> <span class='ident'>params</span>.<span class='ident'>harmonics</span> <span class='kw'>as</span> <span class='ident'>usize</span> <span class='op'>/</span> <span class='number'>4</span>;
-        <span class='kw'>let</span> <span class='ident'>stop</span> <span class='op'>=</span> <span class='ident'>max</span>(<span class='ident'>params</span>.<span class='ident'>harmonics</span>, <span class='ident'>prev</span>.<span class='ident'>params</span>.<span class='ident'>harmonics</span>) <span class='kw'>as</span> <span class='ident'>usize</span>;
+        <span class="comment">// Compute bounds for modification used in Eq 140.</span>
+        <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">params</span>.<span class="ident">harmonics</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">/</span> <span class="number">4</span>;
+        <span class="kw">let</span> <span class="ident">stop</span> <span class="op">=</span> <span class="ident">max</span>(<span class="ident">params</span>.<span class="ident">harmonics</span>, <span class="ident">prev</span>.<span class="ident">params</span>.<span class="ident">harmonics</span>) <span class="kw">as</span> <span class="ident">usize</span>;
 
-        <span class='comment'>// Compute common scaling factor in Eq 140.</span>
-        <span class='kw'>let</span> <span class='ident'>scale</span> <span class='op'>=</span> <span class='ident'>voice</span>.<span class='ident'>unvoiced_count</span>() <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>/</span> <span class='ident'>params</span>.<span class='ident'>harmonics</span> <span class='kw'>as</span> <span class='ident'>f32</span>;
+        <span class="comment">// Compute common scaling factor in Eq 140.</span>
+        <span class="kw">let</span> <span class="ident">scale</span> <span class="op">=</span> <span class="ident">voice</span>.<span class="ident">unvoiced_count</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="ident">params</span>.<span class="ident">harmonics</span> <span class="kw">as</span> <span class="ident">f32</span>;
 
-        <span class='comment'>// Modify Ψ_l from start + 1 ≤ l ≤ stop. Since i = l - 1, start ≤ i ≤ stop - 1.</span>
-        (<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>phase</span>[<span class='ident'>start</span>..<span class='ident'>stop</span>]).<span class='ident'>map_in_place</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>x</span><span class='op'>|</span> {
-            <span class='comment'>// Compute Eq 140.</span>
-            <span class='ident'>x</span> <span class='op'>+</span> <span class='ident'>scale</span> <span class='op'>*</span> <span class='ident'>noise</span>.<span class='ident'>gen_range</span>(<span class='op'>-</span><span class='ident'>PI</span>, <span class='ident'>PI</span>)
+        <span class="comment">// Modify Ψ_l from start + 1 ≤ l ≤ stop. Since i = l - 1, start ≤ i ≤ stop - 1.</span>
+        (<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">phase</span>[<span class="ident">start</span>..<span class="ident">stop</span>]).<span class="ident">map_in_place</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> {
+            <span class="comment">// Compute Eq 140.</span>
+            <span class="ident">x</span> <span class="op">+</span> <span class="ident">scale</span> <span class="op">*</span> <span class="ident">noise</span>.<span class="ident">gen_range</span>(<span class="op">-</span><span class="ident">PI</span>, <span class="ident">PI</span>)
         });
 
-        <span class='ident'>Phase</span>(<span class='ident'>phase</span>)
+        <span class="ident">Phase</span>(<span class="ident">phase</span>)
     }
 
-    <span class='doccomment'>/// Retrieve the phase term Φ&lt;sub&gt;l&lt;/sub&gt;, 1 ≤ l ≤ 56.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>l</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>f32</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='ident'>l</span> <span class='op'>-</span> <span class='number'>1</span>] }
+    <span class="doccomment">/// Retrieve the phase term Φ&lt;sub&gt;l&lt;/sub&gt;, 1 ≤ l ≤ 56.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">f32</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="ident">l</span> <span class="op">-</span> <span class="number">1</span>] }
 }
 
-<span class='kw'>impl</span> <span class='ident'>Default</span> <span class='kw'>for</span> <span class='ident'>Phase</span> {
-    <span class='doccomment'>/// Create a new `Phase` in the default state.</span>
-    <span class='kw'>fn</span> <span class='ident'>default</span>() <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='comment'>// By default all phase terms are 0 [p64].</span>
-        <span class='ident'>Phase</span>([<span class='number'>0.0</span>; <span class='ident'>MAX_HARMONICS</span>])
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Phase</span> {
+    <span class="doccomment">/// Create a new `Phase` in the default state.</span>
+    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="comment">// By default all phase terms are 0 [p64].</span>
+        <span class="ident">Phase</span>([<span class="number">0.0</span>; <span class="ident">MAX_HARMONICS</span>])
     }
 }
 
-<span class='doccomment'>/// Synthesizes voiced spectrum signal s&lt;sub&gt;v&lt;/sub&gt;(n).</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Voiced</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='lifetime'>&#39;b</span>, <span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;d</span><span class='op'>&gt;</span> {
-    <span class='ident'>prev</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>PrevFrame</span>,
-    <span class='ident'>phase</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;b</span> <span class='ident'>Phase</span>,
-    <span class='ident'>amps</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;c</span> <span class='ident'>EnhancedSpectrals</span>,
-    <span class='ident'>voice</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;d</span> <span class='ident'>VoiceDecisions</span>,
-    <span class='doccomment'>/// Synthesis window w&lt;sub&gt;s&lt;/sub&gt; for combining voiced/unvoiced frames.</span>
-    <span class='ident'>window</span>: <span class='ident'>window</span>::<span class='ident'>Window</span>,
-    <span class='doccomment'>/// Fundamental frequency of current frame.</span>
-    <span class='ident'>fundamental</span>: <span class='ident'>f32</span>,
-    <span class='doccomment'>/// Number of harmonics that make up each signal sample.</span>
-    <span class='ident'>end</span>: <span class='ident'>usize</span>,
+<span class="doccomment">/// Synthesizes voiced spectrum signal s&lt;sub&gt;v&lt;/sub&gt;(n).</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Voiced</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;d</span><span class="op">&gt;</span> {
+    <span class="ident">prev</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">PrevFrame</span>,
+    <span class="ident">phase</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b</span> <span class="ident">Phase</span>,
+    <span class="ident">amps</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;c</span> <span class="ident">EnhancedSpectrals</span>,
+    <span class="ident">voice</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;d</span> <span class="ident">VoiceDecisions</span>,
+    <span class="doccomment">/// Synthesis window w&lt;sub&gt;s&lt;/sub&gt; for combining voiced/unvoiced frames.</span>
+    <span class="ident">window</span>: <span class="ident">window</span>::<span class="ident">Window</span>,
+    <span class="doccomment">/// Fundamental frequency of current frame.</span>
+    <span class="ident">fundamental</span>: <span class="ident">f32</span>,
+    <span class="doccomment">/// Number of harmonics that make up each signal sample.</span>
+    <span class="ident">end</span>: <span class="ident">usize</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='lifetime'>&#39;b</span>, <span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;d</span><span class='op'>&gt;</span> <span class='ident'>Voiced</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='lifetime'>&#39;b</span>, <span class='lifetime'>&#39;c</span>, <span class='lifetime'>&#39;d</span><span class='op'>&gt;</span> {
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>params</span>: <span class='kw-2'>&amp;</span><span class='ident'>BaseParams</span>, <span class='ident'>prev</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>PrevFrame</span>, <span class='ident'>phase</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;b</span> <span class='ident'>Phase</span>,
-               <span class='ident'>amps</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;c</span> <span class='ident'>EnhancedSpectrals</span>, <span class='ident'>voice</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;d</span> <span class='ident'>VoiceDecisions</span>)
-        <span class='op'>-&gt;</span> <span class='self'>Self</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;d</span><span class="op">&gt;</span> <span class="ident">Voiced</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;d</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">params</span>: <span class="kw-2">&amp;</span><span class="ident">BaseParams</span>, <span class="ident">prev</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">PrevFrame</span>, <span class="ident">phase</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b</span> <span class="ident">Phase</span>,
+               <span class="ident">amps</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;c</span> <span class="ident">EnhancedSpectrals</span>, <span class="ident">voice</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;d</span> <span class="ident">VoiceDecisions</span>)
+        <span class="op">-&gt;</span> <span class="self">Self</span>
     {
-        <span class='ident'>Voiced</span> {
-            <span class='ident'>prev</span>: <span class='ident'>prev</span>,
-            <span class='ident'>phase</span>: <span class='ident'>phase</span>,
-            <span class='ident'>amps</span>: <span class='ident'>amps</span>,
-            <span class='ident'>voice</span>: <span class='ident'>voice</span>,
-            <span class='ident'>window</span>: <span class='ident'>window</span>::<span class='ident'>synthesis</span>(),
-            <span class='ident'>fundamental</span>: <span class='ident'>params</span>.<span class='ident'>fundamental</span>,
-            <span class='comment'>// Compute the sum bound in Eq 127.</span>
-            <span class='ident'>end</span>: <span class='ident'>max</span>(<span class='ident'>params</span>.<span class='ident'>harmonics</span>, <span class='ident'>prev</span>.<span class='ident'>params</span>.<span class='ident'>harmonics</span>) <span class='kw'>as</span> <span class='ident'>usize</span>,
+        <span class="ident">Voiced</span> {
+            <span class="ident">prev</span>: <span class="ident">prev</span>,
+            <span class="ident">phase</span>: <span class="ident">phase</span>,
+            <span class="ident">amps</span>: <span class="ident">amps</span>,
+            <span class="ident">voice</span>: <span class="ident">voice</span>,
+            <span class="ident">window</span>: <span class="ident">window</span>::<span class="ident">synthesis</span>(),
+            <span class="ident">fundamental</span>: <span class="ident">params</span>.<span class="ident">fundamental</span>,
+            <span class="comment">// Compute the sum bound in Eq 127.</span>
+            <span class="ident">end</span>: <span class="ident">max</span>(<span class="ident">params</span>.<span class="ident">harmonics</span>, <span class="ident">prev</span>.<span class="ident">params</span>.<span class="ident">harmonics</span>) <span class="kw">as</span> <span class="ident">usize</span>,
         }
     }
 
-    <span class='doccomment'>/// Compute s&lt;sub&gt;v,l&lt;/sub&gt;(n), the signal level at sample n for the l&#39;th spectral</span>
-    <span class='doccomment'>/// amplitude.</span>
-    <span class='kw'>fn</span> <span class='ident'>get_pair</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>l</span>: <span class='ident'>usize</span>, <span class='ident'>n</span>: <span class='ident'>isize</span>) <span class='op'>-&gt;</span> <span class='ident'>f32</span> {
-        <span class='kw'>match</span> (<span class='self'>self</span>.<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='ident'>l</span>), <span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='ident'>l</span>)) {
-            <span class='comment'>// Use Eq 130.</span>
-            (<span class='bool-val'>false</span>, <span class='bool-val'>false</span>) <span class='op'>=&gt;</span> <span class='number'>0.0</span>,
-            <span class='comment'>// Use Eq 131.</span>
-            (<span class='bool-val'>false</span>, <span class='bool-val'>true</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>sig_prev</span>(<span class='ident'>l</span>, <span class='ident'>n</span>),
-            <span class='comment'>// Use Eq 132.</span>
-            (<span class='bool-val'>true</span>, <span class='bool-val'>false</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>sig_cur</span>(<span class='ident'>l</span>, <span class='ident'>n</span>),
-            <span class='comment'>// Use Eq 133. The Eq 134 form for voiced/voiced frames isn&#39;t used due to its</span>
-            <span class='comment'>// complexity and lack of rationale.</span>
-            (<span class='bool-val'>true</span>, <span class='bool-val'>true</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>sig_prev</span>(<span class='ident'>l</span>, <span class='ident'>n</span>) <span class='op'>+</span> <span class='self'>self</span>.<span class='ident'>sig_cur</span>(<span class='ident'>l</span>, <span class='ident'>n</span>)
+    <span class="doccomment">/// Compute s&lt;sub&gt;v,l&lt;/sub&gt;(n), the signal level at sample n for the l&#39;th spectral</span>
+    <span class="doccomment">/// amplitude.</span>
+    <span class="kw">fn</span> <span class="ident">get_pair</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">n</span>: <span class="ident">isize</span>) <span class="op">-&gt;</span> <span class="ident">f32</span> {
+        <span class="kw">match</span> (<span class="self">self</span>.<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="ident">l</span>), <span class="self">self</span>.<span class="ident">prev</span>.<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="ident">l</span>)) {
+            <span class="comment">// Use Eq 130.</span>
+            (<span class="bool-val">false</span>, <span class="bool-val">false</span>) <span class="op">=&gt;</span> <span class="number">0.0</span>,
+            <span class="comment">// Use Eq 131.</span>
+            (<span class="bool-val">false</span>, <span class="bool-val">true</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">sig_prev</span>(<span class="ident">l</span>, <span class="ident">n</span>),
+            <span class="comment">// Use Eq 132.</span>
+            (<span class="bool-val">true</span>, <span class="bool-val">false</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">sig_cur</span>(<span class="ident">l</span>, <span class="ident">n</span>),
+            <span class="comment">// Use Eq 133. The Eq 134 form for voiced/voiced frames isn&#39;t used due to its</span>
+            <span class="comment">// complexity and lack of rationale.</span>
+            (<span class="bool-val">true</span>, <span class="bool-val">true</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">sig_prev</span>(<span class="ident">l</span>, <span class="ident">n</span>) <span class="op">+</span> <span class="self">self</span>.<span class="ident">sig_cur</span>(<span class="ident">l</span>, <span class="ident">n</span>)
         }
     }
 
-    <span class='doccomment'>/// Compute s&lt;sub&gt;v,l&lt;/sub&gt;(n) for a voiced current frame and unvoiced previous frame.</span>
-    <span class='kw'>fn</span> <span class='ident'>sig_cur</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>l</span>: <span class='ident'>usize</span>, <span class='ident'>n</span>: <span class='ident'>isize</span>) <span class='op'>-&gt;</span> <span class='ident'>f32</span> {
-        <span class='comment'>// Compute Eq 132.</span>
-        <span class='self'>self</span>.<span class='ident'>window</span>.<span class='ident'>get</span>(<span class='ident'>n</span> <span class='op'>-</span> <span class='ident'>SAMPLES_PER_FRAME</span> <span class='kw'>as</span> <span class='ident'>isize</span>) <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='ident'>l</span>) <span class='op'>*</span> (
-            <span class='self'>self</span>.<span class='ident'>fundamental</span> <span class='op'>*</span> (<span class='ident'>n</span> <span class='op'>-</span> <span class='ident'>SAMPLES_PER_FRAME</span> <span class='kw'>as</span> <span class='ident'>isize</span>) <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>*</span> <span class='ident'>l</span> <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>+</span>
-                <span class='self'>self</span>.<span class='ident'>phase</span>.<span class='ident'>get</span>(<span class='ident'>l</span>)
-        ).<span class='ident'>cos</span>()
+    <span class="doccomment">/// Compute s&lt;sub&gt;v,l&lt;/sub&gt;(n) for a voiced current frame and unvoiced previous frame.</span>
+    <span class="kw">fn</span> <span class="ident">sig_cur</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">n</span>: <span class="ident">isize</span>) <span class="op">-&gt;</span> <span class="ident">f32</span> {
+        <span class="comment">// Compute Eq 132.</span>
+        <span class="self">self</span>.<span class="ident">window</span>.<span class="ident">get</span>(<span class="ident">n</span> <span class="op">-</span> <span class="ident">SAMPLES_PER_FRAME</span> <span class="kw">as</span> <span class="ident">isize</span>) <span class="op">*</span> <span class="self">self</span>.<span class="ident">amps</span>.<span class="ident">get</span>(<span class="ident">l</span>) <span class="op">*</span> (
+            <span class="self">self</span>.<span class="ident">fundamental</span> <span class="op">*</span> (<span class="ident">n</span> <span class="op">-</span> <span class="ident">SAMPLES_PER_FRAME</span> <span class="kw">as</span> <span class="ident">isize</span>) <span class="kw">as</span> <span class="ident">f32</span> <span class="op">*</span> <span class="ident">l</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">+</span>
+                <span class="self">self</span>.<span class="ident">phase</span>.<span class="ident">get</span>(<span class="ident">l</span>)
+        ).<span class="ident">cos</span>()
     }
 
-    <span class='doccomment'>/// Compute s&lt;sub&gt;v,l&lt;/sub&gt;(n) for an unvoiced current frame and voiced previous frame.</span>
-    <span class='kw'>fn</span> <span class='ident'>sig_prev</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>l</span>: <span class='ident'>usize</span>, <span class='ident'>n</span>: <span class='ident'>isize</span>) <span class='op'>-&gt;</span> <span class='ident'>f32</span> {
-        <span class='comment'>// Compute Eq 131.</span>
-        <span class='self'>self</span>.<span class='ident'>window</span>.<span class='ident'>get</span>(<span class='ident'>n</span>) <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>enhanced</span>.<span class='ident'>get</span>(<span class='ident'>l</span>) <span class='op'>*</span> (
-            <span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>params</span>.<span class='ident'>fundamental</span> <span class='op'>*</span> <span class='ident'>n</span> <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>*</span> <span class='ident'>l</span> <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>+</span>
-                <span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>phase</span>.<span class='ident'>get</span>(<span class='ident'>l</span>)
-        ).<span class='ident'>cos</span>()
+    <span class="doccomment">/// Compute s&lt;sub&gt;v,l&lt;/sub&gt;(n) for an unvoiced current frame and voiced previous frame.</span>
+    <span class="kw">fn</span> <span class="ident">sig_prev</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">n</span>: <span class="ident">isize</span>) <span class="op">-&gt;</span> <span class="ident">f32</span> {
+        <span class="comment">// Compute Eq 131.</span>
+        <span class="self">self</span>.<span class="ident">window</span>.<span class="ident">get</span>(<span class="ident">n</span>) <span class="op">*</span> <span class="self">self</span>.<span class="ident">prev</span>.<span class="ident">enhanced</span>.<span class="ident">get</span>(<span class="ident">l</span>) <span class="op">*</span> (
+            <span class="self">self</span>.<span class="ident">prev</span>.<span class="ident">params</span>.<span class="ident">fundamental</span> <span class="op">*</span> <span class="ident">n</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">*</span> <span class="ident">l</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">+</span>
+                <span class="self">self</span>.<span class="ident">prev</span>.<span class="ident">phase</span>.<span class="ident">get</span>(<span class="ident">l</span>)
+        ).<span class="ident">cos</span>()
     }
 
-    <span class='doccomment'>/// Compute the voiced signal sample s&lt;sub&gt;v&lt;/sub&gt;(n) for the given sample n, 0 ≤ n &lt;</span>
-    <span class='doccomment'>/// 160.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>n</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>f32</span> {
-        <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>n</span> <span class='op'>&lt;</span> <span class='ident'>SAMPLES_PER_FRAME</span>);
+    <span class="doccomment">/// Compute the voiced signal sample s&lt;sub&gt;v&lt;/sub&gt;(n) for the given sample n, 0 ≤ n &lt;</span>
+    <span class="doccomment">/// 160.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">f32</span> {
+        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">n</span> <span class="op">&lt;</span> <span class="ident">SAMPLES_PER_FRAME</span>);
 
-        <span class='comment'>// Compute Eq 127</span>
-        <span class='number'>2.0</span> <span class='op'>*</span> (<span class='number'>1</span>...<span class='self'>self</span>.<span class='ident'>end</span>)
-            .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>l</span><span class='op'>|</span> <span class='self'>self</span>.<span class='ident'>get_pair</span>(<span class='ident'>l</span>, <span class='ident'>n</span> <span class='kw'>as</span> <span class='ident'>isize</span>))
-            .<span class='ident'>fold</span>(<span class='number'>0.0</span>, <span class='op'>|</span><span class='ident'>s</span>, <span class='ident'>x</span><span class='op'>|</span> <span class='ident'>s</span> <span class='op'>+</span> <span class='ident'>x</span>)
+        <span class="comment">// Compute Eq 127</span>
+        <span class="number">2.0</span> <span class="op">*</span> (<span class="number">1</span>..=<span class="self">self</span>.<span class="ident">end</span>)
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">get_pair</span>(<span class="ident">l</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">isize</span>))
+            .<span class="ident">fold</span>(<span class="number">0.0</span>, <span class="op">|</span><span class="ident">s</span>, <span class="ident">x</span><span class="op">|</span> <span class="ident">s</span> <span class="op">+</span> <span class="ident">x</span>)
     }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
-    <span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
-    <span class='kw'>use</span> <span class='ident'>prev</span>::<span class='ident'>PrevFrame</span>;
-    <span class='kw'>use</span> <span class='ident'>descramble</span>::{<span class='ident'>Bootstrap</span>, <span class='ident'>descramble</span>};
-    <span class='kw'>use</span> <span class='ident'>rand</span>::<span class='ident'>XorShiftRng</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">params</span>::<span class="ident">BaseParams</span>;
+    <span class="kw">use</span> <span class="ident">prev</span>::<span class="ident">PrevFrame</span>;
+    <span class="kw">use</span> <span class="ident">descramble</span>::{<span class="ident">Bootstrap</span>, <span class="ident">descramble</span>};
+    <span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">XorShiftRng</span>;
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_phase_base</span>() {
-        <span class='comment'>// Verify results match standalone python script.</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_phase_base</span>() {
+        <span class="comment">// Verify results match standalone python script.</span>
 
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0b001000010010</span>,
-            <span class='number'>0b110011001100</span>,
-            <span class='number'>0b111000111000</span>,
-            <span class='number'>0b111111111111</span>,
-            <span class='number'>0b10101110101</span>,
-            <span class='number'>0b00101111010</span>,
-            <span class='number'>0b01110111011</span>,
-            <span class='number'>0b00001000</span>,
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0b001000010010</span>,
+            <span class="number">0b110011001100</span>,
+            <span class="number">0b111000111000</span>,
+            <span class="number">0b111111111111</span>,
+            <span class="number">0b10101110101</span>,
+            <span class="number">0b00101111010</span>,
+            <span class="number">0b01110111011</span>,
+            <span class="number">0b00001000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap_period</span>());
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>prev</span> <span class='op'>=</span> <span class='ident'>PrevFrame</span>::<span class='ident'>default</span>();
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">Bootstrap</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="ident">b</span>.<span class="ident">unwrap_period</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">prev</span> <span class="op">=</span> <span class="ident">PrevFrame</span>::<span class="ident">default</span>();
 
-        <span class='kw'>for</span> <span class='ident'>l</span> <span class='kw'>in</span> <span class='number'>1</span>...<span class='number'>56</span> {
-            <span class='ident'>prev</span>.<span class='ident'>phase_base</span>.<span class='number'>0</span>[<span class='ident'>l</span><span class='op'>-</span><span class='number'>1</span>] <span class='op'>=</span> <span class='ident'>l</span> <span class='kw'>as</span> <span class='ident'>f32</span>;
+        <span class="kw">for</span> <span class="ident">l</span> <span class="kw">in</span> <span class="number">1</span>..=<span class="number">56</span> {
+            <span class="ident">prev</span>.<span class="ident">phase_base</span>.<span class="number">0</span>[<span class="ident">l</span><span class="op">-</span><span class="number">1</span>] <span class="op">=</span> <span class="ident">l</span> <span class="kw">as</span> <span class="ident">f32</span>;
         }
 
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>fundamental</span> <span class='op'>-</span> <span class='number'>0.17575344</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>prev</span>.<span class='ident'>params</span>.<span class='ident'>fundamental</span> <span class='op'>-</span> <span class='number'>0.0937765407</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>harmonics</span>, <span class='number'>16</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">fundamental</span> <span class="op">-</span> <span class="number">0.17575344</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">prev</span>.<span class="ident">params</span>.<span class="ident">fundamental</span> <span class="op">-</span> <span class="number">0.0937765407</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">harmonics</span>, <span class="number">16</span>);
 
-        <span class='kw'>let</span> <span class='ident'>pb</span> <span class='op'>=</span> <span class='ident'>PhaseBase</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>p</span>, <span class='kw-2'>&amp;</span><span class='ident'>prev</span>);
+        <span class="kw">let</span> <span class="ident">pb</span> <span class="op">=</span> <span class="ident">PhaseBase</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>, <span class="kw-2">&amp;</span><span class="ident">prev</span>);
 
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='number'>22.56239845600000037961763155180961</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='number'>45.12479691200000075923526310361922</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>3</span>) <span class='op'>-</span> <span class='number'>67.68719536800000469156657345592976</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>4</span>) <span class='op'>-</span> <span class='number'>90.24959382400000151847052620723844</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>5</span>) <span class='op'>-</span> <span class='number'>112.81199227999999834537447895854712</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>6</span>) <span class='op'>-</span> <span class='number'>135.37439073600000938313314691185951</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>7</span>) <span class='op'>-</span> <span class='number'>157.93678919199999199918238446116447</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>8</span>) <span class='op'>-</span> <span class='number'>180.49918764800000303694105241447687</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>9</span>) <span class='op'>-</span> <span class='number'>203.06158610399998565299028996378183</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>10</span>) <span class='op'>-</span> <span class='number'>225.62398455999999669074895791709423</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>11</span>) <span class='op'>-</span> <span class='number'>248.18638301600003615021705627441406</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>12</span>) <span class='op'>-</span> <span class='number'>270.74878147200001876626629382371902</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>13</span>) <span class='op'>-</span> <span class='number'>293.31117992800000138231553137302399</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>14</span>) <span class='op'>-</span> <span class='number'>315.87357838399998399836476892232895</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>15</span>) <span class='op'>-</span> <span class='number'>338.43597684000002345783286727964878</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>16</span>) <span class='op'>-</span> <span class='number'>360.99837529600000607388210482895374</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>17</span>) <span class='op'>-</span> <span class='number'>383.56077375199998868993134237825871</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>18</span>) <span class='op'>-</span> <span class='number'>406.12317220799997130598057992756367</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>19</span>) <span class='op'>-</span> <span class='number'>428.68557066400001076544867828488350</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>20</span>) <span class='op'>-</span> <span class='number'>451.24796911999999338149791583418846</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>21</span>) <span class='op'>-</span> <span class='number'>473.81036757599997599754715338349342</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>22</span>) <span class='op'>-</span> <span class='number'>496.37276603200007230043411254882812</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>23</span>) <span class='op'>-</span> <span class='number'>518.93516448800005491648335009813309</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>24</span>) <span class='op'>-</span> <span class='number'>541.49756294400003753253258764743805</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>25</span>) <span class='op'>-</span> <span class='number'>564.05996140000002014858182519674301</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>26</span>) <span class='op'>-</span> <span class='number'>586.62235985600000276463106274604797</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>27</span>) <span class='op'>-</span> <span class='number'>609.18475831199998538068030029535294</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>28</span>) <span class='op'>-</span> <span class='number'>631.74715676799996799672953784465790</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>29</span>) <span class='op'>-</span> <span class='number'>654.30955522399995061277877539396286</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>30</span>) <span class='op'>-</span> <span class='number'>676.87195368000004691566573455929756</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>31</span>) <span class='op'>-</span> <span class='number'>699.43435213600002953171497210860252</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>32</span>) <span class='op'>-</span> <span class='number'>721.99675059200001214776420965790749</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>33</span>) <span class='op'>-</span> <span class='number'>744.55914904799999476381344720721245</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>34</span>) <span class='op'>-</span> <span class='number'>767.12154750399997737986268475651741</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>35</span>) <span class='op'>-</span> <span class='number'>789.68394595999995999591192230582237</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>36</span>) <span class='op'>-</span> <span class='number'>812.24634441599994261196115985512733</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>37</span>) <span class='op'>-</span> <span class='number'>834.80874287200003891484811902046204</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>38</span>) <span class='op'>-</span> <span class='number'>857.37114132800002153089735656976700</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>39</span>) <span class='op'>-</span> <span class='number'>879.93353978400000414694659411907196</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>40</span>) <span class='op'>-</span> <span class='number'>902.49593823999998676299583166837692</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>41</span>) <span class='op'>-</span> <span class='number'>925.05833669599996937904506921768188</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>42</span>) <span class='op'>-</span> <span class='number'>947.62073515199995199509430676698685</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>43</span>) <span class='op'>-</span> <span class='number'>970.18313360799993461114354431629181</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>44</span>) <span class='op'>-</span> <span class='number'>992.74553206400014460086822509765625</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>45</span>) <span class='op'>-</span> <span class='number'>1015.30793052000012721691746264696121</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>46</span>) <span class='op'>-</span> <span class='number'>1037.87032897600010983296670019626617</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>47</span>) <span class='op'>-</span> <span class='number'>1060.43272743200009244901593774557114</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>48</span>) <span class='op'>-</span> <span class='number'>1082.99512588800007506506517529487610</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>49</span>) <span class='op'>-</span> <span class='number'>1105.55752434400005768111441284418106</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>50</span>) <span class='op'>-</span> <span class='number'>1128.11992280000004029716365039348602</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>51</span>) <span class='op'>-</span> <span class='number'>1150.68232125600002291321288794279099</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>52</span>) <span class='op'>-</span> <span class='number'>1173.24471971200000552926212549209595</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>53</span>) <span class='op'>-</span> <span class='number'>1195.80711816799998814531136304140091</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>54</span>) <span class='op'>-</span> <span class='number'>1218.36951662399997076136060059070587</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>55</span>) <span class='op'>-</span> <span class='number'>1240.93191507999995337740983814001083</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>pb</span>.<span class='ident'>get</span>(<span class='number'>56</span>) <span class='op'>-</span> <span class='number'>1263.49431353599993599345907568931580</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">1</span>) <span class="op">-</span> <span class="number">22.56239845600000037961763155180961</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">2</span>) <span class="op">-</span> <span class="number">45.12479691200000075923526310361922</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">3</span>) <span class="op">-</span> <span class="number">67.68719536800000469156657345592976</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">4</span>) <span class="op">-</span> <span class="number">90.24959382400000151847052620723844</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">5</span>) <span class="op">-</span> <span class="number">112.81199227999999834537447895854712</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">6</span>) <span class="op">-</span> <span class="number">135.37439073600000938313314691185951</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">7</span>) <span class="op">-</span> <span class="number">157.93678919199999199918238446116447</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">8</span>) <span class="op">-</span> <span class="number">180.49918764800000303694105241447687</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">9</span>) <span class="op">-</span> <span class="number">203.06158610399998565299028996378183</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">10</span>) <span class="op">-</span> <span class="number">225.62398455999999669074895791709423</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">11</span>) <span class="op">-</span> <span class="number">248.18638301600003615021705627441406</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">12</span>) <span class="op">-</span> <span class="number">270.74878147200001876626629382371902</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">13</span>) <span class="op">-</span> <span class="number">293.31117992800000138231553137302399</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">14</span>) <span class="op">-</span> <span class="number">315.87357838399998399836476892232895</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">15</span>) <span class="op">-</span> <span class="number">338.43597684000002345783286727964878</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">16</span>) <span class="op">-</span> <span class="number">360.99837529600000607388210482895374</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">17</span>) <span class="op">-</span> <span class="number">383.56077375199998868993134237825871</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">18</span>) <span class="op">-</span> <span class="number">406.12317220799997130598057992756367</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">19</span>) <span class="op">-</span> <span class="number">428.68557066400001076544867828488350</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">20</span>) <span class="op">-</span> <span class="number">451.24796911999999338149791583418846</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">21</span>) <span class="op">-</span> <span class="number">473.81036757599997599754715338349342</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">22</span>) <span class="op">-</span> <span class="number">496.37276603200007230043411254882812</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">23</span>) <span class="op">-</span> <span class="number">518.93516448800005491648335009813309</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">24</span>) <span class="op">-</span> <span class="number">541.49756294400003753253258764743805</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">25</span>) <span class="op">-</span> <span class="number">564.05996140000002014858182519674301</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">26</span>) <span class="op">-</span> <span class="number">586.62235985600000276463106274604797</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">27</span>) <span class="op">-</span> <span class="number">609.18475831199998538068030029535294</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">28</span>) <span class="op">-</span> <span class="number">631.74715676799996799672953784465790</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">29</span>) <span class="op">-</span> <span class="number">654.30955522399995061277877539396286</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">30</span>) <span class="op">-</span> <span class="number">676.87195368000004691566573455929756</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">31</span>) <span class="op">-</span> <span class="number">699.43435213600002953171497210860252</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">32</span>) <span class="op">-</span> <span class="number">721.99675059200001214776420965790749</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">33</span>) <span class="op">-</span> <span class="number">744.55914904799999476381344720721245</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">34</span>) <span class="op">-</span> <span class="number">767.12154750399997737986268475651741</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">35</span>) <span class="op">-</span> <span class="number">789.68394595999995999591192230582237</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">36</span>) <span class="op">-</span> <span class="number">812.24634441599994261196115985512733</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">37</span>) <span class="op">-</span> <span class="number">834.80874287200003891484811902046204</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">38</span>) <span class="op">-</span> <span class="number">857.37114132800002153089735656976700</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">39</span>) <span class="op">-</span> <span class="number">879.93353978400000414694659411907196</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">40</span>) <span class="op">-</span> <span class="number">902.49593823999998676299583166837692</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">41</span>) <span class="op">-</span> <span class="number">925.05833669599996937904506921768188</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">42</span>) <span class="op">-</span> <span class="number">947.62073515199995199509430676698685</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">43</span>) <span class="op">-</span> <span class="number">970.18313360799993461114354431629181</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">44</span>) <span class="op">-</span> <span class="number">992.74553206400014460086822509765625</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">45</span>) <span class="op">-</span> <span class="number">1015.30793052000012721691746264696121</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">46</span>) <span class="op">-</span> <span class="number">1037.87032897600010983296670019626617</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">47</span>) <span class="op">-</span> <span class="number">1060.43272743200009244901593774557114</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">48</span>) <span class="op">-</span> <span class="number">1082.99512588800007506506517529487610</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">49</span>) <span class="op">-</span> <span class="number">1105.55752434400005768111441284418106</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">50</span>) <span class="op">-</span> <span class="number">1128.11992280000004029716365039348602</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">51</span>) <span class="op">-</span> <span class="number">1150.68232125600002291321288794279099</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">52</span>) <span class="op">-</span> <span class="number">1173.24471971200000552926212549209595</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">53</span>) <span class="op">-</span> <span class="number">1195.80711816799998814531136304140091</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">54</span>) <span class="op">-</span> <span class="number">1218.36951662399997076136060059070587</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">55</span>) <span class="op">-</span> <span class="number">1240.93191507999995337740983814001083</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">pb</span>.<span class="ident">get</span>(<span class="number">56</span>) <span class="op">-</span> <span class="number">1263.49431353599993599345907568931580</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_phase</span>() {
-        <span class='comment'>// Verify results match standalone python script.</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_phase</span>() {
+        <span class="comment">// Verify results match standalone python script.</span>
 
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0b001000010010</span>,
-            <span class='number'>0b110011001100</span>,
-            <span class='number'>0b111000111000</span>,
-            <span class='number'>0b111111111111</span>,
-            <span class='number'>0b10101110101</span>,
-            <span class='number'>0b00101111010</span>,
-            <span class='number'>0b01110111011</span>,
-            <span class='number'>0b00001000</span>,
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0b001000010010</span>,
+            <span class="number">0b110011001100</span>,
+            <span class="number">0b111000111000</span>,
+            <span class="number">0b111111111111</span>,
+            <span class="number">0b10101110101</span>,
+            <span class="number">0b00101111010</span>,
+            <span class="number">0b01110111011</span>,
+            <span class="number">0b00001000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap_period</span>());
-        <span class='kw'>let</span> (_, <span class='ident'>voice</span>, _) <span class='op'>=</span> <span class='ident'>descramble</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>prev</span> <span class='op'>=</span> <span class='ident'>PrevFrame</span>::<span class='ident'>default</span>();
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">Bootstrap</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="ident">b</span>.<span class="ident">unwrap_period</span>());
+        <span class="kw">let</span> (_, <span class="ident">voice</span>, _) <span class="op">=</span> <span class="ident">descramble</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">prev</span> <span class="op">=</span> <span class="ident">PrevFrame</span>::<span class="ident">default</span>();
 
-        <span class='kw'>for</span> <span class='ident'>l</span> <span class='kw'>in</span> <span class='number'>1</span>...<span class='number'>56</span> {
-            <span class='ident'>prev</span>.<span class='ident'>phase_base</span>.<span class='number'>0</span>[<span class='ident'>l</span><span class='op'>-</span><span class='number'>1</span>] <span class='op'>=</span> <span class='ident'>l</span> <span class='kw'>as</span> <span class='ident'>f32</span>;
+        <span class="kw">for</span> <span class="ident">l</span> <span class="kw">in</span> <span class="number">1</span>..=<span class="number">56</span> {
+            <span class="ident">prev</span>.<span class="ident">phase_base</span>.<span class="number">0</span>[<span class="ident">l</span><span class="op">-</span><span class="number">1</span>] <span class="op">=</span> <span class="ident">l</span> <span class="kw">as</span> <span class="ident">f32</span>;
         }
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>harmonics</span>, <span class='number'>16</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>prev</span>.<span class='ident'>params</span>.<span class='ident'>harmonics</span>, <span class='number'>30</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>unvoiced_count</span>(), <span class='number'>6</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">harmonics</span>, <span class="number">16</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">prev</span>.<span class="ident">params</span>.<span class="ident">harmonics</span>, <span class="number">30</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">unvoiced_count</span>(), <span class="number">6</span>);
 
-        <span class='kw'>let</span> <span class='ident'>pb</span> <span class='op'>=</span> <span class='ident'>PhaseBase</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>p</span>, <span class='kw-2'>&amp;</span><span class='ident'>prev</span>);
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>Phase</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>pb</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>, <span class='kw-2'>&amp;</span><span class='ident'>prev</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='ident'>XorShiftRng</span>::<span class='ident'>new_unseeded</span>());
+        <span class="kw">let</span> <span class="ident">pb</span> <span class="op">=</span> <span class="ident">PhaseBase</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>, <span class="kw-2">&amp;</span><span class="ident">prev</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">Phase</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">pb</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>, <span class="kw-2">&amp;</span><span class="ident">prev</span>, <span class="kw-2">&amp;</span><span class="ident">voice</span>, <span class="ident">XorShiftRng</span>::<span class="ident">new_unseeded</span>());
 
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='number'>22.56239845600000037961763155180961</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='number'>45.12479691200000075923526310361922</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>3</span>) <span class='op'>-</span> <span class='number'>67.68719536800000469156657345592976</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>4</span>) <span class='op'>-</span> <span class='number'>90.24959382400000151847052620723844</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>5</span>) <span class='op'>-</span> <span class='number'>113.72102393936469866275729145854712</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>6</span>) <span class='op'>-</span> <span class='number'>136.03487853683657249348470941185951</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>7</span>) <span class='op'>-</span> <span class='number'>157.33372207705076561978785321116447</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>8</span>) <span class='op'>-</span> <span class='number'>180.89240547985005491682386491447687</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>9</span>) <span class='op'>-</span> <span class='number'>203.73622094806469817740435246378183</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>10</span>) <span class='op'>-</span> <span class='number'>226.08445127271323826789739541709423</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>11</span>) <span class='op'>-</span> <span class='number'>247.40521646250272169709205627441406</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>12</span>) <span class='op'>-</span> <span class='number'>269.58186015442265670571941882371902</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>13</span>) <span class='op'>-</span> <span class='number'>292.96847452920201249071396887302399</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>14</span>) <span class='op'>-</span> <span class='number'>315.54974697478405687434133142232895</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>15</span>) <span class='op'>-</span> <span class='number'>337.87577965054975948078208602964878</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>16</span>) <span class='op'>-</span> <span class='number'>361.83932748377657162563991732895374</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>17</span>) <span class='op'>-</span> <span class='number'>383.78916983988489164403290487825871</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>18</span>) <span class='op'>-</span> <span class='number'>407.27547486059739867414464242756367</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>19</span>) <span class='op'>-</span> <span class='number'>429.51964262802550820197211578488350</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>20</span>) <span class='op'>-</span> <span class='number'>451.09838437959967905044322833418846</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>21</span>) <span class='op'>-</span> <span class='number'>474.87744446766066630516434088349342</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>22</span>) <span class='op'>-</span> <span class='number'>496.48125262476969510316848754882812</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>23</span>) <span class='op'>-</span> <span class='number'>519.98516804639734800730366259813309</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>24</span>) <span class='op'>-</span> <span class='number'>540.45943817407396636554040014743805</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>25</span>) <span class='op'>-</span> <span class='number'>563.98577140924112427455838769674301</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>26</span>) <span class='op'>-</span> <span class='number'>586.43880994521623506443575024604797</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>27</span>) <span class='op'>-</span> <span class='number'>609.11271337319726626446936279535294</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>28</span>) <span class='op'>-</span> <span class='number'>630.72016101971848911489360034465790</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>29</span>) <span class='op'>-</span> <span class='number'>655.26625760537240239500533789396286</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>30</span>) <span class='op'>-</span> <span class='number'>677.98135886975262565101729705929756</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>31</span>) <span class='op'>-</span> <span class='number'>699.43435213600002953171497210860252</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>32</span>) <span class='op'>-</span> <span class='number'>721.99675059200001214776420965790749</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>33</span>) <span class='op'>-</span> <span class='number'>744.55914904799999476381344720721245</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>34</span>) <span class='op'>-</span> <span class='number'>767.12154750399997737986268475651741</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>35</span>) <span class='op'>-</span> <span class='number'>789.68394595999995999591192230582237</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>36</span>) <span class='op'>-</span> <span class='number'>812.24634441599994261196115985512733</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>37</span>) <span class='op'>-</span> <span class='number'>834.80874287200003891484811902046204</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>38</span>) <span class='op'>-</span> <span class='number'>857.37114132800002153089735656976700</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>39</span>) <span class='op'>-</span> <span class='number'>879.93353978400000414694659411907196</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>40</span>) <span class='op'>-</span> <span class='number'>902.49593823999998676299583166837692</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>41</span>) <span class='op'>-</span> <span class='number'>925.05833669599996937904506921768188</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>42</span>) <span class='op'>-</span> <span class='number'>947.62073515199995199509430676698685</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>43</span>) <span class='op'>-</span> <span class='number'>970.18313360799993461114354431629181</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>44</span>) <span class='op'>-</span> <span class='number'>992.74553206400014460086822509765625</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>45</span>) <span class='op'>-</span> <span class='number'>1015.30793052000012721691746264696121</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>46</span>) <span class='op'>-</span> <span class='number'>1037.87032897600010983296670019626617</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>47</span>) <span class='op'>-</span> <span class='number'>1060.43272743200009244901593774557114</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>48</span>) <span class='op'>-</span> <span class='number'>1082.99512588800007506506517529487610</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>49</span>) <span class='op'>-</span> <span class='number'>1105.55752434400005768111441284418106</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>50</span>) <span class='op'>-</span> <span class='number'>1128.11992280000004029716365039348602</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>51</span>) <span class='op'>-</span> <span class='number'>1150.68232125600002291321288794279099</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>52</span>) <span class='op'>-</span> <span class='number'>1173.24471971200000552926212549209595</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>53</span>) <span class='op'>-</span> <span class='number'>1195.80711816799998814531136304140091</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>54</span>) <span class='op'>-</span> <span class='number'>1218.36951662399997076136060059070587</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>55</span>) <span class='op'>-</span> <span class='number'>1240.93191507999995337740983814001083</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>p</span>.<span class='ident'>get</span>(<span class='number'>56</span>) <span class='op'>-</span> <span class='number'>1263.49431353599993599345907568931580</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">1</span>) <span class="op">-</span> <span class="number">22.56239845600000037961763155180961</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">2</span>) <span class="op">-</span> <span class="number">45.12479691200000075923526310361922</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">3</span>) <span class="op">-</span> <span class="number">67.68719536800000469156657345592976</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">4</span>) <span class="op">-</span> <span class="number">90.24959382400000151847052620723844</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">5</span>) <span class="op">-</span> <span class="number">113.72102393936469866275729145854712</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">6</span>) <span class="op">-</span> <span class="number">136.03487853683657249348470941185951</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">7</span>) <span class="op">-</span> <span class="number">157.33372207705076561978785321116447</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">8</span>) <span class="op">-</span> <span class="number">180.89240547985005491682386491447687</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">9</span>) <span class="op">-</span> <span class="number">203.73622094806469817740435246378183</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">10</span>) <span class="op">-</span> <span class="number">226.08445127271323826789739541709423</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">11</span>) <span class="op">-</span> <span class="number">247.40521646250272169709205627441406</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">12</span>) <span class="op">-</span> <span class="number">269.58186015442265670571941882371902</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">13</span>) <span class="op">-</span> <span class="number">292.96847452920201249071396887302399</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">14</span>) <span class="op">-</span> <span class="number">315.54974697478405687434133142232895</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">15</span>) <span class="op">-</span> <span class="number">337.87577965054975948078208602964878</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">16</span>) <span class="op">-</span> <span class="number">361.83932748377657162563991732895374</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">17</span>) <span class="op">-</span> <span class="number">383.78916983988489164403290487825871</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">18</span>) <span class="op">-</span> <span class="number">407.27547486059739867414464242756367</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">19</span>) <span class="op">-</span> <span class="number">429.51964262802550820197211578488350</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">20</span>) <span class="op">-</span> <span class="number">451.09838437959967905044322833418846</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">21</span>) <span class="op">-</span> <span class="number">474.87744446766066630516434088349342</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">22</span>) <span class="op">-</span> <span class="number">496.48125262476969510316848754882812</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">23</span>) <span class="op">-</span> <span class="number">519.98516804639734800730366259813309</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">24</span>) <span class="op">-</span> <span class="number">540.45943817407396636554040014743805</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">25</span>) <span class="op">-</span> <span class="number">563.98577140924112427455838769674301</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">26</span>) <span class="op">-</span> <span class="number">586.43880994521623506443575024604797</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">27</span>) <span class="op">-</span> <span class="number">609.11271337319726626446936279535294</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">28</span>) <span class="op">-</span> <span class="number">630.72016101971848911489360034465790</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">29</span>) <span class="op">-</span> <span class="number">655.26625760537240239500533789396286</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">30</span>) <span class="op">-</span> <span class="number">677.98135886975262565101729705929756</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">31</span>) <span class="op">-</span> <span class="number">699.43435213600002953171497210860252</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">32</span>) <span class="op">-</span> <span class="number">721.99675059200001214776420965790749</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">33</span>) <span class="op">-</span> <span class="number">744.55914904799999476381344720721245</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">34</span>) <span class="op">-</span> <span class="number">767.12154750399997737986268475651741</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">35</span>) <span class="op">-</span> <span class="number">789.68394595999995999591192230582237</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">36</span>) <span class="op">-</span> <span class="number">812.24634441599994261196115985512733</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">37</span>) <span class="op">-</span> <span class="number">834.80874287200003891484811902046204</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">38</span>) <span class="op">-</span> <span class="number">857.37114132800002153089735656976700</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">39</span>) <span class="op">-</span> <span class="number">879.93353978400000414694659411907196</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">40</span>) <span class="op">-</span> <span class="number">902.49593823999998676299583166837692</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">41</span>) <span class="op">-</span> <span class="number">925.05833669599996937904506921768188</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">42</span>) <span class="op">-</span> <span class="number">947.62073515199995199509430676698685</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">43</span>) <span class="op">-</span> <span class="number">970.18313360799993461114354431629181</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">44</span>) <span class="op">-</span> <span class="number">992.74553206400014460086822509765625</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">45</span>) <span class="op">-</span> <span class="number">1015.30793052000012721691746264696121</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">46</span>) <span class="op">-</span> <span class="number">1037.87032897600010983296670019626617</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">47</span>) <span class="op">-</span> <span class="number">1060.43272743200009244901593774557114</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">48</span>) <span class="op">-</span> <span class="number">1082.99512588800007506506517529487610</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">49</span>) <span class="op">-</span> <span class="number">1105.55752434400005768111441284418106</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">50</span>) <span class="op">-</span> <span class="number">1128.11992280000004029716365039348602</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">51</span>) <span class="op">-</span> <span class="number">1150.68232125600002291321288794279099</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">52</span>) <span class="op">-</span> <span class="number">1173.24471971200000552926212549209595</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">53</span>) <span class="op">-</span> <span class="number">1195.80711816799998814531136304140091</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">54</span>) <span class="op">-</span> <span class="number">1218.36951662399997076136060059070587</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">55</span>) <span class="op">-</span> <span class="number">1240.93191507999995337740983814001083</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">p</span>.<span class="ident">get</span>(<span class="number">56</span>) <span class="op">-</span> <span class="number">1263.49431353599993599345907568931580</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-3</span>);
     }
 }
 </pre>
@@ -764,13 +765,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -804,7 +807,6 @@
         window.rootPath = "../../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

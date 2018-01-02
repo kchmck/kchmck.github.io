@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -417,379 +418,379 @@
 <span id="372">372</span>
 <span id="373">373</span>
 <span id="374">374</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Higher order DCT coefficients.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Higher order DCT coefficients.</span>
 
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>f32</span>::<span class='ident'>consts</span>::<span class='ident'>PI</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">f32</span>::<span class="ident">consts</span>::<span class="ident">PI</span>;
 
-<span class='kw'>use</span> <span class='ident'>arrayvec</span>::<span class='ident'>ArrayVec</span>;
+<span class="kw">use</span> <span class="ident">arrayvec</span>::<span class="ident">ArrayVec</span>;
 
-<span class='kw'>use</span> <span class='ident'>allocs</span>::<span class='ident'>allocs</span>;
-<span class='kw'>use</span> <span class='ident'>consts</span>::{<span class='ident'>MIN_HARMONICS</span>, <span class='ident'>MAX_HARMONICS</span>};
-<span class='kw'>use</span> <span class='ident'>descramble</span>::<span class='ident'>QuantizedAmplitudes</span>;
-<span class='kw'>use</span> <span class='ident'>gain</span>::<span class='ident'>Gains</span>;
-<span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
+<span class="kw">use</span> <span class="ident">allocs</span>::<span class="ident">allocs</span>;
+<span class="kw">use</span> <span class="ident">consts</span>::{<span class="ident">MIN_HARMONICS</span>, <span class="ident">MAX_HARMONICS</span>};
+<span class="kw">use</span> <span class="ident">descramble</span>::<span class="ident">QuantizedAmplitudes</span>;
+<span class="kw">use</span> <span class="ident">gain</span>::<span class="ident">Gains</span>;
+<span class="kw">use</span> <span class="ident">params</span>::<span class="ident">BaseParams</span>;
 
-<span class='doccomment'>/// Higher order DCT coefficients vector T&lt;sub&gt;l&lt;/sub&gt;, 1 ≤ l ≤ L.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Coefficients</span>(<span class='ident'>ArrayVec</span><span class='op'>&lt;</span>[<span class='ident'>f32</span>; <span class='ident'>MAX_HARMONICS</span>]<span class='op'>&gt;</span>);
+<span class="doccomment">/// Higher order DCT coefficients vector T&lt;sub&gt;l&lt;/sub&gt;, 1 ≤ l ≤ L.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Coefficients</span>(<span class="ident">ArrayVec</span><span class="op">&lt;</span>[<span class="ident">f32</span>; <span class="ident">MAX_HARMONICS</span>]<span class="op">&gt;</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Coefficients</span> {
-    <span class='doccomment'>/// Create a new `Coefficients` vector from the given gains G&lt;sub&gt;m&lt;/sub&gt;, quantized</span>
-    <span class='doccomment'>/// amplitudes b&lt;sub&gt;m&lt;/sub&gt;, and frame parameters.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>gains</span>: <span class='kw-2'>&amp;</span><span class='ident'>Gains</span>, <span class='ident'>amps</span>: <span class='kw-2'>&amp;</span><span class='ident'>QuantizedAmplitudes</span>, <span class='ident'>params</span>: <span class='kw-2'>&amp;</span><span class='ident'>BaseParams</span>)
-        <span class='op'>-&gt;</span> <span class='ident'>Coefficients</span>
+<span class="kw">impl</span> <span class="ident">Coefficients</span> {
+    <span class="doccomment">/// Create a new `Coefficients` vector from the given gains G&lt;sub&gt;m&lt;/sub&gt;, quantized</span>
+    <span class="doccomment">/// amplitudes b&lt;sub&gt;m&lt;/sub&gt;, and frame parameters.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">gains</span>: <span class="kw-2">&amp;</span><span class="ident">Gains</span>, <span class="ident">amps</span>: <span class="kw-2">&amp;</span><span class="ident">QuantizedAmplitudes</span>, <span class="ident">params</span>: <span class="kw-2">&amp;</span><span class="ident">BaseParams</span>)
+        <span class="op">-&gt;</span> <span class="ident">Coefficients</span>
     {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>coefs</span> <span class='op'>=</span> <span class='ident'>ArrayVec</span>::<span class='ident'>new</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">coefs</span> <span class="op">=</span> <span class="ident">ArrayVec</span>::<span class="ident">new</span>();
 
-        <span class='comment'>// Tracks the starting quantized amplitude b_m to be inserted into the current</span>
-        <span class='comment'>// coefficient block. For the first block this is always b_8 [p34].</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cur</span> <span class='op'>=</span> <span class='number'>8</span>;
+        <span class="comment">// Tracks the starting quantized amplitude b_m to be inserted into the current</span>
+        <span class="comment">// coefficient block. For the first block this is always b_8 [p34].</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cur</span> <span class="op">=</span> <span class="number">8</span>;
 
-        <span class='comment'>// Generate blocks for 1 ≤ i ≤ 6.</span>
-        <span class='kw'>for</span> <span class='ident'>block</span> <span class='kw'>in</span> <span class='number'>1</span>...<span class='number'>6</span> {
-            <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='ident'>block</span>, <span class='ident'>cur</span>, <span class='ident'>gains</span>, <span class='ident'>amps</span>, <span class='ident'>params</span>);
-            <span class='ident'>coefs</span>.<span class='ident'>extend</span>((<span class='number'>1</span>...<span class='ident'>b</span>.<span class='ident'>len</span>()).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>j</span><span class='op'>|</span> <span class='ident'>b</span>.<span class='ident'>idct</span>(<span class='ident'>j</span>)));
+        <span class="comment">// Generate blocks for 1 ≤ i ≤ 6.</span>
+        <span class="kw">for</span> <span class="ident">block</span> <span class="kw">in</span> <span class="number">1</span>..=<span class="number">6</span> {
+            <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="ident">block</span>, <span class="ident">cur</span>, <span class="ident">gains</span>, <span class="ident">amps</span>, <span class="ident">params</span>);
+            <span class="ident">coefs</span>.<span class="ident">extend</span>((<span class="number">1</span>..=<span class="ident">b</span>.<span class="ident">len</span>()).<span class="ident">map</span>(<span class="op">|</span><span class="ident">j</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">idct</span>(<span class="ident">j</span>)));
 
-            <span class='comment'>// The first coefficient C_i,1 in each block doesn&#39;t count towards quantized</span>
-            <span class='comment'>// amplitude usage.</span>
-            <span class='ident'>cur</span> <span class='op'>+=</span> <span class='ident'>b</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>1</span>;
+            <span class="comment">// The first coefficient C_i,1 in each block doesn&#39;t count towards quantized</span>
+            <span class="comment">// amplitude usage.</span>
+            <span class="ident">cur</span> <span class="op">+=</span> <span class="ident">b</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>;
         }
 
-        <span class='ident'>Coefficients</span>(<span class='ident'>coefs</span>)
+        <span class="ident">Coefficients</span>(<span class="ident">coefs</span>)
     }
 
-    <span class='doccomment'>/// Retrieve T&lt;sub&gt;l&lt;/sub&gt;, 1 ≤ l ≤ L + 1.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>l</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>f32</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='ident'>l</span> <span class='op'>-</span> <span class='number'>1</span>] }
+    <span class="doccomment">/// Retrieve T&lt;sub&gt;l&lt;/sub&gt;, 1 ≤ l ≤ L + 1.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">f32</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="ident">l</span> <span class="op">-</span> <span class="number">1</span>] }
 }
 
-<span class='doccomment'>/// Block of coeffients C&lt;sub&gt;i,k&lt;/sub&gt;, 1 ≤ i ≤ 6 and 1 ≤ k ≤ J&lt;sub&gt;i&lt;/sub&gt;.</span>
-<span class='kw'>struct</span> <span class='ident'>CoefBlock</span>(<span class='ident'>ArrayVec</span><span class='op'>&lt;</span>[<span class='ident'>f32</span>; <span class='number'>10</span>]<span class='op'>&gt;</span>);
+<span class="doccomment">/// Block of coeffients C&lt;sub&gt;i,k&lt;/sub&gt;, 1 ≤ i ≤ 6 and 1 ≤ k ≤ J&lt;sub&gt;i&lt;/sub&gt;.</span>
+<span class="kw">struct</span> <span class="ident">CoefBlock</span>(<span class="ident">ArrayVec</span><span class="op">&lt;</span>[<span class="ident">f32</span>; <span class="number">10</span>]<span class="op">&gt;</span>);
 
-<span class='kw'>impl</span> <span class='ident'>CoefBlock</span> {
-    <span class='doccomment'>/// Create a new `CoefBlock` from the given block i, the starting quantized amplitude</span>
-    <span class='doccomment'>/// number, gains G&lt;sub&gt;m&lt;/sub&gt;, quantized amplitudes b&lt;sub&gt;m&lt;/sub&gt;, and frame</span>
-    <span class='doccomment'>/// parameters.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>block</span>: <span class='ident'>usize</span>, <span class='ident'>cur</span>: <span class='ident'>usize</span>, <span class='ident'>gains</span>: <span class='kw-2'>&amp;</span><span class='ident'>Gains</span>, <span class='ident'>amps</span>: <span class='kw-2'>&amp;</span><span class='ident'>QuantizedAmplitudes</span>,
-               <span class='ident'>params</span>: <span class='kw-2'>&amp;</span><span class='ident'>BaseParams</span>)
-        <span class='op'>-&gt;</span> <span class='ident'>CoefBlock</span>
+<span class="kw">impl</span> <span class="ident">CoefBlock</span> {
+    <span class="doccomment">/// Create a new `CoefBlock` from the given block i, the starting quantized amplitude</span>
+    <span class="doccomment">/// number, gains G&lt;sub&gt;m&lt;/sub&gt;, quantized amplitudes b&lt;sub&gt;m&lt;/sub&gt;, and frame</span>
+    <span class="doccomment">/// parameters.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">block</span>: <span class="ident">usize</span>, <span class="ident">cur</span>: <span class="ident">usize</span>, <span class="ident">gains</span>: <span class="kw-2">&amp;</span><span class="ident">Gains</span>, <span class="ident">amps</span>: <span class="kw-2">&amp;</span><span class="ident">QuantizedAmplitudes</span>,
+               <span class="ident">params</span>: <span class="kw-2">&amp;</span><span class="ident">BaseParams</span>)
+        <span class="op">-&gt;</span> <span class="ident">CoefBlock</span>
     {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>block</span> <span class='op'>&gt;=</span> <span class='number'>1</span> <span class='op'>&amp;&amp;</span> <span class='ident'>block</span> <span class='op'>&lt;=</span> <span class='number'>6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">block</span> <span class="op">&gt;=</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="ident">block</span> <span class="op">&lt;=</span> <span class="number">6</span>);
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>coefs</span> <span class='op'>=</span> <span class='ident'>ArrayVec</span>::<span class='ident'>new</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">coefs</span> <span class="op">=</span> <span class="ident">ArrayVec</span>::<span class="ident">new</span>();
 
-        <span class='kw'>let</span> (<span class='ident'>alloc</span>, _) <span class='op'>=</span> <span class='ident'>allocs</span>(<span class='ident'>params</span>.<span class='ident'>harmonics</span>);
-        <span class='kw'>let</span> <span class='ident'>blocks</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='ident'>AMPS_USED</span>[<span class='ident'>params</span>.<span class='ident'>harmonics</span> <span class='kw'>as</span> <span class='ident'>usize</span> <span class='op'>-</span> <span class='ident'>MIN_HARMONICS</span>];
+        <span class="kw">let</span> (<span class="ident">alloc</span>, _) <span class="op">=</span> <span class="ident">allocs</span>(<span class="ident">params</span>.<span class="ident">harmonics</span>);
+        <span class="kw">let</span> <span class="ident">blocks</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">AMPS_USED</span>[<span class="ident">params</span>.<span class="ident">harmonics</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="ident">MIN_HARMONICS</span>];
 
-        <span class='comment'>// C_i,1 = R_i.</span>
-        <span class='ident'>coefs</span>.<span class='ident'>push</span>(<span class='ident'>gains</span>.<span class='ident'>idct</span>(<span class='ident'>block</span>));
+        <span class="comment">// C_i,1 = R_i.</span>
+        <span class="ident">coefs</span>.<span class="ident">push</span>(<span class="ident">gains</span>.<span class="ident">idct</span>(<span class="ident">block</span>));
 
-        <span class='comment'>// Compute the starting and ending m for the b_m&#39;s to use for this block.</span>
-        <span class='kw'>let</span> <span class='ident'>start</span> <span class='op'>=</span> <span class='ident'>cur</span>;
-        <span class='kw'>let</span> <span class='ident'>stop</span> <span class='op'>=</span> <span class='ident'>start</span> <span class='op'>+</span> <span class='ident'>blocks</span>[<span class='ident'>block</span> <span class='op'>-</span> <span class='number'>1</span>];
+        <span class="comment">// Compute the starting and ending m for the b_m&#39;s to use for this block.</span>
+        <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">cur</span>;
+        <span class="kw">let</span> <span class="ident">stop</span> <span class="op">=</span> <span class="ident">start</span> <span class="op">+</span> <span class="ident">blocks</span>[<span class="ident">block</span> <span class="op">-</span> <span class="number">1</span>];
 
-        <span class='comment'>// Generate C_i,2, ..., C_i,Ji.</span>
-        <span class='ident'>coefs</span>.<span class='ident'>extend</span>((<span class='ident'>start</span>..<span class='ident'>stop</span>).<span class='ident'>enumerate</span>().<span class='ident'>map</span>(<span class='op'>|</span>(<span class='ident'>k</span>, <span class='ident'>m</span>)<span class='op'>|</span> {
-            <span class='comment'>// Retrieve the bit allocation B_m for the current quantized amplitude b_m.</span>
-            <span class='kw'>let</span> <span class='ident'>bits</span> <span class='op'>=</span> <span class='ident'>alloc</span>[<span class='ident'>m</span> <span class='op'>-</span> <span class='number'>3</span>] <span class='kw'>as</span> <span class='ident'>i32</span>;
+        <span class="comment">// Generate C_i,2, ..., C_i,Ji.</span>
+        <span class="ident">coefs</span>.<span class="ident">extend</span>((<span class="ident">start</span>..<span class="ident">stop</span>).<span class="ident">enumerate</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">k</span>, <span class="ident">m</span>)<span class="op">|</span> {
+            <span class="comment">// Retrieve the bit allocation B_m for the current quantized amplitude b_m.</span>
+            <span class="kw">let</span> <span class="ident">bits</span> <span class="op">=</span> <span class="ident">alloc</span>[<span class="ident">m</span> <span class="op">-</span> <span class="number">3</span>] <span class="kw">as</span> <span class="ident">i32</span>;
 
-            <span class='comment'>// Compute C_i,k.</span>
-            <span class='kw'>if</span> <span class='ident'>bits</span> <span class='op'>==</span> <span class='number'>0</span> {
-                <span class='number'>0.0</span>
-            } <span class='kw'>else</span> {
-                <span class='ident'>DCT_STEP_SIZE</span>[<span class='ident'>bits</span> <span class='kw'>as</span> <span class='ident'>usize</span> <span class='op'>-</span> <span class='number'>1</span>] <span class='op'>*</span> <span class='ident'>DCT_STD_DEV</span>[<span class='ident'>k</span>] <span class='op'>*</span>
-                    (<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='ident'>m</span>) <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>-</span> (<span class='number'>1</span> <span class='op'>&lt;&lt;</span> (<span class='ident'>bits</span> <span class='op'>-</span> <span class='number'>1</span>)) <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>+</span> <span class='number'>0.5</span>)
+            <span class="comment">// Compute C_i,k.</span>
+            <span class="kw">if</span> <span class="ident">bits</span> <span class="op">==</span> <span class="number">0</span> {
+                <span class="number">0.0</span>
+            } <span class="kw">else</span> {
+                <span class="ident">DCT_STEP_SIZE</span>[<span class="ident">bits</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">*</span> <span class="ident">DCT_STD_DEV</span>[<span class="ident">k</span>] <span class="op">*</span>
+                    (<span class="ident">amps</span>.<span class="ident">get</span>(<span class="ident">m</span>) <span class="kw">as</span> <span class="ident">f32</span> <span class="op">-</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> (<span class="ident">bits</span> <span class="op">-</span> <span class="number">1</span>)) <span class="kw">as</span> <span class="ident">f32</span> <span class="op">+</span> <span class="number">0.5</span>)
             }
         }));
 
-        <span class='ident'>CoefBlock</span>(<span class='ident'>coefs</span>)
+        <span class="ident">CoefBlock</span>(<span class="ident">coefs</span>)
     }
 
-    <span class='doccomment'>/// Retrieve the number of coeffiients in this block, J&lt;sub&gt;i&lt;/sub&gt;.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>len</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>len</span>() }
+    <span class="doccomment">/// Retrieve the number of coeffiients in this block, J&lt;sub&gt;i&lt;/sub&gt;.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>() }
 
-    <span class='doccomment'>/// Compute the IDCT c&lt;sub&gt;i,j&lt;/sub&gt; for the current block i and 1 ≤ j ≤</span>
-    <span class='doccomment'>/// J&lt;sub&gt;i&lt;/sub&gt;.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>idct</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>j</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>f32</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>j</span> <span class='op'>&gt;=</span> <span class='number'>1</span> <span class='op'>&amp;&amp;</span> <span class='ident'>j</span> <span class='op'>&lt;=</span> <span class='self'>self</span>.<span class='ident'>len</span>());
+    <span class="doccomment">/// Compute the IDCT c&lt;sub&gt;i,j&lt;/sub&gt; for the current block i and 1 ≤ j ≤</span>
+    <span class="doccomment">/// J&lt;sub&gt;i&lt;/sub&gt;.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">idct</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">j</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">f32</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">j</span> <span class="op">&gt;=</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="ident">j</span> <span class="op">&lt;=</span> <span class="self">self</span>.<span class="ident">len</span>());
 
-        <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>+</span> <span class='number'>2.0</span> <span class='op'>*</span> (<span class='number'>2</span>...<span class='self'>self</span>.<span class='ident'>len</span>()).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>k</span><span class='op'>|</span> {
-            <span class='self'>self</span>.<span class='number'>0</span>[<span class='ident'>k</span> <span class='op'>-</span> <span class='number'>1</span>] <span class='op'>*</span> (
-                <span class='ident'>PI</span> <span class='op'>*</span> (<span class='ident'>k</span> <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>-</span> <span class='number'>1.0</span>) <span class='op'>*</span> (<span class='ident'>j</span> <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>-</span> <span class='number'>0.5</span>) <span class='op'>/</span> <span class='self'>self</span>.<span class='ident'>len</span>() <span class='kw'>as</span> <span class='ident'>f32</span>
-            ).<span class='ident'>cos</span>()
-        }).<span class='ident'>fold</span>(<span class='number'>0.0</span>, <span class='op'>|</span><span class='ident'>s</span>, <span class='ident'>x</span><span class='op'>|</span> <span class='ident'>s</span> <span class='op'>+</span> <span class='ident'>x</span>)
+        <span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">+</span> <span class="number">2.0</span> <span class="op">*</span> (<span class="number">2</span>..=<span class="self">self</span>.<span class="ident">len</span>()).<span class="ident">map</span>(<span class="op">|</span><span class="ident">k</span><span class="op">|</span> {
+            <span class="self">self</span>.<span class="number">0</span>[<span class="ident">k</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">*</span> (
+                <span class="ident">PI</span> <span class="op">*</span> (<span class="ident">k</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">-</span> <span class="number">1.0</span>) <span class="op">*</span> (<span class="ident">j</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">-</span> <span class="number">0.5</span>) <span class="op">/</span> <span class="self">self</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">f32</span>
+            ).<span class="ident">cos</span>()
+        }).<span class="ident">fold</span>(<span class="number">0.0</span>, <span class="op">|</span><span class="ident">s</span>, <span class="ident">x</span><span class="op">|</span> <span class="ident">s</span> <span class="op">+</span> <span class="ident">x</span>)
     }
 }
 
-<span class='doccomment'>/// Each AMPS_USED[l] gives J&lt;sub&gt;1&lt;/sub&gt; - 1,..,,J&lt;sub&gt;6&lt;/sub&gt; - 1 for harmonics</span>
-<span class='doccomment'>/// parameter l = L - 9. Each J&lt;sub&gt;i&lt;/sub&gt; - 1 represents the number of quantized</span>
-<span class='doccomment'>/// amplitudes used in coefficient block i.</span>
-<span class='kw'>static</span> <span class='ident'>AMPS_USED</span>: [[<span class='ident'>usize</span>; <span class='number'>6</span>]; <span class='number'>48</span>] <span class='op'>=</span> [
-    [<span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>],
-    [<span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>],
-    [<span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>],
-    [<span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>],
-    [<span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>2</span>],
-    [<span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>2</span>],
-    [<span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>],
-    [<span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>],
-    [<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>],
-    [<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>],
-    [<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>3</span>],
-    [<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>3</span>],
-    [<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>],
-    [<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>],
-    [<span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>],
-    [<span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>],
-    [<span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>4</span>],
-    [<span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>4</span>],
-    [<span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>],
-    [<span class='number'>3</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>],
-    [<span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>],
-    [<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>],
-    [<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>5</span>],
-    [<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>5</span>, <span class='number'>5</span>],
-    [<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>],
-    [<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>],
-    [<span class='number'>4</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>],
-    [<span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>],
-    [<span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>6</span>],
-    [<span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>6</span>, <span class='number'>6</span>],
-    [<span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>],
-    [<span class='number'>5</span>, <span class='number'>5</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>],
-    [<span class='number'>5</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>],
-    [<span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>],
-    [<span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>7</span>],
-    [<span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>7</span>, <span class='number'>7</span>],
-    [<span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>],
-    [<span class='number'>6</span>, <span class='number'>6</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>],
-    [<span class='number'>6</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>],
-    [<span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>],
-    [<span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>8</span>],
-    [<span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>8</span>, <span class='number'>8</span>],
-    [<span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>],
-    [<span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>],
-    [<span class='number'>7</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>],
-    [<span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>],
-    [<span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>9</span>],
-    [<span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>8</span>, <span class='number'>9</span>, <span class='number'>9</span>],
+<span class="doccomment">/// Each AMPS_USED[l] gives J&lt;sub&gt;1&lt;/sub&gt; - 1,..,,J&lt;sub&gt;6&lt;/sub&gt; - 1 for harmonics</span>
+<span class="doccomment">/// parameter l = L - 9. Each J&lt;sub&gt;i&lt;/sub&gt; - 1 represents the number of quantized</span>
+<span class="doccomment">/// amplitudes used in coefficient block i.</span>
+<span class="kw">static</span> <span class="ident">AMPS_USED</span>: [[<span class="ident">usize</span>; <span class="number">6</span>]; <span class="number">48</span>] <span class="op">=</span> [
+    [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>],
+    [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>],
+    [<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>],
+    [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>],
+    [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>],
+    [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>],
+    [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>],
+    [<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>],
+    [<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>],
+    [<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>],
+    [<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>],
+    [<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>],
+    [<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>],
+    [<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>],
+    [<span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>],
+    [<span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>],
+    [<span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">4</span>],
+    [<span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>],
+    [<span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>],
+    [<span class="number">3</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>],
+    [<span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>],
+    [<span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>],
+    [<span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">5</span>],
+    [<span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">5</span>],
+    [<span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>],
+    [<span class="number">4</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>],
+    [<span class="number">4</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>],
+    [<span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>],
+    [<span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">6</span>],
+    [<span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">6</span>],
+    [<span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>],
+    [<span class="number">5</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>],
+    [<span class="number">5</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>],
+    [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>],
+    [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">7</span>],
+    [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">7</span>],
+    [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>],
+    [<span class="number">6</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>],
+    [<span class="number">6</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>],
+    [<span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>],
+    [<span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">8</span>],
+    [<span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">8</span>],
+    [<span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>],
+    [<span class="number">7</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>],
+    [<span class="number">7</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>],
+    [<span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>],
+    [<span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">9</span>],
+    [<span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">9</span>],
 ];
 
-<span class='doccomment'>/// Each DCT_STEP_SIZE[b] is the &quot;uniform quantizer step size&quot; [p31] for the bit</span>
-<span class='doccomment'>/// allocation b = B&lt;sub&gt;m&lt;/sub&gt; - 1.</span>
-<span class='kw'>const</span> <span class='ident'>DCT_STEP_SIZE</span>: [<span class='ident'>f32</span>; <span class='number'>10</span>] <span class='op'>=</span> [
-    <span class='number'>1.2</span>,
-    <span class='number'>0.85</span>,
-    <span class='number'>0.65</span>,
-    <span class='number'>0.40</span>,
-    <span class='number'>0.28</span>,
-    <span class='number'>0.15</span>,
-    <span class='number'>0.08</span>,
-    <span class='number'>0.04</span>,
-    <span class='number'>0.02</span>,
-    <span class='number'>0.01</span>,
+<span class="doccomment">/// Each DCT_STEP_SIZE[b] is the &quot;uniform quantizer step size&quot; [p31] for the bit</span>
+<span class="doccomment">/// allocation b = B&lt;sub&gt;m&lt;/sub&gt; - 1.</span>
+<span class="kw">const</span> <span class="ident">DCT_STEP_SIZE</span>: [<span class="ident">f32</span>; <span class="number">10</span>] <span class="op">=</span> [
+    <span class="number">1.2</span>,
+    <span class="number">0.85</span>,
+    <span class="number">0.65</span>,
+    <span class="number">0.40</span>,
+    <span class="number">0.28</span>,
+    <span class="number">0.15</span>,
+    <span class="number">0.08</span>,
+    <span class="number">0.04</span>,
+    <span class="number">0.02</span>,
+    <span class="number">0.01</span>,
 ];
 
-<span class='doccomment'>/// Each DCT_STD_DEV[j] is the DCT standard deviation [p32] for the coefficient</span>
-<span class='doccomment'>/// C&lt;sub&gt;i,j+2&lt;/sub&gt;.</span>
-<span class='kw'>const</span> <span class='ident'>DCT_STD_DEV</span>: [<span class='ident'>f32</span>; <span class='number'>9</span>] <span class='op'>=</span> [
-    <span class='number'>0.307</span>,
-    <span class='number'>0.241</span>,
-    <span class='number'>0.207</span>,
-    <span class='number'>0.190</span>,
-    <span class='number'>0.179</span>,
-    <span class='number'>0.173</span>,
-    <span class='number'>0.165</span>,
-    <span class='number'>0.170</span>,
-    <span class='number'>0.170</span>,
+<span class="doccomment">/// Each DCT_STD_DEV[j] is the DCT standard deviation [p32] for the coefficient</span>
+<span class="doccomment">/// C&lt;sub&gt;i,j+2&lt;/sub&gt;.</span>
+<span class="kw">const</span> <span class="ident">DCT_STD_DEV</span>: [<span class="ident">f32</span>; <span class="number">9</span>] <span class="op">=</span> [
+    <span class="number">0.307</span>,
+    <span class="number">0.241</span>,
+    <span class="number">0.207</span>,
+    <span class="number">0.190</span>,
+    <span class="number">0.179</span>,
+    <span class="number">0.173</span>,
+    <span class="number">0.165</span>,
+    <span class="number">0.170</span>,
+    <span class="number">0.170</span>,
 ];
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>tests</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>CoefBlock</span>;
-    <span class='kw'>use</span> <span class='ident'>descramble</span>::{<span class='ident'>Bootstrap</span>, <span class='ident'>descramble</span>};
-    <span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
-    <span class='kw'>use</span> <span class='ident'>gain</span>::<span class='ident'>Gains</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">tests</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">CoefBlock</span>;
+    <span class="kw">use</span> <span class="ident">descramble</span>::{<span class="ident">Bootstrap</span>, <span class="ident">descramble</span>};
+    <span class="kw">use</span> <span class="ident">params</span>::<span class="ident">BaseParams</span>;
+    <span class="kw">use</span> <span class="ident">gain</span>::<span class="ident">Gains</span>;
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>verify_amps</span>() {
-        <span class='comment'>// Verify the constaints on J_i [p33].</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">verify_amps</span>() {
+        <span class="comment">// Verify the constaints on J_i [p33].</span>
 
-        <span class='kw'>for</span> <span class='ident'>l</span> <span class='kw'>in</span> <span class='number'>9</span>...<span class='number'>56</span> {
-            <span class='kw'>let</span> <span class='ident'>amps</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='ident'>AMPS_USED</span>[<span class='ident'>l</span> <span class='kw'>as</span> <span class='ident'>usize</span> <span class='op'>-</span> <span class='number'>9</span>];
+        <span class="kw">for</span> <span class="ident">l</span> <span class="kw">in</span> <span class="number">9</span>..=<span class="number">56</span> {
+            <span class="kw">let</span> <span class="ident">amps</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">AMPS_USED</span>[<span class="ident">l</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">9</span>];
 
-            <span class='kw'>let</span> <span class='ident'>sum</span> <span class='op'>=</span> <span class='ident'>amps</span>.<span class='ident'>iter</span>().<span class='ident'>fold</span>(<span class='number'>0</span>, <span class='op'>|</span><span class='ident'>sum</span>, <span class='kw-2'>&amp;</span><span class='ident'>x</span><span class='op'>|</span> <span class='ident'>sum</span> <span class='op'>+</span> <span class='ident'>x</span> <span class='op'>+</span> <span class='number'>1</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>sum</span>, <span class='ident'>l</span>);
+            <span class="kw">let</span> <span class="ident">sum</span> <span class="op">=</span> <span class="ident">amps</span>.<span class="ident">iter</span>().<span class="ident">fold</span>(<span class="number">0</span>, <span class="op">|</span><span class="ident">sum</span>, <span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">sum</span> <span class="op">+</span> <span class="ident">x</span> <span class="op">+</span> <span class="number">1</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sum</span>, <span class="ident">l</span>);
 
-            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>l</span> <span class='op'>/</span> <span class='number'>6</span> <span class='op'>&lt;=</span> <span class='ident'>amps</span>[<span class='number'>0</span>] <span class='op'>+</span> <span class='number'>1</span>);
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">l</span> <span class="op">/</span> <span class="number">6</span> <span class="op">&lt;=</span> <span class="ident">amps</span>[<span class="number">0</span>] <span class="op">+</span> <span class="number">1</span>);
 
-            <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>...<span class='number'>4</span> {
-                <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>amps</span>[<span class='ident'>i</span>] <span class='op'>&lt;=</span> <span class='ident'>amps</span>[<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>]);
+            <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..=<span class="number">4</span> {
+                <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">amps</span>[<span class="ident">i</span>] <span class="op">&lt;=</span> <span class="ident">amps</span>[<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>]);
             }
 
-            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>amps</span>[<span class='number'>5</span>] <span class='op'>+</span> <span class='number'>1</span> <span class='op'>&lt;=</span> (<span class='ident'>l</span> <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>/</span> <span class='number'>6.0</span>).<span class='ident'>ceil</span>() <span class='kw'>as</span> <span class='ident'>usize</span>);
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">amps</span>[<span class="number">5</span>] <span class="op">+</span> <span class="number">1</span> <span class="op">&lt;=</span> (<span class="ident">l</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">6.0</span>).<span class="ident">ceil</span>() <span class="kw">as</span> <span class="ident">usize</span>);
         }
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_coefs</span>() {
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0b001000010010</span>,
-            <span class='number'>0b110011001100</span>,
-            <span class='number'>0b111000111000</span>,
-            <span class='number'>0b111111111111</span>,
-            <span class='number'>0b10100110101</span>,
-            <span class='number'>0b00101111010</span>,
-            <span class='number'>0b01110111011</span>,
-            <span class='number'>0b00001000</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_coefs</span>() {
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0b001000010010</span>,
+            <span class="number">0b110011001100</span>,
+            <span class="number">0b111000111000</span>,
+            <span class="number">0b111111111111</span>,
+            <span class="number">0b10100110101</span>,
+            <span class="number">0b00101111010</span>,
+            <span class="number">0b01110111011</span>,
+            <span class="number">0b00001000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap_period</span>());
-        <span class='kw'>let</span> (<span class='ident'>amps</span>, _, <span class='ident'>gain_idx</span>) <span class='op'>=</span> <span class='ident'>descramble</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>Gains</span>::<span class='ident'>new</span>(<span class='ident'>gain_idx</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>Coefficients</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">Bootstrap</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="ident">b</span>.<span class="ident">unwrap_period</span>());
+        <span class="kw">let</span> (<span class="ident">amps</span>, _, <span class="ident">gain_idx</span>) <span class="op">=</span> <span class="ident">descramble</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="ident">Gains</span>::<span class="ident">new</span>(<span class="ident">gain_idx</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">Coefficients</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
 
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.9140941318413551</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>1.5002149427668843</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>3</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.1243967542115918</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>4</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>2.924751739744676</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>5</span>) <span class='op'>-</span> <span class='number'>2.1501046599919884</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>6</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.557148495647667</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>7</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.08320165128732226</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>8</span>) <span class='op'>-</span> <span class='number'>3.412285791008137</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>9</span>) <span class='op'>-</span> <span class='number'>0.38493783640665913</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>10</span>) <span class='op'>-</span> <span class='number'>0.6472398818051812</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>11</span>) <span class='op'>-</span> <span class='number'>3.0575528322544274</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>12</span>) <span class='op'>-</span> <span class='number'>0.672970246978134</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>13</span>) <span class='op'>-</span> <span class='number'>0.638137661701841</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>14</span>) <span class='op'>-</span> <span class='number'>3.9893475658703124</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>15</span>) <span class='op'>-</span> <span class='number'>3.5092571965451276</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>get</span>(<span class='number'>16</span>) <span class='op'>-</span> <span class='number'>3.643716827219943</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">1</span>) <span class="op">-</span> <span class="op">-</span><span class="number">0.9140941318413551</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">2</span>) <span class="op">-</span> <span class="op">-</span><span class="number">1.5002149427668843</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">3</span>) <span class="op">-</span> <span class="op">-</span><span class="number">0.1243967542115918</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">4</span>) <span class="op">-</span> <span class="op">-</span><span class="number">2.924751739744676</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">5</span>) <span class="op">-</span> <span class="number">2.1501046599919884</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">6</span>) <span class="op">-</span> <span class="op">-</span><span class="number">0.557148495647667</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">7</span>) <span class="op">-</span> <span class="op">-</span><span class="number">0.08320165128732226</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">8</span>) <span class="op">-</span> <span class="number">3.412285791008137</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">9</span>) <span class="op">-</span> <span class="number">0.38493783640665913</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">10</span>) <span class="op">-</span> <span class="number">0.6472398818051812</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">11</span>) <span class="op">-</span> <span class="number">3.0575528322544274</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">12</span>) <span class="op">-</span> <span class="number">0.672970246978134</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">13</span>) <span class="op">-</span> <span class="number">0.638137661701841</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">14</span>) <span class="op">-</span> <span class="number">3.9893475658703124</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">15</span>) <span class="op">-</span> <span class="number">3.5092571965451276</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">get</span>(<span class="number">16</span>) <span class="op">-</span> <span class="number">3.643716827219943</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_coefs_9</span>() {
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0b000000010010</span>,
-            <span class='number'>0b110011001100</span>,
-            <span class='number'>0b111000111000</span>,
-            <span class='number'>0b111111111111</span>,
-            <span class='number'>0b11010110101</span>,
-            <span class='number'>0b00101111010</span>,
-            <span class='number'>0b01110111011</span>,
-            <span class='number'>0b00001000</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_coefs_9</span>() {
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0b000000010010</span>,
+            <span class="number">0b110011001100</span>,
+            <span class="number">0b111000111000</span>,
+            <span class="number">0b111111111111</span>,
+            <span class="number">0b11010110101</span>,
+            <span class="number">0b00101111010</span>,
+            <span class="number">0b01110111011</span>,
+            <span class="number">0b00001000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap_period</span>());
-        <span class='kw'>let</span> (<span class='ident'>amps</span>, _, <span class='ident'>gain_idx</span>) <span class='op'>=</span> <span class='ident'>descramble</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>Gains</span>::<span class='ident'>new</span>(<span class='ident'>gain_idx</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">Bootstrap</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="ident">b</span>.<span class="ident">unwrap_period</span>());
+        <span class="kw">let</span> (<span class="ident">amps</span>, _, <span class="ident">gain_idx</span>) <span class="op">=</span> <span class="ident">descramble</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="ident">Gains</span>::<span class="ident">new</span>(<span class="ident">gain_idx</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='number'>1</span>, <span class='number'>8</span>, <span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>-</span> <span class='number'>0.8519942560055926</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='number'>0.8519942560055926</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="number">1</span>, <span class="number">8</span>, <span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">-</span> <span class="number">0.8519942560055926</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">1</span>) <span class="op">-</span> <span class="number">0.8519942560055926</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='number'>2</span>, <span class='number'>8</span>, <span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.13083074772702047</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.13083074772702047</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="number">2</span>, <span class="number">8</span>, <span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">-</span> <span class="op">-</span><span class="number">0.13083074772702047</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">1</span>) <span class="op">-</span> <span class="op">-</span><span class="number">0.13083074772702047</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='number'>3</span>, <span class='number'>8</span>, <span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.014229409757043066</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.014229409757043066</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="number">3</span>, <span class="number">8</span>, <span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">-</span> <span class="op">-</span><span class="number">0.014229409757043066</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">1</span>) <span class="op">-</span> <span class="op">-</span><span class="number">0.014229409757043066</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='number'>4</span>, <span class='number'>8</span>, <span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>len</span>(), <span class='number'>2</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>-</span> <span class='number'>2.0309896309891773</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.45129</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='number'>1.3927691924258232</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='number'>2.6692100695525314</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="number">4</span>, <span class="number">8</span>, <span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">len</span>(), <span class="number">2</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">-</span> <span class="number">2.0309896309891773</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="op">-</span> <span class="op">-</span><span class="number">0.45129</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">1</span>) <span class="op">-</span> <span class="number">1.3927691924258232</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">2</span>) <span class="op">-</span> <span class="number">2.6692100695525314</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='number'>5</span>, <span class='number'>9</span>, <span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>len</span>(), <span class='number'>2</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>-</span> <span class='number'>0.5902767477270205</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.8289</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.581964874124038</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='number'>1.7625183695780788</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="number">5</span>, <span class="number">9</span>, <span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">len</span>(), <span class="number">2</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">-</span> <span class="number">0.5902767477270205</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="op">-</span> <span class="op">-</span><span class="number">0.8289</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">1</span>) <span class="op">-</span> <span class="op">-</span><span class="number">0.581964874124038</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">2</span>) <span class="op">-</span> <span class="number">1.7625183695780788</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='number'>6</span>, <span class='number'>10</span>, <span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>len</span>(), <span class='number'>2</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>-</span> <span class='number'>1.0951375227622724</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='op'>-</span> <span class='number'>1.24028</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='number'>2.849158319902375</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.6588832743778299</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="number">6</span>, <span class="number">10</span>, <span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">len</span>(), <span class="number">2</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">-</span> <span class="number">1.0951375227622724</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="op">-</span> <span class="number">1.24028</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">1</span>) <span class="op">-</span> <span class="number">2.849158319902375</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">2</span>) <span class="op">-</span> <span class="op">-</span><span class="number">0.6588832743778299</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_coefs_16</span>() {
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0b001000010010</span>,
-            <span class='number'>0b110011001100</span>,
-            <span class='number'>0b111000111000</span>,
-            <span class='number'>0b111111111111</span>,
-            <span class='number'>0b10100110101</span>,
-            <span class='number'>0b00101111010</span>,
-            <span class='number'>0b01110111011</span>,
-            <span class='number'>0b00001000</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_coefs_16</span>() {
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0b001000010010</span>,
+            <span class="number">0b110011001100</span>,
+            <span class="number">0b111000111000</span>,
+            <span class="number">0b111111111111</span>,
+            <span class="number">0b10100110101</span>,
+            <span class="number">0b00101111010</span>,
+            <span class="number">0b01110111011</span>,
+            <span class="number">0b00001000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap_period</span>());
-        <span class='kw'>let</span> (<span class='ident'>amps</span>, _, <span class='ident'>gain_idx</span>) <span class='op'>=</span> <span class='ident'>descramble</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>Gains</span>::<span class='ident'>new</span>(<span class='ident'>gain_idx</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">Bootstrap</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="ident">b</span>.<span class="ident">unwrap_period</span>());
+        <span class="kw">let</span> (<span class="ident">amps</span>, _, <span class="ident">gain_idx</span>) <span class="op">=</span> <span class="ident">descramble</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="ident">Gains</span>::<span class="ident">new</span>(<span class="ident">gain_idx</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='number'>1</span>, <span class='number'>8</span>, <span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>len</span>(), <span class='number'>2</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>-</span> <span class='op'>-</span><span class='number'>1.2071545373041197</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='op'>-</span> <span class='number'>0.207225</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.9140941318413551</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>1.5002149427668843</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="number">1</span>, <span class="number">8</span>, <span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">len</span>(), <span class="number">2</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">-</span> <span class="op">-</span><span class="number">1.2071545373041197</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="op">-</span> <span class="number">0.207225</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">1</span>) <span class="op">-</span> <span class="op">-</span><span class="number">0.9140941318413551</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">2</span>) <span class="op">-</span> <span class="op">-</span><span class="number">1.5002149427668843</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='number'>2</span>, <span class='number'>9</span>, <span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>len</span>(), <span class='number'>2</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>-</span> <span class='op'>-</span><span class='number'>1.524574246978134</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='op'>-</span> <span class='number'>0.990075</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.1243967542115918</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>2.924751739744676</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="number">2</span>, <span class="number">9</span>, <span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">len</span>(), <span class="number">2</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">-</span> <span class="op">-</span><span class="number">1.524574246978134</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="op">-</span> <span class="number">0.990075</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">1</span>) <span class="op">-</span> <span class="op">-</span><span class="number">0.1243967542115918</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">2</span>) <span class="op">-</span> <span class="op">-</span><span class="number">2.924751739744676</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='number'>3</span>, <span class='number'>10</span>, <span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>-</span> <span class='number'>0.5032515043523329</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='op'>-</span> <span class='number'>0.6447</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>2</span>] <span class='op'>-</span> <span class='number'>0.5302</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='number'>2.1501046599919884</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.557148495647667</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>3</span>) <span class='op'>-</span> <span class='op'>-</span><span class='number'>0.08320165128732226</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="number">3</span>, <span class="number">10</span>, <span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">len</span>(), <span class="number">3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">-</span> <span class="number">0.5032515043523329</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="op">-</span> <span class="number">0.6447</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">2</span>] <span class="op">-</span> <span class="number">0.5302</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">1</span>) <span class="op">-</span> <span class="number">2.1501046599919884</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">2</span>) <span class="op">-</span> <span class="op">-</span><span class="number">0.557148495647667</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">3</span>) <span class="op">-</span> <span class="op">-</span><span class="number">0.08320165128732226</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='number'>4</span>, <span class='number'>12</span>, <span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>-</span> <span class='number'>1.481487836406659</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='op'>-</span> <span class='number'>0.7982</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>2</span>] <span class='op'>-</span> <span class='number'>0.548275</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='number'>3.412285791008137</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='number'>0.38493783640665913</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>3</span>) <span class='op'>-</span> <span class='number'>0.6472398818051812</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="number">4</span>, <span class="number">12</span>, <span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">len</span>(), <span class="number">3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">-</span> <span class="number">1.481487836406659</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="op">-</span> <span class="number">0.7982</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">2</span>] <span class="op">-</span> <span class="number">0.548275</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">1</span>) <span class="op">-</span> <span class="number">3.412285791008137</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">2</span>) <span class="op">-</span> <span class="number">0.38493783640665913</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">3</span>) <span class="op">-</span> <span class="number">0.6472398818051812</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='number'>5</span>, <span class='number'>14</span>, <span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>-</span> <span class='number'>1.456220246978134</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='op'>-</span> <span class='number'>0.698425</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>2</span>] <span class='op'>-</span> <span class='number'>0.391625</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='number'>3.0575528322544274</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='number'>0.672970246978134</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>3</span>) <span class='op'>-</span> <span class='number'>0.638137661701841</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="number">5</span>, <span class="number">14</span>, <span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">len</span>(), <span class="number">3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">-</span> <span class="number">1.456220246978134</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="op">-</span> <span class="number">0.698425</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">2</span>] <span class="op">-</span> <span class="number">0.391625</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">1</span>) <span class="op">-</span> <span class="number">3.0575528322544274</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">2</span>) <span class="op">-</span> <span class="number">0.672970246978134</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">3</span>) <span class="op">-</span> <span class="number">0.638137661701841</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CoefBlock</span>::<span class='ident'>new</span>(<span class='number'>6</span>, <span class='number'>16</span>, <span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>-</span> <span class='number'>3.7141071965451276</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='op'>-</span> <span class='number'>0.099775</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='number'>0</span>[<span class='number'>2</span>] <span class='op'>-</span> <span class='number'>0.102425</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='number'>3.9893475658703124</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='number'>3.5092571965451276</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>c</span>.<span class='ident'>idct</span>(<span class='number'>3</span>) <span class='op'>-</span> <span class='number'>3.643716827219943</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CoefBlock</span>::<span class="ident">new</span>(<span class="number">6</span>, <span class="number">16</span>, <span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">len</span>(), <span class="number">3</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">-</span> <span class="number">3.7141071965451276</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="op">-</span> <span class="number">0.099775</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="number">0</span>[<span class="number">2</span>] <span class="op">-</span> <span class="number">0.102425</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">1</span>) <span class="op">-</span> <span class="number">3.9893475658703124</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">2</span>) <span class="op">-</span> <span class="number">3.5092571965451276</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">c</span>.<span class="ident">idct</span>(<span class="number">3</span>) <span class="op">-</span> <span class="number">3.643716827219943</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
     }
 }
 </pre>
@@ -810,13 +811,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -850,7 +853,6 @@
         window.rootPath = "../../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

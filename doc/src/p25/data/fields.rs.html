@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -184,146 +185,146 @@
 <span id="139">139</span>
 <span id="140">140</span>
 <span id="141">141</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Data packet fields.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Data packet fields.</span>
 
-<span class='doccomment'>/// Data packet type present in every header.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Debug</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>DataPacketOpcode</span> {
-    <span class='doccomment'>/// Confirmed packet that requires an acknowledgement response from the recipient.</span>
-    <span class='ident'>ConfirmedPacket</span>,
-    <span class='doccomment'>/// Unconfirmed packet that doesn&#39;t require an acknowledgement response from the</span>
-    <span class='doccomment'>/// recipient.</span>
-    <span class='ident'>UnconfirmedPacket</span>,
-    <span class='doccomment'>/// Response to the sender of a confirmed data packet.</span>
-    <span class='ident'>ResponsePacket</span>,
-    <span class='doccomment'>/// Multiblock trunking data packet.</span>
-    <span class='ident'>TrunkingPacket</span>,
+<span class="doccomment">/// Data packet type present in every header.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DataPacketOpcode</span> {
+    <span class="doccomment">/// Confirmed packet that requires an acknowledgement response from the recipient.</span>
+    <span class="ident">ConfirmedPacket</span>,
+    <span class="doccomment">/// Unconfirmed packet that doesn&#39;t require an acknowledgement response from the</span>
+    <span class="doccomment">/// recipient.</span>
+    <span class="ident">UnconfirmedPacket</span>,
+    <span class="doccomment">/// Response to the sender of a confirmed data packet.</span>
+    <span class="ident">ResponsePacket</span>,
+    <span class="doccomment">/// Multiblock trunking data packet.</span>
+    <span class="ident">TrunkingPacket</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>DataPacketOpcode</span> {
-    <span class='doccomment'>/// Convert packet type to its 5-bit representation.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_bits</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>DataPacketOpcode</span>::<span class='kw-2'>*</span>;
+<span class="kw">impl</span> <span class="ident">DataPacketOpcode</span> {
+    <span class="doccomment">/// Convert packet type to its 5-bit representation.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_bits</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> {
+        <span class="kw">use</span> <span class="self">self</span>::<span class="ident">DataPacketOpcode</span>::<span class="kw-2">*</span>;
 
-        <span class='kw'>match</span> <span class='self'>self</span> {
-            <span class='ident'>ConfirmedPacket</span> <span class='op'>=&gt;</span> <span class='number'>0b10110</span>,
-            <span class='ident'>UnconfirmedPacket</span> <span class='op'>=&gt;</span> <span class='number'>0b10101</span>,
-            <span class='ident'>ResponsePacket</span> <span class='op'>=&gt;</span> <span class='number'>0b00011</span>,
-            <span class='ident'>TrunkingPacket</span> <span class='op'>=&gt;</span> <span class='number'>0b10111</span>,
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">ConfirmedPacket</span> <span class="op">=&gt;</span> <span class="number">0b10110</span>,
+            <span class="ident">UnconfirmedPacket</span> <span class="op">=&gt;</span> <span class="number">0b10101</span>,
+            <span class="ident">ResponsePacket</span> <span class="op">=&gt;</span> <span class="number">0b00011</span>,
+            <span class="ident">TrunkingPacket</span> <span class="op">=&gt;</span> <span class="number">0b10111</span>,
         }
     }
 
-    <span class='doccomment'>/// Parse a packet type from the given 5 bits.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_bits</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>DataPacketOpcode</span><span class='op'>&gt;</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>DataPacketOpcode</span>::<span class='kw-2'>*</span>;
+    <span class="doccomment">/// Parse a packet type from the given 5 bits.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bits</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DataPacketOpcode</span><span class="op">&gt;</span> {
+        <span class="kw">use</span> <span class="self">self</span>::<span class="ident">DataPacketOpcode</span>::<span class="kw-2">*</span>;
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bits</span> <span class='op'>&gt;&gt;</span> <span class='number'>5</span> <span class='op'>==</span> <span class='number'>0</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">bits</span> <span class="op">&gt;&gt;</span> <span class="number">5</span> <span class="op">==</span> <span class="number">0</span>);
 
-        <span class='kw'>match</span> <span class='ident'>bits</span> {
-            <span class='number'>0b10110</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>ConfirmedPacket</span>),
-            <span class='number'>0b10101</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>UnconfirmedPacket</span>),
-            <span class='number'>0b00011</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>ResponsePacket</span>),
-            <span class='number'>0b10111</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>TrunkingPacket</span>),
-            _ <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
-        }
-    }
-}
-
-<span class='doccomment'>/// Destination service for data packet.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Debug</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>ServiceAccessPoint</span> {
-    <span class='ident'>UnencryptedUserData</span>,
-    <span class='ident'>EncryptedUserData</span>,
-    <span class='ident'>CircuitData</span>,
-    <span class='ident'>CircuitDataControl</span>,
-    <span class='ident'>PacketData</span>,
-    <span class='ident'>ARP</span>,
-    <span class='ident'>SNDCPControl</span>,
-    <span class='ident'>ExtendedAddressing</span>,
-    <span class='ident'>RegistrationAuth</span>,
-    <span class='ident'>ChannelReassignment</span>,
-    <span class='ident'>SystemConfiguration</span>,
-    <span class='ident'>Loopback</span>,
-    <span class='ident'>Statistics</span>,
-    <span class='ident'>OutOfService</span>,
-    <span class='ident'>Paging</span>,
-    <span class='ident'>Configuration</span>,
-    <span class='ident'>UnencryptedKeyManagement</span>,
-    <span class='ident'>EncryptedKeyManagement</span>,
-    <span class='ident'>TrunkingControl</span>,
-    <span class='ident'>EncryptedTrunkingControl</span>,
-}
-
-<span class='kw'>impl</span> <span class='ident'>ServiceAccessPoint</span> {
-    <span class='doccomment'>/// Convert the given 6 bits to a SAP identifier.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_bits</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>ServiceAccessPoint</span><span class='op'>&gt;</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>ServiceAccessPoint</span>::<span class='kw-2'>*</span>;
-
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bits</span> <span class='op'>&gt;&gt;</span> <span class='number'>6</span> <span class='op'>==</span> <span class='number'>0</span>);
-
-        <span class='kw'>match</span> <span class='ident'>bits</span> {
-            <span class='number'>0x00</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>UnencryptedUserData</span>),
-            <span class='number'>0x01</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>EncryptedUserData</span>),
-            <span class='number'>0x02</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>CircuitData</span>),
-            <span class='number'>0x03</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>CircuitDataControl</span>),
-            <span class='number'>0x04</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>PacketData</span>),
-            <span class='number'>0x05</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>ARP</span>),
-            <span class='number'>0x06</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>SNDCPControl</span>),
-            <span class='number'>0x1F</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>ExtendedAddressing</span>),
-            <span class='number'>0x20</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>RegistrationAuth</span>),
-            <span class='number'>0x21</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>ChannelReassignment</span>),
-            <span class='number'>0x22</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>SystemConfiguration</span>),
-            <span class='number'>0x23</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>Loopback</span>),
-            <span class='number'>0x24</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>Statistics</span>),
-            <span class='number'>0x25</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>OutOfService</span>),
-            <span class='number'>0x26</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>Paging</span>),
-            <span class='number'>0x27</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>Configuration</span>),
-            <span class='number'>0x28</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>UnencryptedKeyManagement</span>),
-            <span class='number'>0x29</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>EncryptedKeyManagement</span>),
-            <span class='number'>0x3D</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>TrunkingControl</span>),
-            <span class='number'>0x3F</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>EncryptedTrunkingControl</span>),
-            _ <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
-        }
-    }
-
-    <span class='doccomment'>/// Convert SAP identifier to its 6-bit representation.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_bits</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>ServiceAccessPoint</span>::<span class='kw-2'>*</span>;
-
-        <span class='kw'>match</span> <span class='self'>self</span> {
-            <span class='ident'>UnencryptedUserData</span> <span class='op'>=&gt;</span> <span class='number'>0x00</span>,
-            <span class='ident'>EncryptedUserData</span> <span class='op'>=&gt;</span> <span class='number'>0x01</span>,
-            <span class='ident'>CircuitData</span> <span class='op'>=&gt;</span> <span class='number'>0x02</span>,
-            <span class='ident'>CircuitDataControl</span> <span class='op'>=&gt;</span> <span class='number'>0x03</span>,
-            <span class='ident'>PacketData</span> <span class='op'>=&gt;</span> <span class='number'>0x04</span>,
-            <span class='ident'>ARP</span> <span class='op'>=&gt;</span> <span class='number'>0x05</span>,
-            <span class='ident'>SNDCPControl</span> <span class='op'>=&gt;</span> <span class='number'>0x06</span>,
-            <span class='ident'>ExtendedAddressing</span> <span class='op'>=&gt;</span> <span class='number'>0x1F</span>,
-            <span class='ident'>RegistrationAuth</span> <span class='op'>=&gt;</span> <span class='number'>0x20</span>,
-            <span class='ident'>ChannelReassignment</span> <span class='op'>=&gt;</span> <span class='number'>0x21</span>,
-            <span class='ident'>SystemConfiguration</span> <span class='op'>=&gt;</span> <span class='number'>0x22</span>,
-            <span class='ident'>Loopback</span> <span class='op'>=&gt;</span> <span class='number'>0x23</span>,
-            <span class='ident'>Statistics</span> <span class='op'>=&gt;</span> <span class='number'>0x24</span>,
-            <span class='ident'>OutOfService</span> <span class='op'>=&gt;</span> <span class='number'>0x25</span>,
-            <span class='ident'>Paging</span> <span class='op'>=&gt;</span> <span class='number'>0x26</span>,
-            <span class='ident'>Configuration</span> <span class='op'>=&gt;</span> <span class='number'>0x27</span>,
-            <span class='ident'>UnencryptedKeyManagement</span> <span class='op'>=&gt;</span> <span class='number'>0x28</span>,
-            <span class='ident'>EncryptedKeyManagement</span> <span class='op'>=&gt;</span> <span class='number'>0x29</span>,
-            <span class='ident'>TrunkingControl</span> <span class='op'>=&gt;</span> <span class='number'>0x3D</span>,
-            <span class='ident'>EncryptedTrunkingControl</span> <span class='op'>=&gt;</span> <span class='number'>0x3F</span>,
+        <span class="kw">match</span> <span class="ident">bits</span> {
+            <span class="number">0b10110</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">ConfirmedPacket</span>),
+            <span class="number">0b10101</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">UnconfirmedPacket</span>),
+            <span class="number">0b00011</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">ResponsePacket</span>),
+            <span class="number">0b10111</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">TrunkingPacket</span>),
+            _ <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
         }
     }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
+<span class="doccomment">/// Destination service for data packet.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ServiceAccessPoint</span> {
+    <span class="ident">UnencryptedUserData</span>,
+    <span class="ident">EncryptedUserData</span>,
+    <span class="ident">CircuitData</span>,
+    <span class="ident">CircuitDataControl</span>,
+    <span class="ident">PacketData</span>,
+    <span class="ident">ARP</span>,
+    <span class="ident">SNDCPControl</span>,
+    <span class="ident">ExtendedAddressing</span>,
+    <span class="ident">RegistrationAuth</span>,
+    <span class="ident">ChannelReassignment</span>,
+    <span class="ident">SystemConfiguration</span>,
+    <span class="ident">Loopback</span>,
+    <span class="ident">Statistics</span>,
+    <span class="ident">OutOfService</span>,
+    <span class="ident">Paging</span>,
+    <span class="ident">Configuration</span>,
+    <span class="ident">UnencryptedKeyManagement</span>,
+    <span class="ident">EncryptedKeyManagement</span>,
+    <span class="ident">TrunkingControl</span>,
+    <span class="ident">EncryptedTrunkingControl</span>,
+}
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_sap_validate</span>() {
-        <span class='ident'>ServiceAccessPoint</span>::<span class='ident'>from_bits</span>(<span class='number'>0b11111111</span>);
+<span class="kw">impl</span> <span class="ident">ServiceAccessPoint</span> {
+    <span class="doccomment">/// Convert the given 6 bits to a SAP identifier.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bits</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ServiceAccessPoint</span><span class="op">&gt;</span> {
+        <span class="kw">use</span> <span class="self">self</span>::<span class="ident">ServiceAccessPoint</span>::<span class="kw-2">*</span>;
+
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">bits</span> <span class="op">&gt;&gt;</span> <span class="number">6</span> <span class="op">==</span> <span class="number">0</span>);
+
+        <span class="kw">match</span> <span class="ident">bits</span> {
+            <span class="number">0x00</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">UnencryptedUserData</span>),
+            <span class="number">0x01</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">EncryptedUserData</span>),
+            <span class="number">0x02</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">CircuitData</span>),
+            <span class="number">0x03</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">CircuitDataControl</span>),
+            <span class="number">0x04</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">PacketData</span>),
+            <span class="number">0x05</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">ARP</span>),
+            <span class="number">0x06</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">SNDCPControl</span>),
+            <span class="number">0x1F</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">ExtendedAddressing</span>),
+            <span class="number">0x20</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">RegistrationAuth</span>),
+            <span class="number">0x21</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">ChannelReassignment</span>),
+            <span class="number">0x22</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">SystemConfiguration</span>),
+            <span class="number">0x23</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">Loopback</span>),
+            <span class="number">0x24</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">Statistics</span>),
+            <span class="number">0x25</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">OutOfService</span>),
+            <span class="number">0x26</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">Paging</span>),
+            <span class="number">0x27</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">Configuration</span>),
+            <span class="number">0x28</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">UnencryptedKeyManagement</span>),
+            <span class="number">0x29</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">EncryptedKeyManagement</span>),
+            <span class="number">0x3D</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">TrunkingControl</span>),
+            <span class="number">0x3F</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">EncryptedTrunkingControl</span>),
+            _ <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+        }
+    }
+
+    <span class="doccomment">/// Convert SAP identifier to its 6-bit representation.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_bits</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> {
+        <span class="kw">use</span> <span class="self">self</span>::<span class="ident">ServiceAccessPoint</span>::<span class="kw-2">*</span>;
+
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">UnencryptedUserData</span> <span class="op">=&gt;</span> <span class="number">0x00</span>,
+            <span class="ident">EncryptedUserData</span> <span class="op">=&gt;</span> <span class="number">0x01</span>,
+            <span class="ident">CircuitData</span> <span class="op">=&gt;</span> <span class="number">0x02</span>,
+            <span class="ident">CircuitDataControl</span> <span class="op">=&gt;</span> <span class="number">0x03</span>,
+            <span class="ident">PacketData</span> <span class="op">=&gt;</span> <span class="number">0x04</span>,
+            <span class="ident">ARP</span> <span class="op">=&gt;</span> <span class="number">0x05</span>,
+            <span class="ident">SNDCPControl</span> <span class="op">=&gt;</span> <span class="number">0x06</span>,
+            <span class="ident">ExtendedAddressing</span> <span class="op">=&gt;</span> <span class="number">0x1F</span>,
+            <span class="ident">RegistrationAuth</span> <span class="op">=&gt;</span> <span class="number">0x20</span>,
+            <span class="ident">ChannelReassignment</span> <span class="op">=&gt;</span> <span class="number">0x21</span>,
+            <span class="ident">SystemConfiguration</span> <span class="op">=&gt;</span> <span class="number">0x22</span>,
+            <span class="ident">Loopback</span> <span class="op">=&gt;</span> <span class="number">0x23</span>,
+            <span class="ident">Statistics</span> <span class="op">=&gt;</span> <span class="number">0x24</span>,
+            <span class="ident">OutOfService</span> <span class="op">=&gt;</span> <span class="number">0x25</span>,
+            <span class="ident">Paging</span> <span class="op">=&gt;</span> <span class="number">0x26</span>,
+            <span class="ident">Configuration</span> <span class="op">=&gt;</span> <span class="number">0x27</span>,
+            <span class="ident">UnencryptedKeyManagement</span> <span class="op">=&gt;</span> <span class="number">0x28</span>,
+            <span class="ident">EncryptedKeyManagement</span> <span class="op">=&gt;</span> <span class="number">0x29</span>,
+            <span class="ident">TrunkingControl</span> <span class="op">=&gt;</span> <span class="number">0x3D</span>,
+            <span class="ident">EncryptedTrunkingControl</span> <span class="op">=&gt;</span> <span class="number">0x3F</span>,
+        }
+    }
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="attribute">#[<span class="ident">should_panic</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_sap_validate</span>() {
+        <span class="ident">ServiceAccessPoint</span>::<span class="ident">from_bits</span>(<span class="number">0b11111111</span>);
     }
 }
 </pre>
@@ -344,13 +345,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -384,7 +387,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

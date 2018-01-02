@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -246,209 +247,215 @@
 <span id="201">201</span>
 <span id="202">202</span>
 <span id="203">203</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! General low-level receiver for all data units, covering frame synchronization up to</span>
-<span class='doccomment'>//! symbol decoding.</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! General low-level receiver for all data units, covering frame synchronization up to</span>
+<span class="doccomment">//! symbol decoding.</span>
 
-<span class='kw'>use</span> <span class='ident'>baseband</span>::<span class='ident'>decode</span>::{<span class='ident'>Decoder</span>, <span class='ident'>Decider</span>};
-<span class='kw'>use</span> <span class='ident'>baseband</span>::<span class='ident'>sync</span>::{<span class='ident'>SyncCorrelator</span>, <span class='ident'>SyncDetector</span>};
-<span class='kw'>use</span> <span class='ident'>error</span>::{<span class='ident'>P25Error</span>, <span class='prelude-ty'>Result</span>};
-<span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>nid</span>;
-<span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>status</span>::{<span class='ident'>StreamSymbol</span>, <span class='ident'>StatusDeinterleaver</span>};
+<span class="kw">use</span> <span class="ident">baseband</span>::<span class="ident">decode</span>::{<span class="ident">Decoder</span>, <span class="ident">Decider</span>};
+<span class="kw">use</span> <span class="ident">baseband</span>::<span class="ident">sync</span>::{<span class="ident">SyncCorrelator</span>, <span class="ident">SyncDetector</span>, <span class="ident">SymbolThresholds</span>, <span class="ident">sync_threshold</span>};
+<span class="kw">use</span> <span class="ident">error</span>::{<span class="ident">P25Error</span>, <span class="prelude-ty">Result</span>};
+<span class="kw">use</span> <span class="ident">message</span>::<span class="ident">nid</span>;
+<span class="kw">use</span> <span class="ident">message</span>::<span class="ident">status</span>::{<span class="ident">StreamSymbol</span>, <span class="ident">StatusDeinterleaver</span>};
+<span class="kw">use</span> <span class="ident">stats</span>::{<span class="ident">Stats</span>, <span class="ident">HasStats</span>};
 
-<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>State</span>::<span class='kw-2'>*</span>;
-<span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StateChange</span>::<span class='kw-2'>*</span>;
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">State</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">StateChange</span>::<span class="kw-2">*</span>;
 
-<span class='doccomment'>/// Number of samples used to initially prime the correlator&#39;s moving average before starting to</span>
-<span class='doccomment'>/// look for sync.</span>
-<span class='kw'>const</span> <span class='ident'>PRIME_SAMPLES</span>: <span class='ident'>u32</span> <span class='op'>=</span> <span class='number'>6000</span>;
-
-<span class='doccomment'>/// Low-level receiver for decoding samples into symbols and deinterleaving status</span>
-<span class='doccomment'>/// symbols.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>)]</span>
-<span class='kw'>struct</span> <span class='ident'>SymbolReceiver</span> {
-    <span class='doccomment'>/// Symbol decoder.</span>
-    <span class='ident'>decoder</span>: <span class='ident'>Decoder</span>,
-    <span class='doccomment'>/// Data/Status symbol deinterleaver.</span>
-    <span class='ident'>status</span>: <span class='ident'>StatusDeinterleaver</span>,
+<span class="doccomment">/// Low-level receiver for decoding samples into symbols and deinterleaving status</span>
+<span class="doccomment">/// symbols.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">struct</span> <span class="ident">SymbolReceiver</span> {
+    <span class="doccomment">/// Symbol decoder.</span>
+    <span class="ident">decoder</span>: <span class="ident">Decoder</span>,
+    <span class="doccomment">/// Data/Status symbol deinterleaver.</span>
+    <span class="ident">status</span>: <span class="ident">StatusDeinterleaver</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>SymbolReceiver</span> {
-    <span class='doccomment'>/// Create a new `SymbolReceiver` using the given symbol decoder.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>decoder</span>: <span class='ident'>Decoder</span>) <span class='op'>-&gt;</span> <span class='ident'>SymbolReceiver</span> {
-        <span class='ident'>SymbolReceiver</span> {
-            <span class='ident'>decoder</span>: <span class='ident'>decoder</span>,
-            <span class='ident'>status</span>: <span class='ident'>StatusDeinterleaver</span>::<span class='ident'>new</span>(),
+<span class="kw">impl</span> <span class="ident">SymbolReceiver</span> {
+    <span class="doccomment">/// Create a new `SymbolReceiver` using the given symbol decoder.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">decoder</span>: <span class="ident">Decoder</span>) <span class="op">-&gt;</span> <span class="ident">SymbolReceiver</span> {
+        <span class="ident">SymbolReceiver</span> {
+            <span class="ident">decoder</span>: <span class="ident">decoder</span>,
+            <span class="ident">status</span>: <span class="ident">StatusDeinterleaver</span>::<span class="ident">new</span>(),
         }
     }
 
-    <span class='doccomment'>/// Feed in a baseband symbol, possibly producing a data or status symbol.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>s</span>: <span class='ident'>f32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>StreamSymbol</span><span class='op'>&gt;</span> {
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>decoder</span>.<span class='ident'>feed</span>(<span class='ident'>s</span>) {
-            <span class='prelude-val'>Some</span>(<span class='ident'>dibit</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='self'>self</span>.<span class='ident'>status</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>)),
-            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
+    <span class="doccomment">/// Feed in a baseband symbol, possibly producing a data or status symbol.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">feed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="ident">f32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StreamSymbol</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">decoder</span>.<span class="ident">feed</span>(<span class="ident">s</span>) {
+            <span class="prelude-val">Some</span>(<span class="ident">dibit</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">status</span>.<span class="ident">feed</span>(<span class="ident">dibit</span>)),
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
         }
     }
 }
 
 
-<span class='doccomment'>/// An event seen by the low-level receiver.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>ReceiverEvent</span> {
-    <span class='doccomment'>/// Data or status symbol.</span>
-    <span class='ident'>Symbol</span>(<span class='ident'>StreamSymbol</span>),
-    <span class='doccomment'>/// Decoded NID information.</span>
-    <span class='ident'>NetworkId</span>(<span class='ident'>nid</span>::<span class='ident'>NetworkId</span>),
+<span class="doccomment">/// An event seen by the low-level receiver.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ReceiverEvent</span> {
+    <span class="doccomment">/// Data or status symbol.</span>
+    <span class="ident">Symbol</span>(<span class="ident">StreamSymbol</span>),
+    <span class="doccomment">/// Decoded NID information.</span>
+    <span class="ident">NetworkId</span>(<span class="ident">nid</span>::<span class="ident">NetworkId</span>),
 }
 
-<span class='doccomment'>/// Internal state of the state machine.</span>
-<span class='kw'>enum</span> <span class='ident'>State</span> {
-    <span class='doccomment'>/// Prime the signal power tracker.</span>
-    <span class='ident'>Prime</span>(<span class='ident'>u32</span>),
-    <span class='doccomment'>/// Lock onto frame synchronization.</span>
-    <span class='ident'>Sync</span>(<span class='ident'>SyncDetector</span>),
-    <span class='doccomment'>/// Decode NID.</span>
-    <span class='ident'>DecodeNID</span>(<span class='ident'>SymbolReceiver</span>, <span class='ident'>nid</span>::<span class='ident'>NidReceiver</span>),
-    <span class='doccomment'>/// Decode data and status symbols.</span>
-    <span class='ident'>DecodePacket</span>(<span class='ident'>SymbolReceiver</span>),
-    <span class='doccomment'>/// Flush pads at end of packet.</span>
-    <span class='ident'>FlushPads</span>(<span class='ident'>SymbolReceiver</span>),
+<span class="doccomment">/// Internal state of the state machine.</span>
+<span class="kw">enum</span> <span class="ident">State</span> {
+    <span class="doccomment">/// Lock onto frame synchronization.</span>
+    <span class="ident">Sync</span>(<span class="ident">SyncDetector</span>),
+    <span class="doccomment">/// Decode NID.</span>
+    <span class="ident">DecodeNID</span>(<span class="ident">SymbolReceiver</span>, <span class="ident">nid</span>::<span class="ident">NidReceiver</span>),
+    <span class="doccomment">/// Decode data and status symbols.</span>
+    <span class="ident">DecodePacket</span>(<span class="ident">SymbolReceiver</span>),
+    <span class="doccomment">/// Flush pads at end of packet.</span>
+    <span class="ident">FlushPads</span>(<span class="ident">SymbolReceiver</span>),
 }
 
-<span class='doccomment'>/// Action the state machine should take.</span>
-<span class='kw'>enum</span> <span class='ident'>StateChange</span> {
-    <span class='doccomment'>/// Change to the given state.</span>
-    <span class='ident'>Change</span>(<span class='ident'>State</span>),
-    <span class='doccomment'>/// Propagate the given event.</span>
-    <span class='ident'>Event</span>(<span class='ident'>ReceiverEvent</span>),
-    <span class='doccomment'>/// Change to the given state and propagate the given event.</span>
-    <span class='ident'>EventChange</span>(<span class='ident'>ReceiverEvent</span>, <span class='ident'>State</span>),
-    <span class='doccomment'>/// Propagate the given error.</span>
-    <span class='ident'>Error</span>(<span class='ident'>P25Error</span>),
-    <span class='doccomment'>/// No action necessary.</span>
-    <span class='ident'>NoChange</span>,
+<span class="doccomment">/// Action the state machine should take.</span>
+<span class="kw">enum</span> <span class="ident">StateChange</span> {
+    <span class="doccomment">/// Change to the given state.</span>
+    <span class="ident">Change</span>(<span class="ident">State</span>),
+    <span class="doccomment">/// Propagate the given event.</span>
+    <span class="ident">Event</span>(<span class="ident">ReceiverEvent</span>),
+    <span class="doccomment">/// Change to the given state and propagate the given event.</span>
+    <span class="ident">EventChange</span>(<span class="ident">ReceiverEvent</span>, <span class="ident">State</span>),
+    <span class="doccomment">/// Propagate the given error.</span>
+    <span class="ident">Error</span>(<span class="ident">P25Error</span>),
+    <span class="doccomment">/// No action necessary.</span>
+    <span class="ident">NoChange</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>State</span> {
-    <span class='doccomment'>/// Initial prime state.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>prime</span>() <span class='op'>-&gt;</span> <span class='ident'>State</span> { <span class='ident'>Prime</span>(<span class='number'>1</span>) }
+<span class="kw">impl</span> <span class="ident">State</span> {
+    <span class="doccomment">/// Initial synchronization state.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sync</span>() <span class="op">-&gt;</span> <span class="ident">State</span> { <span class="ident">Sync</span>(<span class="ident">SyncDetector</span>::<span class="ident">new</span>()) }
 
-    <span class='doccomment'>/// Initial synchronization state.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>sync</span>() <span class='op'>-&gt;</span> <span class='ident'>State</span> { <span class='ident'>Sync</span>(<span class='ident'>SyncDetector</span>::<span class='ident'>new</span>()) }
-
-    <span class='doccomment'>/// Initial NID decode state.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode_nid</span>(<span class='ident'>decoder</span>: <span class='ident'>Decoder</span>) <span class='op'>-&gt;</span> <span class='ident'>State</span> {
-        <span class='ident'>DecodeNID</span>(<span class='ident'>SymbolReceiver</span>::<span class='ident'>new</span>(<span class='ident'>decoder</span>), <span class='ident'>nid</span>::<span class='ident'>NidReceiver</span>::<span class='ident'>new</span>())
+    <span class="doccomment">/// Initial NID decode state.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decode_nid</span>(<span class="ident">decoder</span>: <span class="ident">Decoder</span>) <span class="op">-&gt;</span> <span class="ident">State</span> {
+        <span class="ident">DecodeNID</span>(<span class="ident">SymbolReceiver</span>::<span class="ident">new</span>(<span class="ident">decoder</span>), <span class="ident">nid</span>::<span class="ident">NidReceiver</span>::<span class="ident">new</span>())
     }
 
-    <span class='doccomment'>/// Initial symbol decode state.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode_packet</span>(<span class='ident'>recv</span>: <span class='ident'>SymbolReceiver</span>) <span class='op'>-&gt;</span> <span class='ident'>State</span> { <span class='ident'>DecodePacket</span>(<span class='ident'>recv</span>) }
+    <span class="doccomment">/// Initial symbol decode state.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decode_packet</span>(<span class="ident">recv</span>: <span class="ident">SymbolReceiver</span>) <span class="op">-&gt;</span> <span class="ident">State</span> { <span class="ident">DecodePacket</span>(<span class="ident">recv</span>) }
 
-    <span class='doccomment'>/// Initial flush padding state.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>flush_pads</span>(<span class='ident'>recv</span>: <span class='ident'>SymbolReceiver</span>) <span class='op'>-&gt;</span> <span class='ident'>State</span> { <span class='ident'>FlushPads</span>(<span class='ident'>recv</span>) }
+    <span class="doccomment">/// Initial flush padding state.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">flush_pads</span>(<span class="ident">recv</span>: <span class="ident">SymbolReceiver</span>) <span class="op">-&gt;</span> <span class="ident">State</span> { <span class="ident">FlushPads</span>(<span class="ident">recv</span>) }
 }
 
-<span class='doccomment'>/// State machine for low-level data unit reception.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// The state machine consumes baseband samples and performs the following steps common to</span>
-<span class='doccomment'>/// all data units:</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// 1. Track average power of input signal</span>
-<span class='doccomment'>/// 2. Lock onto frame synchronization</span>
-<span class='doccomment'>/// 3. Deinterleave status symbols</span>
-<span class='doccomment'>/// 4. Decode NID information</span>
-<span class='doccomment'>/// 5. Decode dibit symbols until stopped</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>DataUnitReceiver</span> {
-    <span class='doccomment'>/// Current state.</span>
-    <span class='ident'>state</span>: <span class='ident'>State</span>,
-    <span class='doccomment'>/// Tracks input signal power and frame synchronization statistics.</span>
-    <span class='ident'>corr</span>: <span class='ident'>SyncCorrelator</span>,
+<span class="doccomment">/// State machine for low-level data unit reception.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The state machine consumes baseband samples and performs the following steps common to</span>
+<span class="doccomment">/// all data units:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 1. Track average power of input signal</span>
+<span class="doccomment">/// 2. Lock onto frame synchronization</span>
+<span class="doccomment">/// 3. Deinterleave status symbols</span>
+<span class="doccomment">/// 4. Decode NID information</span>
+<span class="doccomment">/// 5. Decode dibit symbols until stopped</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DataUnitReceiver</span> {
+    <span class="doccomment">/// Current state.</span>
+    <span class="ident">state</span>: <span class="ident">State</span>,
+    <span class="doccomment">/// Tracks input signal power and frame synchronization statistics.</span>
+    <span class="ident">corr</span>: <span class="ident">SyncCorrelator</span>,
+    <span class="doccomment">/// Tracks thresholds for symbol decisions.</span>
+    <span class="ident">symthresh</span>: <span class="ident">SymbolThresholds</span>,
+    <span class="ident">stats</span>: <span class="ident">Stats</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>DataUnitReceiver</span> {
-    <span class='doccomment'>/// Create a new `DataUnitReceiver` in the initial reception state.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>DataUnitReceiver</span> {
-        <span class='ident'>DataUnitReceiver</span> {
-            <span class='ident'>state</span>: <span class='ident'>State</span>::<span class='ident'>prime</span>(),
-            <span class='ident'>corr</span>: <span class='ident'>SyncCorrelator</span>::<span class='ident'>new</span>(),
+<span class="kw">impl</span> <span class="ident">DataUnitReceiver</span> {
+    <span class="doccomment">/// Create a new `DataUnitReceiver` in the initial reception state.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">DataUnitReceiver</span> {
+        <span class="ident">DataUnitReceiver</span> {
+            <span class="ident">state</span>: <span class="ident">State</span>::<span class="ident">sync</span>(),
+            <span class="ident">corr</span>: <span class="ident">SyncCorrelator</span>::<span class="ident">new</span>(),
+            <span class="ident">symthresh</span>: <span class="ident">SymbolThresholds</span>::<span class="ident">new</span>(),
+            <span class="ident">stats</span>: <span class="ident">Stats</span>::<span class="ident">default</span>(),
         }
     }
 
-    <span class='doccomment'>/// Flush any remaining padding symbols at the end of the current packet, and reenter</span>
-    <span class='doccomment'>/// the frame synchronization state afterwards.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>flush_pads</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>state</span> {
-            <span class='ident'>DecodePacket</span>(<span class='ident'>recv</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>flush_pads</span>(<span class='ident'>recv</span>),
-            <span class='ident'>Sync</span>(_) <span class='op'>=&gt;</span> {},
-            _ <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;not decoding a packet&quot;</span>),
+    <span class="doccomment">/// Flush any remaining padding symbols at the end of the current packet, and reenter</span>
+    <span class="doccomment">/// the frame synchronization state afterwards.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">flush_pads</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
+            <span class="ident">DecodePacket</span>(<span class="ident">recv</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">flush_pads</span>(<span class="ident">recv</span>),
+            <span class="ident">Sync</span>(_) <span class="op">=&gt;</span> {},
+            _ <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;not decoding a packet&quot;</span>),
         }
     }
 
-    <span class='doccomment'>/// Force the receiver into frame synchronization.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>resync</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) { <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>sync</span>(); }
+    <span class="doccomment">/// Force the receiver into frame synchronization.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">resync</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) { <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">sync</span>(); }
 
-    <span class='doccomment'>/// Determine the next action to take based on the given sample.</span>
-    <span class='kw'>fn</span> <span class='ident'>handle</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>s</span>: <span class='ident'>f32</span>) <span class='op'>-&gt;</span> <span class='ident'>StateChange</span> {
-        <span class='comment'>// Continuously track the input signal power.</span>
-        <span class='kw'>let</span> (<span class='ident'>power</span>, <span class='ident'>thresh</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>corr</span>.<span class='ident'>feed</span>(<span class='ident'>s</span>);
+    <span class="doccomment">/// Determine the next action to take based on the given sample.</span>
+    <span class="kw">fn</span> <span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="ident">f32</span>) <span class="op">-&gt;</span> <span class="ident">StateChange</span> {
+        <span class="comment">// Continuously track the input signal power.</span>
+        <span class="kw">let</span> (<span class="ident">corrpow</span>, <span class="ident">sigpow</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">corr</span>.<span class="ident">feed</span>(<span class="ident">s</span>);
 
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>state</span> {
-            <span class='ident'>Prime</span>(<span class='ident'>t</span>) <span class='op'>=&gt;</span> <span class='kw'>if</span> <span class='ident'>t</span> <span class='op'>==</span> <span class='ident'>PRIME_SAMPLES</span> {
-                <span class='ident'>Change</span>(<span class='ident'>State</span>::<span class='ident'>sync</span>())
-            } <span class='kw'>else</span> {
-                <span class='ident'>Change</span>(<span class='ident'>Prime</span>(<span class='ident'>t</span> <span class='op'>+</span> <span class='number'>1</span>))
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
+            <span class="ident">Sync</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">sync</span>) <span class="op">=&gt;</span> <span class="kw">if</span> <span class="ident">sync</span>.<span class="ident">detect</span>(<span class="ident">corrpow</span>, <span class="ident">sync_threshold</span>(<span class="ident">sigpow</span>)) {
+                <span class="kw">let</span> <span class="ident">history</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">corr</span>.<span class="ident">history</span>();
+                <span class="kw">let</span> (<span class="ident">p</span>, <span class="ident">m</span>, <span class="ident">n</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">symthresh</span>.<span class="ident">thresholds</span>(<span class="kw-2">&amp;</span><span class="ident">history</span>);
+
+                <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;pos:{} mid:{} neg:{}&quot;</span>, <span class="ident">p</span>, <span class="ident">m</span>, <span class="ident">n</span>);
+
+                <span class="ident">Change</span>(<span class="ident">State</span>::<span class="ident">decode_nid</span>(<span class="ident">Decoder</span>::<span class="ident">new</span>(<span class="ident">Decider</span>::<span class="ident">new</span>(<span class="ident">p</span>, <span class="ident">m</span>, <span class="ident">n</span>))))
+            } <span class="kw">else</span> {
+                <span class="ident">NoChange</span>
             },
-            <span class='ident'>Sync</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>sync</span>) <span class='op'>=&gt;</span> <span class='kw'>if</span> <span class='ident'>sync</span>.<span class='ident'>feed</span>(<span class='ident'>power</span>, <span class='ident'>thresh</span>) {
-                <span class='kw'>let</span> (<span class='ident'>p</span>, <span class='ident'>m</span>, <span class='ident'>n</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>corr</span>.<span class='ident'>thresholds</span>();
-                <span class='ident'>Change</span>(<span class='ident'>State</span>::<span class='ident'>decode_nid</span>(<span class='ident'>Decoder</span>::<span class='ident'>new</span>(<span class='ident'>Decider</span>::<span class='ident'>new</span>(<span class='ident'>p</span>, <span class='ident'>m</span>, <span class='ident'>n</span>))))
-            } <span class='kw'>else</span> {
-                <span class='ident'>NoChange</span>
-            },
-            <span class='ident'>DecodeNID</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>recv</span>, <span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>nid</span>) <span class='op'>=&gt;</span> {
-                <span class='kw'>let</span> <span class='ident'>dibit</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>recv</span>.<span class='ident'>feed</span>(<span class='ident'>s</span>) {
-                    <span class='prelude-val'>Some</span>(<span class='ident'>StreamSymbol</span>::<span class='ident'>Data</span>(<span class='ident'>d</span>)) <span class='op'>=&gt;</span> <span class='ident'>d</span>,
-                    <span class='prelude-val'>Some</span>(<span class='ident'>s</span>) <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='ident'>Event</span>(<span class='ident'>ReceiverEvent</span>::<span class='ident'>Symbol</span>(<span class='ident'>s</span>)),
-                    <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='ident'>NoChange</span>,
+            <span class="ident">DecodeNID</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">recv</span>, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">nidrecv</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">dibit</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">recv</span>.<span class="ident">feed</span>(<span class="ident">s</span>) {
+                    <span class="prelude-val">Some</span>(<span class="ident">StreamSymbol</span>::<span class="ident">Data</span>(<span class="ident">d</span>)) <span class="op">=&gt;</span> <span class="ident">d</span>,
+                    <span class="prelude-val">Some</span>(<span class="ident">s</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">Event</span>(<span class="ident">ReceiverEvent</span>::<span class="ident">Symbol</span>(<span class="ident">s</span>)),
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">NoChange</span>,
                 };
 
-                <span class='kw'>match</span> <span class='ident'>nid</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
-                    <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>nid</span>)) <span class='op'>=&gt;</span> <span class='ident'>EventChange</span>(<span class='ident'>ReceiverEvent</span>::<span class='ident'>NetworkId</span>(<span class='ident'>nid</span>),
-                                                 <span class='ident'>State</span>::<span class='ident'>decode_packet</span>(<span class='kw-2'>*</span><span class='ident'>recv</span>)),
-                    <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>e</span>)) <span class='op'>=&gt;</span> <span class='ident'>Error</span>(<span class='ident'>e</span>),
-                    <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='ident'>NoChange</span>,
+                <span class="kw">match</span> <span class="ident">nidrecv</span>.<span class="ident">feed</span>(<span class="ident">dibit</span>) {
+                    <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">nid</span>)) <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">stats</span>.<span class="ident">merge</span>(<span class="ident">nidrecv</span>);
+                        <span class="ident">EventChange</span>(<span class="ident">ReceiverEvent</span>::<span class="ident">NetworkId</span>(<span class="ident">nid</span>),
+                                    <span class="ident">State</span>::<span class="ident">decode_packet</span>(<span class="kw-2">*</span><span class="ident">recv</span>))
+                    },
+                    <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">e</span>)) <span class="op">=&gt;</span> <span class="ident">Error</span>(<span class="ident">e</span>),
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">NoChange</span>,
                 }
             },
-            <span class='ident'>DecodePacket</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>recv</span>) <span class='op'>=&gt;</span> <span class='kw'>match</span> <span class='ident'>recv</span>.<span class='ident'>feed</span>(<span class='ident'>s</span>) {
-                <span class='prelude-val'>Some</span>(<span class='ident'>x</span>) <span class='op'>=&gt;</span> <span class='ident'>Event</span>(<span class='ident'>ReceiverEvent</span>::<span class='ident'>Symbol</span>(<span class='ident'>x</span>)),
-                <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='ident'>NoChange</span>,
+            <span class="ident">DecodePacket</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">recv</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">recv</span>.<span class="ident">feed</span>(<span class="ident">s</span>) {
+                <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">Event</span>(<span class="ident">ReceiverEvent</span>::<span class="ident">Symbol</span>(<span class="ident">x</span>)),
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">NoChange</span>,
             },
-            <span class='ident'>FlushPads</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>recv</span>) <span class='op'>=&gt;</span> <span class='kw'>match</span> <span class='ident'>recv</span>.<span class='ident'>feed</span>(<span class='ident'>s</span>) {
-                <span class='doccomment'>/// According to the spec, the stream is padded until the next status</span>
-                <span class='doccomment'>/// symbol boundary.</span>
-                <span class='prelude-val'>Some</span>(<span class='ident'>StreamSymbol</span>::<span class='ident'>Status</span>(_)) <span class='op'>=&gt;</span> <span class='ident'>Change</span>(<span class='ident'>State</span>::<span class='ident'>sync</span>()),
-                _ <span class='op'>=&gt;</span> <span class='ident'>NoChange</span>,
+            <span class="ident">FlushPads</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">recv</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">recv</span>.<span class="ident">feed</span>(<span class="ident">s</span>) {
+                <span class="comment">// According to the spec, the stream is padded until the next status</span>
+                <span class="comment">// symbol boundary.</span>
+                <span class="prelude-val">Some</span>(<span class="ident">StreamSymbol</span>::<span class="ident">Status</span>(_)) <span class="op">=&gt;</span> <span class="ident">Change</span>(<span class="ident">State</span>::<span class="ident">sync</span>()),
+                _ <span class="op">=&gt;</span> <span class="ident">NoChange</span>,
             },
         }
     }
 
-    <span class='doccomment'>/// Feed in a baseband symbol, possibly producing a receiver event. Return</span>
-    <span class='doccomment'>/// `Some(Ok(event))` for any normal event, `Some(Err(err))` for any error, and `None`</span>
-    <span class='doccomment'>/// if no event occurred.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>s</span>: <span class='ident'>f32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>ReceiverEvent</span><span class='op'>&gt;&gt;</span> {
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>handle</span>(<span class='ident'>s</span>) {
-            <span class='ident'>Change</span>(<span class='ident'>state</span>) <span class='op'>=&gt;</span> {
-                <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>state</span>;
-                <span class='prelude-val'>None</span>
+    <span class="doccomment">/// Feed in a baseband symbol, possibly producing a receiver event. Return</span>
+    <span class="doccomment">/// `Some(Ok(event))` for any normal event, `Some(Err(err))` for any error, and `None`</span>
+    <span class="doccomment">/// if no event occurred.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">feed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="ident">f32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ReceiverEvent</span><span class="op">&gt;&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">handle</span>(<span class="ident">s</span>) {
+            <span class="ident">Change</span>(<span class="ident">state</span>) <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">state</span>;
+                <span class="prelude-val">None</span>
             },
-            <span class='ident'>Event</span>(<span class='ident'>event</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>event</span>)),
-            <span class='ident'>EventChange</span>(<span class='ident'>event</span>, <span class='ident'>state</span>) <span class='op'>=&gt;</span> {
-                <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>state</span>;
-                <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>event</span>))
+            <span class="ident">Event</span>(<span class="ident">event</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">event</span>)),
+            <span class="ident">EventChange</span>(<span class="ident">event</span>, <span class="ident">state</span>) <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">state</span>;
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">event</span>))
             },
-            <span class='ident'>Error</span>(<span class='ident'>err</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>err</span>)),
-            <span class='ident'>NoChange</span> <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
+            <span class="ident">Error</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">err</span>)),
+            <span class="ident">NoChange</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
         }
     }
+}
+
+<span class="kw">impl</span> <span class="ident">HasStats</span> <span class="kw">for</span> <span class="ident">DataUnitReceiver</span> {
+    <span class="kw">fn</span> <span class="ident">stats</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Stats</span> { <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">stats</span> }
 }
 </pre>
 </section>
@@ -468,13 +475,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -508,7 +517,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

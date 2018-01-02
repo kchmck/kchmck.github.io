@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc struct">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../index.html'>imbe</a>::<wbr><a href='index.html'>voiced</a></p><script>window.sidebarCurrent = {name: 'Voiced', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct Voiced</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.new">new</a><a href="#method.get">get</a></div></div><p class='location'><a href='../index.html'>imbe</a>::<wbr><a href='index.html'>voiced</a></p><script>window.sidebarCurrent = {name: 'Voiced', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,16 +44,20 @@
         </form>
     </nav>
 
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>imbe</a>::<wbr><a href='index.html'>voiced</a>::<wbr><a class='struct' href=''>Voiced</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>imbe</a>::<wbr><a href='index.html'>voiced</a>::<wbr><a class="struct" href=''>Voiced</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../src/imbe/voiced.rs.html#92-103' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Voiced&lt;'a, 'b, 'c, 'd&gt; { /* fields omitted */ }</pre><div class='docblock'><p>Synthesizes voiced spectrum signal s<sub>v</sub>(n).</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a, 'b, 'c, 'd&gt; <a class='struct' href='../../imbe/voiced/struct.Voiced.html' title='struct imbe::voiced::Voiced'>Voiced</a>&lt;'a, 'b, 'c, 'd&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#105-166' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='struct imbe::params::BaseParams'>BaseParams</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; prev: &amp;'a <a class='struct' href='../../imbe/prev/struct.PrevFrame.html' title='struct imbe::prev::PrevFrame'>PrevFrame</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; phase: &amp;'b <a class='struct' href='../../imbe/voiced/struct.Phase.html' title='struct imbe::voiced::Phase'>Phase</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; amps: &amp;'c <a class='struct' href='../../imbe/enhance/struct.EnhancedSpectrals.html' title='struct imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; voice: &amp;'d <a class='struct' href='../../imbe/descramble/struct.VoiceDecisions.html' title='struct imbe::descramble::VoiceDecisions'>VoiceDecisions</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; Self</code></span></h4>
-<h4 id='method.get' class='method'><span id='get.v' class='invisible'><code>fn <a href='#method.get' class='fnname'>get</a>(&amp;self, n: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a></code></span></h4>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl&lt;'a, 'b, 'c, 'd&gt; <a class="struct" href="../../imbe/voiced/struct.Voiced.html" title="struct imbe::voiced::Voiced">Voiced</a>&lt;'a, 'b, 'c, 'd&gt;</code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#105-166' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>pub fn <a href='#method.new' class='fnname'>new</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;params: &amp;<a class="struct" href="../../imbe/params/struct.BaseParams.html" title="struct imbe::params::BaseParams">BaseParams</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;prev: &amp;'a <a class="struct" href="../../imbe/prev/struct.PrevFrame.html" title="struct imbe::prev::PrevFrame">PrevFrame</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;phase: &amp;'b <a class="struct" href="../../imbe/voiced/struct.Phase.html" title="struct imbe::voiced::Phase">Phase</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;amps: &amp;'c <a class="struct" href="../../imbe/enhance/struct.EnhancedSpectrals.html" title="struct imbe::enhance::EnhancedSpectrals">EnhancedSpectrals</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;voice: &amp;'d <a class="struct" href="../../imbe/descramble/struct.VoiceDecisions.html" title="struct imbe::descramble::VoiceDecisions">VoiceDecisions</a><br>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#106-120' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.get' class="method"><span id='get.v' class='invisible'><code>pub fn <a href='#method.get' class='fnname'>get</a>(&amp;self, n: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#158-165' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Compute the voiced signal sample s<sub>v</sub>(n) for the given sample n, 0 ≤ n &lt;
 160.</p>
 </div></div></section>
@@ -72,13 +77,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -112,7 +119,6 @@
         window.rootPath = "../../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

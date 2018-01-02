@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc struct">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../index.html'>imbe</a>::<wbr><a href='index.html'>frame</a></p><script>window.sidebarCurrent = {name: 'ReceivedFrame', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct ReceivedFrame</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#fields">Fields</a><div class="sidebar-links"><a href="#structfield.chunks">chunks</a><a href="#structfield.errors">errors</a></div><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.new">new</a></div></div><p class='location'><a href='../index.html'>imbe</a>::<wbr><a href='index.html'>frame</a></p><script>window.sidebarCurrent = {name: 'ReceivedFrame', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,26 +44,33 @@
         </form>
     </nav>
 
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>imbe</a>::<wbr><a href='index.html'>frame</a>::<wbr><a class='struct' href=''>ReceivedFrame</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>imbe</a>::<wbr><a href='index.html'>frame</a>::<wbr><a class="struct" href=''>ReceivedFrame</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../src/imbe/frame.rs.html#13-18' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct ReceivedFrame {
-    pub chunks: <a class='type' href='../../imbe/frame/type.Chunks.html' title='type imbe::frame::Chunks'>Chunks</a>,
-    pub errors: <a class='type' href='../../imbe/frame/type.Errors.html' title='type imbe::frame::Errors'>Errors</a>,
+    pub chunks: <a class="type" href="../../imbe/frame/type.Chunks.html" title="type imbe::frame::Chunks">Chunks</a>,
+    pub errors: <a class="type" href="../../imbe/frame/type.Errors.html" title="type imbe::frame::Errors">Errors</a>,
 }</pre><div class='docblock'><p>A received IMBE voice frame.</p>
-</div><h2 class='fields'>Fields</h2><span id='structfield.chunks' class='structfield'>
-                           <span id='chunks.v' class='invisible'>
-                           <code>chunks: <a class='type' href='../../imbe/frame/type.Chunks.html' title='type imbe::frame::Chunks'>Chunks</a></code>
+</div><h2 id='fields' class='fields small-section-header'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.chunks" class="structfield small-section-header">
+                           <a href="#structfield.chunks" class="anchor field"></a>
+                           <span id="chunks.v" class='invisible'>
+                           <code>chunks: <a class="type" href="../../imbe/frame/type.Chunks.html" title="type imbe::frame::Chunks">Chunks</a></code>
                            </span></span><div class='docblock'><p>Prioritized bit vector chunks, u<sub>0</sub>, ..., u<sub>7</sub>.</p>
-</div><span id='structfield.errors' class='structfield'>
-                           <span id='errors.v' class='invisible'>
-                           <code>errors: <a class='type' href='../../imbe/frame/type.Errors.html' title='type imbe::frame::Errors'>Errors</a></code>
+</div><span id="structfield.errors" class="structfield small-section-header">
+                           <a href="#structfield.errors" class="anchor field"></a>
+                           <span id="errors.v" class='invisible'>
+                           <code>errors: <a class="type" href="../../imbe/frame/type.Errors.html" title="type imbe::frame::Errors">Errors</a></code>
                            </span></span><div class='docblock'><p>Error correction counts, ϵ<sub>0</sub>, ..., ϵ<sub>6</sub>.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/frame/struct.ReceivedFrame.html' title='struct imbe::frame::ReceivedFrame'>ReceivedFrame</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/frame.rs.html#20-42' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(chunks: <a class='type' href='../../imbe/frame/type.Chunks.html' title='type imbe::frame::Chunks'>Chunks</a>, errors: <a class='type' href='../../imbe/frame/type.Errors.html' title='type imbe::frame::Errors'>Errors</a>) -&gt; <a class='struct' href='../../imbe/frame/struct.ReceivedFrame.html' title='struct imbe::frame::ReceivedFrame'>ReceivedFrame</a></code></span></h4>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../../imbe/frame/struct.ReceivedFrame.html" title="struct imbe::frame::ReceivedFrame">ReceivedFrame</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/frame.rs.html#20-42' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>pub fn <a href='#method.new' class='fnname'>new</a>(chunks: <a class="type" href="../../imbe/frame/type.Chunks.html" title="type imbe::frame::Chunks">Chunks</a>, errors: <a class="type" href="../../imbe/frame/type.Errors.html" title="type imbe::frame::Errors">Errors</a>) -&gt; <a class="struct" href="../../imbe/frame/struct.ReceivedFrame.html" title="struct imbe::frame::ReceivedFrame">ReceivedFrame</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/frame.rs.html#23-41' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Create a new <code>ReceivedFrame</code> from the given chunks u<sub>0</sub>, ...,
 u<sub>7</sub> and error counts ϵ<sub>0</sub>, ..., ϵ<sub>6</sub>.</p>
 </div></div></section>
@@ -82,13 +90,15 @@ u<sub>7</sub> and error counts ϵ<sub>0</sub>, ..., ϵ<sub>6</sub>.</p>
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -122,7 +132,6 @@ u<sub>7</sub> and error counts ϵ<sub>0</sub>, ..., ϵ<sub>6</sub>.</p>
         window.rootPath = "../../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

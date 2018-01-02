@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc mod">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../index.html'>imbe</a></p><script>window.sidebarCurrent = {name: 'enhance', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'>Module enhance</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'><a href='../index.html'>imbe</a></p><script>window.sidebarCurrent = {name: 'enhance', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,8 +44,8 @@
         </form>
     </nav>
 
-    <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>imbe</a>::<wbr><a class='mod' href=''>enhance</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>imbe</a>::<wbr><a class="mod" href=''>enhance</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
@@ -53,14 +54,14 @@
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.EnhanceErrors.html'
+                           <td><a class="struct" href="struct.EnhanceErrors.html"
                                   title='struct imbe::enhance::EnhanceErrors'>EnhanceErrors</a></td>
                            <td class='docblock-short'>
                                 <p>Values derived from error correction decoding.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.EnhancedSpectrals.html'
+                           <td><a class="struct" href="struct.EnhancedSpectrals.html"
                                   title='struct imbe::enhance::EnhancedSpectrals'>EnhancedSpectrals</a></td>
                            <td class='docblock-short'>
                                 <p>Enhanced spectral amplitudes, &quot;overbar&quot; M<sub>l</sub>, are derived from the decoded
@@ -68,7 +69,7 @@ spectral amplitudes, &quot;tilde&quot; M<sub>l</sub>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.FrameEnergy.html'
+                           <td><a class="struct" href="struct.FrameEnergy.html"
                                   title='struct imbe::enhance::FrameEnergy'>FrameEnergy</a></td>
                            <td class='docblock-short'>
                                 <p>Energy-related parameters for a voice frame.</p>
@@ -76,7 +77,7 @@ spectral amplitudes, &quot;tilde&quot; M<sub>l</sub>.</p>
                        </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='fn' href='fn.amp_thresh.html'
+                           <td><a class="fn" href="fn.amp_thresh.html"
                                   title='fn imbe::enhance::amp_thresh'>amp_thresh</a></td>
                            <td class='docblock-short'>
                                 <p>Compute the spectral amplitude threshold τ<sub>M</sub> used in adaptive smoothing from
@@ -84,7 +85,7 @@ the given error characteristics and previous amplitude threshold.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='fn' href='fn.should_mute.html'
+                           <td><a class="fn" href="fn.should_mute.html"
                                   title='fn imbe::enhance::should_mute'>should_mute</a></td>
                            <td class='docblock-short'>
                                 <p>Check if the current frame should be discarded and replaced with silence/comfort noise
@@ -92,7 +93,7 @@ based on the given error characteristics of the current frame.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='fn' href='fn.should_repeat.html'
+                           <td><a class="fn" href="fn.should_repeat.html"
                                   title='fn imbe::enhance::should_repeat'>should_repeat</a></td>
                            <td class='docblock-short'>
                                 <p>Check whether the current frame should be discarded and the previous repeated based on
@@ -100,7 +101,7 @@ the given error characteristics of the current frame.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='fn' href='fn.smooth.html'
+                           <td><a class="fn" href="fn.smooth.html"
                                   title='fn imbe::enhance::smooth'>smooth</a></td>
                            <td class='docblock-short'>
                                 <p>Smooth the given enhanced spectral amplitudes M<sub>l</sub> and voiced/unvoiced
@@ -124,13 +125,15 @@ energy, and spectral amplitude threshold τ<sub>M</sub> for the current frame.</
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -164,7 +167,6 @@ energy, and spectral amplitude threshold τ<sub>M</sub> for the current frame.</
         window.rootPath = "../../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

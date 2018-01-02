@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1"> 1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1"> 1</span>
 <span id="2"> 2</span>
 <span id="3"> 3</span>
 <span id="4"> 4</span>
@@ -77,40 +78,40 @@
 <span id="32">32</span>
 <span id="33">33</span>
 <span id="34">34</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Implements Project 25&#39;s data packet specification.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Implements Project 25&#39;s data packet specification.</span>
 
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>coder</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>crc</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>fields</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>fragment</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>header</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>interleave</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>packet</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>params</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>payload</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">coder</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">crc</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">fields</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">fragment</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">header</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">interleave</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">packet</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">params</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">payload</span>;
 
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>fragment</span>::{<span class='ident'>ConfirmedFragments</span>, <span class='ident'>UnconfirmedFragments</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">fragment</span>::{<span class="ident">ConfirmedFragments</span>, <span class="ident">UnconfirmedFragments</span>};
 
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>header</span>::{
-    <span class='ident'>ConfirmedHeader</span>,
-    <span class='ident'>ConfirmedFields</span>,
-    <span class='ident'>ConfirmedPreamble</span>,
-    <span class='ident'>UnconfirmedHeader</span>,
-    <span class='ident'>UnconfirmedFields</span>,
-    <span class='ident'>UnconfirmedPreamble</span>,
-    <span class='ident'>ServiceAccessPoint</span>,
-    <span class='ident'>Manufacturer</span>,
-    <span class='ident'>LogicalLink</span>,
-    <span class='ident'>BlockCount</span>,
-    <span class='ident'>PadCount</span>,
-    <span class='ident'>Sequencing</span>,
-    <span class='ident'>DataOffset</span>,
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">header</span>::{
+    <span class="ident">ConfirmedHeader</span>,
+    <span class="ident">ConfirmedFields</span>,
+    <span class="ident">ConfirmedPreamble</span>,
+    <span class="ident">UnconfirmedHeader</span>,
+    <span class="ident">UnconfirmedFields</span>,
+    <span class="ident">UnconfirmedPreamble</span>,
+    <span class="ident">ServiceAccessPoint</span>,
+    <span class="ident">Manufacturer</span>,
+    <span class="ident">LogicalLink</span>,
+    <span class="ident">BlockCount</span>,
+    <span class="ident">PadCount</span>,
+    <span class="ident">Sequencing</span>,
+    <span class="ident">DataOffset</span>,
 };
 
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>payload</span>::{
-    <span class='ident'>ConfirmedPayload</span>,
-    <span class='ident'>UnconfirmedPayload</span>,
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">payload</span>::{
+    <span class="ident">ConfirmedPayload</span>,
+    <span class="ident">UnconfirmedPayload</span>,
 };
 </pre>
 </section>
@@ -130,13 +131,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -170,7 +173,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

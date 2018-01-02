@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -478,440 +479,440 @@
 <span id="433">433</span>
 <span id="434">434</span>
 <span id="435">435</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Decode various trunking-related packet fields.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Decode various trunking-related packet fields.</span>
 
-<span class='kw'>use</span> <span class='ident'>util</span>::{<span class='ident'>slice_u16</span>, <span class='ident'>slice_u24</span>, <span class='ident'>slice_u32</span>};
+<span class="kw">use</span> <span class="ident">util</span>::{<span class="ident">slice_u16</span>, <span class="ident">slice_u24</span>, <span class="ident">slice_u32</span>};
 
-<span class='doccomment'>/// Options that can be requested/granted by a service.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ServiceOptions</span>(<span class='ident'>u8</span>);
+<span class="doccomment">/// Options that can be requested/granted by a service.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ServiceOptions</span>(<span class="ident">u8</span>);
 
-<span class='kw'>impl</span> <span class='ident'>ServiceOptions</span> {
-    <span class='doccomment'>/// Create a new `ServiceOptions` based on the given byte.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>opts</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>ServiceOptions</span> { <span class='ident'>ServiceOptions</span>(<span class='ident'>opts</span>) }
+<span class="kw">impl</span> <span class="ident">ServiceOptions</span> {
+    <span class="doccomment">/// Create a new `ServiceOptions` based on the given byte.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">opts</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">ServiceOptions</span> { <span class="ident">ServiceOptions</span>(<span class="ident">opts</span>) }
 
-    <span class='doccomment'>/// Whether the service should be processed as an emergency.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>emergency</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&gt;&gt;</span> <span class='number'>7</span> <span class='op'>==</span> <span class='number'>1</span> }
-    <span class='doccomment'>/// Whether the channel should be encrypted.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>protected</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&gt;&gt;</span> <span class='number'>6</span> <span class='op'>&amp;</span> <span class='number'>1</span> <span class='op'>==</span> <span class='number'>1</span> }
-    <span class='doccomment'>/// Whether the channel should be full duplex for simultaneous transmit and receive</span>
-    <span class='doccomment'>/// (otherwise fall back to half duplex.)</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>full_duplex</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&gt;&gt;</span> <span class='number'>5</span> <span class='op'>&amp;</span> <span class='number'>1</span> <span class='op'>==</span> <span class='number'>1</span> }
-    <span class='doccomment'>/// Whether the service should be packet switched (otherwise fall back to circuit</span>
-    <span class='doccomment'>/// switched.)</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>packet_switched</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&gt;&gt;</span> <span class='number'>4</span> <span class='op'>&amp;</span> <span class='number'>1</span> <span class='op'>==</span> <span class='number'>1</span> }
-    <span class='doccomment'>/// Priority assigned to service, with 1 as lowest and 7 as highest.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>prio</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>0x7</span> }
+    <span class="doccomment">/// Whether the service should be processed as an emergency.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">emergency</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&gt;&gt;</span> <span class="number">7</span> <span class="op">==</span> <span class="number">1</span> }
+    <span class="doccomment">/// Whether the channel should be encrypted.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">protected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&gt;&gt;</span> <span class="number">6</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> }
+    <span class="doccomment">/// Whether the channel should be full duplex for simultaneous transmit and receive</span>
+    <span class="doccomment">/// (otherwise fall back to half duplex.)</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">full_duplex</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&gt;&gt;</span> <span class="number">5</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> }
+    <span class="doccomment">/// Whether the service should be packet switched (otherwise fall back to circuit</span>
+    <span class="doccomment">/// switched.)</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">packet_switched</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&gt;&gt;</span> <span class="number">4</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> }
+    <span class="doccomment">/// Priority assigned to service, with 1 as lowest and 7 as highest.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prio</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">0x7</span> }
 }
 
-<span class='doccomment'>/// Uniquely identifies a channel within a site.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Channel</span>(<span class='ident'>u16</span>);
+<span class="doccomment">/// Uniquely identifies a channel within a site.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Channel</span>(<span class="ident">u16</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Channel</span> {
-    <span class='doccomment'>/// Create a new `Channel` from the given 16 bits.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>bytes</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='ident'>Channel</span> { <span class='ident'>Channel</span>(<span class='ident'>slice_u16</span>(<span class='ident'>bytes</span>)) }
+<span class="kw">impl</span> <span class="ident">Channel</span> {
+    <span class="doccomment">/// Create a new `Channel` from the given 16 bits.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">Channel</span> { <span class="ident">Channel</span>(<span class="ident">slice_u16</span>(<span class="ident">bytes</span>)) }
 
-    <span class='doccomment'>/// Channel ID whose parameters to use.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>id</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { (<span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&gt;&gt;</span> <span class='number'>12</span>) <span class='kw'>as</span> <span class='ident'>u8</span> }
-    <span class='doccomment'>/// Individual channel number within the channel.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>number</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>0xFFF</span> }
+    <span class="doccomment">/// Channel ID whose parameters to use.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { (<span class="self">self</span>.<span class="number">0</span> <span class="op">&gt;&gt;</span> <span class="number">12</span>) <span class="kw">as</span> <span class="ident">u8</span> }
+    <span class="doccomment">/// Individual channel number within the channel.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">number</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u16</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">0xFFF</span> }
 }
 
-<span class='doccomment'>/// Identifies which group a message belongs to.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// In a production P25 system, users can set their radios to receive one or more</span>
-<span class='doccomment'>/// talkgroups, and the radio will only unsquelch if one of those talkgroups is seen.</span>
-<span class='doccomment'>/// Additionally, the user directs each transmission to a talkgroup selected on the</span>
-<span class='doccomment'>/// radio.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>)]</span>
-<span class='attribute'>#[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;ser&quot;</span>, <span class='ident'>derive</span>(<span class='ident'>Serialize</span>))]</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>TalkGroup</span> {
-    <span class='doccomment'>/// Includes nobody.</span>
-    <span class='ident'>Nobody</span>,
-    <span class='doccomment'>/// Default talkgroup when no other is selected.</span>
-    <span class='ident'>Default</span>,
-    <span class='doccomment'>/// Includes everybody.</span>
-    <span class='ident'>Everbody</span>,
-    <span class='doccomment'>/// Specific group of users.</span>
-    <span class='ident'>Other</span>(<span class='ident'>u16</span>),
+<span class="doccomment">/// Identifies which group a message belongs to.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// In a production P25 system, users can set their radios to receive one or more</span>
+<span class="doccomment">/// talkgroups, and the radio will only unsquelch if one of those talkgroups is seen.</span>
+<span class="doccomment">/// Additionally, the user directs each transmission to a talkgroup selected on the</span>
+<span class="doccomment">/// radio.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ser&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>))]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TalkGroup</span> {
+    <span class="doccomment">/// Includes nobody.</span>
+    <span class="ident">Nobody</span>,
+    <span class="doccomment">/// Default talkgroup when no other is selected.</span>
+    <span class="ident">Default</span>,
+    <span class="doccomment">/// Includes everybody.</span>
+    <span class="ident">Everbody</span>,
+    <span class="doccomment">/// Specific group of users.</span>
+    <span class="ident">Other</span>(<span class="ident">u16</span>),
 }
 
-<span class='kw'>impl</span> <span class='ident'>TalkGroup</span> {
-    <span class='doccomment'>/// Parse a talkgroup from the given 16 bit slice.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>bytes</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='ident'>TalkGroup</span> {
-        <span class='self'>Self</span>::<span class='ident'>from_bits</span>(<span class='ident'>slice_u16</span>(<span class='ident'>bytes</span>))
+<span class="kw">impl</span> <span class="ident">TalkGroup</span> {
+    <span class="doccomment">/// Parse a talkgroup from the given 16 bit slice.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">TalkGroup</span> {
+        <span class="self">Self</span>::<span class="ident">from_bits</span>(<span class="ident">slice_u16</span>(<span class="ident">bytes</span>))
     }
 
-    <span class='doccomment'>/// Parse a talkgroup from the given 16 bits.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_bits</span>(<span class='ident'>bits</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='ident'>TalkGroup</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>TalkGroup</span>::<span class='kw-2'>*</span>;
+    <span class="doccomment">/// Parse a talkgroup from the given 16 bits.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bits</span>(<span class="ident">bits</span>: <span class="ident">u16</span>) <span class="op">-&gt;</span> <span class="ident">TalkGroup</span> {
+        <span class="kw">use</span> <span class="self">self</span>::<span class="ident">TalkGroup</span>::<span class="kw-2">*</span>;
 
-        <span class='kw'>match</span> <span class='ident'>bits</span> {
-            <span class='number'>0x0000</span> <span class='op'>=&gt;</span> <span class='ident'>Nobody</span>,
-            <span class='number'>0x0001</span> <span class='op'>=&gt;</span> <span class='ident'>Default</span>,
-            <span class='number'>0xFFFF</span> <span class='op'>=&gt;</span> <span class='ident'>Everbody</span>,
-            _ <span class='op'>=&gt;</span> <span class='ident'>Other</span>(<span class='ident'>bits</span>),
+        <span class="kw">match</span> <span class="ident">bits</span> {
+            <span class="number">0x0000</span> <span class="op">=&gt;</span> <span class="ident">Nobody</span>,
+            <span class="number">0x0001</span> <span class="op">=&gt;</span> <span class="ident">Default</span>,
+            <span class="number">0xFFFF</span> <span class="op">=&gt;</span> <span class="ident">Everbody</span>,
+            _ <span class="op">=&gt;</span> <span class="ident">Other</span>(<span class="ident">bits</span>),
         }
     }
 }
 
-<span class='doccomment'>/// Supported services of a control channel.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>SystemServices</span>(<span class='ident'>u8</span>);
+<span class="doccomment">/// Supported services of a control channel.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SystemServices</span>(<span class="ident">u8</span>);
 
-<span class='kw'>impl</span> <span class='ident'>SystemServices</span> {
-    <span class='doccomment'>/// Create a new `SystemServices` from the given byte.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>ssc</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>SystemServices</span>(<span class='ident'>ssc</span>) }
+<span class="kw">impl</span> <span class="ident">SystemServices</span> {
+    <span class="doccomment">/// Create a new `SystemServices` from the given byte.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">ssc</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="ident">SystemServices</span>(<span class="ident">ssc</span>) }
 
-    <span class='doccomment'>/// Whether channel can also operate as a traffic channel in busy conditions.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_composite</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>0x01</span> <span class='op'>!=</span> <span class='number'>0</span> }
-    <span class='doccomment'>/// Whether channel only transmits updates (and doesn&#39;t accept data, voice, etc.</span>
-    <span class='doccomment'>/// service requests.)</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>updates_only</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>0x02</span> <span class='op'>!=</span> <span class='number'>0</span> }
-    <span class='doccomment'>/// Whether channel operates only as backup to a primary control channel.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_backup</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>0x04</span> <span class='op'>!=</span> <span class='number'>0</span> }
-    <span class='doccomment'>/// Supports data service requests.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>has_data</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>0x10</span> <span class='op'>!=</span> <span class='number'>0</span> }
-    <span class='doccomment'>/// Supports voice service requests.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>has_voice</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>0x20</span> <span class='op'>!=</span> <span class='number'>0</span> }
-    <span class='doccomment'>/// Supports registration requests.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>has_registration</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>0x40</span> <span class='op'>!=</span> <span class='number'>0</span> }
-    <span class='doccomment'>/// Supports authentication requests.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>has_auth</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>0x80</span> <span class='op'>!=</span> <span class='number'>0</span> }
+    <span class="doccomment">/// Whether channel can also operate as a traffic channel in busy conditions.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_composite</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">0x01</span> <span class="op">!=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Whether channel only transmits updates (and doesn&#39;t accept data, voice, etc.</span>
+    <span class="doccomment">/// service requests.)</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">updates_only</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">0x02</span> <span class="op">!=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Whether channel operates only as backup to a primary control channel.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_backup</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">0x04</span> <span class="op">!=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Supports data service requests.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">0x10</span> <span class="op">!=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Supports voice service requests.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_voice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">0x20</span> <span class="op">!=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Supports registration requests.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_registration</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">0x40</span> <span class="op">!=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Supports authentication requests.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_auth</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">0x80</span> <span class="op">!=</span> <span class="number">0</span> }
 }
 
-<span class='doccomment'>/// Maps channel identifiers (maximum 16 per control channel) to their tuning parameters.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Default</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ChannelParamsMap</span>([<span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>ChannelParams</span><span class='op'>&gt;</span>; <span class='number'>16</span>]);
+<span class="doccomment">/// Maps channel identifiers (maximum 16 per control channel) to their tuning parameters.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChannelParamsMap</span>([<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ChannelParams</span><span class="op">&gt;</span>; <span class="number">16</span>]);
 
-<span class='kw'>impl</span> <span class='ident'>ChannelParamsMap</span> {
-    <span class='doccomment'>/// Update the map with the given channel parameters.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>update</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>upd</span>: <span class='kw-2'>&amp;</span><span class='ident'>ChannelParamsUpdate</span>) {
-        <span class='self'>self</span>.<span class='number'>0</span>[<span class='ident'>upd</span>.<span class='ident'>id</span>() <span class='kw'>as</span> <span class='ident'>usize</span>] <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>upd</span>.<span class='ident'>params</span>());
+<span class="kw">impl</span> <span class="ident">ChannelParamsMap</span> {
+    <span class="doccomment">/// Update the map with the given channel parameters.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">upd</span>: <span class="kw-2">&amp;</span><span class="ident">ChannelParamsUpdate</span>) {
+        <span class="self">self</span>.<span class="number">0</span>[<span class="ident">upd</span>.<span class="ident">id</span>() <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">upd</span>.<span class="ident">params</span>());
     }
 
-    <span class='doccomment'>/// Try to retrieve channel parameters for the given channel ID.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>lookup</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>id</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>ChannelParams</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='number'>0</span>[<span class='ident'>id</span> <span class='kw'>as</span> <span class='ident'>usize</span>]
+    <span class="doccomment">/// Try to retrieve channel parameters for the given channel ID.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lookup</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ChannelParams</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="number">0</span>[<span class="ident">id</span> <span class="kw">as</span> <span class="ident">usize</span>]
     }
 }
 
-<span class='doccomment'>/// Computes TX/RX frequencies and bandwidth for channel numbers within a site.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ChannelParams</span> {
-    <span class='doccomment'>/// Base frequency in Hz.</span>
-    <span class='ident'>base</span>: <span class='ident'>u32</span>,
-    <span class='doccomment'>/// Channel spacing in Hz.</span>
-    <span class='ident'>spacing</span>: <span class='ident'>u32</span>,
-    <span class='doccomment'>/// Transmit frequency offset in Hz.</span>
-    <span class='ident'>offset</span>: <span class='ident'>i32</span>,
-    <span class='doccomment'>/// Channel bandwidth in Hz.</span>
-    <span class='kw'>pub</span> <span class='ident'>bandwidth</span>: <span class='ident'>u32</span>,
+<span class="doccomment">/// Computes TX/RX frequencies and bandwidth for channel numbers within a site.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChannelParams</span> {
+    <span class="doccomment">/// Base frequency in Hz.</span>
+    <span class="ident">base</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// Channel spacing in Hz.</span>
+    <span class="ident">spacing</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// Transmit frequency offset in Hz.</span>
+    <span class="ident">offset</span>: <span class="ident">i32</span>,
+    <span class="doccomment">/// Channel bandwidth in Hz.</span>
+    <span class="kw">pub</span> <span class="ident">bandwidth</span>: <span class="ident">u32</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>ChannelParams</span> {
-    <span class='doccomment'>/// Create a new `ChannelParams` from the given base frequency (5Hz steps), bandwidth</span>
-    <span class='doccomment'>/// (125Hz steps), TX offset (250kHz steps), and inter-channel spacing (125Hz steps.)</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>base</span>: <span class='ident'>u32</span>, <span class='ident'>bandwidth</span>: <span class='ident'>u16</span>, <span class='ident'>offset</span>: <span class='ident'>u16</span>, <span class='ident'>spacing</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='ident'>ChannelParams</span> {
-        <span class='comment'>// The MSB denotes the sign and the lower byte is the actual offset.</span>
-        <span class='kw'>let</span> <span class='ident'>off</span> <span class='op'>=</span> (<span class='ident'>offset</span> <span class='kw'>as</span> <span class='ident'>i32</span> <span class='op'>&amp;</span> <span class='number'>0xFF</span>) <span class='op'>*</span> <span class='number'>250_000</span>;
+<span class="kw">impl</span> <span class="ident">ChannelParams</span> {
+    <span class="doccomment">/// Create a new `ChannelParams` from the given base frequency (5Hz steps), bandwidth</span>
+    <span class="doccomment">/// (125Hz steps), TX offset (250kHz steps), and inter-channel spacing (125Hz steps.)</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">base</span>: <span class="ident">u32</span>, <span class="ident">bandwidth</span>: <span class="ident">u16</span>, <span class="ident">offset</span>: <span class="ident">u16</span>, <span class="ident">spacing</span>: <span class="ident">u16</span>) <span class="op">-&gt;</span> <span class="ident">ChannelParams</span> {
+        <span class="comment">// The MSB denotes the sign and the lower byte is the actual offset.</span>
+        <span class="kw">let</span> <span class="ident">off</span> <span class="op">=</span> (<span class="ident">offset</span> <span class="kw">as</span> <span class="ident">i32</span> <span class="op">&amp;</span> <span class="number">0xFF</span>) <span class="op">*</span> <span class="number">250_000</span>;
 
-        <span class='ident'>ChannelParams</span> {
-            <span class='ident'>base</span>: <span class='ident'>base</span> <span class='op'>*</span> <span class='number'>5</span>,
-            <span class='ident'>spacing</span>: <span class='ident'>spacing</span> <span class='kw'>as</span> <span class='ident'>u32</span> <span class='op'>*</span> <span class='number'>125</span>,
-            <span class='ident'>offset</span>: <span class='kw'>if</span> <span class='ident'>offset</span> <span class='op'>&gt;&gt;</span> <span class='number'>8</span> <span class='op'>==</span> <span class='number'>0</span> { <span class='op'>-</span><span class='ident'>off</span> } <span class='kw'>else</span> { <span class='ident'>off</span> },
-            <span class='ident'>bandwidth</span>: <span class='ident'>bandwidth</span> <span class='kw'>as</span> <span class='ident'>u32</span> <span class='op'>*</span> <span class='number'>125</span>,
+        <span class="ident">ChannelParams</span> {
+            <span class="ident">base</span>: <span class="ident">base</span> <span class="op">*</span> <span class="number">5</span>,
+            <span class="ident">spacing</span>: <span class="ident">spacing</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">*</span> <span class="number">125</span>,
+            <span class="ident">offset</span>: <span class="kw">if</span> <span class="ident">offset</span> <span class="op">&gt;&gt;</span> <span class="number">8</span> <span class="op">==</span> <span class="number">0</span> { <span class="op">-</span><span class="ident">off</span> } <span class="kw">else</span> { <span class="ident">off</span> },
+            <span class="ident">bandwidth</span>: <span class="ident">bandwidth</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">*</span> <span class="number">125</span>,
         }
     }
 
-    <span class='doccomment'>/// Receive frequency for the given channel number in Hz.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>rx_freq</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ch</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
-        <span class='self'>self</span>.<span class='ident'>base</span> <span class='op'>+</span> <span class='self'>self</span>.<span class='ident'>spacing</span> <span class='op'>*</span> <span class='ident'>ch</span> <span class='kw'>as</span> <span class='ident'>u32</span>
+    <span class="doccomment">/// Receive frequency for the given channel number in Hz.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rx_freq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ch</span>: <span class="ident">u16</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+        <span class="self">self</span>.<span class="ident">base</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">spacing</span> <span class="op">*</span> <span class="ident">ch</span> <span class="kw">as</span> <span class="ident">u32</span>
     }
 
-    <span class='doccomment'>/// Transmit frequency for the given channel number in Hz.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>tx_freq</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ch</span>: <span class='ident'>u16</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
-        <span class='self'>self</span>.<span class='ident'>rx_freq</span>(<span class='ident'>ch</span>) <span class='op'>+</span> <span class='self'>self</span>.<span class='ident'>offset</span> <span class='kw'>as</span> <span class='ident'>u32</span>
+    <span class="doccomment">/// Transmit frequency for the given channel number in Hz.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tx_freq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ch</span>: <span class="ident">u16</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+        <span class="self">self</span>.<span class="ident">rx_freq</span>(<span class="ident">ch</span>) <span class="op">+</span> <span class="self">self</span>.<span class="ident">offset</span> <span class="kw">as</span> <span class="ident">u32</span>
     }
 }
 
-<span class='doccomment'>/// Options for a P25 site.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>SiteOptions</span>(<span class='ident'>u8</span>);
+<span class="doccomment">/// Options for a P25 site.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SiteOptions</span>(<span class="ident">u8</span>);
 
-<span class='kw'>impl</span> <span class='ident'>SiteOptions</span> {
-    <span class='doccomment'>/// Create a new `SiteOptions` from the given 4-bit word.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>opts</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>SiteOptions</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>opts</span> <span class='op'>&gt;&gt;</span> <span class='number'>4</span> <span class='op'>==</span> <span class='number'>0</span>);
-        <span class='ident'>SiteOptions</span>(<span class='ident'>opts</span>)
+<span class="kw">impl</span> <span class="ident">SiteOptions</span> {
+    <span class="doccomment">/// Create a new `SiteOptions` from the given 4-bit word.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">opts</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">SiteOptions</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">opts</span> <span class="op">&gt;&gt;</span> <span class="number">4</span> <span class="op">==</span> <span class="number">0</span>);
+        <span class="ident">SiteOptions</span>(<span class="ident">opts</span>)
     }
 
-    <span class='doccomment'>/// Whether site is &quot;conventional&quot;, with no trunking.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>conventional</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>0b1000</span> <span class='op'>!=</span> <span class='number'>0</span> }
-    <span class='doccomment'>/// Whether site is in a failure state.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>failing</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>0b100</span> <span class='op'>!=</span> <span class='number'>0</span> }
-    <span class='doccomment'>/// Whether this information is up-to-date (whether broadcasting site is in</span>
-    <span class='doccomment'>/// communication with adjacent site.)</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>current</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>0b10</span> <span class='op'>!=</span> <span class='number'>0</span> }
-    <span class='doccomment'>/// Whether site has active network connection with RFSS controller and can</span>
-    <span class='doccomment'>/// communicate with other sites.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>networked</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>1</span> <span class='op'>!=</span> <span class='number'>0</span> }
+    <span class="doccomment">/// Whether site is &quot;conventional&quot;, with no trunking.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">conventional</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">0b1000</span> <span class="op">!=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Whether site is in a failure state.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">failing</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">0b100</span> <span class="op">!=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Whether this information is up-to-date (whether broadcasting site is in</span>
+    <span class="doccomment">/// communication with adjacent site.)</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">0b10</span> <span class="op">!=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Whether site has active network connection with RFSS controller and can</span>
+    <span class="doccomment">/// communicate with other sites.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">networked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">!=</span> <span class="number">0</span> }
 }
 
-<span class='doccomment'>/// Updates subscribers about new or ongoing talkgroup conversations.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// Note that this can be used for both `GroupVoiceUpdate` and `GroupDataUpdate`.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>GroupTrafficUpdate</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]);
+<span class="doccomment">/// Updates subscribers about new or ongoing talkgroup conversations.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Note that this can be used for both `GroupVoiceUpdate` and `GroupDataUpdate`.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GroupTrafficUpdate</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]);
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>GroupTrafficUpdate</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `GroupTrafficUpdate` decoder from the given payload bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>payload</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>GroupTrafficUpdate</span>(<span class='ident'>payload</span>) }
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">GroupTrafficUpdate</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `GroupTrafficUpdate` decoder from the given payload bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">payload</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="ident">GroupTrafficUpdate</span>(<span class="ident">payload</span>) }
 
-    <span class='doccomment'>/// Retrieve the set of active talkgroups included in the update along with the</span>
-    <span class='doccomment'>/// parameters for tuning to the traffic channel of each.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>updates</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> [(<span class='ident'>Channel</span>, <span class='ident'>TalkGroup</span>); <span class='number'>2</span>] {
+    <span class="doccomment">/// Retrieve the set of active talkgroups included in the update along with the</span>
+    <span class="doccomment">/// parameters for tuning to the traffic channel of each.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">updates</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> [(<span class="ident">Channel</span>, <span class="ident">TalkGroup</span>); <span class="number">2</span>] {
         [
-            (<span class='ident'>Channel</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>...<span class='number'>1</span>]), <span class='ident'>TalkGroup</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>...<span class='number'>3</span>])),
-            (<span class='ident'>Channel</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>4</span>...<span class='number'>5</span>]), <span class='ident'>TalkGroup</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>6</span>...<span class='number'>7</span>])),
+            (<span class="ident">Channel</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>..=<span class="number">1</span>]), <span class="ident">TalkGroup</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">2</span>..=<span class="number">3</span>])),
+            (<span class="ident">Channel</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">4</span>..=<span class="number">5</span>]), <span class="ident">TalkGroup</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">6</span>..=<span class="number">7</span>])),
         ]
     }
 }
 
-<span class='doccomment'>/// Advertisement of an adjacent/nearby site within the same WACN (Wide Area Communication</span>
-<span class='doccomment'>/// Network.)</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>AdjacentSite</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]);
+<span class="doccomment">/// Advertisement of an adjacent/nearby site within the same WACN (Wide Area Communication</span>
+<span class="doccomment">/// Network.)</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AdjacentSite</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]);
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>AdjacentSite</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `AdjacentSite` decoder from the given payload bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>payload</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>AdjacentSite</span>(<span class='ident'>payload</span>) }
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">AdjacentSite</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `AdjacentSite` decoder from the given payload bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">payload</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="ident">AdjacentSite</span>(<span class="ident">payload</span>) }
 
-    <span class='doccomment'>/// Location registration area of adjacent site, which determines whether a subscriber</span>
-    <span class='doccomment'>/// must update the network before roaming to the site.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>area</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] }
-    <span class='doccomment'>/// Description of adjacent site.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>opts</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>SiteOptions</span> { <span class='ident'>SiteOptions</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='op'>&gt;&gt;</span> <span class='number'>4</span>) }
-    <span class='doccomment'>/// System ID of adjacent site within WACN.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>system</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> { <span class='ident'>slice_u16</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>1</span>...<span class='number'>2</span>]) <span class='op'>&amp;</span> <span class='number'>0xFFF</span> }
-    <span class='doccomment'>/// RF Subsystem ID of adjacent site within the System.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>rfss</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>3</span>] }
-    <span class='doccomment'>/// Site ID of adjacent site within the RFSS.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>site</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>4</span>] }
-    <span class='doccomment'>/// Channel information for computing TX/RX frequencies.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>channel</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Channel</span> { <span class='ident'>Channel</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>5</span>...<span class='number'>6</span>]) }
-    <span class='doccomment'>/// Services supported by the adjacent site.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>services</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>SystemServices</span> { <span class='ident'>SystemServices</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>7</span>]) }
+    <span class="doccomment">/// Location registration area of adjacent site, which determines whether a subscriber</span>
+    <span class="doccomment">/// must update the network before roaming to the site.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">area</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>] }
+    <span class="doccomment">/// Description of adjacent site.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">opts</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">SiteOptions</span> { <span class="ident">SiteOptions</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="op">&gt;&gt;</span> <span class="number">4</span>) }
+    <span class="doccomment">/// System ID of adjacent site within WACN.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">system</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u16</span> { <span class="ident">slice_u16</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">1</span>..=<span class="number">2</span>]) <span class="op">&amp;</span> <span class="number">0xFFF</span> }
+    <span class="doccomment">/// RF Subsystem ID of adjacent site within the System.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rfss</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="number">3</span>] }
+    <span class="doccomment">/// Site ID of adjacent site within the RFSS.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">site</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="number">4</span>] }
+    <span class="doccomment">/// Channel information for computing TX/RX frequencies.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">channel</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Channel</span> { <span class="ident">Channel</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">5</span>..=<span class="number">6</span>]) }
+    <span class="doccomment">/// Services supported by the adjacent site.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">services</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">SystemServices</span> { <span class="ident">SystemServices</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="number">0</span>[<span class="number">7</span>]) }
 }
 
-<span class='doccomment'>/// Advertisement of parameters used to calculate TX/RX frequencies within the given</span>
-<span class='doccomment'>/// associated channel.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ChannelParamsUpdate</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]);
+<span class="doccomment">/// Advertisement of parameters used to calculate TX/RX frequencies within the given</span>
+<span class="doccomment">/// associated channel.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChannelParamsUpdate</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]);
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>ChannelParamsUpdate</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `ChannelParamsUpdate` decoder from the given payload bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>payload</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>ChannelParamsUpdate</span>(<span class='ident'>payload</span>) }
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">ChannelParamsUpdate</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `ChannelParamsUpdate` decoder from the given payload bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">payload</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="ident">ChannelParamsUpdate</span>(<span class="ident">payload</span>) }
 
-    <span class='doccomment'>/// Channel ID associated with the enclosed parameters (can be up to 16 per control</span>
-    <span class='doccomment'>/// channel.)</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>id</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='op'>&gt;&gt;</span> <span class='number'>4</span> }
+    <span class="doccomment">/// Channel ID associated with the enclosed parameters (can be up to 16 per control</span>
+    <span class="doccomment">/// channel.)</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="op">&gt;&gt;</span> <span class="number">4</span> }
 
-    <span class='doccomment'>/// Parameters for the associated channel.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>params</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>ChannelParams</span> {
-        <span class='ident'>ChannelParams</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>base</span>(), <span class='self'>self</span>.<span class='ident'>bandwidth</span>(), <span class='self'>self</span>.<span class='ident'>offset</span>(), <span class='self'>self</span>.<span class='ident'>spacing</span>())
+    <span class="doccomment">/// Parameters for the associated channel.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">params</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ChannelParams</span> {
+        <span class="ident">ChannelParams</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="ident">base</span>(), <span class="self">self</span>.<span class="ident">bandwidth</span>(), <span class="self">self</span>.<span class="ident">offset</span>(), <span class="self">self</span>.<span class="ident">spacing</span>())
     }
 
-    <span class='doccomment'>/// Bandwidth in steps of 125Hz.</span>
-    <span class='kw'>fn</span> <span class='ident'>bandwidth</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> {
-        (<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] <span class='kw'>as</span> <span class='ident'>u16</span> <span class='op'>&amp;</span> <span class='number'>0xF</span>) <span class='op'>&lt;&lt;</span> <span class='number'>5</span> <span class='op'>|</span> (<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='op'>&gt;&gt;</span> <span class='number'>3</span>) <span class='kw'>as</span> <span class='ident'>u16</span>
+    <span class="doccomment">/// Bandwidth in steps of 125Hz.</span>
+    <span class="kw">fn</span> <span class="ident">bandwidth</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u16</span> {
+        (<span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="kw">as</span> <span class="ident">u16</span> <span class="op">&amp;</span> <span class="number">0xF</span>) <span class="op">&lt;&lt;</span> <span class="number">5</span> <span class="op">|</span> (<span class="self">self</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="op">&gt;&gt;</span> <span class="number">3</span>) <span class="kw">as</span> <span class="ident">u16</span>
     }
 
-    <span class='doccomment'>/// Offset of TX frequency from base RX frequency in steps of 250kHz.</span>
-    <span class='kw'>fn</span> <span class='ident'>offset</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> {
-        (<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='kw'>as</span> <span class='ident'>u16</span> <span class='op'>&amp;</span> <span class='number'>0x7</span>) <span class='op'>&lt;&lt;</span> <span class='number'>6</span> <span class='op'>|</span> (<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>] <span class='op'>&gt;&gt;</span> <span class='number'>2</span>) <span class='kw'>as</span> <span class='ident'>u16</span>
+    <span class="doccomment">/// Offset of TX frequency from base RX frequency in steps of 250kHz.</span>
+    <span class="kw">fn</span> <span class="ident">offset</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u16</span> {
+        (<span class="self">self</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="kw">as</span> <span class="ident">u16</span> <span class="op">&amp;</span> <span class="number">0x7</span>) <span class="op">&lt;&lt;</span> <span class="number">6</span> <span class="op">|</span> (<span class="self">self</span>.<span class="number">0</span>[<span class="number">2</span>] <span class="op">&gt;&gt;</span> <span class="number">2</span>) <span class="kw">as</span> <span class="ident">u16</span>
     }
 
-    <span class='doccomment'>/// Spacing between individual channel numbers in steps of 125Hz.</span>
-    <span class='kw'>fn</span> <span class='ident'>spacing</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> {
-        (<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>] <span class='kw'>as</span> <span class='ident'>u16</span> <span class='op'>&amp;</span> <span class='number'>0x3</span>) <span class='op'>&lt;&lt;</span> <span class='number'>8</span> <span class='op'>|</span> <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>3</span>] <span class='kw'>as</span> <span class='ident'>u16</span>
+    <span class="doccomment">/// Spacing between individual channel numbers in steps of 125Hz.</span>
+    <span class="kw">fn</span> <span class="ident">spacing</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u16</span> {
+        (<span class="self">self</span>.<span class="number">0</span>[<span class="number">2</span>] <span class="kw">as</span> <span class="ident">u16</span> <span class="op">&amp;</span> <span class="number">0x3</span>) <span class="op">&lt;&lt;</span> <span class="number">8</span> <span class="op">|</span> <span class="self">self</span>.<span class="number">0</span>[<span class="number">3</span>] <span class="kw">as</span> <span class="ident">u16</span>
     }
 
-    <span class='doccomment'>/// Base RX frequency in steps of 5Hz.</span>
-    <span class='kw'>fn</span> <span class='ident'>base</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> { <span class='ident'>slice_u32</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>4</span>...<span class='number'>7</span>]) }
+    <span class="doccomment">/// Base RX frequency in steps of 5Hz.</span>
+    <span class="kw">fn</span> <span class="ident">base</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> { <span class="ident">slice_u32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">4</span>..=<span class="number">7</span>]) }
 }
 
-<span class='doccomment'>/// Advertisement of one or more alternative control channels for the current site.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>AltControlChannel</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]);
+<span class="doccomment">/// Advertisement of one or more alternative control channels for the current site.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AltControlChannel</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]);
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>AltControlChannel</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `AltControlChannel` decoder from the given payload bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>payload</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>AltControlChannel</span>(<span class='ident'>payload</span>) }
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">AltControlChannel</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `AltControlChannel` decoder from the given payload bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">payload</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="ident">AltControlChannel</span>(<span class="ident">payload</span>) }
 
-    <span class='doccomment'>/// RF Subsystem ID of current site within System.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>rfss</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] }
-    <span class='doccomment'>/// Site ID of current site within RFSS.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>site</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>1</span>] }
+    <span class="doccomment">/// RF Subsystem ID of current site within System.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rfss</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>] }
+    <span class="doccomment">/// Site ID of current site within RFSS.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">site</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="number">1</span>] }
 
-    <span class='doccomment'>/// Retrieve alternative sites, with each site&#39;s tuning parameters and supported</span>
-    <span class='doccomment'>/// services.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>alts</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> [(<span class='ident'>Channel</span>, <span class='ident'>SystemServices</span>); <span class='number'>2</span>] {
+    <span class="doccomment">/// Retrieve alternative sites, with each site&#39;s tuning parameters and supported</span>
+    <span class="doccomment">/// services.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">alts</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> [(<span class="ident">Channel</span>, <span class="ident">SystemServices</span>); <span class="number">2</span>] {
         [
-            (<span class='ident'>Channel</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>...<span class='number'>3</span>]), <span class='ident'>SystemServices</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>4</span>])),
-            (<span class='ident'>Channel</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>5</span>...<span class='number'>6</span>]), <span class='ident'>SystemServices</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>7</span>])),
+            (<span class="ident">Channel</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">2</span>..=<span class="number">3</span>]), <span class="ident">SystemServices</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="number">0</span>[<span class="number">4</span>])),
+            (<span class="ident">Channel</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">5</span>..=<span class="number">6</span>]), <span class="ident">SystemServices</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="number">0</span>[<span class="number">7</span>])),
         ]
     }
 }
 
-<span class='doccomment'>/// Site and RFSS information of current control channel.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>RfssStatusBroadcast</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]);
+<span class="doccomment">/// Site and RFSS information of current control channel.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RfssStatusBroadcast</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]);
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>RfssStatusBroadcast</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `RfssStatusBroadcast` decoder from the given payload bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>payload</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>RfssStatusBroadcast</span>(<span class='ident'>payload</span>) }
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">RfssStatusBroadcast</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `RfssStatusBroadcast` decoder from the given payload bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">payload</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="ident">RfssStatusBroadcast</span>(<span class="ident">payload</span>) }
 
-    <span class='doccomment'>/// Location registration area of current site.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>area</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] }
-    <span class='doccomment'>/// Whether the site is networked with the RFSS controller, which determines if it can</span>
-    <span class='doccomment'>/// communicate with other sites.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>networked</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>1</span>] <span class='op'>&amp;</span> <span class='number'>0b10000</span> <span class='op'>!=</span> <span class='number'>0</span> }
-    <span class='doccomment'>/// System ID of current site within WACN.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>system</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> { <span class='ident'>slice_u16</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>1</span>...<span class='number'>2</span>]) <span class='op'>&amp;</span> <span class='number'>0xFFF</span> }
-    <span class='doccomment'>/// RF Subsystem ID of current site within System.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>rfss</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>3</span>] }
-    <span class='doccomment'>/// Site ID of current site within RFSS.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>site</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>4</span>] }
-    <span class='doccomment'>/// Channel information for computing TX/RX frequencies.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>channel</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Channel</span> { <span class='ident'>Channel</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>5</span>...<span class='number'>6</span>]) }
-    <span class='doccomment'>/// Services supported by the current site.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>services</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>SystemServices</span> { <span class='ident'>SystemServices</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>7</span>]) }
+    <span class="doccomment">/// Location registration area of current site.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">area</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>] }
+    <span class="doccomment">/// Whether the site is networked with the RFSS controller, which determines if it can</span>
+    <span class="doccomment">/// communicate with other sites.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">networked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="number">1</span>] <span class="op">&amp;</span> <span class="number">0b10000</span> <span class="op">!=</span> <span class="number">0</span> }
+    <span class="doccomment">/// System ID of current site within WACN.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">system</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u16</span> { <span class="ident">slice_u16</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">1</span>..=<span class="number">2</span>]) <span class="op">&amp;</span> <span class="number">0xFFF</span> }
+    <span class="doccomment">/// RF Subsystem ID of current site within System.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rfss</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="number">3</span>] }
+    <span class="doccomment">/// Site ID of current site within RFSS.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">site</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="number">4</span>] }
+    <span class="doccomment">/// Channel information for computing TX/RX frequencies.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">channel</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Channel</span> { <span class="ident">Channel</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">5</span>..=<span class="number">6</span>]) }
+    <span class="doccomment">/// Services supported by the current site.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">services</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">SystemServices</span> { <span class="ident">SystemServices</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="number">0</span>[<span class="number">7</span>]) }
 }
 
-<span class='doccomment'>/// WACN (Wide Area Communication Network) and System ID information of current control</span>
-<span class='doccomment'>/// channel.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>NetworkStatusBroadcast</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]);
+<span class="doccomment">/// WACN (Wide Area Communication Network) and System ID information of current control</span>
+<span class="doccomment">/// channel.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NetworkStatusBroadcast</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]);
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>NetworkStatusBroadcast</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `NetworkStatusBroadcast` decoder from the given payload bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>payload</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>NetworkStatusBroadcast</span>(<span class='ident'>payload</span>) }
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">NetworkStatusBroadcast</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `NetworkStatusBroadcast` decoder from the given payload bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">payload</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="ident">NetworkStatusBroadcast</span>(<span class="ident">payload</span>) }
 
-    <span class='doccomment'>/// Location registration area of site.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>area</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>] }
-    <span class='doccomment'>/// WACN ID within the communications network.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>wacn</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> { <span class='ident'>slice_u24</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>1</span>...<span class='number'>3</span>]) <span class='op'>&gt;&gt;</span> <span class='number'>4</span> }
-    <span class='doccomment'>/// System ID of site within WACN.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>system</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> { <span class='ident'>slice_u16</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>3</span>...<span class='number'>4</span>]) <span class='op'>&amp;</span> <span class='number'>0xFFF</span> }
-    <span class='doccomment'>/// Channel information for computing TX/RX frequencies.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>channel</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Channel</span> { <span class='ident'>Channel</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>5</span>...<span class='number'>6</span>]) }
-    <span class='doccomment'>/// Services supported by the current site.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>services</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>SystemServices</span> { <span class='ident'>SystemServices</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>7</span>]) }
+    <span class="doccomment">/// Location registration area of site.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">area</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>] }
+    <span class="doccomment">/// WACN ID within the communications network.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wacn</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> { <span class="ident">slice_u24</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">1</span>..=<span class="number">3</span>]) <span class="op">&gt;&gt;</span> <span class="number">4</span> }
+    <span class="doccomment">/// System ID of site within WACN.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">system</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u16</span> { <span class="ident">slice_u16</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">3</span>..=<span class="number">4</span>]) <span class="op">&amp;</span> <span class="number">0xFFF</span> }
+    <span class="doccomment">/// Channel information for computing TX/RX frequencies.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">channel</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Channel</span> { <span class="ident">Channel</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">5</span>..=<span class="number">6</span>]) }
+    <span class="doccomment">/// Services supported by the current site.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">services</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">SystemServices</span> { <span class="ident">SystemServices</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="number">0</span>[<span class="number">7</span>]) }
 }
 
-<span class='doccomment'>/// Registration response.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Debug</span>)]</span>
-<span class='attribute'>#[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;ser&quot;</span>, <span class='ident'>derive</span>(<span class='ident'>Serialize</span>))]</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>RegResponse</span> {
-    <span class='doccomment'>/// Registration is accepted.</span>
-    <span class='ident'>Accept</span>,
-    <span class='doccomment'>/// RFSS was unable to verify registration.</span>
-    <span class='ident'>Fail</span>,
-    <span class='doccomment'>/// Registration isn&#39;t allowed at this location.</span>
-    <span class='ident'>Deny</span>,
-    <span class='doccomment'>/// Denied temporarily, but user may retry registration.</span>
-    <span class='ident'>Refuse</span>,
+<span class="doccomment">/// Registration response.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ser&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>))]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RegResponse</span> {
+    <span class="doccomment">/// Registration is accepted.</span>
+    <span class="ident">Accept</span>,
+    <span class="doccomment">/// RFSS was unable to verify registration.</span>
+    <span class="ident">Fail</span>,
+    <span class="doccomment">/// Registration isn&#39;t allowed at this location.</span>
+    <span class="ident">Deny</span>,
+    <span class="doccomment">/// Denied temporarily, but user may retry registration.</span>
+    <span class="ident">Refuse</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>RegResponse</span> {
-    <span class='doccomment'>/// Try to parse a registration response from the given 2 bits.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_bits</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>RegResponse</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>RegResponse</span>::<span class='kw-2'>*</span>;
+<span class="kw">impl</span> <span class="ident">RegResponse</span> {
+    <span class="doccomment">/// Try to parse a registration response from the given 2 bits.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bits</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">RegResponse</span> {
+        <span class="kw">use</span> <span class="self">self</span>::<span class="ident">RegResponse</span>::<span class="kw-2">*</span>;
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bits</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span> <span class='op'>==</span> <span class='number'>0</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">bits</span> <span class="op">&gt;&gt;</span> <span class="number">2</span> <span class="op">==</span> <span class="number">0</span>);
 
-        <span class='kw'>match</span> <span class='ident'>bits</span> {
-            <span class='number'>0b00</span> <span class='op'>=&gt;</span> <span class='ident'>Accept</span>,
-            <span class='number'>0b01</span> <span class='op'>=&gt;</span> <span class='ident'>Fail</span>,
-            <span class='number'>0b10</span> <span class='op'>=&gt;</span> <span class='ident'>Deny</span>,
-            <span class='number'>0b11</span> <span class='op'>=&gt;</span> <span class='ident'>Refuse</span>,
-            _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
+        <span class="kw">match</span> <span class="ident">bits</span> {
+            <span class="number">0b00</span> <span class="op">=&gt;</span> <span class="ident">Accept</span>,
+            <span class="number">0b01</span> <span class="op">=&gt;</span> <span class="ident">Fail</span>,
+            <span class="number">0b10</span> <span class="op">=&gt;</span> <span class="ident">Deny</span>,
+            <span class="number">0b11</span> <span class="op">=&gt;</span> <span class="ident">Refuse</span>,
+            _ <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
         }
     }
 }
 
-<span class='doccomment'>/// Request for a target unit to call a source unit.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>UnitCallAlert</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]);
+<span class="doccomment">/// Request for a target unit to call a source unit.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UnitCallAlert</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]);
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>UnitCallAlert</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `UnitCallAlert` decoder from the given payload bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>payload</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>UnitCallAlert</span>(<span class='ident'>payload</span>) }
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">UnitCallAlert</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `UnitCallAlert` decoder from the given payload bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">payload</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="ident">UnitCallAlert</span>(<span class="ident">payload</span>) }
 
-    <span class='doccomment'>/// Target unit.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>dest_unit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> { <span class='ident'>slice_u24</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>...<span class='number'>4</span>]) }
-    <span class='doccomment'>/// Requesting unit.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>src_unit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> { <span class='ident'>slice_u24</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>5</span>...<span class='number'>7</span>]) }
+    <span class="doccomment">/// Target unit.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dest_unit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> { <span class="ident">slice_u24</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">2</span>..=<span class="number">4</span>]) }
+    <span class="doccomment">/// Requesting unit.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">src_unit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> { <span class="ident">slice_u24</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">5</span>..=<span class="number">7</span>]) }
 }
 
-<span class='doccomment'>/// Signals a target unit that a unit-to-unit all has been requested.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>UnitCallRequest</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]);
+<span class="doccomment">/// Signals a target unit that a unit-to-unit all has been requested.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UnitCallRequest</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]);
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>UnitCallRequest</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `UnitCallRequest` decoder from the given payload bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>payload</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>UnitCallRequest</span>(<span class='ident'>payload</span>) }
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">UnitCallRequest</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `UnitCallRequest` decoder from the given payload bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">payload</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="ident">UnitCallRequest</span>(<span class="ident">payload</span>) }
 
-    <span class='doccomment'>/// Options requested/granted for resulting channel.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>opts</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>ServiceOptions</span> { <span class='ident'>ServiceOptions</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>]) }
-    <span class='doccomment'>/// Target unit.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>dest_unit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> { <span class='ident'>slice_u24</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>...<span class='number'>4</span>]) }
-    <span class='doccomment'>/// Requesting unit.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>src_unit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> { <span class='ident'>slice_u24</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>5</span>...<span class='number'>7</span>]) }
+    <span class="doccomment">/// Options requested/granted for resulting channel.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">opts</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ServiceOptions</span> { <span class="ident">ServiceOptions</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>]) }
+    <span class="doccomment">/// Target unit.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dest_unit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> { <span class="ident">slice_u24</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">2</span>..=<span class="number">4</span>]) }
+    <span class="doccomment">/// Requesting unit.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">src_unit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> { <span class="ident">slice_u24</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">5</span>..=<span class="number">7</span>]) }
 }
 
-<span class='doccomment'>/// Alerts a unit of a call from the public phone network.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>PhoneAlert</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]);
+<span class="doccomment">/// Alerts a unit of a call from the public phone network.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PhoneAlert</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]);
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>PhoneAlert</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `PhoneAlert` decoder from the given payload bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>payload</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='self'>Self</span> { <span class='ident'>PhoneAlert</span>(<span class='ident'>payload</span>) }
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">PhoneAlert</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `PhoneAlert` decoder from the given payload bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">payload</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="ident">PhoneAlert</span>(<span class="ident">payload</span>) }
 
-    <span class='doccomment'>/// The 10-digit phone number of the calling party, as encoded bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>digits</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>] { <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>...<span class='number'>4</span>] }
-    <span class='doccomment'>/// Unit the call is for.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>dest_unit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> { <span class='ident'>slice_u24</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>5</span>...<span class='number'>7</span>]) }
+    <span class="doccomment">/// The 10-digit phone number of the calling party, as encoded bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">digits</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] { <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>..=<span class="number">4</span>] }
+    <span class="doccomment">/// Unit the call is for.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dest_unit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> { <span class="ident">slice_u24</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="number">5</span>..=<span class="number">7</span>]) }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_channel_params</span>() {
-        <span class='comment'>// Example from the standard.</span>
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>ChannelParams</span>::<span class='ident'>new</span>(<span class='number'>170201250</span>, <span class='number'>0x64</span>, <span class='number'>0b010110100</span>, <span class='number'>0x32</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>base</span>, <span class='number'>851_006_250</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>spacing</span>, <span class='number'>6_250</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>offset</span>, <span class='op'>-</span><span class='number'>45_000_000</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>bandwidth</span>, <span class='number'>12_500</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>rx_freq</span>(<span class='number'>0b1001</span>), <span class='number'>851_062_500</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_channel_params</span>() {
+        <span class="comment">// Example from the standard.</span>
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ChannelParams</span>::<span class="ident">new</span>(<span class="number">170201250</span>, <span class="number">0x64</span>, <span class="number">0b010110100</span>, <span class="number">0x32</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">base</span>, <span class="number">851_006_250</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">spacing</span>, <span class="number">6_250</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">offset</span>, <span class="op">-</span><span class="number">45_000_000</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">bandwidth</span>, <span class="number">12_500</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">rx_freq</span>(<span class="number">0b1001</span>), <span class="number">851_062_500</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_group_traffic_updates</span>() {
-        <span class='kw'>let</span> <span class='ident'>buf</span> <span class='op'>=</span> [
-            <span class='number'>0b10001000</span>,
-            <span class='number'>0b01110111</span>,
-            <span class='number'>0b11111111</span>,
-            <span class='number'>0b11111111</span>,
-            <span class='number'>0b10010001</span>,
-            <span class='number'>0b00000001</span>,
-            <span class='number'>0b10101010</span>,
-            <span class='number'>0b10101010</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_group_traffic_updates</span>() {
+        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> [
+            <span class="number">0b10001000</span>,
+            <span class="number">0b01110111</span>,
+            <span class="number">0b11111111</span>,
+            <span class="number">0b11111111</span>,
+            <span class="number">0b10010001</span>,
+            <span class="number">0b00000001</span>,
+            <span class="number">0b10101010</span>,
+            <span class="number">0b10101010</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>u</span> <span class='op'>=</span> <span class='ident'>GroupTrafficUpdate</span>(<span class='kw-2'>&amp;</span><span class='ident'>buf</span>[..]).<span class='ident'>updates</span>();
+        <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="ident">GroupTrafficUpdate</span>(<span class="kw-2">&amp;</span><span class="ident">buf</span>[..]).<span class="ident">updates</span>();
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>u</span>[<span class='number'>0</span>].<span class='number'>0</span>.<span class='ident'>id</span>(), <span class='number'>0b1000</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>u</span>[<span class='number'>0</span>].<span class='number'>0</span>.<span class='ident'>number</span>(), <span class='number'>0b100001110111</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>u</span>[<span class='number'>0</span>].<span class='number'>1</span>, <span class='ident'>TalkGroup</span>::<span class='ident'>Everbody</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>u</span>[<span class='number'>1</span>].<span class='number'>0</span>.<span class='ident'>id</span>(), <span class='number'>0b1001</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>u</span>[<span class='number'>1</span>].<span class='number'>0</span>.<span class='ident'>number</span>(), <span class='number'>0b000100000001</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>u</span>[<span class='number'>1</span>].<span class='number'>1</span>, <span class='ident'>TalkGroup</span>::<span class='ident'>Other</span>(<span class='number'>0b1010101010101010</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">u</span>[<span class="number">0</span>].<span class="number">0</span>.<span class="ident">id</span>(), <span class="number">0b1000</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">u</span>[<span class="number">0</span>].<span class="number">0</span>.<span class="ident">number</span>(), <span class="number">0b100001110111</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">u</span>[<span class="number">0</span>].<span class="number">1</span>, <span class="ident">TalkGroup</span>::<span class="ident">Everbody</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">u</span>[<span class="number">1</span>].<span class="number">0</span>.<span class="ident">id</span>(), <span class="number">0b1001</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">u</span>[<span class="number">1</span>].<span class="number">0</span>.<span class="ident">number</span>(), <span class="number">0b000100000001</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">u</span>[<span class="number">1</span>].<span class="number">1</span>, <span class="ident">TalkGroup</span>::<span class="ident">Other</span>(<span class="number">0b1010101010101010</span>));
     }
 }
 </pre>
@@ -932,13 +933,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -972,7 +975,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

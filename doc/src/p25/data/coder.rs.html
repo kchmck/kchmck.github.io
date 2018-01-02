@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -188,150 +189,150 @@
 <span id="143">143</span>
 <span id="144">144</span>
 <span id="145">145</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Provides a convenience interface for coding symbols into a buffer.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Provides a convenience interface for coding symbols into a buffer.</span>
 
-<span class='kw'>use</span> <span class='ident'>bits</span>;
-<span class='kw'>use</span> <span class='ident'>coding</span>::<span class='ident'>trellis</span>;
-<span class='kw'>use</span> <span class='ident'>consts</span>;
+<span class="kw">use</span> <span class="ident">bits</span>;
+<span class="kw">use</span> <span class="ident">coding</span>::<span class="ident">trellis</span>;
+<span class="kw">use</span> <span class="ident">consts</span>;
 
-<span class='doccomment'>/// Half-rate (dibit) convolutional coder.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>DibitCoder</span> <span class='op'>=</span> <span class='ident'>DataCoder</span><span class='op'>&lt;</span><span class='ident'>trellis</span>::<span class='ident'>DibitStates</span><span class='op'>&gt;</span>;
+<span class="doccomment">/// Half-rate (dibit) convolutional coder.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">DibitCoder</span> <span class="op">=</span> <span class="ident">DataCoder</span><span class="op">&lt;</span><span class="ident">trellis</span>::<span class="ident">DibitStates</span><span class="op">&gt;</span>;
 
-<span class='doccomment'>/// 3/4-rate (tribit) convolutional coder.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>TribitCoder</span> <span class='op'>=</span> <span class='ident'>DataCoder</span><span class='op'>&lt;</span><span class='ident'>trellis</span>::<span class='ident'>TribitStates</span><span class='op'>&gt;</span>;
+<span class="doccomment">/// 3/4-rate (tribit) convolutional coder.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TribitCoder</span> <span class="op">=</span> <span class="ident">DataCoder</span><span class="op">&lt;</span><span class="ident">trellis</span>::<span class="ident">TribitStates</span><span class="op">&gt;</span>;
 
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>DataCoder</span><span class='op'>&lt;</span><span class='ident'>S</span>: <span class='ident'>trellis</span>::<span class='ident'>States</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Convolutional state machine.</span>
-    <span class='ident'>fsm</span>: <span class='ident'>trellis</span>::<span class='ident'>TrellisFSM</span><span class='op'>&lt;</span><span class='ident'>S</span><span class='op'>&gt;</span>,
-    <span class='doccomment'>/// Current coded buffer.</span>
-    <span class='ident'>buf</span>: [<span class='ident'>bits</span>::<span class='ident'>Dibit</span>; <span class='ident'>consts</span>::<span class='ident'>CODING_DIBITS</span>],
-    <span class='doccomment'>/// Current index into `buf`.</span>
-    <span class='ident'>pos</span>: <span class='ident'>usize</span>,
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DataCoder</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">trellis</span>::<span class="ident">States</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Convolutional state machine.</span>
+    <span class="ident">fsm</span>: <span class="ident">trellis</span>::<span class="ident">TrellisFSM</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Current coded buffer.</span>
+    <span class="ident">buf</span>: [<span class="ident">bits</span>::<span class="ident">Dibit</span>; <span class="ident">consts</span>::<span class="ident">CODING_DIBITS</span>],
+    <span class="doccomment">/// Current index into `buf`.</span>
+    <span class="ident">pos</span>: <span class="ident">usize</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>S</span>: <span class='ident'>trellis</span>::<span class='ident'>States</span><span class='op'>&gt;</span> <span class='ident'>DataCoder</span><span class='op'>&lt;</span><span class='ident'>S</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Construct a new `DataCoder` wrapping the given state machine.</span>
-    <span class='kw'>fn</span> <span class='ident'>for_fsm</span>(<span class='ident'>fsm</span>: <span class='ident'>trellis</span>::<span class='ident'>TrellisFSM</span><span class='op'>&lt;</span><span class='ident'>S</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>DataCoder</span><span class='op'>&lt;</span><span class='ident'>S</span><span class='op'>&gt;</span> {
-        <span class='ident'>DataCoder</span> {
-            <span class='ident'>fsm</span>: <span class='ident'>fsm</span>,
-            <span class='ident'>buf</span>: [<span class='ident'>bits</span>::<span class='ident'>Dibit</span>::<span class='ident'>default</span>(); <span class='ident'>consts</span>::<span class='ident'>CODING_DIBITS</span>],
-            <span class='ident'>pos</span>: <span class='number'>0</span>,
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">trellis</span>::<span class="ident">States</span><span class="op">&gt;</span> <span class="ident">DataCoder</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Construct a new `DataCoder` wrapping the given state machine.</span>
+    <span class="kw">fn</span> <span class="ident">for_fsm</span>(<span class="ident">fsm</span>: <span class="ident">trellis</span>::<span class="ident">TrellisFSM</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">DataCoder</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
+        <span class="ident">DataCoder</span> {
+            <span class="ident">fsm</span>: <span class="ident">fsm</span>,
+            <span class="ident">buf</span>: [<span class="ident">bits</span>::<span class="ident">Dibit</span>::<span class="ident">default</span>(); <span class="ident">consts</span>::<span class="ident">CODING_DIBITS</span>],
+            <span class="ident">pos</span>: <span class="number">0</span>,
         }
     }
 
-    <span class='doccomment'>/// Flush the state machine and return the coded buffer of dibits.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>finish</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> [<span class='ident'>bits</span>::<span class='ident'>Dibit</span>; <span class='ident'>consts</span>::<span class='ident'>CODING_DIBITS</span>] {
-        <span class='kw'>let</span> <span class='ident'>pair</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>fsm</span>.<span class='ident'>finish</span>();
-        <span class='self'>self</span>.<span class='ident'>append</span>(<span class='ident'>pair</span>);
+    <span class="doccomment">/// Flush the state machine and return the coded buffer of dibits.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">finish</span>(<span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> [<span class="ident">bits</span>::<span class="ident">Dibit</span>; <span class="ident">consts</span>::<span class="ident">CODING_DIBITS</span>] {
+        <span class="kw">let</span> <span class="ident">pair</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">fsm</span>.<span class="ident">finish</span>();
+        <span class="self">self</span>.<span class="ident">append</span>(<span class="ident">pair</span>);
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>pos</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>buf</span>.<span class='ident'>len</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">pos</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">len</span>());
 
-        <span class='self'>self</span>.<span class='ident'>buf</span>
+        <span class="self">self</span>.<span class="ident">buf</span>
     }
 
-    <span class='doccomment'>/// Code the given symbol and add the result to the buffer.</span>
-    <span class='kw'>fn</span> <span class='ident'>feed_symbol</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>symbol</span>: <span class='ident'>S</span>::<span class='ident'>Symbol</span>) {
-        <span class='kw'>let</span> <span class='ident'>pair</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>fsm</span>.<span class='ident'>feed</span>(<span class='ident'>symbol</span>);
-        <span class='self'>self</span>.<span class='ident'>append</span>(<span class='ident'>pair</span>);
+    <span class="doccomment">/// Code the given symbol and add the result to the buffer.</span>
+    <span class="kw">fn</span> <span class="ident">feed_symbol</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">symbol</span>: <span class="ident">S</span>::<span class="ident">Symbol</span>) {
+        <span class="kw">let</span> <span class="ident">pair</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">fsm</span>.<span class="ident">feed</span>(<span class="ident">symbol</span>);
+        <span class="self">self</span>.<span class="ident">append</span>(<span class="ident">pair</span>);
     }
 
-    <span class='doccomment'>/// Append the given dibit pair to the buffer.</span>
-    <span class='kw'>fn</span> <span class='ident'>append</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, (<span class='ident'>a</span>, <span class='ident'>b</span>): (<span class='ident'>bits</span>::<span class='ident'>Dibit</span>, <span class='ident'>bits</span>::<span class='ident'>Dibit</span>)) {
-        <span class='self'>self</span>.<span class='ident'>buf</span>[<span class='self'>self</span>.<span class='ident'>pos</span>] <span class='op'>=</span> <span class='ident'>a</span>;
-        <span class='self'>self</span>.<span class='ident'>pos</span> <span class='op'>+=</span> <span class='number'>1</span>;
-        <span class='self'>self</span>.<span class='ident'>buf</span>[<span class='self'>self</span>.<span class='ident'>pos</span>] <span class='op'>=</span> <span class='ident'>b</span>;
-        <span class='self'>self</span>.<span class='ident'>pos</span> <span class='op'>+=</span> <span class='number'>1</span>;
+    <span class="doccomment">/// Append the given dibit pair to the buffer.</span>
+    <span class="kw">fn</span> <span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, (<span class="ident">a</span>, <span class="ident">b</span>): (<span class="ident">bits</span>::<span class="ident">Dibit</span>, <span class="ident">bits</span>::<span class="ident">Dibit</span>)) {
+        <span class="self">self</span>.<span class="ident">buf</span>[<span class="self">self</span>.<span class="ident">pos</span>] <span class="op">=</span> <span class="ident">a</span>;
+        <span class="self">self</span>.<span class="ident">pos</span> <span class="op">+=</span> <span class="number">1</span>;
+        <span class="self">self</span>.<span class="ident">buf</span>[<span class="self">self</span>.<span class="ident">pos</span>] <span class="op">=</span> <span class="ident">b</span>;
+        <span class="self">self</span>.<span class="ident">pos</span> <span class="op">+=</span> <span class="number">1</span>;
     }
 }
 
-<span class='kw'>impl</span> <span class='ident'>DibitCoder</span> {
-    <span class='doccomment'>/// Construct a new `DibitCoder` for coding a dibit stream.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>DibitCoder</span> {
-        <span class='self'>Self</span>::<span class='ident'>for_fsm</span>(<span class='ident'>trellis</span>::<span class='ident'>DibitFSM</span>::<span class='ident'>new</span>())
+<span class="kw">impl</span> <span class="ident">DibitCoder</span> {
+    <span class="doccomment">/// Construct a new `DibitCoder` for coding a dibit stream.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">DibitCoder</span> {
+        <span class="self">Self</span>::<span class="ident">for_fsm</span>(<span class="ident">trellis</span>::<span class="ident">DibitFSM</span>::<span class="ident">new</span>())
     }
 
-    <span class='doccomment'>/// Code the given bytes as dibits.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed_bytes</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>u8</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>bytes</span>: <span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='kw'>for</span> <span class='ident'>dibit</span> <span class='kw'>in</span> <span class='ident'>bits</span>::<span class='ident'>Dibits</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>) {
-            <span class='self'>self</span>.<span class='ident'>feed_symbol</span>(<span class='ident'>dibit</span>);
+    <span class="doccomment">/// Code the given bytes as dibits.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">feed_bytes</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">u8</span><span class="op">&gt;&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bytes</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">for</span> <span class="ident">dibit</span> <span class="kw">in</span> <span class="ident">bits</span>::<span class="ident">Dibits</span>::<span class="ident">new</span>(<span class="ident">bytes</span>) {
+            <span class="self">self</span>.<span class="ident">feed_symbol</span>(<span class="ident">dibit</span>);
         }
 
-        <span class='self'>self</span>
+        <span class="self">self</span>
     }
 }
 
-<span class='kw'>impl</span> <span class='ident'>TribitCoder</span> {
-    <span class='doccomment'>/// Construct a new `TribitCoder` for coding a tribit stream.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>TribitCoder</span> {
-        <span class='self'>Self</span>::<span class='ident'>for_fsm</span>(<span class='ident'>trellis</span>::<span class='ident'>TribitFSM</span>::<span class='ident'>new</span>())
+<span class="kw">impl</span> <span class="ident">TribitCoder</span> {
+    <span class="doccomment">/// Construct a new `TribitCoder` for coding a tribit stream.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">TribitCoder</span> {
+        <span class="self">Self</span>::<span class="ident">for_fsm</span>(<span class="ident">trellis</span>::<span class="ident">TribitFSM</span>::<span class="ident">new</span>())
     }
 
-    <span class='doccomment'>/// Code the given bytes as tribits.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed_bytes</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>u8</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>bytes</span>: <span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='kw'>for</span> <span class='ident'>tribit</span> <span class='kw'>in</span> <span class='ident'>bits</span>::<span class='ident'>Tribits</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>) {
-            <span class='self'>self</span>.<span class='ident'>feed_symbol</span>(<span class='ident'>tribit</span>);
+    <span class="doccomment">/// Code the given bytes as tribits.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">feed_bytes</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">u8</span><span class="op">&gt;&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bytes</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">for</span> <span class="ident">tribit</span> <span class="kw">in</span> <span class="ident">bits</span>::<span class="ident">Tribits</span>::<span class="ident">new</span>(<span class="ident">bytes</span>) {
+            <span class="self">self</span>.<span class="ident">feed_symbol</span>(<span class="ident">tribit</span>);
         }
 
-        <span class='self'>self</span>
+        <span class="self">self</span>
     }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_dibit_coder</span>() {
-        <span class='kw'>let</span> <span class='ident'>buf</span> <span class='op'>=</span> <span class='ident'>DibitCoder</span>::<span class='ident'>new</span>().<span class='ident'>feed_bytes</span>((<span class='number'>0</span>..<span class='number'>12</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> {
-            <span class='kw'>if</span> <span class='ident'>i</span> <span class='op'>%</span> <span class='number'>2</span> <span class='op'>==</span> <span class='number'>0</span> { <span class='number'>0x00</span> } <span class='kw'>else</span> { <span class='number'>0xFF</span> }
-        })).<span class='ident'>finish</span>();
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_dibit_coder</span>() {
+        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">DibitCoder</span>::<span class="ident">new</span>().<span class="ident">feed_bytes</span>((<span class="number">0</span>..<span class="number">12</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">==</span> <span class="number">0</span> { <span class="number">0x00</span> } <span class="kw">else</span> { <span class="number">0xFF</span> }
+        })).<span class="ident">finish</span>();
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>0</span>].<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>1</span>].<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>2</span>].<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>3</span>].<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>4</span>].<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>5</span>].<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>6</span>].<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>7</span>].<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">0</span>].<span class="ident">bits</span>(), <span class="number">0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">1</span>].<span class="ident">bits</span>(), <span class="number">0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">2</span>].<span class="ident">bits</span>(), <span class="number">0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">3</span>].<span class="ident">bits</span>(), <span class="number">0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">4</span>].<span class="ident">bits</span>(), <span class="number">0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">5</span>].<span class="ident">bits</span>(), <span class="number">0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">6</span>].<span class="ident">bits</span>(), <span class="number">0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">7</span>].<span class="ident">bits</span>(), <span class="number">0b10</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>8</span>].<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>9</span>].<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>10</span>].<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>11</span>].<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>12</span>].<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>13</span>].<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>14</span>].<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>15</span>].<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">8</span>].<span class="ident">bits</span>(), <span class="number">0b11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">9</span>].<span class="ident">bits</span>(), <span class="number">0b11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">10</span>].<span class="ident">bits</span>(), <span class="number">0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">11</span>].<span class="ident">bits</span>(), <span class="number">0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">12</span>].<span class="ident">bits</span>(), <span class="number">0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">13</span>].<span class="ident">bits</span>(), <span class="number">0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">14</span>].<span class="ident">bits</span>(), <span class="number">0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">15</span>].<span class="ident">bits</span>(), <span class="number">0b00</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_tribit_coder</span>() {
-        <span class='kw'>let</span> <span class='ident'>buf</span> <span class='op'>=</span> <span class='ident'>TribitCoder</span>::<span class='ident'>new</span>().<span class='ident'>feed_bytes</span>((<span class='number'>0</span>..<span class='number'>18</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> {
-            <span class='kw'>if</span> <span class='ident'>i</span> <span class='op'>%</span> <span class='number'>2</span> <span class='op'>==</span> <span class='number'>0</span> { <span class='number'>0x00</span> } <span class='kw'>else</span> { <span class='number'>0xFF</span> }
-        })).<span class='ident'>finish</span>();
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_tribit_coder</span>() {
+        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">TribitCoder</span>::<span class="ident">new</span>().<span class="ident">feed_bytes</span>((<span class="number">0</span>..<span class="number">18</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">==</span> <span class="number">0</span> { <span class="number">0x00</span> } <span class="kw">else</span> { <span class="number">0xFF</span> }
+        })).<span class="ident">finish</span>();
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>0</span>].<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>1</span>].<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">0</span>].<span class="ident">bits</span>(), <span class="number">0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">1</span>].<span class="ident">bits</span>(), <span class="number">0b10</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>2</span>].<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>3</span>].<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">2</span>].<span class="ident">bits</span>(), <span class="number">0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">3</span>].<span class="ident">bits</span>(), <span class="number">0b10</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>4</span>].<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>5</span>].<span class='ident'>bits</span>(), <span class='number'>0b01</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">4</span>].<span class="ident">bits</span>(), <span class="number">0b11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">5</span>].<span class="ident">bits</span>(), <span class="number">0b01</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>6</span>].<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>7</span>].<span class='ident'>bits</span>(), <span class='number'>0b01</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">6</span>].<span class="ident">bits</span>(), <span class="number">0b11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">7</span>].<span class="ident">bits</span>(), <span class="number">0b01</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>8</span>].<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>9</span>].<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">8</span>].<span class="ident">bits</span>(), <span class="number">0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">9</span>].<span class="ident">bits</span>(), <span class="number">0b00</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>10</span>].<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>11</span>].<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">10</span>].<span class="ident">bits</span>(), <span class="number">0b11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">11</span>].<span class="ident">bits</span>(), <span class="number">0b10</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>12</span>].<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>buf</span>[<span class='number'>13</span>].<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">12</span>].<span class="ident">bits</span>(), <span class="number">0b11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buf</span>[<span class="number">13</span>].<span class="ident">bits</span>(), <span class="number">0b11</span>);
     }
 }
 </pre>
@@ -352,13 +353,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -392,7 +395,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

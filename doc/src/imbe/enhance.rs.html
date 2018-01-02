@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -488,450 +489,450 @@
 <span id="443">443</span>
 <span id="444">444</span>
 <span id="445">445</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Frame repeat/muting, spectral amplitude enhancement, and adaptive smoothing.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Frame repeat/muting, spectral amplitude enhancement, and adaptive smoothing.</span>
 
-<span class='kw'>use</span> <span class='ident'>std</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>f32</span>::<span class='ident'>consts</span>::<span class='ident'>PI</span>;
+<span class="kw">use</span> <span class="ident">std</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">f32</span>::<span class="ident">consts</span>::<span class="ident">PI</span>;
 
-<span class='kw'>use</span> <span class='ident'>arrayvec</span>::<span class='ident'>ArrayVec</span>;
-<span class='kw'>use</span> <span class='ident'>map_in_place</span>::<span class='ident'>MapInPlace</span>;
+<span class="kw">use</span> <span class="ident">arrayvec</span>::<span class="ident">ArrayVec</span>;
+<span class="kw">use</span> <span class="ident">slice_mip</span>::<span class="ident">MapInPlace</span>;
 
-<span class='kw'>use</span> <span class='ident'>consts</span>::<span class='ident'>MAX_HARMONICS</span>;
-<span class='kw'>use</span> <span class='ident'>frame</span>::<span class='ident'>Errors</span>;
-<span class='kw'>use</span> <span class='ident'>descramble</span>::<span class='ident'>VoiceDecisions</span>;
-<span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
-<span class='kw'>use</span> <span class='ident'>spectral</span>::<span class='ident'>Spectrals</span>;
+<span class="kw">use</span> <span class="ident">consts</span>::<span class="ident">MAX_HARMONICS</span>;
+<span class="kw">use</span> <span class="ident">frame</span>::<span class="ident">Errors</span>;
+<span class="kw">use</span> <span class="ident">descramble</span>::<span class="ident">VoiceDecisions</span>;
+<span class="kw">use</span> <span class="ident">params</span>::<span class="ident">BaseParams</span>;
+<span class="kw">use</span> <span class="ident">spectral</span>::<span class="ident">Spectrals</span>;
 
-<span class='doccomment'>/// Values derived from error correction decoding.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>EnhanceErrors</span> {
-    <span class='doccomment'>/// Total number of errors corrected in the current frame, ϵ&lt;sub&gt;T&lt;/sub&gt; [p45].</span>
-    <span class='kw'>pub</span> <span class='ident'>total</span>: <span class='ident'>usize</span>,
-    <span class='doccomment'>/// Error rate tracking term, ϵ&lt;sub&gt;R&lt;/sub&gt; [p45].</span>
-    <span class='kw'>pub</span> <span class='ident'>rate</span>: <span class='ident'>f32</span>,
-    <span class='doccomment'>/// Errors corrected in first (u&lt;sub&gt;0&lt;/sub&gt;) Golay-coded chunk, ϵ&lt;sub&gt;0&lt;/sub&gt;.</span>
-    <span class='kw'>pub</span> <span class='ident'>golay_init</span>: <span class='ident'>usize</span>,
-    <span class='doccomment'>/// Errors corrected in first (u&lt;sub&gt;4&lt;/sub&gt;) Hamming-coded chunk, ϵ&lt;sub&gt;4&lt;/sub&gt;.</span>
-    <span class='kw'>pub</span> <span class='ident'>hamming_init</span>: <span class='ident'>usize</span>,
+<span class="doccomment">/// Values derived from error correction decoding.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnhanceErrors</span> {
+    <span class="doccomment">/// Total number of errors corrected in the current frame, ϵ&lt;sub&gt;T&lt;/sub&gt; [p45].</span>
+    <span class="kw">pub</span> <span class="ident">total</span>: <span class="ident">usize</span>,
+    <span class="doccomment">/// Error rate tracking term, ϵ&lt;sub&gt;R&lt;/sub&gt; [p45].</span>
+    <span class="kw">pub</span> <span class="ident">rate</span>: <span class="ident">f32</span>,
+    <span class="doccomment">/// Errors corrected in first (u&lt;sub&gt;0&lt;/sub&gt;) Golay-coded chunk, ϵ&lt;sub&gt;0&lt;/sub&gt;.</span>
+    <span class="kw">pub</span> <span class="ident">golay_init</span>: <span class="ident">usize</span>,
+    <span class="doccomment">/// Errors corrected in first (u&lt;sub&gt;4&lt;/sub&gt;) Hamming-coded chunk, ϵ&lt;sub&gt;4&lt;/sub&gt;.</span>
+    <span class="kw">pub</span> <span class="ident">hamming_init</span>: <span class="ident">usize</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>EnhanceErrors</span> {
-    <span class='doccomment'>/// Create a new `EnhanceErrors` from the errors corrected in the current frame,</span>
-    <span class='doccomment'>/// ϵ&lt;sub&gt;i&lt;/sub&gt;, and the previous frame&#39;s ϵ&lt;sub&gt;R&lt;/sub&gt; value.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>errors</span>: <span class='kw-2'>&amp;</span><span class='ident'>Errors</span>, <span class='ident'>prev_rate</span>: <span class='ident'>f32</span>) <span class='op'>-&gt;</span> <span class='ident'>EnhanceErrors</span> {
-        <span class='kw'>let</span> <span class='ident'>total</span> <span class='op'>=</span> <span class='ident'>errors</span>.<span class='ident'>iter</span>().<span class='ident'>fold</span>(<span class='number'>0</span>, <span class='op'>|</span><span class='ident'>s</span>, <span class='kw-2'>&amp;</span><span class='ident'>e</span><span class='op'>|</span> <span class='ident'>s</span> <span class='op'>+</span> <span class='ident'>e</span>);
+<span class="kw">impl</span> <span class="ident">EnhanceErrors</span> {
+    <span class="doccomment">/// Create a new `EnhanceErrors` from the errors corrected in the current frame,</span>
+    <span class="doccomment">/// ϵ&lt;sub&gt;i&lt;/sub&gt;, and the previous frame&#39;s ϵ&lt;sub&gt;R&lt;/sub&gt; value.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">errors</span>: <span class="kw-2">&amp;</span><span class="ident">Errors</span>, <span class="ident">prev_rate</span>: <span class="ident">f32</span>) <span class="op">-&gt;</span> <span class="ident">EnhanceErrors</span> {
+        <span class="kw">let</span> <span class="ident">total</span> <span class="op">=</span> <span class="ident">errors</span>.<span class="ident">iter</span>().<span class="ident">fold</span>(<span class="number">0</span>, <span class="op">|</span><span class="ident">s</span>, <span class="kw-2">&amp;</span><span class="ident">e</span><span class="op">|</span> <span class="ident">s</span> <span class="op">+</span> <span class="ident">e</span>);
 
-        <span class='ident'>EnhanceErrors</span> {
-            <span class='ident'>total</span>: <span class='ident'>total</span>,
-            <span class='comment'>// Compute Eq 96.</span>
-            <span class='ident'>rate</span>: <span class='number'>0.95</span> <span class='op'>*</span> <span class='ident'>prev_rate</span> <span class='op'>+</span> <span class='number'>0.000365</span> <span class='op'>*</span> <span class='ident'>total</span> <span class='kw'>as</span> <span class='ident'>f32</span>,
-            <span class='ident'>golay_init</span>: <span class='ident'>errors</span>[<span class='number'>0</span>],
-            <span class='ident'>hamming_init</span>: <span class='ident'>errors</span>[<span class='number'>4</span>],
+        <span class="ident">EnhanceErrors</span> {
+            <span class="ident">total</span>: <span class="ident">total</span>,
+            <span class="comment">// Compute Eq 96.</span>
+            <span class="ident">rate</span>: <span class="number">0.95</span> <span class="op">*</span> <span class="ident">prev_rate</span> <span class="op">+</span> <span class="number">0.000365</span> <span class="op">*</span> <span class="ident">total</span> <span class="kw">as</span> <span class="ident">f32</span>,
+            <span class="ident">golay_init</span>: <span class="ident">errors</span>[<span class="number">0</span>],
+            <span class="ident">hamming_init</span>: <span class="ident">errors</span>[<span class="number">4</span>],
         }
     }
 }
 
-<span class='doccomment'>/// Energy-related parameters for a voice frame.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>FrameEnergy</span> {
-    <span class='doccomment'>/// Spectral amplitude energy, R&lt;sub&gt;M0&lt;/sub&gt;.</span>
-    <span class='kw'>pub</span> <span class='ident'>energy</span>: <span class='ident'>f32</span>,
-    <span class='doccomment'>/// Scaled energy value, R&lt;sub&gt;M1&lt;/sub&gt;.</span>
-    <span class='kw'>pub</span> <span class='ident'>scaled</span>: <span class='ident'>f32</span>,
-    <span class='doccomment'>/// Moving average energy tracker, S&lt;sub&gt;E&lt;/sub&gt;.</span>
-    <span class='kw'>pub</span> <span class='ident'>tracking</span>: <span class='ident'>f32</span>,
+<span class="doccomment">/// Energy-related parameters for a voice frame.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FrameEnergy</span> {
+    <span class="doccomment">/// Spectral amplitude energy, R&lt;sub&gt;M0&lt;/sub&gt;.</span>
+    <span class="kw">pub</span> <span class="ident">energy</span>: <span class="ident">f32</span>,
+    <span class="doccomment">/// Scaled energy value, R&lt;sub&gt;M1&lt;/sub&gt;.</span>
+    <span class="kw">pub</span> <span class="ident">scaled</span>: <span class="ident">f32</span>,
+    <span class="doccomment">/// Moving average energy tracker, S&lt;sub&gt;E&lt;/sub&gt;.</span>
+    <span class="kw">pub</span> <span class="ident">tracking</span>: <span class="ident">f32</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>FrameEnergy</span> {
-    <span class='doccomment'>/// Create a new `FrameEnergy` from the given spectral amplitudes M&lt;sub&gt;l&lt;/sub&gt;,</span>
-    <span class='doccomment'>/// previous frame energy values, and current frame parameters.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>spectrals</span>: <span class='kw-2'>&amp;</span><span class='ident'>Spectrals</span>, <span class='ident'>prev</span>: <span class='kw-2'>&amp;</span><span class='ident'>FrameEnergy</span>, <span class='ident'>params</span>: <span class='kw-2'>&amp;</span><span class='ident'>BaseParams</span>)
-        <span class='op'>-&gt;</span> <span class='ident'>FrameEnergy</span>
+<span class="kw">impl</span> <span class="ident">FrameEnergy</span> {
+    <span class="doccomment">/// Create a new `FrameEnergy` from the given spectral amplitudes M&lt;sub&gt;l&lt;/sub&gt;,</span>
+    <span class="doccomment">/// previous frame energy values, and current frame parameters.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">spectrals</span>: <span class="kw-2">&amp;</span><span class="ident">Spectrals</span>, <span class="ident">prev</span>: <span class="kw-2">&amp;</span><span class="ident">FrameEnergy</span>, <span class="ident">params</span>: <span class="kw-2">&amp;</span><span class="ident">BaseParams</span>)
+        <span class="op">-&gt;</span> <span class="ident">FrameEnergy</span>
     {
-        <span class='comment'>// Compute energy of spectral amplitudes according to Eq 105.</span>
-        <span class='kw'>let</span> <span class='ident'>energy</span> <span class='op'>=</span> <span class='ident'>spectrals</span>.<span class='ident'>iter</span>()
-            .<span class='ident'>map</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>m</span><span class='op'>|</span> <span class='ident'>m</span>.<span class='ident'>powi</span>(<span class='number'>2</span>))
-            .<span class='ident'>fold</span>(<span class='number'>0.0</span>, <span class='op'>|</span><span class='ident'>s</span>, <span class='ident'>x</span><span class='op'>|</span> <span class='ident'>s</span> <span class='op'>+</span> <span class='ident'>x</span>);
+        <span class="comment">// Compute energy of spectral amplitudes according to Eq 105.</span>
+        <span class="kw">let</span> <span class="ident">energy</span> <span class="op">=</span> <span class="ident">spectrals</span>.<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span>.<span class="ident">powi</span>(<span class="number">2</span>))
+            .<span class="ident">fold</span>(<span class="number">0.0</span>, <span class="op">|</span><span class="ident">s</span>, <span class="ident">x</span><span class="op">|</span> <span class="ident">s</span> <span class="op">+</span> <span class="ident">x</span>);
 
-        <span class='comment'>// Compute scaled energies according to Eq 106.</span>
-        <span class='kw'>let</span> <span class='ident'>scaled</span> <span class='op'>=</span> <span class='ident'>spectrals</span>.<span class='ident'>iter</span>().<span class='ident'>enumerate</span>()
-            .<span class='ident'>map</span>(<span class='op'>|</span>(<span class='ident'>l</span>, <span class='kw-2'>&amp;</span><span class='ident'>m</span>)<span class='op'>|</span> <span class='ident'>m</span>.<span class='ident'>powi</span>(<span class='number'>2</span>) <span class='op'>*</span> (<span class='ident'>params</span>.<span class='ident'>fundamental</span> <span class='op'>*</span> (<span class='ident'>l</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>f32</span>).<span class='ident'>cos</span>())
-            .<span class='ident'>fold</span>(<span class='number'>0.0</span>, <span class='op'>|</span><span class='ident'>s</span>, <span class='ident'>x</span><span class='op'>|</span> <span class='ident'>s</span> <span class='op'>+</span> <span class='ident'>x</span>);
+        <span class="comment">// Compute scaled energies according to Eq 106.</span>
+        <span class="kw">let</span> <span class="ident">scaled</span> <span class="op">=</span> <span class="ident">spectrals</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>()
+            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">l</span>, <span class="kw-2">&amp;</span><span class="ident">m</span>)<span class="op">|</span> <span class="ident">m</span>.<span class="ident">powi</span>(<span class="number">2</span>) <span class="op">*</span> (<span class="ident">params</span>.<span class="ident">fundamental</span> <span class="op">*</span> (<span class="ident">l</span> <span class="op">+</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">f32</span>).<span class="ident">cos</span>())
+            .<span class="ident">fold</span>(<span class="number">0.0</span>, <span class="op">|</span><span class="ident">s</span>, <span class="ident">x</span><span class="op">|</span> <span class="ident">s</span> <span class="op">+</span> <span class="ident">x</span>);
 
-        <span class='ident'>FrameEnergy</span> {
-            <span class='ident'>energy</span>: <span class='ident'>energy</span>,
-            <span class='ident'>scaled</span>: <span class='ident'>scaled</span>,
-            <span class='comment'>// Compute energy tracking EWMA according to Eq 111.</span>
-            <span class='ident'>tracking</span>: (<span class='number'>0.95</span> <span class='op'>*</span> <span class='ident'>prev</span>.<span class='ident'>tracking</span> <span class='op'>+</span> <span class='number'>0.05</span> <span class='op'>*</span> <span class='ident'>energy</span>).<span class='ident'>max</span>(<span class='number'>10000.0</span>),
+        <span class="ident">FrameEnergy</span> {
+            <span class="ident">energy</span>: <span class="ident">energy</span>,
+            <span class="ident">scaled</span>: <span class="ident">scaled</span>,
+            <span class="comment">// Compute energy tracking EWMA according to Eq 111.</span>
+            <span class="ident">tracking</span>: (<span class="number">0.95</span> <span class="op">*</span> <span class="ident">prev</span>.<span class="ident">tracking</span> <span class="op">+</span> <span class="number">0.05</span> <span class="op">*</span> <span class="ident">energy</span>).<span class="ident">max</span>(<span class="number">10000.0</span>),
         }
     }
 }
 
-<span class='kw'>impl</span> <span class='ident'>Default</span> <span class='kw'>for</span> <span class='ident'>FrameEnergy</span> {
-    <span class='doccomment'>/// Create a new `FrameEnergy` with default initial values.</span>
-    <span class='kw'>fn</span> <span class='ident'>default</span>() <span class='op'>-&gt;</span> <span class='ident'>FrameEnergy</span> {
-        <span class='comment'>// The first two values are arbitrary as they aren&#39;t saved across frames, and the</span>
-        <span class='comment'>// third value is taken from [p64].</span>
-        <span class='ident'>FrameEnergy</span> {
-            <span class='ident'>energy</span>: <span class='number'>0.0</span>,
-            <span class='ident'>scaled</span>: <span class='number'>0.0</span>,
-            <span class='ident'>tracking</span>: <span class='number'>75000.0</span>,
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">FrameEnergy</span> {
+    <span class="doccomment">/// Create a new `FrameEnergy` with default initial values.</span>
+    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-&gt;</span> <span class="ident">FrameEnergy</span> {
+        <span class="comment">// The first two values are arbitrary as they aren&#39;t saved across frames, and the</span>
+        <span class="comment">// third value is taken from [p64].</span>
+        <span class="ident">FrameEnergy</span> {
+            <span class="ident">energy</span>: <span class="number">0.0</span>,
+            <span class="ident">scaled</span>: <span class="number">0.0</span>,
+            <span class="ident">tracking</span>: <span class="number">75000.0</span>,
         }
     }
 }
 
-<span class='doccomment'>/// Enhanced spectral amplitudes, &quot;overbar&quot; M&lt;sub&gt;l&lt;/sub&gt;, are derived from the decoded</span>
-<span class='doccomment'>/// spectral amplitudes, &quot;tilde&quot; M&lt;sub&gt;l&lt;/sub&gt;.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>EnhancedSpectrals</span>(<span class='ident'>ArrayVec</span><span class='op'>&lt;</span>[<span class='ident'>f32</span>; <span class='ident'>MAX_HARMONICS</span>]<span class='op'>&gt;</span>);
+<span class="doccomment">/// Enhanced spectral amplitudes, &quot;overbar&quot; M&lt;sub&gt;l&lt;/sub&gt;, are derived from the decoded</span>
+<span class="doccomment">/// spectral amplitudes, &quot;tilde&quot; M&lt;sub&gt;l&lt;/sub&gt;.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnhancedSpectrals</span>(<span class="ident">ArrayVec</span><span class="op">&lt;</span>[<span class="ident">f32</span>; <span class="ident">MAX_HARMONICS</span>]<span class="op">&gt;</span>);
 
-<span class='kw'>impl</span> <span class='ident'>EnhancedSpectrals</span> {
-    <span class='doccomment'>/// Create a new `EnhancedSpectrals` from the given base spectral amplitudes</span>
-    <span class='doccomment'>/// M&lt;sub&gt;l&lt;/sub&gt; and current frame energy values and parameters.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>spectrals</span>: <span class='kw-2'>&amp;</span><span class='ident'>Spectrals</span>, <span class='ident'>fen</span>: <span class='kw-2'>&amp;</span><span class='ident'>FrameEnergy</span>, <span class='ident'>params</span>: <span class='kw-2'>&amp;</span><span class='ident'>BaseParams</span>)
-        <span class='op'>-&gt;</span> <span class='ident'>EnhancedSpectrals</span>
+<span class="kw">impl</span> <span class="ident">EnhancedSpectrals</span> {
+    <span class="doccomment">/// Create a new `EnhancedSpectrals` from the given base spectral amplitudes</span>
+    <span class="doccomment">/// M&lt;sub&gt;l&lt;/sub&gt; and current frame energy values and parameters.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">spectrals</span>: <span class="kw-2">&amp;</span><span class="ident">Spectrals</span>, <span class="ident">fen</span>: <span class="kw-2">&amp;</span><span class="ident">FrameEnergy</span>, <span class="ident">params</span>: <span class="kw-2">&amp;</span><span class="ident">BaseParams</span>)
+        <span class="op">-&gt;</span> <span class="ident">EnhancedSpectrals</span>
     {
-        <span class='comment'>// Compute R_M0^2.</span>
-        <span class='kw'>let</span> <span class='ident'>energy_sqr</span> <span class='op'>=</span> <span class='ident'>fen</span>.<span class='ident'>energy</span>.<span class='ident'>powi</span>(<span class='number'>2</span>);
-        <span class='comment'>// Compute R_M1^2.</span>
-        <span class='kw'>let</span> <span class='ident'>scaled_sqr</span> <span class='op'>=</span> <span class='ident'>fen</span>.<span class='ident'>scaled</span>.<span class='ident'>powi</span>(<span class='number'>2</span>);
-        <span class='comment'>// Compute denominator term of Eq 107.</span>
-        <span class='kw'>let</span> <span class='ident'>denom</span> <span class='op'>=</span> <span class='ident'>params</span>.<span class='ident'>fundamental</span> <span class='op'>*</span> <span class='ident'>fen</span>.<span class='ident'>energy</span> <span class='op'>*</span> (<span class='ident'>energy_sqr</span> <span class='op'>-</span> <span class='ident'>scaled_sqr</span>);
+        <span class="comment">// Compute R_M0^2.</span>
+        <span class="kw">let</span> <span class="ident">energy_sqr</span> <span class="op">=</span> <span class="ident">fen</span>.<span class="ident">energy</span>.<span class="ident">powi</span>(<span class="number">2</span>);
+        <span class="comment">// Compute R_M1^2.</span>
+        <span class="kw">let</span> <span class="ident">scaled_sqr</span> <span class="op">=</span> <span class="ident">fen</span>.<span class="ident">scaled</span>.<span class="ident">powi</span>(<span class="number">2</span>);
+        <span class="comment">// Compute denominator term of Eq 107.</span>
+        <span class="kw">let</span> <span class="ident">denom</span> <span class="op">=</span> <span class="ident">params</span>.<span class="ident">fundamental</span> <span class="op">*</span> <span class="ident">fen</span>.<span class="ident">energy</span> <span class="op">*</span> (<span class="ident">energy_sqr</span> <span class="op">-</span> <span class="ident">scaled_sqr</span>);
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>enhanced</span> <span class='op'>=</span> <span class='ident'>spectrals</span>.<span class='ident'>iter</span>().<span class='ident'>enumerate</span>().<span class='ident'>map</span>(<span class='op'>|</span>(<span class='ident'>l</span>, <span class='kw-2'>&amp;</span><span class='ident'>m</span>)<span class='op'>|</span> {
-            <span class='kw'>let</span> <span class='ident'>l</span> <span class='op'>=</span> <span class='ident'>l</span> <span class='op'>+</span> <span class='number'>1</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">enhanced</span> <span class="op">=</span> <span class="ident">spectrals</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">l</span>, <span class="kw-2">&amp;</span><span class="ident">m</span>)<span class="op">|</span> {
+            <span class="kw">let</span> <span class="ident">l</span> <span class="op">=</span> <span class="ident">l</span> <span class="op">+</span> <span class="number">1</span>;
 
-            <span class='comment'>// Handle fast-path case in Eq 108.</span>
-            <span class='kw'>if</span> <span class='number'>8</span> <span class='op'>*</span> <span class='ident'>l</span> <span class='kw'>as</span> <span class='ident'>u32</span> <span class='op'>&lt;=</span> <span class='ident'>params</span>.<span class='ident'>harmonics</span> {
-                <span class='kw'>return</span> <span class='ident'>m</span>;
+            <span class="comment">// Handle fast-path case in Eq 108.</span>
+            <span class="kw">if</span> <span class="number">8</span> <span class="op">*</span> <span class="ident">l</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">&lt;=</span> <span class="ident">params</span>.<span class="ident">harmonics</span> {
+                <span class="kw">return</span> <span class="ident">m</span>;
             }
 
-            <span class='comment'>// Compute Eq 107.</span>
-            <span class='kw'>let</span> <span class='ident'>weight</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>sqrt</span>() <span class='op'>*</span> (
-                <span class='number'>0.96</span> <span class='op'>*</span> <span class='ident'>PI</span> <span class='op'>*</span> (
-                    <span class='ident'>energy_sqr</span> <span class='op'>+</span> <span class='ident'>scaled_sqr</span> <span class='op'>-</span> <span class='number'>2.0</span> <span class='op'>*</span> <span class='ident'>fen</span>.<span class='ident'>energy</span> <span class='op'>*</span> <span class='ident'>fen</span>.<span class='ident'>scaled</span> <span class='op'>*</span>
-                        (<span class='ident'>params</span>.<span class='ident'>fundamental</span> <span class='op'>*</span> <span class='ident'>l</span> <span class='kw'>as</span> <span class='ident'>f32</span>).<span class='ident'>cos</span>()
-                ) <span class='op'>/</span> <span class='ident'>denom</span>
-            ).<span class='ident'>powf</span>(<span class='number'>0.25</span>);
+            <span class="comment">// Compute Eq 107.</span>
+            <span class="kw">let</span> <span class="ident">weight</span> <span class="op">=</span> <span class="ident">m</span>.<span class="ident">sqrt</span>() <span class="op">*</span> (
+                <span class="number">0.96</span> <span class="op">*</span> <span class="ident">PI</span> <span class="op">*</span> (
+                    <span class="ident">energy_sqr</span> <span class="op">+</span> <span class="ident">scaled_sqr</span> <span class="op">-</span> <span class="number">2.0</span> <span class="op">*</span> <span class="ident">fen</span>.<span class="ident">energy</span> <span class="op">*</span> <span class="ident">fen</span>.<span class="ident">scaled</span> <span class="op">*</span>
+                        (<span class="ident">params</span>.<span class="ident">fundamental</span> <span class="op">*</span> <span class="ident">l</span> <span class="kw">as</span> <span class="ident">f32</span>).<span class="ident">cos</span>()
+                ) <span class="op">/</span> <span class="ident">denom</span>
+            ).<span class="ident">powf</span>(<span class="number">0.25</span>);
 
-            <span class='comment'>// Scale current spectral amplitude according to Eq 108.</span>
-            <span class='ident'>m</span> <span class='op'>*</span> <span class='ident'>weight</span>.<span class='ident'>max</span>(<span class='number'>0.5</span>).<span class='ident'>min</span>(<span class='number'>1.2</span>)
-        }).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>ArrayVec</span><span class='op'>&lt;</span>[<span class='ident'>f32</span>; <span class='ident'>MAX_HARMONICS</span>]<span class='op'>&gt;&gt;</span>();
+            <span class="comment">// Scale current spectral amplitude according to Eq 108.</span>
+            <span class="ident">m</span> <span class="op">*</span> <span class="ident">weight</span>.<span class="ident">max</span>(<span class="number">0.5</span>).<span class="ident">min</span>(<span class="number">1.2</span>)
+        }).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">ArrayVec</span><span class="op">&lt;</span>[<span class="ident">f32</span>; <span class="ident">MAX_HARMONICS</span>]<span class="op">&gt;&gt;</span>();
 
-        <span class='comment'>// Compute root ratio of energies according to Eq 109.</span>
-        <span class='kw'>let</span> <span class='ident'>scale</span> <span class='op'>=</span> (
-            <span class='ident'>fen</span>.<span class='ident'>energy</span> <span class='op'>/</span> <span class='ident'>enhanced</span>.<span class='ident'>iter</span>().<span class='ident'>fold</span>(<span class='number'>0.0</span>, <span class='op'>|</span><span class='ident'>s</span>, <span class='kw-2'>&amp;</span><span class='ident'>m</span><span class='op'>|</span> <span class='ident'>s</span> <span class='op'>+</span> <span class='ident'>m</span>.<span class='ident'>powi</span>(<span class='number'>2</span>))
-        ).<span class='ident'>sqrt</span>();
+        <span class="comment">// Compute root ratio of energies according to Eq 109.</span>
+        <span class="kw">let</span> <span class="ident">scale</span> <span class="op">=</span> (
+            <span class="ident">fen</span>.<span class="ident">energy</span> <span class="op">/</span> <span class="ident">enhanced</span>.<span class="ident">iter</span>().<span class="ident">fold</span>(<span class="number">0.0</span>, <span class="op">|</span><span class="ident">s</span>, <span class="kw-2">&amp;</span><span class="ident">m</span><span class="op">|</span> <span class="ident">s</span> <span class="op">+</span> <span class="ident">m</span>.<span class="ident">powi</span>(<span class="number">2</span>))
+        ).<span class="ident">sqrt</span>();
 
-        <span class='comment'>// Perform second scaling pass according to Eq 110.</span>
-        <span class='ident'>enhanced</span>.<span class='ident'>map_in_place</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>m</span><span class='op'>|</span> <span class='ident'>m</span> <span class='op'>*</span> <span class='ident'>scale</span>);
+        <span class="comment">// Perform second scaling pass according to Eq 110.</span>
+        <span class="ident">enhanced</span>.<span class="ident">map_in_place</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span> <span class="op">*</span> <span class="ident">scale</span>);
 
-        <span class='ident'>EnhancedSpectrals</span>(<span class='ident'>enhanced</span>)
+        <span class="ident">EnhancedSpectrals</span>(<span class="ident">enhanced</span>)
     }
 
-    <span class='doccomment'>/// Retrieve the enhanced spectral amplitude M&lt;sub&gt;l&lt;/sub&gt;, 1 ≤ l ≤ L.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>l</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>f32</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>l</span> <span class='op'>&gt;=</span> <span class='number'>1</span>);
+    <span class="doccomment">/// Retrieve the enhanced spectral amplitude M&lt;sub&gt;l&lt;/sub&gt;, 1 ≤ l ≤ L.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">f32</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">l</span> <span class="op">&gt;=</span> <span class="number">1</span>);
 
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>get</span>(<span class='ident'>l</span> <span class='op'>-</span> <span class='number'>1</span>) {
-            <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>s</span>) <span class='op'>=&gt;</span> <span class='ident'>s</span>,
-            <span class='comment'>// Out-of-bounds amplitudes are zero [p60].</span>
-            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='number'>0.0</span>,
+        <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">get</span>(<span class="ident">l</span> <span class="op">-</span> <span class="number">1</span>) {
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>) <span class="op">=&gt;</span> <span class="ident">s</span>,
+            <span class="comment">// Out-of-bounds amplitudes are zero [p60].</span>
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="number">0.0</span>,
         }
     }
 }
 
-<span class='kw'>impl</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Deref</span> <span class='kw'>for</span> <span class='ident'>EnhancedSpectrals</span> {
-    <span class='kw'>type</span> <span class='ident'>Target</span> <span class='op'>=</span> <span class='ident'>ArrayVec</span><span class='op'>&lt;</span>[<span class='ident'>f32</span>; <span class='ident'>MAX_HARMONICS</span>]<span class='op'>&gt;</span>;
-    <span class='kw'>fn</span> <span class='ident'>deref</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='self'>Self</span>::<span class='ident'>Target</span> { <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span> }
+<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">EnhancedSpectrals</span> {
+    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">ArrayVec</span><span class="op">&lt;</span>[<span class="ident">f32</span>; <span class="ident">MAX_HARMONICS</span>]<span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Target</span> { <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span> }
 }
 
-<span class='kw'>impl</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>DerefMut</span> <span class='kw'>for</span> <span class='ident'>EnhancedSpectrals</span> {
-    <span class='kw'>fn</span> <span class='ident'>deref_mut</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>Self</span>::<span class='ident'>Target</span> { <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='number'>0</span> }
+<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">DerefMut</span> <span class="kw">for</span> <span class="ident">EnhancedSpectrals</span> {
+    <span class="kw">fn</span> <span class="ident">deref_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Target</span> { <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="number">0</span> }
 }
 
-<span class='kw'>impl</span> <span class='ident'>Default</span> <span class='kw'>for</span> <span class='ident'>EnhancedSpectrals</span> {
-    <span class='doccomment'>/// Create a new `EnhancedSpectrals` with default initial values.</span>
-    <span class='kw'>fn</span> <span class='ident'>default</span>() <span class='op'>-&gt;</span> <span class='ident'>EnhancedSpectrals</span> {
-        <span class='comment'>// By default, all enhanced amplitudes are 0 [p64].</span>
-        <span class='ident'>EnhancedSpectrals</span>(<span class='ident'>ArrayVec</span>::<span class='ident'>new</span>())
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">EnhancedSpectrals</span> {
+    <span class="doccomment">/// Create a new `EnhancedSpectrals` with default initial values.</span>
+    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-&gt;</span> <span class="ident">EnhancedSpectrals</span> {
+        <span class="comment">// By default, all enhanced amplitudes are 0 [p64].</span>
+        <span class="ident">EnhancedSpectrals</span>(<span class="ident">ArrayVec</span>::<span class="ident">new</span>())
     }
 }
 
-<span class='doccomment'>/// Compute the spectral amplitude threshold τ&lt;sub&gt;M&lt;/sub&gt; used in adaptive smoothing from</span>
-<span class='doccomment'>/// the given error characteristics and previous amplitude threshold.</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>amp_thresh</span>(<span class='ident'>errors</span>: <span class='kw-2'>&amp;</span><span class='ident'>EnhanceErrors</span>, <span class='ident'>prev</span>: <span class='ident'>f32</span>) <span class='op'>-&gt;</span> <span class='ident'>f32</span> {
-    <span class='comment'>// Compute Eq 115.</span>
-    <span class='kw'>if</span> <span class='ident'>errors</span>.<span class='ident'>rate</span> <span class='op'>&lt;=</span> <span class='number'>0.005</span> <span class='op'>&amp;&amp;</span> <span class='ident'>errors</span>.<span class='ident'>total</span> <span class='op'>&lt;=</span> <span class='number'>6</span> {
-        <span class='number'>20480.0</span>
-    } <span class='kw'>else</span> {
-        <span class='number'>6000.0</span> <span class='op'>-</span> <span class='number'>300.0</span> <span class='op'>*</span> <span class='ident'>errors</span>.<span class='ident'>total</span> <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>+</span> <span class='ident'>prev</span>
+<span class="doccomment">/// Compute the spectral amplitude threshold τ&lt;sub&gt;M&lt;/sub&gt; used in adaptive smoothing from</span>
+<span class="doccomment">/// the given error characteristics and previous amplitude threshold.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">amp_thresh</span>(<span class="ident">errors</span>: <span class="kw-2">&amp;</span><span class="ident">EnhanceErrors</span>, <span class="ident">prev</span>: <span class="ident">f32</span>) <span class="op">-&gt;</span> <span class="ident">f32</span> {
+    <span class="comment">// Compute Eq 115.</span>
+    <span class="kw">if</span> <span class="ident">errors</span>.<span class="ident">rate</span> <span class="op">&lt;=</span> <span class="number">0.005</span> <span class="op">&amp;&amp;</span> <span class="ident">errors</span>.<span class="ident">total</span> <span class="op">&lt;=</span> <span class="number">6</span> {
+        <span class="number">20480.0</span>
+    } <span class="kw">else</span> {
+        <span class="number">6000.0</span> <span class="op">-</span> <span class="number">300.0</span> <span class="op">*</span> <span class="ident">errors</span>.<span class="ident">total</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">+</span> <span class="ident">prev</span>
     }
 }
 
-<span class='doccomment'>/// Smooth the given enhanced spectral amplitudes M&lt;sub&gt;l&lt;/sub&gt; and voiced/unvoiced</span>
-<span class='doccomment'>/// decisions v&lt;sub&gt;l&lt;/sub&gt; based on the given error characteristics, current frame</span>
-<span class='doccomment'>/// energy, and spectral amplitude threshold τ&lt;sub&gt;M&lt;/sub&gt; for the current frame.</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>smooth</span>(<span class='ident'>enhanced</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>EnhancedSpectrals</span>, <span class='ident'>voiced</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>VoiceDecisions</span>,
-              <span class='ident'>errors</span>: <span class='kw-2'>&amp;</span><span class='ident'>EnhanceErrors</span>, <span class='ident'>fen</span>: <span class='kw-2'>&amp;</span><span class='ident'>FrameEnergy</span>, <span class='ident'>amp_thresh</span>: <span class='ident'>f32</span>)
+<span class="doccomment">/// Smooth the given enhanced spectral amplitudes M&lt;sub&gt;l&lt;/sub&gt; and voiced/unvoiced</span>
+<span class="doccomment">/// decisions v&lt;sub&gt;l&lt;/sub&gt; based on the given error characteristics, current frame</span>
+<span class="doccomment">/// energy, and spectral amplitude threshold τ&lt;sub&gt;M&lt;/sub&gt; for the current frame.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">smooth</span>(<span class="ident">enhanced</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">EnhancedSpectrals</span>, <span class="ident">voiced</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">VoiceDecisions</span>,
+              <span class="ident">errors</span>: <span class="kw-2">&amp;</span><span class="ident">EnhanceErrors</span>, <span class="ident">fen</span>: <span class="kw-2">&amp;</span><span class="ident">FrameEnergy</span>, <span class="ident">amp_thresh</span>: <span class="ident">f32</span>)
 {
-    <span class='comment'>// Compute Eq 112.</span>
-    <span class='kw'>let</span> <span class='ident'>thresh</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>errors</span>.<span class='ident'>rate</span> <span class='op'>&lt;=</span> <span class='number'>0.005</span> <span class='op'>&amp;&amp;</span> <span class='ident'>errors</span>.<span class='ident'>total</span> <span class='op'>&lt;=</span> <span class='number'>4</span> {
-        <span class='ident'>std</span>::<span class='ident'>f32</span>::<span class='ident'>MAX</span>
-    } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>errors</span>.<span class='ident'>rate</span> <span class='op'>&lt;=</span> <span class='number'>0.0125</span> <span class='op'>&amp;&amp;</span> <span class='ident'>errors</span>.<span class='ident'>hamming_init</span> <span class='op'>==</span> <span class='number'>0</span> {
-        <span class='number'>45.255</span> <span class='op'>*</span> <span class='ident'>fen</span>.<span class='ident'>tracking</span>.<span class='ident'>powf</span>(<span class='number'>0.375</span>) <span class='op'>/</span> (<span class='number'>277.26</span> <span class='op'>*</span> <span class='ident'>errors</span>.<span class='ident'>rate</span>).<span class='ident'>exp</span>()
-    } <span class='kw'>else</span> {
-        <span class='number'>1.414</span> <span class='op'>*</span> <span class='ident'>fen</span>.<span class='ident'>tracking</span>.<span class='ident'>powf</span>(<span class='number'>0.375</span>)
+    <span class="comment">// Compute Eq 112.</span>
+    <span class="kw">let</span> <span class="ident">thresh</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">errors</span>.<span class="ident">rate</span> <span class="op">&lt;=</span> <span class="number">0.005</span> <span class="op">&amp;&amp;</span> <span class="ident">errors</span>.<span class="ident">total</span> <span class="op">&lt;=</span> <span class="number">4</span> {
+        <span class="ident">std</span>::<span class="ident">f32</span>::<span class="ident">MAX</span>
+    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">errors</span>.<span class="ident">rate</span> <span class="op">&lt;=</span> <span class="number">0.0125</span> <span class="op">&amp;&amp;</span> <span class="ident">errors</span>.<span class="ident">hamming_init</span> <span class="op">==</span> <span class="number">0</span> {
+        <span class="number">45.255</span> <span class="op">*</span> <span class="ident">fen</span>.<span class="ident">tracking</span>.<span class="ident">powf</span>(<span class="number">0.375</span>) <span class="op">/</span> (<span class="number">277.26</span> <span class="op">*</span> <span class="ident">errors</span>.<span class="ident">rate</span>).<span class="ident">exp</span>()
+    } <span class="kw">else</span> {
+        <span class="number">1.414</span> <span class="op">*</span> <span class="ident">fen</span>.<span class="ident">tracking</span>.<span class="ident">powf</span>(<span class="number">0.375</span>)
     };
 
-    <span class='comment'>// Update voiced/unvoiced decisions according to Eq 113.</span>
-    <span class='kw'>for</span> (<span class='ident'>l</span>, <span class='kw-2'>&amp;</span><span class='ident'>m</span>) <span class='kw'>in</span> <span class='ident'>enhanced</span>.<span class='ident'>iter</span>().<span class='ident'>enumerate</span>() {
-        <span class='kw'>if</span> <span class='ident'>m</span> <span class='op'>&gt;</span> <span class='ident'>thresh</span> {
-            <span class='ident'>voiced</span>.<span class='ident'>force_voiced</span>(<span class='ident'>l</span> <span class='op'>+</span> <span class='number'>1</span>);
+    <span class="comment">// Update voiced/unvoiced decisions according to Eq 113.</span>
+    <span class="kw">for</span> (<span class="ident">l</span>, <span class="kw-2">&amp;</span><span class="ident">m</span>) <span class="kw">in</span> <span class="ident">enhanced</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
+        <span class="kw">if</span> <span class="ident">m</span> <span class="op">&gt;</span> <span class="ident">thresh</span> {
+            <span class="ident">voiced</span>.<span class="ident">force_voiced</span>(<span class="ident">l</span> <span class="op">+</span> <span class="number">1</span>);
         }
     }
 
-    <span class='comment'>// Compute amplitude sum in Eq 114.</span>
-    <span class='kw'>let</span> <span class='ident'>amp</span> <span class='op'>=</span> <span class='ident'>enhanced</span>.<span class='ident'>iter</span>().<span class='ident'>fold</span>(<span class='number'>0.0</span>, <span class='op'>|</span><span class='ident'>s</span>, <span class='kw-2'>&amp;</span><span class='ident'>m</span><span class='op'>|</span> <span class='ident'>s</span> <span class='op'>+</span> <span class='ident'>m</span>);
-    <span class='comment'>// Compute scale factor in Eq 116.</span>
-    <span class='kw'>let</span> <span class='ident'>scale</span> <span class='op'>=</span> (<span class='ident'>amp_thresh</span> <span class='op'>/</span> <span class='ident'>amp</span>).<span class='ident'>min</span>(<span class='number'>1.0</span>);
+    <span class="comment">// Compute amplitude sum in Eq 114.</span>
+    <span class="kw">let</span> <span class="ident">amp</span> <span class="op">=</span> <span class="ident">enhanced</span>.<span class="ident">iter</span>().<span class="ident">fold</span>(<span class="number">0.0</span>, <span class="op">|</span><span class="ident">s</span>, <span class="kw-2">&amp;</span><span class="ident">m</span><span class="op">|</span> <span class="ident">s</span> <span class="op">+</span> <span class="ident">m</span>);
+    <span class="comment">// Compute scale factor in Eq 116.</span>
+    <span class="kw">let</span> <span class="ident">scale</span> <span class="op">=</span> (<span class="ident">amp_thresh</span> <span class="op">/</span> <span class="ident">amp</span>).<span class="ident">min</span>(<span class="number">1.0</span>);
 
-    <span class='comment'>// Scale each enhanced M_l [p50].</span>
-    <span class='ident'>enhanced</span>.<span class='ident'>map_in_place</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>m</span><span class='op'>|</span> <span class='ident'>m</span> <span class='op'>*</span> <span class='ident'>scale</span>);
+    <span class="comment">// Scale each enhanced M_l [p50].</span>
+    <span class="ident">enhanced</span>.<span class="ident">map_in_place</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span> <span class="op">*</span> <span class="ident">scale</span>);
 }
 
-<span class='doccomment'>/// Check whether the current frame should be discarded and the previous repeated based on</span>
-<span class='doccomment'>/// the given error characteristics of the current frame.</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>should_repeat</span>(<span class='ident'>errors</span>: <span class='kw-2'>&amp;</span><span class='ident'>EnhanceErrors</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-    <span class='comment'>// Check the conditions in Eqs 97 and 98.</span>
-    <span class='ident'>errors</span>.<span class='ident'>golay_init</span> <span class='op'>&gt;=</span> <span class='number'>2</span> <span class='op'>&amp;&amp;</span> <span class='ident'>errors</span>.<span class='ident'>total</span> <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>&gt;=</span> <span class='number'>10.0</span> <span class='op'>+</span> <span class='number'>40.0</span> <span class='op'>*</span> <span class='ident'>errors</span>.<span class='ident'>rate</span>
+<span class="doccomment">/// Check whether the current frame should be discarded and the previous repeated based on</span>
+<span class="doccomment">/// the given error characteristics of the current frame.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">should_repeat</span>(<span class="ident">errors</span>: <span class="kw-2">&amp;</span><span class="ident">EnhanceErrors</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="comment">// Check the conditions in Eqs 97 and 98.</span>
+    <span class="ident">errors</span>.<span class="ident">golay_init</span> <span class="op">&gt;=</span> <span class="number">2</span> <span class="op">&amp;&amp;</span> <span class="ident">errors</span>.<span class="ident">total</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">&gt;=</span> <span class="number">10.0</span> <span class="op">+</span> <span class="number">40.0</span> <span class="op">*</span> <span class="ident">errors</span>.<span class="ident">rate</span>
 }
 
-<span class='doccomment'>/// Check if the current frame should be discarded and replaced with silence/comfort noise</span>
-<span class='doccomment'>/// based on the given error characteristics of the current frame.</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>should_mute</span>(<span class='ident'>errors</span>: <span class='kw-2'>&amp;</span><span class='ident'>EnhanceErrors</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-    <span class='comment'>// Check the condition on [p47].</span>
-    <span class='ident'>errors</span>.<span class='ident'>rate</span> <span class='op'>&gt;</span> <span class='number'>0.0875</span>
+<span class="doccomment">/// Check if the current frame should be discarded and replaced with silence/comfort noise</span>
+<span class="doccomment">/// based on the given error characteristics of the current frame.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">should_mute</span>(<span class="ident">errors</span>: <span class="kw-2">&amp;</span><span class="ident">EnhanceErrors</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="comment">// Check the condition on [p47].</span>
+    <span class="ident">errors</span>.<span class="ident">rate</span> <span class="op">&gt;</span> <span class="number">0.0875</span>
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>tests</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
-    <span class='kw'>use</span> <span class='ident'>descramble</span>::{<span class='ident'>Bootstrap</span>, <span class='ident'>descramble</span>};
-    <span class='kw'>use</span> <span class='ident'>gain</span>::<span class='ident'>Gains</span>;
-    <span class='kw'>use</span> <span class='ident'>spectral</span>::<span class='ident'>Spectrals</span>;
-    <span class='kw'>use</span> <span class='ident'>coefs</span>::<span class='ident'>Coefficients</span>;
-    <span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
-    <span class='kw'>use</span> <span class='ident'>prev</span>::{<span class='ident'>PrevFrame</span>};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">tests</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">descramble</span>::{<span class="ident">Bootstrap</span>, <span class="ident">descramble</span>};
+    <span class="kw">use</span> <span class="ident">gain</span>::<span class="ident">Gains</span>;
+    <span class="kw">use</span> <span class="ident">spectral</span>::<span class="ident">Spectrals</span>;
+    <span class="kw">use</span> <span class="ident">coefs</span>::<span class="ident">Coefficients</span>;
+    <span class="kw">use</span> <span class="ident">params</span>::<span class="ident">BaseParams</span>;
+    <span class="kw">use</span> <span class="ident">prev</span>::{<span class="ident">PrevFrame</span>};
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_errors</span>() {
-        <span class='kw'>let</span> <span class='ident'>e</span> <span class='op'>=</span> <span class='ident'>EnhanceErrors</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>, <span class='number'>6</span>, <span class='number'>7</span>], <span class='number'>0.5</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_errors</span>() {
+        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="ident">EnhanceErrors</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>], <span class="number">0.5</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>e</span>.<span class='ident'>total</span>, <span class='number'>28</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>rate</span> <span class='op'>-</span> <span class='number'>0.48522</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.00001</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>e</span>.<span class='ident'>golay_init</span>, <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>e</span>.<span class='ident'>hamming_init</span>, <span class='number'>5</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">e</span>.<span class="ident">total</span>, <span class="number">28</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">rate</span> <span class="op">-</span> <span class="number">0.48522</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.00001</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">e</span>.<span class="ident">golay_init</span>, <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">e</span>.<span class="ident">hamming_init</span>, <span class="number">5</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_frame_energy</span>() {
-        <span class='comment'>// Test against results computed with standalone python script.</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_frame_energy</span>() {
+        <span class="comment">// Test against results computed with standalone python script.</span>
 
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0b001000010010</span>,
-            <span class='number'>0b110011001100</span>,
-            <span class='number'>0b111000111000</span>,
-            <span class='number'>0b111111111111</span>,
-            <span class='number'>0b10100110101</span>,
-            <span class='number'>0b00101111010</span>,
-            <span class='number'>0b01110111011</span>,
-            <span class='number'>0b00001000</span>,
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0b001000010010</span>,
+            <span class="number">0b110011001100</span>,
+            <span class="number">0b111000111000</span>,
+            <span class="number">0b111111111111</span>,
+            <span class="number">0b10100110101</span>,
+            <span class="number">0b00101111010</span>,
+            <span class="number">0b01110111011</span>,
+            <span class="number">0b00001000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap_period</span>());
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>harmonics</span>, <span class='number'>16</span>);
-        <span class='kw'>let</span> (<span class='ident'>amps</span>, _, <span class='ident'>gain_idx</span>) <span class='op'>=</span> <span class='ident'>descramble</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>Gains</span>::<span class='ident'>new</span>(<span class='ident'>gain_idx</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>Coefficients</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>prev</span> <span class='op'>=</span> <span class='ident'>PrevFrame</span>::<span class='ident'>default</span>();
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>Spectrals</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>c</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>, <span class='kw-2'>&amp;</span><span class='ident'>prev</span>);
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">Bootstrap</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="ident">b</span>.<span class="ident">unwrap_period</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">harmonics</span>, <span class="number">16</span>);
+        <span class="kw">let</span> (<span class="ident">amps</span>, _, <span class="ident">gain_idx</span>) <span class="op">=</span> <span class="ident">descramble</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="ident">Gains</span>::<span class="ident">new</span>(<span class="ident">gain_idx</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">Coefficients</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">prev</span> <span class="op">=</span> <span class="ident">PrevFrame</span>::<span class="ident">default</span>();
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Spectrals</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">c</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>, <span class="kw-2">&amp;</span><span class="ident">prev</span>);
 
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>0</span>) <span class='op'>-</span> <span class='number'>1.0</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='number'>0.5306769781475001</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='number'>0.3535007196676076</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>3</span>) <span class='op'>-</span> <span class='number'>0.9173875577243951</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>4</span>) <span class='op'>-</span> <span class='number'>0.13169278935782622</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>5</span>) <span class='op'>-</span> <span class='number'>4.438599873836148</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.00001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>6</span>) <span class='op'>-</span> <span class='number'>0.6796441620283217</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>7</span>) <span class='op'>-</span> <span class='number'>0.9439604687782126</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>8</span>) <span class='op'>-</span> <span class='number'>10.646341109175768</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>9</span>) <span class='op'>-</span> <span class='number'>1.3058035207362984</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>10</span>) <span class='op'>-</span> <span class='number'>1.566168983101457</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>11</span>) <span class='op'>-</span> <span class='number'>8.325591838823936</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.00001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>12</span>) <span class='op'>-</span> <span class='number'>1.5943520720633444</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>13</span>) <span class='op'>-</span> <span class='number'>1.556318849691248</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.000001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>14</span>) <span class='op'>-</span> <span class='number'>15.882295806333524</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.00001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>15</span>) <span class='op'>-</span> <span class='number'>11.386537444591385</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.00001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>16</span>) <span class='op'>-</span> <span class='number'>12.498792573794846</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.00001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>17</span>) <span class='op'>-</span> <span class='number'>12.498792573794846</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.00001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>30</span>) <span class='op'>-</span> <span class='number'>12.498792573794846</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.00001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>s</span>.<span class='ident'>get</span>(<span class='number'>56</span>) <span class='op'>-</span> <span class='number'>12.498792573794846</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.00001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">0</span>) <span class="op">-</span> <span class="number">1.0</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">1</span>) <span class="op">-</span> <span class="number">0.5306769781475001</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">2</span>) <span class="op">-</span> <span class="number">0.3535007196676076</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">3</span>) <span class="op">-</span> <span class="number">0.9173875577243951</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">4</span>) <span class="op">-</span> <span class="number">0.13169278935782622</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">5</span>) <span class="op">-</span> <span class="number">4.438599873836148</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.00001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">6</span>) <span class="op">-</span> <span class="number">0.6796441620283217</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">7</span>) <span class="op">-</span> <span class="number">0.9439604687782126</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">8</span>) <span class="op">-</span> <span class="number">10.646341109175768</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">9</span>) <span class="op">-</span> <span class="number">1.3058035207362984</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">10</span>) <span class="op">-</span> <span class="number">1.566168983101457</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">11</span>) <span class="op">-</span> <span class="number">8.325591838823936</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.00001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">12</span>) <span class="op">-</span> <span class="number">1.5943520720633444</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">13</span>) <span class="op">-</span> <span class="number">1.556318849691248</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.000001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">14</span>) <span class="op">-</span> <span class="number">15.882295806333524</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.00001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">15</span>) <span class="op">-</span> <span class="number">11.386537444591385</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.00001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">16</span>) <span class="op">-</span> <span class="number">12.498792573794846</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.00001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">17</span>) <span class="op">-</span> <span class="number">12.498792573794846</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.00001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">30</span>) <span class="op">-</span> <span class="number">12.498792573794846</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.00001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">s</span>.<span class="ident">get</span>(<span class="number">56</span>) <span class="op">-</span> <span class="number">12.498792573794846</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.00001</span>);
 
-        <span class='kw'>let</span> <span class='ident'>pfe</span> <span class='op'>=</span> <span class='ident'>FrameEnergy</span>::<span class='ident'>default</span>();
-        <span class='kw'>let</span> <span class='ident'>fe</span> <span class='op'>=</span> <span class='ident'>FrameEnergy</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>s</span>, <span class='kw-2'>&amp;</span><span class='ident'>pfe</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
+        <span class="kw">let</span> <span class="ident">pfe</span> <span class="op">=</span> <span class="ident">FrameEnergy</span>::<span class="ident">default</span>();
+        <span class="kw">let</span> <span class="ident">fe</span> <span class="op">=</span> <span class="ident">FrameEnergy</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>, <span class="kw-2">&amp;</span><span class="ident">pfe</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
 
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>fe</span>.<span class='ident'>energy</span> <span class='op'>-</span> <span class='number'>752.2228257467827461</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.0001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>fe</span>.<span class='ident'>scaled</span> <span class='op'>-</span> <span class='op'>-</span><span class='number'>452.3599305372189292</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.0001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>fe</span>.<span class='ident'>tracking</span> <span class='op'>-</span> <span class='number'>71287.6111412873433437</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.0001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">fe</span>.<span class="ident">energy</span> <span class="op">-</span> <span class="number">752.2228257467827461</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.0001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">fe</span>.<span class="ident">scaled</span> <span class="op">-</span> <span class="op">-</span><span class="number">452.3599305372189292</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.0001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">fe</span>.<span class="ident">tracking</span> <span class="op">-</span> <span class="number">71287.6111412873433437</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.0001</span>);
 
-        <span class='kw'>let</span> <span class='ident'>fe</span> <span class='op'>=</span> <span class='ident'>FrameEnergy</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>s</span>, <span class='kw-2'>&amp;</span><span class='ident'>fe</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
+        <span class="kw">let</span> <span class="ident">fe</span> <span class="op">=</span> <span class="ident">FrameEnergy</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>, <span class="kw-2">&amp;</span><span class="ident">fe</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
 
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>fe</span>.<span class='ident'>energy</span> <span class='op'>-</span> <span class='number'>752.2228257467827461</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.0001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>fe</span>.<span class='ident'>scaled</span> <span class='op'>-</span> <span class='op'>-</span><span class='number'>452.3599305372189292</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.0001</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>fe</span>.<span class='ident'>tracking</span> <span class='op'>-</span> <span class='number'>67760.8417255103122443</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.1</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">fe</span>.<span class="ident">energy</span> <span class="op">-</span> <span class="number">752.2228257467827461</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.0001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">fe</span>.<span class="ident">scaled</span> <span class="op">-</span> <span class="op">-</span><span class="number">452.3599305372189292</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.0001</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">fe</span>.<span class="ident">tracking</span> <span class="op">-</span> <span class="number">67760.8417255103122443</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.1</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_spectrals</span>() {
-        <span class='comment'>// Test against results computed with standalone python script.</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_spectrals</span>() {
+        <span class="comment">// Test against results computed with standalone python script.</span>
 
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0b001000010010</span>,
-            <span class='number'>0b110011001100</span>,
-            <span class='number'>0b111000111000</span>,
-            <span class='number'>0b111111111111</span>,
-            <span class='number'>0b10100110101</span>,
-            <span class='number'>0b00101111010</span>,
-            <span class='number'>0b01110111011</span>,
-            <span class='number'>0b00001000</span>,
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0b001000010010</span>,
+            <span class="number">0b110011001100</span>,
+            <span class="number">0b111000111000</span>,
+            <span class="number">0b111111111111</span>,
+            <span class="number">0b10100110101</span>,
+            <span class="number">0b00101111010</span>,
+            <span class="number">0b01110111011</span>,
+            <span class="number">0b00001000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap_period</span>());
-        <span class='kw'>let</span> (<span class='ident'>amps</span>, _, <span class='ident'>gain_idx</span>) <span class='op'>=</span> <span class='ident'>descramble</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>Gains</span>::<span class='ident'>new</span>(<span class='ident'>gain_idx</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>Coefficients</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>prev</span> <span class='op'>=</span> <span class='ident'>PrevFrame</span>::<span class='ident'>default</span>();
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>Spectrals</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>c</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>, <span class='kw-2'>&amp;</span><span class='ident'>prev</span>);
-        <span class='kw'>let</span> <span class='ident'>pfe</span> <span class='op'>=</span> <span class='ident'>FrameEnergy</span>::<span class='ident'>default</span>();
-        <span class='kw'>let</span> <span class='ident'>fe</span> <span class='op'>=</span> <span class='ident'>FrameEnergy</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>s</span>, <span class='kw-2'>&amp;</span><span class='ident'>pfe</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>e</span> <span class='op'>=</span> <span class='ident'>EnhancedSpectrals</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>s</span>, <span class='kw-2'>&amp;</span><span class='ident'>fe</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">Bootstrap</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="ident">b</span>.<span class="ident">unwrap_period</span>());
+        <span class="kw">let</span> (<span class="ident">amps</span>, _, <span class="ident">gain_idx</span>) <span class="op">=</span> <span class="ident">descramble</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="ident">Gains</span>::<span class="ident">new</span>(<span class="ident">gain_idx</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">Coefficients</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">prev</span> <span class="op">=</span> <span class="ident">PrevFrame</span>::<span class="ident">default</span>();
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Spectrals</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">c</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>, <span class="kw-2">&amp;</span><span class="ident">prev</span>);
+        <span class="kw">let</span> <span class="ident">pfe</span> <span class="op">=</span> <span class="ident">FrameEnergy</span>::<span class="ident">default</span>();
+        <span class="kw">let</span> <span class="ident">fe</span> <span class="op">=</span> <span class="ident">FrameEnergy</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>, <span class="kw-2">&amp;</span><span class="ident">pfe</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="ident">EnhancedSpectrals</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>, <span class="kw-2">&amp;</span><span class="ident">fe</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>e</span>.<span class='number'>0</span>.<span class='ident'>len</span>(), <span class='number'>16</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">e</span>.<span class="number">0</span>.<span class="ident">len</span>(), <span class="number">16</span>);
 
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='number'>0.46407439358059288103675044112606</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='number'>0.30913461049404472591461967567739</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>3</span>) <span class='op'>-</span> <span class='number'>0.41587411398142343221806527253648</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>4</span>) <span class='op'>-</span> <span class='number'>0.05758233878573310732251755439393</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>5</span>) <span class='op'>-</span> <span class='number'>4.29488628936570737693045884952880</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>6</span>) <span class='op'>-</span> <span class='number'>0.29717281253740035484867121340358</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>7</span>) <span class='op'>-</span> <span class='number'>0.41274456522882696507537048091763</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>8</span>) <span class='op'>-</span> <span class='number'>11.17220652652428292128661269089207</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>9</span>) <span class='op'>-</span> <span class='number'>0.61137412496551313267900695791468</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>10</span>) <span class='op'>-</span> <span class='number'>0.76976839668918539683062363110366</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>11</span>) <span class='op'>-</span> <span class='number'>8.73682419143608512968057766556740</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>12</span>) <span class='op'>-</span> <span class='number'>0.71114975707359529000228803852224</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>13</span>) <span class='op'>-</span> <span class='number'>0.68049652809620897464526478870539</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>14</span>) <span class='op'>-</span> <span class='number'>16.66679545607086865288692933972925</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>15</span>) <span class='op'>-</span> <span class='number'>10.89394258052602992847823770716786</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>16</span>) <span class='op'>-</span> <span class='number'>11.55358738738138946189337730174884</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>17</span>), <span class='number'>0.0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>30</span>), <span class='number'>0.0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>e</span>.<span class='ident'>get</span>(<span class='number'>56</span>), <span class='number'>0.0</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">1</span>) <span class="op">-</span> <span class="number">0.46407439358059288103675044112606</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">2</span>) <span class="op">-</span> <span class="number">0.30913461049404472591461967567739</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">3</span>) <span class="op">-</span> <span class="number">0.41587411398142343221806527253648</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">4</span>) <span class="op">-</span> <span class="number">0.05758233878573310732251755439393</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">5</span>) <span class="op">-</span> <span class="number">4.29488628936570737693045884952880</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">6</span>) <span class="op">-</span> <span class="number">0.29717281253740035484867121340358</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">7</span>) <span class="op">-</span> <span class="number">0.41274456522882696507537048091763</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">8</span>) <span class="op">-</span> <span class="number">11.17220652652428292128661269089207</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">9</span>) <span class="op">-</span> <span class="number">0.61137412496551313267900695791468</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">10</span>) <span class="op">-</span> <span class="number">0.76976839668918539683062363110366</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">11</span>) <span class="op">-</span> <span class="number">8.73682419143608512968057766556740</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">12</span>) <span class="op">-</span> <span class="number">0.71114975707359529000228803852224</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">13</span>) <span class="op">-</span> <span class="number">0.68049652809620897464526478870539</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">14</span>) <span class="op">-</span> <span class="number">16.66679545607086865288692933972925</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">15</span>) <span class="op">-</span> <span class="number">10.89394258052602992847823770716786</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">16</span>) <span class="op">-</span> <span class="number">11.55358738738138946189337730174884</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">17</span>), <span class="number">0.0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">30</span>), <span class="number">0.0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">e</span>.<span class="ident">get</span>(<span class="number">56</span>), <span class="number">0.0</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_smooth</span>() {
-        <span class='comment'>// Test against results from standalone python script.</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_smooth</span>() {
+        <span class="comment">// Test against results from standalone python script.</span>
 
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0b001000010010</span>,
-            <span class='number'>0b110011001100</span>,
-            <span class='number'>0b111000111000</span>,
-            <span class='number'>0b111111111111</span>,
-            <span class='number'>0b10100110101</span>,
-            <span class='number'>0b00101111010</span>,
-            <span class='number'>0b01110111011</span>,
-            <span class='number'>0b00001000</span>,
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0b001000010010</span>,
+            <span class="number">0b110011001100</span>,
+            <span class="number">0b111000111000</span>,
+            <span class="number">0b111111111111</span>,
+            <span class="number">0b10100110101</span>,
+            <span class="number">0b00101111010</span>,
+            <span class="number">0b01110111011</span>,
+            <span class="number">0b00001000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>);
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>b</span>.<span class='ident'>unwrap_period</span>());
-        <span class='kw'>let</span> (<span class='ident'>amps</span>, <span class='kw-2'>mut</span> <span class='ident'>voice</span>, <span class='ident'>gain_idx</span>) <span class='op'>=</span> <span class='ident'>descramble</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>g</span> <span class='op'>=</span> <span class='ident'>Gains</span>::<span class='ident'>new</span>(<span class='ident'>gain_idx</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>Coefficients</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>g</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='ident'>prev</span> <span class='op'>=</span> <span class='ident'>PrevFrame</span>::<span class='ident'>default</span>();
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>Spectrals</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>c</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>, <span class='kw-2'>&amp;</span><span class='ident'>prev</span>);
-        <span class='kw'>let</span> <span class='ident'>pfe</span> <span class='op'>=</span> <span class='ident'>FrameEnergy</span>::<span class='ident'>default</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>fe</span> <span class='op'>=</span> <span class='ident'>FrameEnergy</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>s</span>, <span class='kw-2'>&amp;</span><span class='ident'>pfe</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>amps</span> <span class='op'>=</span> <span class='ident'>EnhancedSpectrals</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>s</span>, <span class='kw-2'>&amp;</span><span class='ident'>fe</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">Bootstrap</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="ident">b</span>.<span class="ident">unwrap_period</span>());
+        <span class="kw">let</span> (<span class="ident">amps</span>, <span class="kw-2">mut</span> <span class="ident">voice</span>, <span class="ident">gain_idx</span>) <span class="op">=</span> <span class="ident">descramble</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="ident">Gains</span>::<span class="ident">new</span>(<span class="ident">gain_idx</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">Coefficients</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="ident">prev</span> <span class="op">=</span> <span class="ident">PrevFrame</span>::<span class="ident">default</span>();
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Spectrals</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">c</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>, <span class="kw-2">&amp;</span><span class="ident">prev</span>);
+        <span class="kw">let</span> <span class="ident">pfe</span> <span class="op">=</span> <span class="ident">FrameEnergy</span>::<span class="ident">default</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fe</span> <span class="op">=</span> <span class="ident">FrameEnergy</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>, <span class="kw-2">&amp;</span><span class="ident">pfe</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">amps</span> <span class="op">=</span> <span class="ident">EnhancedSpectrals</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>, <span class="kw-2">&amp;</span><span class="ident">fe</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
 
-        <span class='kw'>let</span> <span class='ident'>err</span> <span class='op'>=</span> <span class='ident'>EnhanceErrors</span> {
-            <span class='ident'>total</span>: <span class='number'>0</span>,
-            <span class='ident'>rate</span>: <span class='number'>0.0250</span>,
-            <span class='ident'>golay_init</span>: <span class='number'>0</span>,
-            <span class='ident'>hamming_init</span>: <span class='number'>0</span>,
+        <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="ident">EnhanceErrors</span> {
+            <span class="ident">total</span>: <span class="number">0</span>,
+            <span class="ident">rate</span>: <span class="number">0.0250</span>,
+            <span class="ident">golay_init</span>: <span class="number">0</span>,
+            <span class="ident">hamming_init</span>: <span class="number">0</span>,
         };
 
-        <span class='comment'>// Dummy value just to get a good adaptive threshold.</span>
-        <span class='ident'>fe</span>.<span class='ident'>tracking</span> <span class='op'>=</span> <span class='number'>100.0</span>;
+        <span class="comment">// Dummy value just to get a good adaptive threshold.</span>
+        <span class="ident">fe</span>.<span class="ident">tracking</span> <span class="op">=</span> <span class="number">100.0</span>;
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>1</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>2</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>3</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>4</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>5</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>6</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>7</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>8</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>9</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>10</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>11</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>12</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>13</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>14</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>15</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>16</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">1</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">2</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">3</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">4</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">5</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">6</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">7</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">8</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">9</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">10</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">11</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">12</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">13</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">14</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">15</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">16</span>));
 
-        <span class='ident'>smooth</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>err</span>, <span class='kw-2'>&amp;</span><span class='ident'>fe</span>, <span class='number'>42.0</span>);
+        <span class="ident">smooth</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">voice</span>, <span class="kw-2">&amp;</span><span class="ident">err</span>, <span class="kw-2">&amp;</span><span class="ident">fe</span>, <span class="number">42.0</span>);
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>1</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>2</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>3</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>4</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>5</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>6</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>7</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>8</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>9</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>10</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>11</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>12</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>13</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>14</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>15</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>voice</span>.<span class='ident'>is_voiced</span>(<span class='number'>16</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">1</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">2</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">3</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">4</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">5</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">6</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">7</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">8</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">9</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">10</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">11</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">12</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">13</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">14</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">15</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">voice</span>.<span class="ident">is_voiced</span>(<span class="number">16</span>));
 
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>1</span>) <span class='op'>-</span> <span class='number'>0.28643362145733153312221475061961</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>2</span>) <span class='op'>-</span> <span class='number'>0.19080248172803679351794414742471</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>3</span>) <span class='op'>-</span> <span class='number'>0.25668369163611542971281664904382</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>4</span>) <span class='op'>-</span> <span class='number'>0.03554067636251981299189139917871</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>5</span>) <span class='op'>-</span> <span class='number'>2.65086772859580133143708735588007</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>6</span>) <span class='op'>-</span> <span class='number'>0.18341948202958965885578379584331</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>7</span>) <span class='op'>-</span> <span class='number'>0.25475208757622064270620398929168</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>8</span>) <span class='op'>-</span> <span class='number'>6.89565211812498901622348057571799</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>9</span>) <span class='op'>-</span> <span class='number'>0.37734920758726891998335872813186</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>10</span>) <span class='op'>-</span> <span class='number'>0.47511250910851310358395949151600</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>11</span>) <span class='op'>-</span> <span class='number'>5.39249790077991697501147427828982</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>12</span>) <span class='op'>-</span> <span class='number'>0.43893221245295155341636927914806</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>13</span>) <span class='op'>-</span> <span class='number'>0.42001258338742591957881700182043</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>14</span>) <span class='op'>-</span> <span class='number'>10.28699416862334992117666843114421</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>15</span>) <span class='op'>-</span> <span class='number'>6.72390346990002374383266214863397</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-6</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>16</span>) <span class='op'>-</span> <span class='number'>7.13104606064994861469585885060951</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>1e-4</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>17</span>), <span class='number'>0.0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>30</span>), <span class='number'>0.0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>amps</span>.<span class='ident'>get</span>(<span class='number'>56</span>), <span class='number'>0.0</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">1</span>) <span class="op">-</span> <span class="number">0.28643362145733153312221475061961</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">2</span>) <span class="op">-</span> <span class="number">0.19080248172803679351794414742471</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">3</span>) <span class="op">-</span> <span class="number">0.25668369163611542971281664904382</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">4</span>) <span class="op">-</span> <span class="number">0.03554067636251981299189139917871</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">5</span>) <span class="op">-</span> <span class="number">2.65086772859580133143708735588007</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">6</span>) <span class="op">-</span> <span class="number">0.18341948202958965885578379584331</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">7</span>) <span class="op">-</span> <span class="number">0.25475208757622064270620398929168</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">8</span>) <span class="op">-</span> <span class="number">6.89565211812498901622348057571799</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">9</span>) <span class="op">-</span> <span class="number">0.37734920758726891998335872813186</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">10</span>) <span class="op">-</span> <span class="number">0.47511250910851310358395949151600</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">11</span>) <span class="op">-</span> <span class="number">5.39249790077991697501147427828982</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">12</span>) <span class="op">-</span> <span class="number">0.43893221245295155341636927914806</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">13</span>) <span class="op">-</span> <span class="number">0.42001258338742591957881700182043</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">14</span>) <span class="op">-</span> <span class="number">10.28699416862334992117666843114421</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">15</span>) <span class="op">-</span> <span class="number">6.72390346990002374383266214863397</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-6</span>);
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">16</span>) <span class="op">-</span> <span class="number">7.13104606064994861469585885060951</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">1e-4</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">17</span>), <span class="number">0.0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">30</span>), <span class="number">0.0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">amps</span>.<span class="ident">get</span>(<span class="number">56</span>), <span class="number">0.0</span>);
     }
 }
 </pre>
@@ -952,13 +953,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -992,7 +995,6 @@
         window.rootPath = "../../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

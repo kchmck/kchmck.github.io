@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1"> 1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1"> 1</span>
 <span id="2"> 2</span>
 <span id="3"> 3</span>
 <span id="4"> 4</span>
@@ -88,52 +89,52 @@
 <span id="43">43</span>
 <span id="44">44</span>
 <span id="45">45</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Received IMBE voice frame.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Received IMBE voice frame.</span>
 
-<span class='kw'>use</span> <span class='ident'>consts</span>::<span class='ident'>SAMPLES_PER_FRAME</span>;
+<span class="kw">use</span> <span class="ident">consts</span>::<span class="ident">SAMPLES_PER_FRAME</span>;
 
-<span class='doccomment'>/// Represents the bit vectors u&lt;sub&gt;0&lt;/sub&gt;, ..., u&lt;sub&gt;7&lt;/sub&gt;, in that order.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Chunks</span> <span class='op'>=</span> [<span class='ident'>u32</span>; <span class='number'>8</span>];
+<span class="doccomment">/// Represents the bit vectors u&lt;sub&gt;0&lt;/sub&gt;, ..., u&lt;sub&gt;7&lt;/sub&gt;, in that order.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Chunks</span> <span class="op">=</span> [<span class="ident">u32</span>; <span class="number">8</span>];
 
-<span class='doccomment'>/// Represents the number of detected Hamming/Golay bit errors, ϵ&lt;sub&gt;0&lt;/sub&gt;, ...,</span>
-<span class='doccomment'>/// ϵ&lt;sub&gt;6&lt;/sub&gt;, corresponding to the chunks u&lt;sub&gt;0&lt;/sub&gt;, ..., u&lt;sub&gt;6&lt;/sub&gt;.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Errors</span> <span class='op'>=</span> [<span class='ident'>usize</span>; <span class='number'>7</span>];
+<span class="doccomment">/// Represents the number of detected Hamming/Golay bit errors, ϵ&lt;sub&gt;0&lt;/sub&gt;, ...,</span>
+<span class="doccomment">/// ϵ&lt;sub&gt;6&lt;/sub&gt;, corresponding to the chunks u&lt;sub&gt;0&lt;/sub&gt;, ..., u&lt;sub&gt;6&lt;/sub&gt;.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Errors</span> <span class="op">=</span> [<span class="ident">usize</span>; <span class="number">7</span>];
 
-<span class='doccomment'>/// A received IMBE voice frame.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ReceivedFrame</span> {
-    <span class='doccomment'>/// Prioritized bit vector chunks, u&lt;sub&gt;0&lt;/sub&gt;, ..., u&lt;sub&gt;7&lt;/sub&gt;.</span>
-    <span class='kw'>pub</span> <span class='ident'>chunks</span>: <span class='ident'>Chunks</span>,
-    <span class='doccomment'>/// Error correction counts, ϵ&lt;sub&gt;0&lt;/sub&gt;, ..., ϵ&lt;sub&gt;6&lt;/sub&gt;.</span>
-    <span class='kw'>pub</span> <span class='ident'>errors</span>: <span class='ident'>Errors</span>,
+<span class="doccomment">/// A received IMBE voice frame.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ReceivedFrame</span> {
+    <span class="doccomment">/// Prioritized bit vector chunks, u&lt;sub&gt;0&lt;/sub&gt;, ..., u&lt;sub&gt;7&lt;/sub&gt;.</span>
+    <span class="kw">pub</span> <span class="ident">chunks</span>: <span class="ident">Chunks</span>,
+    <span class="doccomment">/// Error correction counts, ϵ&lt;sub&gt;0&lt;/sub&gt;, ..., ϵ&lt;sub&gt;6&lt;/sub&gt;.</span>
+    <span class="kw">pub</span> <span class="ident">errors</span>: <span class="ident">Errors</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>ReceivedFrame</span> {
-    <span class='doccomment'>/// Create a new `ReceivedFrame` from the given chunks u&lt;sub&gt;0&lt;/sub&gt;, ...,</span>
-    <span class='doccomment'>/// u&lt;sub&gt;7&lt;/sub&gt; and error counts ϵ&lt;sub&gt;0&lt;/sub&gt;, ..., ϵ&lt;sub&gt;6&lt;/sub&gt;.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>chunks</span>: <span class='ident'>Chunks</span>, <span class='ident'>errors</span>: <span class='ident'>Errors</span>) <span class='op'>-&gt;</span> <span class='ident'>ReceivedFrame</span> {
-        <span class='comment'>// First 4 chunks must have at most 12 bits.</span>
-        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>...<span class='number'>3</span> {
-            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>chunks</span>[<span class='ident'>i</span>] <span class='op'>&gt;&gt;</span> <span class='number'>12</span> <span class='op'>==</span> <span class='number'>0</span>);
+<span class="kw">impl</span> <span class="ident">ReceivedFrame</span> {
+    <span class="doccomment">/// Create a new `ReceivedFrame` from the given chunks u&lt;sub&gt;0&lt;/sub&gt;, ...,</span>
+    <span class="doccomment">/// u&lt;sub&gt;7&lt;/sub&gt; and error counts ϵ&lt;sub&gt;0&lt;/sub&gt;, ..., ϵ&lt;sub&gt;6&lt;/sub&gt;.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">chunks</span>: <span class="ident">Chunks</span>, <span class="ident">errors</span>: <span class="ident">Errors</span>) <span class="op">-&gt;</span> <span class="ident">ReceivedFrame</span> {
+        <span class="comment">// First 4 chunks must have at most 12 bits.</span>
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..=<span class="number">3</span> {
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">chunks</span>[<span class="ident">i</span>] <span class="op">&gt;&gt;</span> <span class="number">12</span> <span class="op">==</span> <span class="number">0</span>);
         }
 
-        <span class='comment'>// Next 3 chunks must have at most 11 bits.</span>
-        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>4</span>...<span class='number'>6</span> {
-            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>chunks</span>[<span class='ident'>i</span>] <span class='op'>&gt;&gt;</span> <span class='number'>11</span> <span class='op'>==</span> <span class='number'>0</span>);
+        <span class="comment">// Next 3 chunks must have at most 11 bits.</span>
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">4</span>..=<span class="number">6</span> {
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">chunks</span>[<span class="ident">i</span>] <span class="op">&gt;&gt;</span> <span class="number">11</span> <span class="op">==</span> <span class="number">0</span>);
         }
 
-        <span class='comment'>// Final chunk must have at most 7 bits.</span>
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>chunks</span>[<span class='number'>7</span>] <span class='op'>&gt;&gt;</span> <span class='number'>7</span> <span class='op'>==</span> <span class='number'>0</span>);
+        <span class="comment">// Final chunk must have at most 7 bits.</span>
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">chunks</span>[<span class="number">7</span>] <span class="op">&gt;&gt;</span> <span class="number">7</span> <span class="op">==</span> <span class="number">0</span>);
 
-        <span class='ident'>ReceivedFrame</span> {
-            <span class='ident'>chunks</span>: <span class='ident'>chunks</span>,
-            <span class='ident'>errors</span>: <span class='ident'>errors</span>,
+        <span class="ident">ReceivedFrame</span> {
+            <span class="ident">chunks</span>: <span class="ident">chunks</span>,
+            <span class="ident">errors</span>: <span class="ident">errors</span>,
         }
     }
 }
 
-<span class='doccomment'>/// Audio samples in a decoded voice frame.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>AudioBuf</span> <span class='op'>=</span> [<span class='ident'>f32</span>; <span class='ident'>SAMPLES_PER_FRAME</span>];
+<span class="doccomment">/// Audio samples in a decoded voice frame.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">AudioBuf</span> <span class="op">=</span> [<span class="ident">f32</span>; <span class="ident">SAMPLES_PER_FRAME</span>];
 </pre>
 </section>
     <section id='search' class="content hidden"></section>
@@ -152,13 +153,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -192,7 +195,6 @@
         window.rootPath = "../../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

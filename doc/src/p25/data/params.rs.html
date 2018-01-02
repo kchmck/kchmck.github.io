@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -148,110 +149,110 @@
 <span id="103">103</span>
 <span id="104">104</span>
 <span id="105">105</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Defines various parameters used for data packets.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Defines various parameters used for data packets.</span>
 
-<span class='kw'>use</span> <span class='ident'>util</span>;
+<span class="kw">use</span> <span class="ident">util</span>;
 
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>PacketParams</span> {
-    <span class='doccomment'>/// Number of data bytes in a normal block.</span>
-    <span class='kw'>fn</span> <span class='ident'>block_bytes</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">PacketParams</span> {
+    <span class="doccomment">/// Number of data bytes in a normal block.</span>
+    <span class="kw">fn</span> <span class="ident">block_bytes</span>() <span class="op">-&gt;</span> <span class="ident">usize</span>;
 
-    <span class='doccomment'>/// Number of data bytes in the tail block.</span>
-    <span class='kw'>fn</span> <span class='ident'>tail_bytes</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
+    <span class="doccomment">/// Number of data bytes in the tail block.</span>
+    <span class="kw">fn</span> <span class="ident">tail_bytes</span>() <span class="op">-&gt;</span> <span class="ident">usize</span>;
 
-    <span class='doccomment'>/// Maximum number of blocks in the packet, including the tail block.</span>
-    <span class='kw'>fn</span> <span class='ident'>max_blocks</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>127</span> }
+    <span class="doccomment">/// Maximum number of blocks in the packet, including the tail block.</span>
+    <span class="kw">fn</span> <span class="ident">max_blocks</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">127</span> }
 
-    <span class='doccomment'>/// Maximum number of data bytes in the packet.</span>
-    <span class='kw'>fn</span> <span class='ident'>packet_bytes</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        (<span class='self'>Self</span>::<span class='ident'>max_blocks</span>() <span class='op'>-</span> <span class='number'>1</span>) <span class='op'>*</span> <span class='self'>Self</span>::<span class='ident'>block_bytes</span>() <span class='op'>+</span> <span class='self'>Self</span>::<span class='ident'>tail_bytes</span>()
+    <span class="doccomment">/// Maximum number of data bytes in the packet.</span>
+    <span class="kw">fn</span> <span class="ident">packet_bytes</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        (<span class="self">Self</span>::<span class="ident">max_blocks</span>() <span class="op">-</span> <span class="number">1</span>) <span class="op">*</span> <span class="self">Self</span>::<span class="ident">block_bytes</span>() <span class="op">+</span> <span class="self">Self</span>::<span class="ident">tail_bytes</span>()
     }
 
-    <span class='doccomment'>/// Calculate the total number of data blocks (normal and tail) needed to hold the</span>
-    <span class='doccomment'>/// given amount of bytes.</span>
-    <span class='kw'>fn</span> <span class='ident'>blocks</span>(<span class='ident'>bytes</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        <span class='ident'>util</span>::<span class='ident'>div_ceil</span>(<span class='ident'>bytes</span> <span class='op'>+</span> <span class='self'>Self</span>::<span class='ident'>pads</span>(<span class='ident'>bytes</span>), <span class='self'>Self</span>::<span class='ident'>block_bytes</span>())
+    <span class="doccomment">/// Calculate the total number of data blocks (normal and tail) needed to hold the</span>
+    <span class="doccomment">/// given amount of bytes.</span>
+    <span class="kw">fn</span> <span class="ident">blocks</span>(<span class="ident">bytes</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="ident">util</span>::<span class="ident">div_ceil</span>(<span class="ident">bytes</span> <span class="op">+</span> <span class="self">Self</span>::<span class="ident">pads</span>(<span class="ident">bytes</span>), <span class="self">Self</span>::<span class="ident">block_bytes</span>())
     }
 
-    <span class='doccomment'>/// Calculate the number of pads needed for the tail block (and possibly</span>
-    <span class='doccomment'>/// second-to-last block) for the given amount of bytes.</span>
-    <span class='kw'>fn</span> <span class='ident'>pads</span>(<span class='ident'>bytes</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        (<span class='self'>Self</span>::<span class='ident'>block_bytes</span>() <span class='op'>-</span> <span class='ident'>bytes</span> <span class='op'>%</span> <span class='self'>Self</span>::<span class='ident'>block_bytes</span>() <span class='op'>+</span> <span class='self'>Self</span>::<span class='ident'>tail_bytes</span>()) <span class='op'>%</span>
-            <span class='self'>Self</span>::<span class='ident'>block_bytes</span>()
+    <span class="doccomment">/// Calculate the number of pads needed for the tail block (and possibly</span>
+    <span class="doccomment">/// second-to-last block) for the given amount of bytes.</span>
+    <span class="kw">fn</span> <span class="ident">pads</span>(<span class="ident">bytes</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        (<span class="self">Self</span>::<span class="ident">block_bytes</span>() <span class="op">-</span> <span class="ident">bytes</span> <span class="op">%</span> <span class="self">Self</span>::<span class="ident">block_bytes</span>() <span class="op">+</span> <span class="self">Self</span>::<span class="ident">tail_bytes</span>()) <span class="op">%</span>
+            <span class="self">Self</span>::<span class="ident">block_bytes</span>()
     }
 
-    <span class='doccomment'>/// Calculate the number of normal data blocks (tail block not included) needed to</span>
-    <span class='doccomment'>/// hold the given amount of bytes.</span>
-    <span class='kw'>fn</span> <span class='ident'>full_blocks</span>(<span class='ident'>bytes</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        <span class='self'>Self</span>::<span class='ident'>blocks</span>(<span class='ident'>bytes</span>) <span class='op'>-</span> <span class='number'>1</span>
+    <span class="doccomment">/// Calculate the number of normal data blocks (tail block not included) needed to</span>
+    <span class="doccomment">/// hold the given amount of bytes.</span>
+    <span class="kw">fn</span> <span class="ident">full_blocks</span>(<span class="ident">bytes</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="self">Self</span>::<span class="ident">blocks</span>(<span class="ident">bytes</span>) <span class="op">-</span> <span class="number">1</span>
     }
 }
 
-<span class='doccomment'>/// Params for confirmed data packets.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ConfirmedParams</span>;
+<span class="doccomment">/// Params for confirmed data packets.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConfirmedParams</span>;
 
-<span class='kw'>impl</span> <span class='ident'>PacketParams</span> <span class='kw'>for</span> <span class='ident'>ConfirmedParams</span> {
-    <span class='kw'>fn</span> <span class='ident'>block_bytes</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>16</span> }
-    <span class='kw'>fn</span> <span class='ident'>tail_bytes</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>12</span> }
+<span class="kw">impl</span> <span class="ident">PacketParams</span> <span class="kw">for</span> <span class="ident">ConfirmedParams</span> {
+    <span class="kw">fn</span> <span class="ident">block_bytes</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">16</span> }
+    <span class="kw">fn</span> <span class="ident">tail_bytes</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">12</span> }
 }
 
-<span class='doccomment'>/// Params for unconfirmed data packets.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>UnconfirmedParams</span>;
+<span class="doccomment">/// Params for unconfirmed data packets.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UnconfirmedParams</span>;
 
-<span class='kw'>impl</span> <span class='ident'>PacketParams</span> <span class='kw'>for</span> <span class='ident'>UnconfirmedParams</span> {
-    <span class='kw'>fn</span> <span class='ident'>block_bytes</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>12</span> }
-    <span class='kw'>fn</span> <span class='ident'>tail_bytes</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>8</span> }
+<span class="kw">impl</span> <span class="ident">PacketParams</span> <span class="kw">for</span> <span class="ident">UnconfirmedParams</span> {
+    <span class="kw">fn</span> <span class="ident">block_bytes</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">12</span> }
+    <span class="kw">fn</span> <span class="ident">tail_bytes</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">8</span> }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_calcs</span>() {
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>0</span>), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>6</span>), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>12</span>), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>13</span>), <span class='number'>2</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>16</span>), <span class='number'>2</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>28</span>), <span class='number'>2</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>29</span>), <span class='number'>3</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>2028</span>), <span class='number'>127</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_calcs</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">0</span>), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">6</span>), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">12</span>), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">13</span>), <span class="number">2</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">16</span>), <span class="number">2</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">28</span>), <span class="number">2</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">29</span>), <span class="number">3</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">2028</span>), <span class="number">127</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>0</span>), <span class='number'>12</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>1</span>), <span class='number'>11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>2</span>), <span class='number'>10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>5</span>), <span class='number'>7</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>10</span>), <span class='number'>2</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>11</span>), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>12</span>), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>13</span>), <span class='number'>15</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>14</span>), <span class='number'>14</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>15</span>), <span class='number'>13</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">pads</span>(<span class="number">0</span>), <span class="number">12</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">pads</span>(<span class="number">1</span>), <span class="number">11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">pads</span>(<span class="number">2</span>), <span class="number">10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">pads</span>(<span class="number">5</span>), <span class="number">7</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">pads</span>(<span class="number">10</span>), <span class="number">2</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">pads</span>(<span class="number">11</span>), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">pads</span>(<span class="number">12</span>), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">pads</span>(<span class="number">13</span>), <span class="number">15</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">pads</span>(<span class="number">14</span>), <span class="number">14</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">pads</span>(<span class="number">15</span>), <span class="number">13</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>0</span>), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>8</span>), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>9</span>), <span class='number'>2</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>20</span>), <span class='number'>2</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>21</span>), <span class='number'>3</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>blocks</span>(<span class='number'>1520</span>), <span class='number'>127</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">0</span>), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">8</span>), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">9</span>), <span class="number">2</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">20</span>), <span class="number">2</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">21</span>), <span class="number">3</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">blocks</span>(<span class="number">1520</span>), <span class="number">127</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>0</span>), <span class='number'>8</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>1</span>), <span class='number'>7</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>2</span>), <span class='number'>6</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>3</span>), <span class='number'>5</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>4</span>), <span class='number'>4</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>5</span>), <span class='number'>3</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>6</span>), <span class='number'>2</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>7</span>), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>8</span>), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>9</span>), <span class='number'>11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>10</span>), <span class='number'>10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>pads</span>(<span class='number'>11</span>), <span class='number'>9</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">pads</span>(<span class="number">0</span>), <span class="number">8</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">pads</span>(<span class="number">1</span>), <span class="number">7</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">pads</span>(<span class="number">2</span>), <span class="number">6</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">pads</span>(<span class="number">3</span>), <span class="number">5</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">pads</span>(<span class="number">4</span>), <span class="number">4</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">pads</span>(<span class="number">5</span>), <span class="number">3</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">pads</span>(<span class="number">6</span>), <span class="number">2</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">pads</span>(<span class="number">7</span>), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">pads</span>(<span class="number">8</span>), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">pads</span>(<span class="number">9</span>), <span class="number">11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">pads</span>(<span class="number">10</span>), <span class="number">10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">pads</span>(<span class="number">11</span>), <span class="number">9</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ConfirmedParams</span>::<span class='ident'>packet_bytes</span>(), <span class='number'>2028</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>UnconfirmedParams</span>::<span class='ident'>packet_bytes</span>(), <span class='number'>1520</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">ConfirmedParams</span>::<span class="ident">packet_bytes</span>(), <span class="number">2028</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">UnconfirmedParams</span>::<span class="ident">packet_bytes</span>(), <span class="number">1520</span>);
     }
 }
 </pre>
@@ -272,13 +273,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -312,7 +315,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

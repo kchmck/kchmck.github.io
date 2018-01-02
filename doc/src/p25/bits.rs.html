@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -562,524 +563,524 @@
 <span id="517">517</span>
 <span id="518">518</span>
 <span id="519">519</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Dibits, tribits, and hexbits.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Dibits, tribits, and hexbits.</span>
 
-<span class='kw'>use</span> <span class='ident'>std</span>;
+<span class="kw">use</span> <span class="ident">std</span>;
 
-<span class='doccomment'>/// Iterate over the 2-bit symbols of a byte source, MSB to LSB.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Dibits</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>SubByteIter</span><span class='op'>&lt;</span><span class='ident'>DibitParams</span>, <span class='ident'>T</span><span class='op'>&gt;</span>;
-<span class='doccomment'>/// Iterates over the 3-bit symbols of a byte source, MSB to LSB. The source must be a</span>
-<span class='doccomment'>/// multiple of 3 bytes.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Tribits</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>SubByteIter</span><span class='op'>&lt;</span><span class='ident'>TribitParams</span>, <span class='ident'>T</span><span class='op'>&gt;</span>;
-<span class='doccomment'>/// Iterates over the 6-bit symbols of a byte source, MSB to LSB. The source must be a</span>
-<span class='doccomment'>/// multiple of 3 bytes.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Hexbits</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>SubByteIter</span><span class='op'>&lt;</span><span class='ident'>HexbitParams</span>, <span class='ident'>T</span><span class='op'>&gt;</span>;
+<span class="doccomment">/// Iterate over the 2-bit symbols of a byte source, MSB to LSB.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Dibits</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">SubByteIter</span><span class="op">&lt;</span><span class="ident">DibitParams</span>, <span class="ident">T</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Iterates over the 3-bit symbols of a byte source, MSB to LSB. The source must be a</span>
+<span class="doccomment">/// multiple of 3 bytes.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Tribits</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">SubByteIter</span><span class="op">&lt;</span><span class="ident">TribitParams</span>, <span class="ident">T</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Iterates over the 6-bit symbols of a byte source, MSB to LSB. The source must be a</span>
+<span class="doccomment">/// multiple of 3 bytes.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Hexbits</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">SubByteIter</span><span class="op">&lt;</span><span class="ident">HexbitParams</span>, <span class="ident">T</span><span class="op">&gt;</span>;
 
-<span class='doccomment'>/// Groups dibits into full bytes. The source must be a multiple of 4 dibits.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>DibitBytes</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>SubByteIter</span><span class='op'>&lt;</span><span class='ident'>DibitByteParams</span>, <span class='ident'>T</span><span class='op'>&gt;</span>;
-<span class='doccomment'>/// Groups tribits into full bytes. The source must be a multiple of 8 tribits.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>TribitBytes</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>SubByteIter</span><span class='op'>&lt;</span><span class='ident'>TribitByteParams</span>, <span class='ident'>T</span><span class='op'>&gt;</span>;
-<span class='doccomment'>/// Groups hexbits into full bytes. The source must be a multiple of 6 hexbits.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>HexbitBytes</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>SubByteIter</span><span class='op'>&lt;</span><span class='ident'>HexbitByteParams</span>, <span class='ident'>T</span><span class='op'>&gt;</span>;
+<span class="doccomment">/// Groups dibits into full bytes. The source must be a multiple of 4 dibits.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">DibitBytes</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">SubByteIter</span><span class="op">&lt;</span><span class="ident">DibitByteParams</span>, <span class="ident">T</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Groups tribits into full bytes. The source must be a multiple of 8 tribits.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TribitBytes</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">SubByteIter</span><span class="op">&lt;</span><span class="ident">TribitByteParams</span>, <span class="ident">T</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Groups hexbits into full bytes. The source must be a multiple of 6 hexbits.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">HexbitBytes</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">SubByteIter</span><span class="op">&lt;</span><span class="ident">HexbitByteParams</span>, <span class="ident">T</span><span class="op">&gt;</span>;
 
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>IterParams</span> {
-    <span class='doccomment'>/// Type to consume when buffering.</span>
-    <span class='kw'>type</span> <span class='ident'>Input</span>;
-    <span class='doccomment'>/// Type to yield at each iteration.</span>
-    <span class='kw'>type</span> <span class='ident'>Output</span>;
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">IterParams</span> {
+    <span class="doccomment">/// Type to consume when buffering.</span>
+    <span class="kw">type</span> <span class="ident">Input</span>;
+    <span class="doccomment">/// Type to yield at each iteration.</span>
+    <span class="kw">type</span> <span class="ident">Output</span>;
 
-    <span class='doccomment'>/// Number of bits to consume at each iteration.</span>
-    <span class='kw'>fn</span> <span class='ident'>bits</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
+    <span class="doccomment">/// Number of bits to consume at each iteration.</span>
+    <span class="kw">fn</span> <span class="ident">bits</span>() <span class="op">-&gt;</span> <span class="ident">usize</span>;
 
-    <span class='doccomment'>/// Number of input symbols to consume when buffering.</span>
-    <span class='kw'>fn</span> <span class='ident'>buffer</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
+    <span class="doccomment">/// Number of input symbols to consume when buffering.</span>
+    <span class="kw">fn</span> <span class="ident">buffer</span>() <span class="op">-&gt;</span> <span class="ident">usize</span>;
 
-    <span class='doccomment'>/// Amount to shift buffer after loading an input symbol.</span>
-    <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
+    <span class="doccomment">/// Amount to shift buffer after loading an input symbol.</span>
+    <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span>;
 
-    <span class='doccomment'>/// Amount to shift buffer after all buffering, so the bits are lined up at the MSB.</span>
-    <span class='kw'>fn</span> <span class='ident'>post_shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>32</span> <span class='op'>-</span> <span class='self'>Self</span>::<span class='ident'>shift</span>() <span class='op'>*</span> <span class='self'>Self</span>::<span class='ident'>buffer</span>() }
+    <span class="doccomment">/// Amount to shift buffer after all buffering, so the bits are lined up at the MSB.</span>
+    <span class="kw">fn</span> <span class="ident">post_shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">32</span> <span class="op">-</span> <span class="self">Self</span>::<span class="ident">shift</span>() <span class="op">*</span> <span class="self">Self</span>::<span class="ident">buffer</span>() }
 
-    <span class='doccomment'>/// Number of iterations before buffering.</span>
-    <span class='kw'>fn</span> <span class='ident'>iterations</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='self'>Self</span>::<span class='ident'>shift</span>() <span class='op'>*</span> <span class='self'>Self</span>::<span class='ident'>buffer</span>() <span class='op'>/</span> <span class='self'>Self</span>::<span class='ident'>bits</span>() }
+    <span class="doccomment">/// Number of iterations before buffering.</span>
+    <span class="kw">fn</span> <span class="ident">iterations</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="self">Self</span>::<span class="ident">shift</span>() <span class="op">*</span> <span class="self">Self</span>::<span class="ident">buffer</span>() <span class="op">/</span> <span class="self">Self</span>::<span class="ident">bits</span>() }
 
-    <span class='doccomment'>/// Convert input symbol to a byte.</span>
-    <span class='kw'>fn</span> <span class='ident'>to_byte</span>(<span class='ident'>input</span>: <span class='self'>Self</span>::<span class='ident'>Input</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span>;
+    <span class="doccomment">/// Convert input symbol to a byte.</span>
+    <span class="kw">fn</span> <span class="ident">to_byte</span>(<span class="ident">input</span>: <span class="self">Self</span>::<span class="ident">Input</span>) <span class="op">-&gt;</span> <span class="ident">u8</span>;
 
-    <span class='doccomment'>/// Convert bits to output type.</span>
-    <span class='kw'>fn</span> <span class='ident'>to_output</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Output</span>;
+    <span class="doccomment">/// Convert bits to output type.</span>
+    <span class="kw">fn</span> <span class="ident">to_output</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span>;
 
-    <span class='doccomment'>/// Verify the parameters are supported.</span>
-    <span class='kw'>fn</span> <span class='ident'>validate</span>() {
-        <span class='comment'>// Maximum buffer size is currently 32 bits.</span>
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>Self</span>::<span class='ident'>buffer</span>() <span class='op'>*</span> <span class='self'>Self</span>::<span class='ident'>shift</span>() <span class='op'>&lt;=</span> <span class='number'>32</span>);
+    <span class="doccomment">/// Verify the parameters are supported.</span>
+    <span class="kw">fn</span> <span class="ident">validate</span>() {
+        <span class="comment">// Maximum buffer size is currently 32 bits.</span>
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="self">Self</span>::<span class="ident">buffer</span>() <span class="op">*</span> <span class="self">Self</span>::<span class="ident">shift</span>() <span class="op">&lt;=</span> <span class="number">32</span>);
     }
 }
 
-<span class='doccomment'>/// Two bits.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Default</span>, <span class='ident'>Debug</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Eq</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Dibit</span>(<span class='ident'>u8</span>);
+<span class="doccomment">/// Two bits.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Dibit</span>(<span class="ident">u8</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Dibit</span> {
-    <span class='doccomment'>/// Construct a new `Dibit` with the two given bits in the LSB position.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>Dibit</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bits</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span> <span class='op'>==</span> <span class='number'>0</span>);
-        <span class='ident'>Dibit</span>(<span class='ident'>bits</span>)
+<span class="kw">impl</span> <span class="ident">Dibit</span> {
+    <span class="doccomment">/// Construct a new `Dibit` with the two given bits in the LSB position.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">Dibit</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">bits</span> <span class="op">&gt;&gt;</span> <span class="number">2</span> <span class="op">==</span> <span class="number">0</span>);
+        <span class="ident">Dibit</span>(<span class="ident">bits</span>)
     }
 
-    <span class='doccomment'>/// Get the wrapped dibit, which is guaranteed to have only 2 LSBs.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>bits</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span> }
-    <span class='doccomment'>/// Get the MSB.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>hi</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span> }
-    <span class='doccomment'>/// Get the LSB.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>lo</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span> <span class='op'>&amp;</span> <span class='number'>1</span> }
+    <span class="doccomment">/// Get the wrapped dibit, which is guaranteed to have only 2 LSBs.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bits</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span> }
+    <span class="doccomment">/// Get the MSB.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hi</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&gt;&gt;</span> <span class="number">1</span> }
+    <span class="doccomment">/// Get the LSB.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lo</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span> <span class="op">&amp;</span> <span class="number">1</span> }
 }
 
-<span class='doccomment'>/// Parameters for `Dibits` iterator.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>DibitParams</span>;
+<span class="doccomment">/// Parameters for `Dibits` iterator.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DibitParams</span>;
 
-<span class='kw'>impl</span> <span class='ident'>IterParams</span> <span class='kw'>for</span> <span class='ident'>DibitParams</span> {
-    <span class='kw'>type</span> <span class='ident'>Input</span> <span class='op'>=</span> <span class='ident'>u8</span>;
-    <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='ident'>Dibit</span>;
+<span class="kw">impl</span> <span class="ident">IterParams</span> <span class="kw">for</span> <span class="ident">DibitParams</span> {
+    <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">u8</span>;
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Dibit</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>bits</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>2</span> }
-    <span class='kw'>fn</span> <span class='ident'>buffer</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>1</span> }
-    <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>8</span> }
+    <span class="kw">fn</span> <span class="ident">bits</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">2</span> }
+    <span class="kw">fn</span> <span class="ident">buffer</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">1</span> }
+    <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">8</span> }
 
-    <span class='kw'>fn</span> <span class='ident'>to_byte</span>(<span class='ident'>input</span>: <span class='self'>Self</span>::<span class='ident'>Input</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='ident'>input</span> }
-    <span class='kw'>fn</span> <span class='ident'>to_output</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>Dibit</span> { <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='ident'>bits</span>) }
+    <span class="kw">fn</span> <span class="ident">to_byte</span>(<span class="ident">input</span>: <span class="self">Self</span>::<span class="ident">Input</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="ident">input</span> }
+    <span class="kw">fn</span> <span class="ident">to_output</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">Dibit</span> { <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="ident">bits</span>) }
 }
 
-<span class='doccomment'>/// Three bits.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Default</span>, <span class='ident'>Debug</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Eq</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Tribit</span>(<span class='ident'>u8</span>);
+<span class="doccomment">/// Three bits.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Tribit</span>(<span class="ident">u8</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Tribit</span> {
-    <span class='doccomment'>/// Construct a new `Tribit` with the three given bits in the LSB position.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>Tribit</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bits</span> <span class='op'>&gt;&gt;</span> <span class='number'>3</span> <span class='op'>==</span> <span class='number'>0</span>);
-        <span class='ident'>Tribit</span>(<span class='ident'>bits</span>)
+<span class="kw">impl</span> <span class="ident">Tribit</span> {
+    <span class="doccomment">/// Construct a new `Tribit` with the three given bits in the LSB position.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">Tribit</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">bits</span> <span class="op">&gt;&gt;</span> <span class="number">3</span> <span class="op">==</span> <span class="number">0</span>);
+        <span class="ident">Tribit</span>(<span class="ident">bits</span>)
     }
 
-    <span class='doccomment'>/// Get the wrapped tribit, which is guaranteed to have only 3 LSBs.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>bits</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span> }
+    <span class="doccomment">/// Get the wrapped tribit, which is guaranteed to have only 3 LSBs.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bits</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span> }
 }
 
-<span class='doccomment'>/// Parameters for `Tribits` iterator.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>TribitParams</span>;
+<span class="doccomment">/// Parameters for `Tribits` iterator.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TribitParams</span>;
 
-<span class='kw'>impl</span> <span class='ident'>IterParams</span> <span class='kw'>for</span> <span class='ident'>TribitParams</span> {
-    <span class='kw'>type</span> <span class='ident'>Input</span> <span class='op'>=</span> <span class='ident'>u8</span>;
-    <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='ident'>Tribit</span>;
+<span class="kw">impl</span> <span class="ident">IterParams</span> <span class="kw">for</span> <span class="ident">TribitParams</span> {
+    <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">u8</span>;
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Tribit</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>bits</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>3</span> }
-    <span class='kw'>fn</span> <span class='ident'>buffer</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>3</span> }
-    <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>8</span> }
+    <span class="kw">fn</span> <span class="ident">bits</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">3</span> }
+    <span class="kw">fn</span> <span class="ident">buffer</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">3</span> }
+    <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">8</span> }
 
-    <span class='kw'>fn</span> <span class='ident'>to_byte</span>(<span class='ident'>input</span>: <span class='self'>Self</span>::<span class='ident'>Input</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='ident'>input</span> }
-    <span class='kw'>fn</span> <span class='ident'>to_output</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>Tribit</span> { <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='ident'>bits</span>) }
+    <span class="kw">fn</span> <span class="ident">to_byte</span>(<span class="ident">input</span>: <span class="self">Self</span>::<span class="ident">Input</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="ident">input</span> }
+    <span class="kw">fn</span> <span class="ident">to_output</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">Tribit</span> { <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="ident">bits</span>) }
 }
 
-<span class='doccomment'>/// Six bits.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Default</span>, <span class='ident'>Debug</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Eq</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Hexbit</span>(<span class='ident'>u8</span>);
+<span class="doccomment">/// Six bits.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Hexbit</span>(<span class="ident">u8</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Hexbit</span> {
-    <span class='doccomment'>/// Construct a new `Hexbit` with the 6 given bits in the LSB position.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>Hexbit</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bits</span> <span class='op'>&gt;&gt;</span> <span class='number'>6</span> <span class='op'>==</span> <span class='number'>0</span>);
-        <span class='ident'>Hexbit</span>(<span class='ident'>bits</span>)
+<span class="kw">impl</span> <span class="ident">Hexbit</span> {
+    <span class="doccomment">/// Construct a new `Hexbit` with the 6 given bits in the LSB position.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">Hexbit</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">bits</span> <span class="op">&gt;&gt;</span> <span class="number">6</span> <span class="op">==</span> <span class="number">0</span>);
+        <span class="ident">Hexbit</span>(<span class="ident">bits</span>)
     }
 
-    <span class='doccomment'>/// Get the wrapped hexbit, which is guaranteed to have only 6 LSBs.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>bits</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='self'>self</span>.<span class='number'>0</span> }
+    <span class="doccomment">/// Get the wrapped hexbit, which is guaranteed to have only 6 LSBs.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bits</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="self">self</span>.<span class="number">0</span> }
 }
 
-<span class='doccomment'>/// Parameters for `Hexbits` iterator.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>HexbitParams</span>;
+<span class="doccomment">/// Parameters for `Hexbits` iterator.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">HexbitParams</span>;
 
-<span class='kw'>impl</span> <span class='ident'>IterParams</span> <span class='kw'>for</span> <span class='ident'>HexbitParams</span> {
-    <span class='kw'>type</span> <span class='ident'>Input</span> <span class='op'>=</span> <span class='ident'>u8</span>;
-    <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='ident'>Hexbit</span>;
+<span class="kw">impl</span> <span class="ident">IterParams</span> <span class="kw">for</span> <span class="ident">HexbitParams</span> {
+    <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">u8</span>;
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Hexbit</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>bits</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>6</span> }
-    <span class='kw'>fn</span> <span class='ident'>buffer</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>3</span> }
-    <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>8</span> }
+    <span class="kw">fn</span> <span class="ident">bits</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">6</span> }
+    <span class="kw">fn</span> <span class="ident">buffer</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">3</span> }
+    <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">8</span> }
 
-    <span class='kw'>fn</span> <span class='ident'>to_byte</span>(<span class='ident'>input</span>: <span class='self'>Self</span>::<span class='ident'>Input</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='ident'>input</span> }
-    <span class='kw'>fn</span> <span class='ident'>to_output</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>Hexbit</span> { <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='ident'>bits</span>) }
+    <span class="kw">fn</span> <span class="ident">to_byte</span>(<span class="ident">input</span>: <span class="self">Self</span>::<span class="ident">Input</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="ident">input</span> }
+    <span class="kw">fn</span> <span class="ident">to_output</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">Hexbit</span> { <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="ident">bits</span>) }
 }
 
-<span class='doccomment'>/// Parameters for `DibitBytes` iterator.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>DibitByteParams</span>;
+<span class="doccomment">/// Parameters for `DibitBytes` iterator.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DibitByteParams</span>;
 
-<span class='kw'>impl</span> <span class='ident'>IterParams</span> <span class='kw'>for</span> <span class='ident'>DibitByteParams</span> {
-    <span class='kw'>type</span> <span class='ident'>Input</span> <span class='op'>=</span> <span class='ident'>Dibit</span>;
-    <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='ident'>u8</span>;
+<span class="kw">impl</span> <span class="ident">IterParams</span> <span class="kw">for</span> <span class="ident">DibitByteParams</span> {
+    <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">Dibit</span>;
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">u8</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>bits</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>8</span> }
-    <span class='kw'>fn</span> <span class='ident'>buffer</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>4</span> }
-    <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>2</span> }
+    <span class="kw">fn</span> <span class="ident">bits</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">8</span> }
+    <span class="kw">fn</span> <span class="ident">buffer</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">4</span> }
+    <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">2</span> }
 
-    <span class='kw'>fn</span> <span class='ident'>to_byte</span>(<span class='ident'>input</span>: <span class='self'>Self</span>::<span class='ident'>Input</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='ident'>input</span>.<span class='ident'>bits</span>() }
-    <span class='kw'>fn</span> <span class='ident'>to_output</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Output</span> { <span class='ident'>bits</span> }
+    <span class="kw">fn</span> <span class="ident">to_byte</span>(<span class="ident">input</span>: <span class="self">Self</span>::<span class="ident">Input</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="ident">input</span>.<span class="ident">bits</span>() }
+    <span class="kw">fn</span> <span class="ident">to_output</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> { <span class="ident">bits</span> }
 }
 
-<span class='doccomment'>/// Parameters for `TribitBytes` iterator.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>TribitByteParams</span>;
+<span class="doccomment">/// Parameters for `TribitBytes` iterator.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TribitByteParams</span>;
 
-<span class='kw'>impl</span> <span class='ident'>IterParams</span> <span class='kw'>for</span> <span class='ident'>TribitByteParams</span> {
-    <span class='kw'>type</span> <span class='ident'>Input</span> <span class='op'>=</span> <span class='ident'>Tribit</span>;
-    <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='ident'>u8</span>;
+<span class="kw">impl</span> <span class="ident">IterParams</span> <span class="kw">for</span> <span class="ident">TribitByteParams</span> {
+    <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">Tribit</span>;
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">u8</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>bits</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>8</span> }
-    <span class='kw'>fn</span> <span class='ident'>buffer</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>8</span> }
-    <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>3</span> }
+    <span class="kw">fn</span> <span class="ident">bits</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">8</span> }
+    <span class="kw">fn</span> <span class="ident">buffer</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">8</span> }
+    <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">3</span> }
 
-    <span class='kw'>fn</span> <span class='ident'>to_byte</span>(<span class='ident'>input</span>: <span class='self'>Self</span>::<span class='ident'>Input</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='ident'>input</span>.<span class='ident'>bits</span>() }
-    <span class='kw'>fn</span> <span class='ident'>to_output</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Output</span> { <span class='ident'>bits</span> }
+    <span class="kw">fn</span> <span class="ident">to_byte</span>(<span class="ident">input</span>: <span class="self">Self</span>::<span class="ident">Input</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="ident">input</span>.<span class="ident">bits</span>() }
+    <span class="kw">fn</span> <span class="ident">to_output</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> { <span class="ident">bits</span> }
 }
 
-<span class='doccomment'>/// Parameters for `HexbitBytes` iterator.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>HexbitByteParams</span>;
+<span class="doccomment">/// Parameters for `HexbitBytes` iterator.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">HexbitByteParams</span>;
 
-<span class='kw'>impl</span> <span class='ident'>IterParams</span> <span class='kw'>for</span> <span class='ident'>HexbitByteParams</span> {
-    <span class='kw'>type</span> <span class='ident'>Input</span> <span class='op'>=</span> <span class='ident'>Hexbit</span>;
-    <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='ident'>u8</span>;
+<span class="kw">impl</span> <span class="ident">IterParams</span> <span class="kw">for</span> <span class="ident">HexbitByteParams</span> {
+    <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">Hexbit</span>;
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">u8</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>bits</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>8</span> }
-    <span class='kw'>fn</span> <span class='ident'>buffer</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>4</span> }
-    <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>6</span> }
+    <span class="kw">fn</span> <span class="ident">bits</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">8</span> }
+    <span class="kw">fn</span> <span class="ident">buffer</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">4</span> }
+    <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">6</span> }
 
-    <span class='kw'>fn</span> <span class='ident'>to_byte</span>(<span class='ident'>input</span>: <span class='self'>Self</span>::<span class='ident'>Input</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> { <span class='ident'>input</span>.<span class='ident'>bits</span>() }
-    <span class='kw'>fn</span> <span class='ident'>to_output</span>(<span class='ident'>bits</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Output</span> { <span class='ident'>bits</span> }
+    <span class="kw">fn</span> <span class="ident">to_byte</span>(<span class="ident">input</span>: <span class="self">Self</span>::<span class="ident">Input</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> { <span class="ident">input</span>.<span class="ident">bits</span>() }
+    <span class="kw">fn</span> <span class="ident">to_output</span>(<span class="ident">bits</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> { <span class="ident">bits</span> }
 }
 
-<span class='doccomment'>/// An iterator for sub-byte (bit-level) values.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>SubByteIter</span><span class='op'>&lt;</span><span class='ident'>P</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>where</span>
-    <span class='ident'>P</span>: <span class='ident'>IterParams</span>, <span class='ident'>T</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>P</span>::<span class='ident'>Input</span><span class='op'>&gt;</span>
+<span class="doccomment">/// An iterator for sub-byte (bit-level) values.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SubByteIter</span><span class="op">&lt;</span><span class="ident">P</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="kw">where</span>
+    <span class="ident">P</span>: <span class="ident">IterParams</span>, <span class="ident">T</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">P</span>::<span class="ident">Input</span><span class="op">&gt;</span>
 {
-    <span class='ident'>params</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span><span class='op'>&lt;</span><span class='ident'>P</span><span class='op'>&gt;</span>,
-    <span class='doccomment'>/// Source of bytes.</span>
-    <span class='ident'>src</span>: <span class='ident'>T</span>,
-    <span class='doccomment'>/// Current buffered bits.</span>
-    <span class='ident'>buf</span>: <span class='ident'>u32</span>,
-    <span class='doccomment'>/// Current bit-level index into the current byte.</span>
-    <span class='ident'>idx</span>: <span class='ident'>u8</span>,
+    <span class="ident">params</span>: <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Source of bytes.</span>
+    <span class="ident">src</span>: <span class="ident">T</span>,
+    <span class="doccomment">/// Current buffered bits.</span>
+    <span class="ident">buf</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// Current bit-level index into the current byte.</span>
+    <span class="ident">idx</span>: <span class="ident">u8</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>P</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>SubByteIter</span><span class='op'>&lt;</span><span class='ident'>P</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>where</span>
-    <span class='ident'>P</span>: <span class='ident'>IterParams</span>, <span class='ident'>T</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>P</span>::<span class='ident'>Input</span><span class='op'>&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">P</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">SubByteIter</span><span class="op">&lt;</span><span class="ident">P</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="kw">where</span>
+    <span class="ident">P</span>: <span class="ident">IterParams</span>, <span class="ident">T</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">P</span>::<span class="ident">Input</span><span class="op">&gt;</span>
 {
-    <span class='doccomment'>/// Construct a new `SubByteIter` over the given symbol source.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>src</span>: <span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='ident'>SubByteIter</span><span class='op'>&lt;</span><span class='ident'>P</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='ident'>SubByteIter</span> {
-            <span class='ident'>params</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>,
-            <span class='ident'>src</span>: <span class='ident'>src</span>,
-            <span class='ident'>buf</span>: <span class='number'>0</span>,
-            <span class='ident'>idx</span>: <span class='number'>0</span>,
+    <span class="doccomment">/// Construct a new `SubByteIter` over the given symbol source.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">src</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">SubByteIter</span><span class="op">&lt;</span><span class="ident">P</span>, <span class="ident">T</span><span class="op">&gt;</span> {
+        <span class="ident">SubByteIter</span> {
+            <span class="ident">params</span>: <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>,
+            <span class="ident">src</span>: <span class="ident">src</span>,
+            <span class="ident">buf</span>: <span class="number">0</span>,
+            <span class="ident">idx</span>: <span class="number">0</span>,
         }
     }
 
-    <span class='doccomment'>/// Consume one or more symbols to create a buffer of bits, filled starting from the</span>
-    <span class='doccomment'>/// MSB.</span>
-    <span class='kw'>fn</span> <span class='ident'>buffer</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> (<span class='ident'>buf</span>, <span class='ident'>added</span>) <span class='op'>=</span> (<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>src</span>)
-            .<span class='ident'>take</span>(<span class='ident'>P</span>::<span class='ident'>buffer</span>())
-            .<span class='ident'>fold</span>((<span class='number'>0</span>, <span class='number'>0</span>), <span class='op'>|</span>(<span class='ident'>buf</span>, <span class='ident'>added</span>), <span class='ident'>next</span><span class='op'>|</span> {
-                (<span class='ident'>buf</span> <span class='op'>&lt;&lt;</span> <span class='ident'>P</span>::<span class='ident'>shift</span>() <span class='op'>|</span> <span class='ident'>P</span>::<span class='ident'>to_byte</span>(<span class='ident'>next</span>) <span class='kw'>as</span> <span class='ident'>u32</span>, <span class='ident'>added</span> <span class='op'>+</span> <span class='number'>1</span>)
+    <span class="doccomment">/// Consume one or more symbols to create a buffer of bits, filled starting from the</span>
+    <span class="doccomment">/// MSB.</span>
+    <span class="kw">fn</span> <span class="ident">buffer</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> (<span class="ident">buf</span>, <span class="ident">added</span>) <span class="op">=</span> (<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">src</span>)
+            .<span class="ident">take</span>(<span class="ident">P</span>::<span class="ident">buffer</span>())
+            .<span class="ident">fold</span>((<span class="number">0</span>, <span class="number">0</span>), <span class="op">|</span>(<span class="ident">buf</span>, <span class="ident">added</span>), <span class="ident">next</span><span class="op">|</span> {
+                (<span class="ident">buf</span> <span class="op">&lt;&lt;</span> <span class="ident">P</span>::<span class="ident">shift</span>() <span class="op">|</span> <span class="ident">P</span>::<span class="ident">to_byte</span>(<span class="ident">next</span>) <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">added</span> <span class="op">+</span> <span class="number">1</span>)
             });
 
-        <span class='comment'>// It&#39;s okay if there are no more source symbols here, because we&#39;re on a safe</span>
-        <span class='comment'>// boundary.</span>
-        <span class='kw'>if</span> <span class='ident'>added</span> <span class='op'>==</span> <span class='number'>0</span> {
-            <span class='kw'>return</span> <span class='prelude-val'>None</span>;
+        <span class="comment">// It&#39;s okay if there are no more source symbols here, because we&#39;re on a safe</span>
+        <span class="comment">// boundary.</span>
+        <span class="kw">if</span> <span class="ident">added</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="kw">return</span> <span class="prelude-val">None</span>;
         }
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>added</span> <span class='op'>==</span> <span class='ident'>P</span>::<span class='ident'>buffer</span>(), <span class='string'>&quot;incomplete source&quot;</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">added</span> <span class="op">==</span> <span class="ident">P</span>::<span class="ident">buffer</span>(), <span class="string">&quot;incomplete source&quot;</span>);
 
-        <span class='prelude-val'>Some</span>(<span class='ident'>buf</span> <span class='op'>&lt;&lt;</span> <span class='ident'>P</span>::<span class='ident'>post_shift</span>())
+        <span class="prelude-val">Some</span>(<span class="ident">buf</span> <span class="op">&lt;&lt;</span> <span class="ident">P</span>::<span class="ident">post_shift</span>())
     }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>P</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>SubByteIter</span><span class='op'>&lt;</span><span class='ident'>P</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>where</span>
-    <span class='ident'>P</span>: <span class='ident'>IterParams</span>, <span class='ident'>T</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>P</span>::<span class='ident'>Input</span><span class='op'>&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">P</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">SubByteIter</span><span class="op">&lt;</span><span class="ident">P</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="kw">where</span>
+    <span class="ident">P</span>: <span class="ident">IterParams</span>, <span class="ident">T</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">P</span>::<span class="ident">Input</span><span class="op">&gt;</span>
 {
-    <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>P</span>::<span class='ident'>Output</span>;
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">P</span>::<span class="ident">Output</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='self'>Self</span>::<span class='ident'>Item</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>idx</span> <span class='op'>==</span> <span class='number'>0</span> {
-            <span class='self'>self</span>.<span class='ident'>buf</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>buffer</span>() {
-                <span class='prelude-val'>Some</span>(<span class='ident'>b</span>) <span class='op'>=&gt;</span> <span class='ident'>b</span>,
-                <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>None</span>,
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">idx</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="self">self</span>.<span class="ident">buf</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">buffer</span>() {
+                <span class="prelude-val">Some</span>(<span class="ident">b</span>) <span class="op">=&gt;</span> <span class="ident">b</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
             };
         }
 
-        <span class='comment'>// Extract MSBs.</span>
-        <span class='kw'>let</span> <span class='ident'>bits</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>buf</span> <span class='op'>&gt;&gt;</span> (<span class='number'>32</span> <span class='op'>-</span> <span class='ident'>P</span>::<span class='ident'>bits</span>());
+        <span class="comment">// Extract MSBs.</span>
+        <span class="kw">let</span> <span class="ident">bits</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span> <span class="op">&gt;&gt;</span> (<span class="number">32</span> <span class="op">-</span> <span class="ident">P</span>::<span class="ident">bits</span>());
 
-        <span class='comment'>// Strip off the MSBs for the next iteration.</span>
-        <span class='self'>self</span>.<span class='ident'>buf</span> <span class='op'>&lt;&lt;=</span> <span class='ident'>P</span>::<span class='ident'>bits</span>();
+        <span class="comment">// Strip off the MSBs for the next iteration.</span>
+        <span class="self">self</span>.<span class="ident">buf</span> <span class="op">&lt;&lt;=</span> <span class="ident">P</span>::<span class="ident">bits</span>();
 
-        <span class='comment'>// Move to the next item and reset after all have been visited.</span>
-        <span class='self'>self</span>.<span class='ident'>idx</span> <span class='op'>+=</span> <span class='number'>1</span>;
-        <span class='self'>self</span>.<span class='ident'>idx</span> <span class='op'>%=</span> <span class='ident'>P</span>::<span class='ident'>iterations</span>() <span class='kw'>as</span> <span class='ident'>u8</span>;
+        <span class="comment">// Move to the next item and reset after all have been visited.</span>
+        <span class="self">self</span>.<span class="ident">idx</span> <span class="op">+=</span> <span class="number">1</span>;
+        <span class="self">self</span>.<span class="ident">idx</span> <span class="op">%=</span> <span class="ident">P</span>::<span class="ident">iterations</span>() <span class="kw">as</span> <span class="ident">u8</span>;
 
-        <span class='prelude-val'>Some</span>(<span class='ident'>P</span>::<span class='ident'>to_output</span>(<span class='ident'>bits</span> <span class='kw'>as</span> <span class='ident'>u8</span>))
+        <span class="prelude-val">Some</span>(<span class="ident">P</span>::<span class="ident">to_output</span>(<span class="ident">bits</span> <span class="kw">as</span> <span class="ident">u8</span>))
     }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>validate_params</span>() {
-        <span class='ident'>DibitParams</span>::<span class='ident'>validate</span>();
-        <span class='ident'>TribitParams</span>::<span class='ident'>validate</span>();
-        <span class='ident'>HexbitParams</span>::<span class='ident'>validate</span>();
-        <span class='ident'>DibitByteParams</span>::<span class='ident'>validate</span>();
-        <span class='ident'>TribitByteParams</span>::<span class='ident'>validate</span>();
-        <span class='ident'>HexbitByteParams</span>::<span class='ident'>validate</span>();
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">validate_params</span>() {
+        <span class="ident">DibitParams</span>::<span class="ident">validate</span>();
+        <span class="ident">TribitParams</span>::<span class="ident">validate</span>();
+        <span class="ident">HexbitParams</span>::<span class="ident">validate</span>();
+        <span class="ident">DibitByteParams</span>::<span class="ident">validate</span>();
+        <span class="ident">TribitByteParams</span>::<span class="ident">validate</span>();
+        <span class="ident">HexbitByteParams</span>::<span class="ident">validate</span>();
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_dibits</span>() {
-        <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> [
-            <span class='number'>0b00110011</span>,
-            <span class='number'>0b10011001</span>,
-            <span class='number'>0b11111111</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_dibits</span>() {
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [
+            <span class="number">0b00110011</span>,
+            <span class="number">0b10011001</span>,
+            <span class="number">0b11111111</span>,
         ];
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>d</span> <span class='op'>=</span> <span class='ident'>Dibits</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">d</span> <span class="op">=</span> <span class="ident">Dibits</span>::<span class="ident">new</span>(<span class="ident">bytes</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>());
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b01</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b01</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b01</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b01</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b11</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b11</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_dibit_bytes</span>() {
-        <span class='kw'>let</span> <span class='ident'>dibits</span> <span class='op'>=</span> [
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b00</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b00</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b10</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b01</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b10</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b01</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>),
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_dibit_bytes</span>() {
+        <span class="kw">let</span> <span class="ident">dibits</span> <span class="op">=</span> [
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b00</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b00</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b10</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b01</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b10</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b01</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>),
         ];
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>d</span> <span class='op'>=</span> <span class='ident'>DibitBytes</span>::<span class='ident'>new</span>(<span class='ident'>dibits</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">d</span> <span class="op">=</span> <span class="ident">DibitBytes</span>::<span class="ident">new</span>(<span class="ident">dibits</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>());
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b00110011</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b10011001</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b11111111</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b00110011</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b10011001</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b11111111</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_dibit_bytes_panic</span>() {
-        <span class='kw'>let</span> <span class='ident'>dibits</span> <span class='op'>=</span> [
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b00</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b00</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b11</span>),
-            <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='number'>0b10</span>),
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="attribute">#[<span class="ident">should_panic</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_dibit_bytes_panic</span>() {
+        <span class="kw">let</span> <span class="ident">dibits</span> <span class="op">=</span> [
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b00</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b00</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b11</span>),
+            <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="number">0b10</span>),
         ];
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>d</span> <span class='op'>=</span> <span class='ident'>DibitBytes</span>::<span class='ident'>new</span>(<span class='ident'>dibits</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">d</span> <span class="op">=</span> <span class="ident">DibitBytes</span>::<span class="ident">new</span>(<span class="ident">dibits</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>());
 
-        <span class='ident'>d</span>.<span class='ident'>next</span>();
-        <span class='ident'>d</span>.<span class='ident'>next</span>();
+        <span class="ident">d</span>.<span class="ident">next</span>();
+        <span class="ident">d</span>.<span class="ident">next</span>();
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_tribits</span>() {
-        <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> [
-            <span class='number'>0b00101001</span>,
-            <span class='number'>0b11001011</span>,
-            <span class='number'>0b10111000</span>,
-            <span class='number'>0b00101001</span>,
-            <span class='number'>0b11001011</span>,
-            <span class='number'>0b10111000</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_tribits</span>() {
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [
+            <span class="number">0b00101001</span>,
+            <span class="number">0b11001011</span>,
+            <span class="number">0b10111000</span>,
+            <span class="number">0b00101001</span>,
+            <span class="number">0b11001011</span>,
+            <span class="number">0b10111000</span>,
         ];
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>Tribits</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">Tribits</span>::<span class="ident">new</span>(<span class="ident">bytes</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>());
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b001</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b010</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b011</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b100</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b101</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b110</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b111</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b000</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b001</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b010</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b011</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b100</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b101</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b110</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b111</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b000</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b001</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b010</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b011</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b100</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b101</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b110</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b111</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b000</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b001</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b010</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b011</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b100</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b101</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b110</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b111</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b000</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_tribits_panic</span>() {
-        <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> [<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>];
-        <span class='kw'>let</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>Tribits</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="attribute">#[<span class="ident">should_panic</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_tribits_panic</span>() {
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];
+        <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">Tribits</span>::<span class="ident">new</span>(<span class="ident">bytes</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>());
 
-        <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='ident'>t</span> {}
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="ident">t</span> {}
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_tribit_bytes</span>() {
-        <span class='kw'>let</span> <span class='ident'>tribits</span> <span class='op'>=</span> [
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b001</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b010</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b011</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b100</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b101</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b110</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b111</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b000</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b001</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b010</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b011</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b100</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b101</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b110</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b111</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b000</span>),
-        ];
-
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TribitBytes</span>::<span class='ident'>new</span>(<span class='ident'>tribits</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
-
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b00101001</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b11001011</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b10111000</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b00101001</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b11001011</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b10111000</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>t</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
-    }
-
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_tribit_bytes_panic</span>() {
-        <span class='kw'>let</span> <span class='ident'>tribits</span> <span class='op'>=</span> [
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b001</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b010</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b011</span>),
-            <span class='ident'>Tribit</span>::<span class='ident'>new</span>(<span class='number'>0b100</span>),
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_tribit_bytes</span>() {
+        <span class="kw">let</span> <span class="ident">tribits</span> <span class="op">=</span> [
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b001</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b010</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b011</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b100</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b101</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b110</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b111</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b000</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b001</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b010</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b011</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b100</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b101</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b110</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b111</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b000</span>),
         ];
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>t</span> <span class='op'>=</span> <span class='ident'>TribitBytes</span>::<span class='ident'>new</span>(<span class='ident'>tribits</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">TribitBytes</span>::<span class="ident">new</span>(<span class="ident">tribits</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>());
 
-        <span class='ident'>t</span>.<span class='ident'>next</span>();
-        <span class='ident'>t</span>.<span class='ident'>next</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b00101001</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b11001011</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b10111000</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b00101001</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b11001011</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b10111000</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_hexbits</span>() {
-        <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> [
-            <span class='number'>0b11111100</span>,
-            <span class='number'>0b00001010</span>,
-            <span class='number'>0b10010101</span>,
-            <span class='number'>0b11111100</span>,
-            <span class='number'>0b00001010</span>,
-            <span class='number'>0b10010101</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="attribute">#[<span class="ident">should_panic</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_tribit_bytes_panic</span>() {
+        <span class="kw">let</span> <span class="ident">tribits</span> <span class="op">=</span> [
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b001</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b010</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b011</span>),
+            <span class="ident">Tribit</span>::<span class="ident">new</span>(<span class="number">0b100</span>),
         ];
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>h</span> <span class='op'>=</span> <span class='ident'>Hexbits</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">TribitBytes</span>::<span class="ident">new</span>(<span class="ident">tribits</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>());
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b111111</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b000000</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b101010</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b010101</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b111111</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b000000</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b101010</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b010101</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
+        <span class="ident">t</span>.<span class="ident">next</span>();
+        <span class="ident">t</span>.<span class="ident">next</span>();
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_hexbits_panic</span>() {
-        <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> [
-            <span class='number'>0b11111100</span>,
-            <span class='number'>0b00001010</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_hexbits</span>() {
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [
+            <span class="number">0b11111100</span>,
+            <span class="number">0b00001010</span>,
+            <span class="number">0b10010101</span>,
+            <span class="number">0b11111100</span>,
+            <span class="number">0b00001010</span>,
+            <span class="number">0b10010101</span>,
         ];
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>h</span> <span class='op'>=</span> <span class='ident'>Hexbits</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">Hexbits</span>::<span class="ident">new</span>(<span class="ident">bytes</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>());
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b111111</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b000000</span>);
-        <span class='ident'>h</span>.<span class='ident'>next</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b111111</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b000000</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b101010</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b010101</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b111111</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b000000</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b101010</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b010101</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_hexbit_bytes</span>() {
-        <span class='kw'>let</span> <span class='ident'>hexbits</span> <span class='op'>=</span> [
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b111111</span>),
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b000000</span>),
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b101010</span>),
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b010101</span>),
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b111111</span>),
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b000000</span>),
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b101010</span>),
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b010101</span>),
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="attribute">#[<span class="ident">should_panic</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_hexbits_panic</span>() {
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [
+            <span class="number">0b11111100</span>,
+            <span class="number">0b00001010</span>,
         ];
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>h</span> <span class='op'>=</span> <span class='ident'>HexbitBytes</span>::<span class='ident'>new</span>(<span class='ident'>hexbits</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">Hexbits</span>::<span class="ident">new</span>(<span class="ident">bytes</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>());
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b11111100</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b00001010</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b10010101</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b11111100</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b00001010</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0b10010101</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>h</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b111111</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b000000</span>);
+        <span class="ident">h</span>.<span class="ident">next</span>();
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_hexbit_bytes_panic</span>() {
-        <span class='kw'>let</span> <span class='ident'>hexbits</span> <span class='op'>=</span> [
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b111111</span>),
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b000000</span>),
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b101010</span>),
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b010101</span>),
-            <span class='ident'>Hexbit</span>::<span class='ident'>new</span>(<span class='number'>0b111111</span>),
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_hexbit_bytes</span>() {
+        <span class="kw">let</span> <span class="ident">hexbits</span> <span class="op">=</span> [
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b111111</span>),
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b000000</span>),
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b101010</span>),
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b010101</span>),
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b111111</span>),
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b000000</span>),
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b101010</span>),
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b010101</span>),
         ];
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>h</span> <span class='op'>=</span> <span class='ident'>HexbitBytes</span>::<span class='ident'>new</span>(<span class='ident'>hexbits</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
-        <span class='ident'>h</span>.<span class='ident'>next</span>();
-        <span class='ident'>h</span>.<span class='ident'>next</span>();
-        <span class='ident'>h</span>.<span class='ident'>next</span>();
-        <span class='ident'>h</span>.<span class='ident'>next</span>();
-        <span class='ident'>h</span>.<span class='ident'>next</span>();
-        <span class='ident'>h</span>.<span class='ident'>next</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">HexbitBytes</span>::<span class="ident">new</span>(<span class="ident">hexbits</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>());
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b11111100</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b00001010</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b10010101</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b11111100</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b00001010</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0b10010101</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">h</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="attribute">#[<span class="ident">should_panic</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_hexbit_bytes_panic</span>() {
+        <span class="kw">let</span> <span class="ident">hexbits</span> <span class="op">=</span> [
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b111111</span>),
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b000000</span>),
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b101010</span>),
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b010101</span>),
+            <span class="ident">Hexbit</span>::<span class="ident">new</span>(<span class="number">0b111111</span>),
+        ];
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">HexbitBytes</span>::<span class="ident">new</span>(<span class="ident">hexbits</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>());
+        <span class="ident">h</span>.<span class="ident">next</span>();
+        <span class="ident">h</span>.<span class="ident">next</span>();
+        <span class="ident">h</span>.<span class="ident">next</span>();
+        <span class="ident">h</span>.<span class="ident">next</span>();
+        <span class="ident">h</span>.<span class="ident">next</span>();
+        <span class="ident">h</span>.<span class="ident">next</span>();
     }
 }
 </pre>
@@ -1100,13 +1101,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -1140,7 +1143,6 @@
         window.rootPath = "../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

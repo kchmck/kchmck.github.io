@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1"> 1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1"> 1</span>
 <span id="2"> 2</span>
 <span id="3"> 3</span>
 <span id="4"> 4</span>
@@ -87,57 +88,51 @@
 <span id="42">42</span>
 <span id="43">43</span>
 <span id="44">44</span>
-<span id="45">45</span>
-<span id="46">46</span>
-<span id="47">47</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Encoding and decoding for the several error correction coding schemes used in P25.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! # References</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! 1. *Coding Theory and Cryptography*, Hankerson, et al, 2000.</span>
-<span class='doccomment'>//! 2. *Error-Control Block Codes for Communication Engineers*, Lee, 2000.</span>
-<span class='doccomment'>//! 3. [&quot;Implementation of a Reed-Solomon Encoder and Decoder in MATLAB&quot;]</span>
-<span class='doccomment'>//!    (http://www.ee.iitm.ac.in/~ee11b130/RS_report.pdf), Ramesh.</span>
-<span class='doccomment'>//! 4. [&quot;Reed Solomon Decoder&quot;](http://www.ti.com/lit/an/spra686/spra686.pdf), Sankaran,</span>
-<span class='doccomment'>//!    Texas Instruments, 2000.</span>
-<span class='doccomment'>//! 5. [&quot;Decoding BCH/RS Codes&quot;](http://web.ntpu.edu.tw/~yshan/BCH_decoding.pdf), Han,</span>
-<span class='doccomment'>//!    National Taipei University.</span>
-<span class='doccomment'>//! 6. [&quot;A Decoding Procedure for the Reed-Solomon Codes&quot;]</span>
-<span class='doccomment'>//!    (https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19780022919.pdf), Lim, NASA</span>
-<span class='doccomment'>//!    Ames, 1978.</span>
-<span class='doccomment'>//! 7. [&quot;Reed-Solomon error correction&quot;]</span>
-<span class='doccomment'>//!    (http://downloads.bbc.co.uk/rd/pubs/whp/ whp-pdf-files/WHP031.pdf), Clarke, BBC,</span>
-<span class='doccomment'>//!    2002.</span>
-<span class='doccomment'>//! 8. [&quot;Lecture 18: Decoding of Nonbinary BCH and RS Codes&quot;]</span>
-<span class='doccomment'>//!     (http://www.site.uottawa.ca/~damours/courses/ELG_5372/Lecture18.pdf), D&#39;Amours,</span>
-<span class='doccomment'>//!     University of Ottowa.</span>
-<span class='doccomment'>//! 9. [&quot;EE 387, Notes 19&quot;](http://web.stanford.edu/class/ee387/handouts/notes19.pdf),</span>
-<span class='doccomment'>//!     Gill, Stanford University.</span>
-<span class='doccomment'>//! 10. [&quot;EE 387, Notes 20&quot;](http://web.stanford.edu/class/ee387/handouts/notes20.pdf),</span>
-<span class='doccomment'>//!     Gill, Stanford University.</span>
-<span class='doccomment'>//! 11. [&quot;Implementing Reed-Solomon&quot;]</span>
-<span class='doccomment'>//!     (https://www.cs.duke.edu/courses/spring11/cps296.3/decoding_rs.pdf), Brown, Duke</span>
-<span class='doccomment'>//!     University.</span>
-<span class='doccomment'>//! 12. &quot;Nonbinary BCH Decoding&quot;, Berlekamp, 1966.</span>
-<span class='doccomment'>//! 13. &quot;Shift-Register Synthesis and BCH Decoding&quot;, Massey, 1969.</span>
-<span class='doccomment'>//! 14. &quot;Cyclic decoding procedure for BCH codes&quot;, Chien, 1964.</span>
-<span class='doccomment'>//! 15. &quot;On decoding BCH codes&quot;, Forney, 1965.</span>
-<span class='doccomment'>//! 16. *Error Control Coding*, Lin and Costello, 1983.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Encoding and decoding for the several error correction coding schemes used in P25.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! # References</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! 1. *Coding Theory and Cryptography*, Hankerson, et al, 2000.</span>
+<span class="doccomment">//! 2. *Error-Control Block Codes for Communication Engineers*, Lee, 2000.</span>
+<span class="doccomment">//! 3. [&quot;Implementation of a Reed-Solomon Encoder and Decoder in MATLAB&quot;]</span>
+<span class="doccomment">//!    (http://www.ee.iitm.ac.in/~ee11b130/RS_report.pdf), Ramesh.</span>
+<span class="doccomment">//! 4. [&quot;Reed Solomon Decoder&quot;](http://www.ti.com/lit/an/spra686/spra686.pdf), Sankaran,</span>
+<span class="doccomment">//!    Texas Instruments, 2000.</span>
+<span class="doccomment">//! 5. [&quot;Decoding BCH/RS Codes&quot;](http://web.ntpu.edu.tw/~yshan/BCH_decoding.pdf), Han,</span>
+<span class="doccomment">//!    National Taipei University.</span>
+<span class="doccomment">//! 6. [&quot;A Decoding Procedure for the Reed-Solomon Codes&quot;]</span>
+<span class="doccomment">//!    (https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19780022919.pdf), Lim, NASA</span>
+<span class="doccomment">//!    Ames, 1978.</span>
+<span class="doccomment">//! 7. [&quot;Reed-Solomon error correction&quot;]</span>
+<span class="doccomment">//!    (http://downloads.bbc.co.uk/rd/pubs/whp/ whp-pdf-files/WHP031.pdf), Clarke, BBC,</span>
+<span class="doccomment">//!    2002.</span>
+<span class="doccomment">//! 8. [&quot;Lecture 18: Decoding of Nonbinary BCH and RS Codes&quot;]</span>
+<span class="doccomment">//!     (http://www.site.uottawa.ca/~damours/courses/ELG_5372/Lecture18.pdf), D&#39;Amours,</span>
+<span class="doccomment">//!     University of Ottowa.</span>
+<span class="doccomment">//! 9. [&quot;EE 387, Notes 19&quot;](http://web.stanford.edu/class/ee387/handouts/notes19.pdf),</span>
+<span class="doccomment">//!     Gill, Stanford University.</span>
+<span class="doccomment">//! 10. [&quot;EE 387, Notes 20&quot;](http://web.stanford.edu/class/ee387/handouts/notes20.pdf),</span>
+<span class="doccomment">//!     Gill, Stanford University.</span>
+<span class="doccomment">//! 11. [&quot;Implementing Reed-Solomon&quot;]</span>
+<span class="doccomment">//!     (https://www.cs.duke.edu/courses/spring11/cps296.3/decoding_rs.pdf), Brown, Duke</span>
+<span class="doccomment">//!     University.</span>
+<span class="doccomment">//! 12. &quot;Nonbinary BCH Decoding&quot;, Berlekamp, 1966.</span>
+<span class="doccomment">//! 13. &quot;Shift-Register Synthesis and BCH Decoding&quot;, Massey, 1969.</span>
+<span class="doccomment">//! 14. &quot;Cyclic decoding procedure for BCH codes&quot;, Chien, 1964.</span>
+<span class="doccomment">//! 15. &quot;On decoding BCH codes&quot;, Forney, 1965.</span>
+<span class="doccomment">//! 16. *Error Control Coding*, Lin and Costello, 1983.</span>
 
-<span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
-<span class='kw'>mod</span> <span class='ident'>macros</span>;
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">galois</span>;
 
-<span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>galois</span>;
-
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>bch</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>bmcf</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>cyclic</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>golay</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>hamming</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>reed_solomon</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>trellis</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bch</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bmcf</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">cyclic</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">golay</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">hamming</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">reed_solomon</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">trellis</span>;
 </pre>
 </section>
     <section id='search' class="content hidden"></section>
@@ -156,13 +151,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -196,7 +193,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

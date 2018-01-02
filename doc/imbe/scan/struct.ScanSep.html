@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc struct">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../index.html'>imbe</a>::<wbr><a href='index.html'>scan</a></p><script>window.sidebarCurrent = {name: 'ScanSep', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct ScanSep</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#fields">Fields</a><div class="sidebar-links"><a href="#structfield.voiced">voiced</a><a href="#structfield.idx_part">idx_part</a><a href="#structfield.scanned">scanned</a></div><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.new">new</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Copy">Copy</a><a href="#impl-Clone">Clone</a></div></div><p class='location'><a href='../index.html'>imbe</a>::<wbr><a href='index.html'>scan</a></p><script>window.sidebarCurrent = {name: 'ScanSep', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,16 +44,16 @@
         </form>
     </nav>
 
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>imbe</a>::<wbr><a href='index.html'>scan</a>::<wbr><a class='struct' href=''>ScanSep</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>imbe</a>::<wbr><a href='index.html'>scan</a>::<wbr><a class="struct" href=''>ScanSep</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../src/imbe/scan.rs.html#16-23' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct ScanSep {
-    pub voiced: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>,
-    pub idx_part: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>,
-    pub scanned: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>,
+    pub voiced: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,
+    pub idx_part: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,
+    pub scanned: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,
 }</pre><div class='docblock'><p>Decodes voiced/unvoiced decisions and the quantized gain index fragment from
 prioritized chunks.</p>
 
@@ -60,26 +61,38 @@ prioritized chunks.</p>
 vector made up of u<sub>4</sub> and u<sub>5</sub> that contains the
 voiced/unvoiced vector, part of the quantized gain index, and the initial bits in
 the second scanning procedure.</p>
-</div><h2 class='fields'>Fields</h2><span id='structfield.voiced' class='structfield'>
-                           <span id='voiced.v' class='invisible'>
-                           <code>voiced: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code>
+</div><h2 id='fields' class='fields small-section-header'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.voiced" class="structfield small-section-header">
+                           <a href="#structfield.voiced" class="anchor field"></a>
+                           <span id="voiced.v" class='invisible'>
+                           <code>voiced: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
                            </span></span><div class='docblock'><p>Voiced/Unvoiced Boolean bit vector, b<sub>1</sub> [p25].</p>
-</div><span id='structfield.idx_part' class='structfield'>
-                           <span id='idx_part.v' class='invisible'>
-                           <code>idx_part: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code>
+</div><span id="structfield.idx_part" class="structfield small-section-header">
+                           <a href="#structfield.idx_part" class="anchor field"></a>
+                           <span id="idx_part.v" class='invisible'>
+                           <code>idx_part: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
                            </span></span><div class='docblock'><p>Bits 1 and 2 of the 6-bit quantized gain index, b<sub>2</sub> [p30].</p>
-</div><span id='structfield.scanned' class='structfield'>
-                           <span id='scanned.v' class='invisible'>
-                           <code>scanned: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code>
+</div><span id="structfield.scanned" class="structfield small-section-header">
+                           <a href="#structfield.scanned" class="anchor field"></a>
+                           <span id="scanned.v" class='invisible'>
+                           <code>scanned: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
                            </span></span><div class='docblock'><p>Chunk of some b<sub>m</sub> used in the scanning procedure [p39].</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/scan/struct.ScanSep.html' title='struct imbe::scan::ScanSep'>ScanSep</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/scan.rs.html#25-41' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(chunks: &amp;<a class='type' href='../../imbe/frame/type.Chunks.html' title='type imbe::frame::Chunks'>Chunks</a>, params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='struct imbe::params::BaseParams'>BaseParams</a>) -&gt; <a class='struct' href='../../imbe/scan/struct.ScanSep.html' title='struct imbe::scan::ScanSep'>ScanSep</a></code></span></h4>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../../imbe/scan/struct.ScanSep.html" title="struct imbe::scan::ScanSep">ScanSep</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/scan.rs.html#25-41' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>pub fn <a href='#method.new' class='fnname'>new</a>(chunks: &amp;<a class="type" href="../../imbe/frame/type.Chunks.html" title="type imbe::frame::Chunks">Chunks</a>, params: &amp;<a class="struct" href="../../imbe/params/struct.BaseParams.html" title="struct imbe::params::BaseParams">BaseParams</a>) -&gt; <a class="struct" href="../../imbe/scan/struct.ScanSep.html" title="struct imbe::scan::ScanSep">ScanSep</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/scan.rs.html#27-40' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Create a new <code>ScanSep</code> decoder from the given chunks and frame parameters.</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='trait core::marker::Copy'>Copy</a> for <a class='struct' href='../../imbe/scan/struct.ScanSep.html' title='struct imbe::scan::ScanSep'>ScanSep</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/scan.rs.html#15' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='trait core::clone::Clone'>Clone</a> for <a class='struct' href='../../imbe/scan/struct.ScanSep.html' title='struct imbe::scan::ScanSep'>ScanSep</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/scan.rs.html#15' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.clone' class='method'><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../imbe/scan/struct.ScanSep.html' title='struct imbe::scan::ScanSep'>ScanSep</a></code></span></h4>
+</div></div>
+            <h2 id='implementations' class='small-section-header'>
+              Trait Implementations<a href='#implementations' class='anchor'></a>
+            </h2>
+        <h3 id='impl-Copy' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> for <a class="struct" href="../../imbe/scan/struct.ScanSep.html" title="struct imbe::scan::ScanSep">ScanSep</a></code><a href='#impl-Copy' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/scan.rs.html#15' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 id='impl-Clone' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="../../imbe/scan/struct.ScanSep.html" title="struct imbe::scan::ScanSep">ScanSep</a></code><a href='#impl-Clone' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/scan.rs.html#15' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class="method"><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class="struct" href="../../imbe/scan/struct.ScanSep.html" title="struct imbe::scan::ScanSep">ScanSep</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/scan.rs.html#15' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
-</div><h4 id='method.clone_from' class='method'><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
+</div><h4 id='method.clone_from' class="method"><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Self)</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/clone.rs.html#112-114' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
 </div></div></section>
     <section id='search' class="content hidden"></section>
@@ -98,13 +111,15 @@ the second scanning procedure.</p>
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -138,7 +153,6 @@ the second scanning procedure.</p>
         window.rootPath = "../../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

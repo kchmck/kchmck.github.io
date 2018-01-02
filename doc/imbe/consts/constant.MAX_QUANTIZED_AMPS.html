@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc constant">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         <p class='location'><a href='../index.html'>imbe</a>::<wbr><a href='index.html'>consts</a></p><script>window.sidebarCurrent = {name: 'MAX_QUANTIZED_AMPS', ty: 'constant', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
@@ -43,13 +44,13 @@
         </form>
     </nav>
 
-    <section id='main' class="content constant">
-<h1 class='fqn'><span class='in-band'>Constant <a href='../index.html'>imbe</a>::<wbr><a href='index.html'>consts</a>::<wbr><a class='constant' href=''>MAX_QUANTIZED_AMPS</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Constant <a href='../index.html'>imbe</a>::<wbr><a href='index.html'>consts</a>::<wbr><a class="constant" href=''>MAX_QUANTIZED_AMPS</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../src/imbe/consts.rs.html#19' title='goto source code'>[src]</a></span></h1>
-<pre class='rust const'>pub const MAX_QUANTIZED_AMPS: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><code> = </code><code>MAX_HARMONICS - 1</code></pre><div class='docblock'><p>Maximum number of quantized amplitudes.</p>
+<pre class='rust const'>pub const MAX_QUANTIZED_AMPS: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><code> = </code><code>MAX_HARMONICS - 1</code></pre><div class='docblock'><p>Maximum number of quantized amplitudes.</p>
 
 <p>Since b<sub>m</sub>, 3 ≤ m ≤ L + 1, must be stored and 9 ≤ L ≤ 56, the maximum
 capacity required is 57 - 3 + 1 = 56 - 1.</p>
@@ -70,13 +71,15 @@ capacity required is 57 - 3 + 1 = 56 - 1.</p>
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -110,7 +113,6 @@ capacity required is 57 - 3 + 1 = 56 - 1.</p>
         window.rootPath = "../../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc struct">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='../index.html'>imbe</a>::<wbr><a href='index.html'>voiced</a></p><script>window.sidebarCurrent = {name: 'Phase', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct Phase</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.new">new</a><a href="#method.get">get</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Default">Default</a></div></div><p class='location'><a href='../index.html'>imbe</a>::<wbr><a href='index.html'>voiced</a></p><script>window.sidebarCurrent = {name: 'Phase', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,20 +44,28 @@
         </form>
     </nav>
 
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>imbe</a>::<wbr><a href='index.html'>voiced</a>::<wbr><a class='struct' href=''>Phase</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>imbe</a>::<wbr><a href='index.html'>voiced</a>::<wbr><a class="struct" href=''>Phase</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../src/imbe/voiced.rs.html#50' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Phase(_);</pre><div class='docblock'><p>Computes the random phase terms Φ<sub>l</sub>.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../imbe/voiced/struct.Phase.html' title='struct imbe::voiced::Phase'>Phase</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#52-81' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>&lt;R:&nbsp;<a class='trait' href='../../rand/trait.Rng.html' title='trait rand::Rng'>Rng</a>&gt;(base: &amp;<a class='struct' href='../../imbe/voiced/struct.PhaseBase.html' title='struct imbe::voiced::PhaseBase'>PhaseBase</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; params: &amp;<a class='struct' href='../../imbe/params/struct.BaseParams.html' title='struct imbe::params::BaseParams'>BaseParams</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; prev: &amp;<a class='struct' href='../../imbe/prev/struct.PrevFrame.html' title='struct imbe::prev::PrevFrame'>PrevFrame</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; voice: &amp;<a class='struct' href='../../imbe/descramble/struct.VoiceDecisions.html' title='struct imbe::descramble::VoiceDecisions'>VoiceDecisions</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; noise: R)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; Self</code></span></h4>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../../imbe/voiced/struct.Phase.html" title="struct imbe::voiced::Phase">Phase</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#52-81' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>pub fn <a href='#method.new' class='fnname'>new</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a>&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;base: &amp;<a class="struct" href="../../imbe/voiced/struct.PhaseBase.html" title="struct imbe::voiced::PhaseBase">PhaseBase</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;params: &amp;<a class="struct" href="../../imbe/params/struct.BaseParams.html" title="struct imbe::params::BaseParams">BaseParams</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;prev: &amp;<a class="struct" href="../../imbe/prev/struct.PrevFrame.html" title="struct imbe::prev::PrevFrame">PrevFrame</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;voice: &amp;<a class="struct" href="../../imbe/descramble/struct.VoiceDecisions.html" title="struct imbe::descramble::VoiceDecisions">VoiceDecisions</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;noise: R<br>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#54-77' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Create a new <code>Phase</code> building on the given base phase terms.</p>
-</div><h4 id='method.get' class='method'><span id='get.v' class='invisible'><code>fn <a href='#method.get' class='fnname'>get</a>(&amp;self, l: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a></code></span></h4>
+</div><h4 id='method.get' class="method"><span id='get.v' class='invisible'><code>pub fn <a href='#method.get' class='fnname'>get</a>(&amp;self, l: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#80' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Retrieve the phase term Φ<sub>l</sub>, 1 ≤ l ≤ 56.</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='trait core::default::Default'>Default</a> for <a class='struct' href='../../imbe/voiced/struct.Phase.html' title='struct imbe::voiced::Phase'>Phase</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#83-89' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.default' class='method'><span id='default.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default' class='fnname'>default</a>() -&gt; Self</code></span></h4>
+</div></div>
+            <h2 id='implementations' class='small-section-header'>
+              Trait Implementations<a href='#implementations' class='anchor'></a>
+            </h2>
+        <h3 id='impl-Default' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html" title="trait core::default::Default">Default</a> for <a class="struct" href="../../imbe/voiced/struct.Phase.html" title="struct imbe::voiced::Phase">Phase</a></code><a href='#impl-Default' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#83-89' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.default' class="method"><span id='default.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default' class='fnname'>default</a>() -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/imbe/voiced.rs.html#85-88' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Create a new <code>Phase</code> in the default state.</p>
 </div></div></section>
     <section id='search' class="content hidden"></section>
@@ -75,13 +84,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -115,7 +126,6 @@
         window.rootPath = "../../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

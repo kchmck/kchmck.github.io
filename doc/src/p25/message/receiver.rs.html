@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -266,229 +267,267 @@
 <span id="221">221</span>
 <span id="222">222</span>
 <span id="223">223</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! High-level receiver for receiving P25 voice, data, and trunking messages.</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! High-level receiver for receiving P25 voice, data, and trunking messages.</span>
 
-<span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>P25Error</span>;
-<span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>data_unit</span>::{<span class='ident'>DataUnitReceiver</span>, <span class='ident'>ReceiverEvent</span>};
-<span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>nid</span>::<span class='ident'>NetworkId</span>;
-<span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>status</span>::<span class='ident'>StreamSymbol</span>;
-<span class='kw'>use</span> <span class='ident'>trunking</span>::<span class='ident'>tsbk</span>::{<span class='ident'>TsbkFields</span>, <span class='ident'>TsbkReceiver</span>};
-<span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>control</span>::<span class='ident'>LinkControlFields</span>;
-<span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>crypto</span>::<span class='ident'>CryptoControlFields</span>;
-<span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>frame</span>::<span class='ident'>VoiceFrame</span>;
-<span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>header</span>::{<span class='ident'>VoiceHeaderReceiver</span>, <span class='ident'>VoiceHeaderFields</span>};
-<span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>term</span>::<span class='ident'>VoiceLCTerminatorReceiver</span>;
+<span class="kw">use</span> <span class="ident">error</span>::<span class="ident">P25Error</span>;
+<span class="kw">use</span> <span class="ident">message</span>::<span class="ident">data_unit</span>::{<span class="ident">DataUnitReceiver</span>, <span class="ident">ReceiverEvent</span>};
+<span class="kw">use</span> <span class="ident">message</span>::<span class="ident">nid</span>::<span class="ident">NetworkId</span>;
+<span class="kw">use</span> <span class="ident">message</span>::<span class="ident">status</span>::<span class="ident">StreamSymbol</span>;
+<span class="kw">use</span> <span class="ident">trunking</span>::<span class="ident">tsbk</span>::{<span class="ident">TsbkFields</span>, <span class="ident">TsbkReceiver</span>};
+<span class="kw">use</span> <span class="ident">voice</span>::<span class="ident">control</span>::<span class="ident">LinkControlFields</span>;
+<span class="kw">use</span> <span class="ident">voice</span>::<span class="ident">crypto</span>::<span class="ident">CryptoControlFields</span>;
+<span class="kw">use</span> <span class="ident">voice</span>::<span class="ident">frame</span>::<span class="ident">VoiceFrame</span>;
+<span class="kw">use</span> <span class="ident">voice</span>::<span class="ident">header</span>::{<span class="ident">VoiceHeaderReceiver</span>, <span class="ident">VoiceHeaderFields</span>};
+<span class="kw">use</span> <span class="ident">voice</span>::<span class="ident">term</span>::<span class="ident">VoiceLCTerminatorReceiver</span>;
+<span class="kw">use</span> <span class="ident">stats</span>::{<span class="ident">Stats</span>, <span class="ident">HasStats</span>};
 
-<span class='kw'>use</span> <span class='ident'>voice</span>::<span class='ident'>frame_group</span>::{
-    <span class='ident'>FrameGroupEvent</span>,
-    <span class='ident'>VoiceCCFrameGroupReceiver</span>,
-    <span class='ident'>VoiceLCFrameGroupReceiver</span>,
+<span class="kw">use</span> <span class="ident">voice</span>::<span class="ident">frame_group</span>::{
+    <span class="ident">FrameGroupEvent</span>,
+    <span class="ident">VoiceCCFrameGroupReceiver</span>,
+    <span class="ident">VoiceLCFrameGroupReceiver</span>,
 };
 
-<span class='doccomment'>/// Events that can occur when receiving P25 messages.</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>MessageEvent</span> {
-    <span class='doccomment'>/// A runtime error occured.</span>
-    <span class='ident'>Error</span>(<span class='ident'>P25Error</span>),
-    <span class='doccomment'>/// An NID at the start of a packet was decoded.</span>
-    <span class='ident'>PacketNID</span>(<span class='ident'>NetworkId</span>),
-    <span class='doccomment'>/// A voice header was received.</span>
-    <span class='ident'>VoiceHeader</span>(<span class='ident'>VoiceHeaderFields</span>),
-    <span class='doccomment'>/// A voice frame was received.</span>
-    <span class='ident'>VoiceFrame</span>(<span class='ident'>VoiceFrame</span>),
-    <span class='doccomment'>/// A link control word was decoded.</span>
-    <span class='ident'>LinkControl</span>(<span class='ident'>LinkControlFields</span>),
-    <span class='doccomment'>/// A crypto control word was decoded.</span>
-    <span class='ident'>CryptoControl</span>(<span class='ident'>CryptoControlFields</span>),
-    <span class='doccomment'>/// A voice low-speed data fragment was decoded.</span>
-    <span class='ident'>LowSpeedDataFragment</span>(<span class='ident'>u32</span>),
-    <span class='doccomment'>/// A trunking signalling packet was received.</span>
-    <span class='ident'>TrunkingControl</span>(<span class='ident'>TsbkFields</span>),
-    <span class='doccomment'>/// A voice terminator link control was received.</span>
-    <span class='ident'>VoiceTerm</span>(<span class='ident'>LinkControlFields</span>),
+<span class="doccomment">/// Events that can occur when receiving P25 messages.</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MessageEvent</span> {
+    <span class="doccomment">/// A runtime error occured.</span>
+    <span class="ident">Error</span>(<span class="ident">P25Error</span>),
+    <span class="doccomment">/// An NID at the start of a packet was decoded.</span>
+    <span class="ident">PacketNID</span>(<span class="ident">NetworkId</span>),
+    <span class="doccomment">/// A voice header was received.</span>
+    <span class="ident">VoiceHeader</span>(<span class="ident">VoiceHeaderFields</span>),
+    <span class="doccomment">/// A voice frame was received.</span>
+    <span class="ident">VoiceFrame</span>(<span class="ident">VoiceFrame</span>),
+    <span class="doccomment">/// A link control word was decoded.</span>
+    <span class="ident">LinkControl</span>(<span class="ident">LinkControlFields</span>),
+    <span class="doccomment">/// A crypto control word was decoded.</span>
+    <span class="ident">CryptoControl</span>(<span class="ident">CryptoControlFields</span>),
+    <span class="doccomment">/// A voice low-speed data fragment was decoded.</span>
+    <span class="ident">LowSpeedDataFragment</span>(<span class="ident">u32</span>),
+    <span class="doccomment">/// A trunking signalling packet was received.</span>
+    <span class="ident">TrunkingControl</span>(<span class="ident">TsbkFields</span>),
+    <span class="doccomment">/// A voice terminator link control was received.</span>
+    <span class="ident">VoiceTerm</span>(<span class="ident">LinkControlFields</span>),
 }
 
-<span class='doccomment'>/// Internal state of the state machine.</span>
-<span class='kw'>enum</span> <span class='ident'>State</span> {
-    <span class='doccomment'>/// Waiting for an event from the lower-level state machine.</span>
-    <span class='ident'>Idle</span>,
-    <span class='doccomment'>/// Decoding a voice header packet.</span>
-    <span class='ident'>DecodeHeader</span>(<span class='ident'>VoiceHeaderReceiver</span>),
-    <span class='doccomment'>/// Decoding a link control frame group packet.</span>
-    <span class='ident'>DecodeLCFrameGroup</span>(<span class='ident'>VoiceLCFrameGroupReceiver</span>),
-    <span class='doccomment'>/// Decoding a crypto control frame group packet.</span>
-    <span class='ident'>DecodeCCFrameGroup</span>(<span class='ident'>VoiceCCFrameGroupReceiver</span>),
-    <span class='doccomment'>/// Decoding a link control voice terminator.</span>
-    <span class='ident'>DecodeLCTerminator</span>(<span class='ident'>VoiceLCTerminatorReceiver</span>),
-    <span class='doccomment'>/// Decoding a trunking signalling packet.</span>
-    <span class='ident'>DecodeTSBK</span>(<span class='ident'>TsbkReceiver</span>),
+<span class="doccomment">/// Internal state of the state machine.</span>
+<span class="kw">enum</span> <span class="ident">State</span> {
+    <span class="doccomment">/// Waiting for an event from the lower-level state machine.</span>
+    <span class="ident">Idle</span>,
+    <span class="doccomment">/// Decoding a voice header packet.</span>
+    <span class="ident">DecodeHeader</span>(<span class="ident">VoiceHeaderReceiver</span>),
+    <span class="doccomment">/// Decoding a link control frame group packet.</span>
+    <span class="ident">DecodeLCFrameGroup</span>(<span class="ident">VoiceLCFrameGroupReceiver</span>),
+    <span class="doccomment">/// Decoding a crypto control frame group packet.</span>
+    <span class="ident">DecodeCCFrameGroup</span>(<span class="ident">VoiceCCFrameGroupReceiver</span>),
+    <span class="doccomment">/// Decoding a link control voice terminator.</span>
+    <span class="ident">DecodeLCTerminator</span>(<span class="ident">VoiceLCTerminatorReceiver</span>),
+    <span class="doccomment">/// Decoding a trunking signalling packet.</span>
+    <span class="ident">DecodeTSBK</span>(<span class="ident">TsbkReceiver</span>),
 }
 
-<span class='doccomment'>/// Action the state machine should take.</span>
-<span class='kw'>enum</span> <span class='ident'>StateChange</span> {
-    <span class='doccomment'>/// Propagate an event.</span>
-    <span class='ident'>Event</span>(<span class='ident'>MessageEvent</span>),
-    <span class='doccomment'>/// Propagate an event and change state.</span>
-    <span class='ident'>EventChange</span>(<span class='ident'>MessageEvent</span>, <span class='ident'>State</span>),
-    <span class='doccomment'>/// Do nothing.</span>
-    <span class='ident'>NoChange</span>,
+<span class="doccomment">/// Action the state machine should take.</span>
+<span class="kw">enum</span> <span class="ident">StateChange</span> {
+    <span class="doccomment">/// Propagate an event.</span>
+    <span class="ident">Event</span>(<span class="ident">MessageEvent</span>),
+    <span class="doccomment">/// Propagate an event and change state.</span>
+    <span class="ident">EventChange</span>(<span class="ident">MessageEvent</span>, <span class="ident">State</span>),
+    <span class="doccomment">/// Do nothing.</span>
+    <span class="ident">NoChange</span>,
 }
 
-<span class='doccomment'>/// State machine for high-level message reception.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>MessageReceiver</span> {
-    <span class='doccomment'>/// Lower-level stream receiver.</span>
-    <span class='kw'>pub</span> <span class='ident'>recv</span>: <span class='ident'>DataUnitReceiver</span>,
-    <span class='doccomment'>/// Current state.</span>
-    <span class='ident'>state</span>: <span class='ident'>State</span>,
+<span class="doccomment">/// State machine for high-level message reception.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MessageReceiver</span> {
+    <span class="doccomment">/// Lower-level stream receiver.</span>
+    <span class="kw">pub</span> <span class="ident">recv</span>: <span class="ident">DataUnitReceiver</span>,
+    <span class="doccomment">/// Current state.</span>
+    <span class="ident">state</span>: <span class="ident">State</span>,
+    <span class="ident">stats</span>: <span class="ident">Stats</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>MessageReceiver</span> {
-    <span class='doccomment'>/// Create a new `MessageReceiver` in the initial state.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>MessageReceiver</span> {
-        <span class='ident'>MessageReceiver</span> {
-            <span class='ident'>recv</span>: <span class='ident'>DataUnitReceiver</span>::<span class='ident'>new</span>(),
-            <span class='ident'>state</span>: <span class='ident'>State</span>::<span class='ident'>Idle</span>,
+<span class="kw">impl</span> <span class="ident">MessageReceiver</span> {
+    <span class="doccomment">/// Create a new `MessageReceiver` in the initial state.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">MessageReceiver</span> {
+        <span class="ident">MessageReceiver</span> {
+            <span class="ident">recv</span>: <span class="ident">DataUnitReceiver</span>::<span class="ident">new</span>(),
+            <span class="ident">state</span>: <span class="ident">State</span>::<span class="ident">Idle</span>,
+            <span class="ident">stats</span>: <span class="ident">Stats</span>::<span class="ident">default</span>(),
         }
     }
 
-    <span class='doccomment'>/// Feed in a baseband sample, possibly producing a new event or message to be handled</span>
-    <span class='doccomment'>/// by the given handler.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>s</span>: <span class='ident'>f32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>MessageEvent</span><span class='op'>&gt;</span> {
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>handle</span>(<span class='ident'>s</span>) {
-            <span class='ident'>StateChange</span>::<span class='ident'>Event</span>(<span class='ident'>e</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>e</span>),
-            <span class='ident'>StateChange</span>::<span class='ident'>EventChange</span>(<span class='ident'>e</span>, <span class='ident'>s</span>) <span class='op'>=&gt;</span> {
-                <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>s</span>;
-                <span class='prelude-val'>Some</span>(<span class='ident'>e</span>)
+    <span class="doccomment">/// Feed in a baseband sample, possibly producing a new event or message to be handled</span>
+    <span class="doccomment">/// by the given handler.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">feed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="ident">f32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">MessageEvent</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">handle</span>(<span class="ident">s</span>) {
+            <span class="ident">StateChange</span>::<span class="ident">Event</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">e</span>),
+            <span class="ident">StateChange</span>::<span class="ident">EventChange</span>(<span class="ident">e</span>, <span class="ident">s</span>) <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">s</span>;
+                <span class="prelude-val">Some</span>(<span class="ident">e</span>)
             },
-            <span class='ident'>StateChange</span>::<span class='ident'>NoChange</span> <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
+            <span class="ident">StateChange</span>::<span class="ident">NoChange</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
         }
     }
 
-    <span class='doccomment'>/// Process the given sample and determine how to update state.</span>
-    <span class='kw'>fn</span> <span class='ident'>handle</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>s</span>: <span class='ident'>f32</span>) <span class='op'>-&gt;</span> <span class='ident'>StateChange</span> {
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>State</span>::<span class='kw-2'>*</span>;
-        <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>StateChange</span>::<span class='kw-2'>*</span>;
-        <span class='kw'>use</span> <span class='ident'>message</span>::<span class='ident'>nid</span>::<span class='ident'>DataUnit</span>::<span class='kw-2'>*</span>;
+    <span class="doccomment">/// Process the given sample and determine how to update state.</span>
+    <span class="kw">fn</span> <span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="ident">f32</span>) <span class="op">-&gt;</span> <span class="ident">StateChange</span> {
+        <span class="kw">use</span> <span class="self">self</span>::<span class="ident">State</span>::<span class="kw-2">*</span>;
+        <span class="kw">use</span> <span class="self">self</span>::<span class="ident">StateChange</span>::<span class="kw-2">*</span>;
+        <span class="kw">use</span> <span class="ident">message</span>::<span class="ident">nid</span>::<span class="ident">DataUnit</span>::<span class="kw-2">*</span>;
 
-        <span class='kw'>let</span> <span class='ident'>event</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>feed</span>(<span class='ident'>s</span>) {
-            <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>event</span>)) <span class='op'>=&gt;</span> <span class='ident'>event</span>,
-            <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>err</span>)) <span class='op'>=&gt;</span> {
-                <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>resync</span>();
-                <span class='kw'>return</span> <span class='ident'>Event</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>Error</span>(<span class='ident'>err</span>));
+        <span class="kw">let</span> <span class="ident">event</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">feed</span>(<span class="ident">s</span>) {
+            <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">event</span>)) <span class="op">=&gt;</span> <span class="ident">event</span>,
+            <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">err</span>)) <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">resync</span>();
+                <span class="kw">return</span> <span class="ident">Event</span>(<span class="ident">MessageEvent</span>::<span class="ident">Error</span>(<span class="ident">err</span>));
             },
-            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='ident'>NoChange</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">NoChange</span>,
         };
 
-        <span class='kw'>let</span> <span class='ident'>dibit</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>event</span> {
-            <span class='ident'>ReceiverEvent</span>::<span class='ident'>NetworkId</span>(<span class='ident'>nid</span>) <span class='op'>=&gt;</span> {
-                <span class='kw'>let</span> <span class='ident'>next</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>nid</span>.<span class='ident'>data_unit</span> {
-                    <span class='ident'>VoiceHeader</span> <span class='op'>=&gt;</span>
-                        <span class='ident'>DecodeHeader</span>(<span class='ident'>VoiceHeaderReceiver</span>::<span class='ident'>new</span>()),
-                    <span class='ident'>VoiceSimpleTerminator</span> <span class='op'>=&gt;</span> {
-                        <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>flush_pads</span>();
-                        <span class='ident'>Idle</span>
+        <span class="self">self</span>.<span class="ident">stats</span>.<span class="ident">merge</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">recv</span>);
+
+        <span class="kw">let</span> <span class="ident">dibit</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">event</span> {
+            <span class="ident">ReceiverEvent</span>::<span class="ident">NetworkId</span>(<span class="ident">nid</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">next</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">nid</span>.<span class="ident">data_unit</span> {
+                    <span class="ident">VoiceHeader</span> <span class="op">=&gt;</span>
+                        <span class="ident">DecodeHeader</span>(<span class="ident">VoiceHeaderReceiver</span>::<span class="ident">new</span>()),
+                    <span class="ident">VoiceSimpleTerminator</span> <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">flush_pads</span>();
+                        <span class="ident">Idle</span>
                     },
-                    <span class='ident'>VoiceLCTerminator</span> <span class='op'>=&gt;</span>
-                        <span class='ident'>DecodeLCTerminator</span>(<span class='ident'>VoiceLCTerminatorReceiver</span>::<span class='ident'>new</span>()),
-                    <span class='ident'>VoiceLCFrameGroup</span> <span class='op'>=&gt;</span>
-                        <span class='ident'>DecodeLCFrameGroup</span>(<span class='ident'>VoiceLCFrameGroupReceiver</span>::<span class='ident'>new</span>()),
-                    <span class='ident'>VoiceCCFrameGroup</span> <span class='op'>=&gt;</span>
-                        <span class='ident'>DecodeCCFrameGroup</span>(<span class='ident'>VoiceCCFrameGroupReceiver</span>::<span class='ident'>new</span>()),
-                    <span class='ident'>TrunkingSignaling</span> <span class='op'>=&gt;</span>
-                        <span class='ident'>DecodeTSBK</span>(<span class='ident'>TsbkReceiver</span>::<span class='ident'>new</span>()),
-                    <span class='ident'>DataPacket</span> <span class='op'>=&gt;</span> {
-                        <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>resync</span>();
-                        <span class='ident'>Idle</span>
+                    <span class="ident">VoiceLCTerminator</span> <span class="op">=&gt;</span>
+                        <span class="ident">DecodeLCTerminator</span>(<span class="ident">VoiceLCTerminatorReceiver</span>::<span class="ident">new</span>()),
+                    <span class="ident">VoiceLCFrameGroup</span> <span class="op">=&gt;</span>
+                        <span class="ident">DecodeLCFrameGroup</span>(<span class="ident">VoiceLCFrameGroupReceiver</span>::<span class="ident">new</span>()),
+                    <span class="ident">VoiceCCFrameGroup</span> <span class="op">=&gt;</span>
+                        <span class="ident">DecodeCCFrameGroup</span>(<span class="ident">VoiceCCFrameGroupReceiver</span>::<span class="ident">new</span>()),
+                    <span class="ident">TrunkingSignaling</span> <span class="op">=&gt;</span>
+                        <span class="ident">DecodeTSBK</span>(<span class="ident">TsbkReceiver</span>::<span class="ident">new</span>()),
+                    <span class="ident">DataPacket</span> <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">resync</span>();
+                        <span class="ident">Idle</span>
                     },
                 };
 
-                <span class='kw'>return</span> <span class='ident'>EventChange</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>PacketNID</span>(<span class='ident'>nid</span>), <span class='ident'>next</span>);
+                <span class="kw">return</span> <span class="ident">EventChange</span>(<span class="ident">MessageEvent</span>::<span class="ident">PacketNID</span>(<span class="ident">nid</span>), <span class="ident">next</span>);
             },
-            <span class='ident'>ReceiverEvent</span>::<span class='ident'>Symbol</span>(<span class='ident'>StreamSymbol</span>::<span class='ident'>Status</span>(_)) <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='ident'>NoChange</span>,
-            <span class='ident'>ReceiverEvent</span>::<span class='ident'>Symbol</span>(<span class='ident'>StreamSymbol</span>::<span class='ident'>Data</span>(<span class='ident'>dibit</span>)) <span class='op'>=&gt;</span> <span class='ident'>dibit</span>,
+            <span class="ident">ReceiverEvent</span>::<span class="ident">Symbol</span>(<span class="ident">StreamSymbol</span>::<span class="ident">Status</span>(_)) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">NoChange</span>,
+            <span class="ident">ReceiverEvent</span>::<span class="ident">Symbol</span>(<span class="ident">StreamSymbol</span>::<span class="ident">Data</span>(<span class="ident">dibit</span>)) <span class="op">=&gt;</span> <span class="ident">dibit</span>,
         };
 
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>state</span> {
-            <span class='ident'>DecodeHeader</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>head</span>) <span class='op'>=&gt;</span> <span class='kw'>match</span> <span class='ident'>head</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
-                <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>h</span>)) <span class='op'>=&gt;</span> {
-                    <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>flush_pads</span>();
-                    <span class='ident'>EventChange</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>VoiceHeader</span>(<span class='ident'>h</span>), <span class='ident'>Idle</span>)
+        <span class="kw">let</span> <span class="ident">next</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
+            <span class="ident">DecodeHeader</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">head</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">head</span>.<span class="ident">feed</span>(<span class="ident">dibit</span>) {
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">h</span>)) <span class="op">=&gt;</span> {
+                    <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">flush_pads</span>();
+                    <span class="ident">EventChange</span>(<span class="ident">MessageEvent</span>::<span class="ident">VoiceHeader</span>(<span class="ident">h</span>), <span class="ident">Idle</span>)
                 },
-                <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>err</span>)) <span class='op'>=&gt;</span> {
-                    <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>resync</span>();
-                    <span class='ident'>EventChange</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>Error</span>(<span class='ident'>err</span>), <span class='ident'>Idle</span>)
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">err</span>)) <span class="op">=&gt;</span> {
+                    <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">resync</span>();
+                    <span class="ident">EventChange</span>(<span class="ident">MessageEvent</span>::<span class="ident">Error</span>(<span class="ident">err</span>), <span class="ident">Idle</span>)
                 },
-                <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='ident'>NoChange</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">NoChange</span>,
             },
-            <span class='ident'>DecodeLCFrameGroup</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>fg</span>) <span class='op'>=&gt;</span> <span class='kw'>match</span> <span class='ident'>fg</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
-                <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>event</span>)) <span class='op'>=&gt;</span> {
-                    <span class='kw'>if</span> <span class='ident'>fg</span>.<span class='ident'>done</span>() {
-                        <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>flush_pads</span>();
+            <span class="ident">DecodeLCFrameGroup</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">fg</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">fg</span>.<span class="ident">feed</span>(<span class="ident">dibit</span>) {
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">event</span>)) <span class="op">=&gt;</span> {
+                    <span class="kw">if</span> <span class="ident">fg</span>.<span class="ident">done</span>() {
+                        <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">flush_pads</span>();
                     }
 
-                    <span class='kw'>match</span> <span class='ident'>event</span> {
-                        <span class='ident'>FrameGroupEvent</span>::<span class='ident'>VoiceFrame</span>(<span class='ident'>vf</span>) <span class='op'>=&gt;</span>
-                            <span class='ident'>Event</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>VoiceFrame</span>(<span class='ident'>vf</span>)),
-                        <span class='ident'>FrameGroupEvent</span>::<span class='ident'>Extra</span>(<span class='ident'>lc</span>) <span class='op'>=&gt;</span>
-                            <span class='ident'>Event</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>LinkControl</span>(<span class='ident'>lc</span>)),
-                        <span class='ident'>FrameGroupEvent</span>::<span class='ident'>DataFragment</span>(<span class='ident'>frag</span>) <span class='op'>=&gt;</span>
-                            <span class='ident'>Event</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>LowSpeedDataFragment</span>(<span class='ident'>frag</span>)),
+                    <span class="kw">match</span> <span class="ident">event</span> {
+                        <span class="ident">FrameGroupEvent</span>::<span class="ident">VoiceFrame</span>(<span class="ident">vf</span>) <span class="op">=&gt;</span>
+                            <span class="ident">Event</span>(<span class="ident">MessageEvent</span>::<span class="ident">VoiceFrame</span>(<span class="ident">vf</span>)),
+                        <span class="ident">FrameGroupEvent</span>::<span class="ident">Extra</span>(<span class="ident">lc</span>) <span class="op">=&gt;</span>
+                            <span class="ident">Event</span>(<span class="ident">MessageEvent</span>::<span class="ident">LinkControl</span>(<span class="ident">lc</span>)),
+                        <span class="ident">FrameGroupEvent</span>::<span class="ident">DataFragment</span>(<span class="ident">frag</span>) <span class="op">=&gt;</span>
+                            <span class="ident">Event</span>(<span class="ident">MessageEvent</span>::<span class="ident">LowSpeedDataFragment</span>(<span class="ident">frag</span>)),
                     }
                 },
-                <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>err</span>)) <span class='op'>=&gt;</span> {
-                    <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>resync</span>();
-                    <span class='ident'>EventChange</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>Error</span>(<span class='ident'>err</span>), <span class='ident'>Idle</span>)
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">err</span>)) <span class="op">=&gt;</span> {
+                    <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">resync</span>();
+                    <span class="ident">EventChange</span>(<span class="ident">MessageEvent</span>::<span class="ident">Error</span>(<span class="ident">err</span>), <span class="ident">Idle</span>)
                 },
-                <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='ident'>NoChange</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">NoChange</span>,
             },
-            <span class='ident'>DecodeCCFrameGroup</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>fg</span>) <span class='op'>=&gt;</span> <span class='kw'>match</span> <span class='ident'>fg</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
-                <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>event</span>)) <span class='op'>=&gt;</span> <span class='kw'>match</span> <span class='ident'>event</span> {
-                    <span class='ident'>FrameGroupEvent</span>::<span class='ident'>VoiceFrame</span>(<span class='ident'>vf</span>) <span class='op'>=&gt;</span> {
-                        <span class='kw'>if</span> <span class='ident'>fg</span>.<span class='ident'>done</span>() {
-                            <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>flush_pads</span>();
+            <span class="ident">DecodeCCFrameGroup</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">fg</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">fg</span>.<span class="ident">feed</span>(<span class="ident">dibit</span>) {
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">event</span>)) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">event</span> {
+                    <span class="ident">FrameGroupEvent</span>::<span class="ident">VoiceFrame</span>(<span class="ident">vf</span>) <span class="op">=&gt;</span> {
+                        <span class="kw">if</span> <span class="ident">fg</span>.<span class="ident">done</span>() {
+                            <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">flush_pads</span>();
                         }
 
-                        <span class='ident'>Event</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>VoiceFrame</span>(<span class='ident'>vf</span>))
+                        <span class="ident">Event</span>(<span class="ident">MessageEvent</span>::<span class="ident">VoiceFrame</span>(<span class="ident">vf</span>))
                     },
-                    <span class='ident'>FrameGroupEvent</span>::<span class='ident'>Extra</span>(<span class='ident'>cc</span>) <span class='op'>=&gt;</span>
-                        <span class='ident'>Event</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>CryptoControl</span>(<span class='ident'>cc</span>)),
-                    <span class='ident'>FrameGroupEvent</span>::<span class='ident'>DataFragment</span>(<span class='ident'>frag</span>) <span class='op'>=&gt;</span>
-                        <span class='ident'>Event</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>LowSpeedDataFragment</span>(<span class='ident'>frag</span>))
+                    <span class="ident">FrameGroupEvent</span>::<span class="ident">Extra</span>(<span class="ident">cc</span>) <span class="op">=&gt;</span>
+                        <span class="ident">Event</span>(<span class="ident">MessageEvent</span>::<span class="ident">CryptoControl</span>(<span class="ident">cc</span>)),
+                    <span class="ident">FrameGroupEvent</span>::<span class="ident">DataFragment</span>(<span class="ident">frag</span>) <span class="op">=&gt;</span>
+                        <span class="ident">Event</span>(<span class="ident">MessageEvent</span>::<span class="ident">LowSpeedDataFragment</span>(<span class="ident">frag</span>))
                 },
-                <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>err</span>)) <span class='op'>=&gt;</span> {
-                    <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>resync</span>();
-                    <span class='ident'>EventChange</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>Error</span>(<span class='ident'>err</span>), <span class='ident'>Idle</span>)
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">err</span>)) <span class="op">=&gt;</span> {
+                    <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">resync</span>();
+                    <span class="ident">EventChange</span>(<span class="ident">MessageEvent</span>::<span class="ident">Error</span>(<span class="ident">err</span>), <span class="ident">Idle</span>)
                 },
-                <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='ident'>NoChange</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">NoChange</span>,
             },
-            <span class='ident'>DecodeLCTerminator</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>term</span>) <span class='op'>=&gt;</span> <span class='kw'>match</span> <span class='ident'>term</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
-                <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>lc</span>)) <span class='op'>=&gt;</span> {
-                    <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>flush_pads</span>();
-                    <span class='ident'>EventChange</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>VoiceTerm</span>(<span class='ident'>lc</span>), <span class='ident'>Idle</span>)
+            <span class="ident">DecodeLCTerminator</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">term</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">term</span>.<span class="ident">feed</span>(<span class="ident">dibit</span>) {
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">lc</span>)) <span class="op">=&gt;</span> {
+                    <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">flush_pads</span>();
+                    <span class="ident">EventChange</span>(<span class="ident">MessageEvent</span>::<span class="ident">VoiceTerm</span>(<span class="ident">lc</span>), <span class="ident">Idle</span>)
                 },
-                <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>err</span>)) <span class='op'>=&gt;</span> {
-                    <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>resync</span>();
-                    <span class='ident'>EventChange</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>Error</span>(<span class='ident'>err</span>), <span class='ident'>Idle</span>)
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">err</span>)) <span class="op">=&gt;</span> {
+                    <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">resync</span>();
+                    <span class="ident">EventChange</span>(<span class="ident">MessageEvent</span>::<span class="ident">Error</span>(<span class="ident">err</span>), <span class="ident">Idle</span>)
                 },
-                <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='ident'>NoChange</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">NoChange</span>,
             },
-            <span class='ident'>DecodeTSBK</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>dec</span>) <span class='op'>=&gt;</span> <span class='kw'>match</span> <span class='ident'>dec</span>.<span class='ident'>feed</span>(<span class='ident'>dibit</span>) {
-                <span class='prelude-val'>Some</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>tsbk</span>)) <span class='op'>=&gt;</span> {
-                    <span class='kw'>if</span> <span class='ident'>tsbk</span>.<span class='ident'>is_tail</span>() {
-                        <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>flush_pads</span>();
+            <span class="ident">DecodeTSBK</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">dec</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">dec</span>.<span class="ident">feed</span>(<span class="ident">dibit</span>) {
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">tsbk</span>)) <span class="op">=&gt;</span> {
+                    <span class="kw">if</span> <span class="ident">tsbk</span>.<span class="ident">is_tail</span>() {
+                        <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">flush_pads</span>();
                     }
 
-                    <span class='ident'>Event</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>TrunkingControl</span>(<span class='ident'>tsbk</span>))
+                    <span class="ident">Event</span>(<span class="ident">MessageEvent</span>::<span class="ident">TrunkingControl</span>(<span class="ident">tsbk</span>))
                 },
-                <span class='prelude-val'>Some</span>(<span class='prelude-val'>Err</span>(<span class='ident'>err</span>)) <span class='op'>=&gt;</span> {
-                    <span class='self'>self</span>.<span class='ident'>recv</span>.<span class='ident'>resync</span>();
-                    <span class='ident'>EventChange</span>(<span class='ident'>MessageEvent</span>::<span class='ident'>Error</span>(<span class='ident'>err</span>), <span class='ident'>Idle</span>)
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">err</span>)) <span class="op">=&gt;</span> {
+                    <span class="self">self</span>.<span class="ident">recv</span>.<span class="ident">resync</span>();
+                    <span class="ident">EventChange</span>(<span class="ident">MessageEvent</span>::<span class="ident">Error</span>(<span class="ident">err</span>), <span class="ident">Idle</span>)
                 },
-                <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='ident'>NoChange</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">NoChange</span>,
             },
-            <span class='ident'>Idle</span> <span class='op'>=&gt;</span> <span class='ident'>NoChange</span>,
+            <span class="ident">Idle</span> <span class="op">=&gt;</span> <span class="ident">NoChange</span>,
+        };
+
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
+            <span class="ident">DecodeHeader</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">head</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">stats</span>.<span class="ident">merge</span>(<span class="ident">head</span>),
+            <span class="ident">DecodeLCFrameGroup</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">fg</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">stats</span>.<span class="ident">merge</span>(<span class="ident">fg</span>),
+            <span class="ident">DecodeCCFrameGroup</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">fg</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">stats</span>.<span class="ident">merge</span>(<span class="ident">fg</span>),
+            <span class="ident">DecodeLCTerminator</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">term</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">stats</span>.<span class="ident">merge</span>(<span class="ident">term</span>),
+            <span class="ident">DecodeTSBK</span>(_) <span class="op">|</span> <span class="ident">Idle</span> <span class="op">=&gt;</span> {},
         }
+
+        <span class="ident">next</span>
     }
+}
+
+<span class="kw">impl</span> <span class="ident">HasStats</span> <span class="kw">for</span> <span class="ident">MessageReceiver</span> {
+    <span class="kw">fn</span> <span class="ident">stats</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Stats</span> { <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">stats</span> }
 }
 </pre>
 </section>
@@ -508,13 +547,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -548,7 +589,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

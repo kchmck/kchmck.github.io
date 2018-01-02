@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -182,143 +183,143 @@
 <span id="137">137</span>
 <span id="138">138</span>
 <span id="139">139</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Descramble/Deinterleave the dibits in a received voice frame.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Descramble/Deinterleave the dibits in a received voice frame.</span>
 
-<span class='kw'>use</span> <span class='ident'>bits</span>::<span class='ident'>Dibit</span>;
-<span class='kw'>use</span> <span class='ident'>consts</span>;
+<span class="kw">use</span> <span class="ident">bits</span>::<span class="ident">Dibit</span>;
+<span class="kw">use</span> <span class="ident">consts</span>;
 
-<span class='doccomment'>/// Descramble a portion of the given voice frame dibits into the PN-scrambled, coded</span>
-<span class='doccomment'>/// chunk `u_{idx}`.</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>descramble</span>(<span class='ident'>dibits</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>Dibit</span>; <span class='ident'>consts</span>::<span class='ident'>FRAME_DIBITS</span>], <span class='ident'>idx</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
-    <span class='ident'>DESCRAMBLERS</span>[<span class='ident'>idx</span>].<span class='ident'>descramble</span>(<span class='ident'>dibits</span>)
+<span class="doccomment">/// Descramble a portion of the given voice frame dibits into the PN-scrambled, coded</span>
+<span class="doccomment">/// chunk `u_{idx}`.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">descramble</span>(<span class="ident">dibits</span>: <span class="kw-2">&amp;</span>[<span class="ident">Dibit</span>; <span class="ident">consts</span>::<span class="ident">FRAME_DIBITS</span>], <span class="ident">idx</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+    <span class="ident">DESCRAMBLERS</span>[<span class="ident">idx</span>].<span class="ident">descramble</span>(<span class="ident">dibits</span>)
 }
 
-<span class='doccomment'>/// Set of descramblers for each associated chunk `u_0`, ..., `u_7`.</span>
-<span class='kw'>const</span> <span class='ident'>DESCRAMBLERS</span>: [<span class='ident'>VoiceFrameDescrambler</span>; <span class='number'>8</span>] <span class='op'>=</span> [
-    <span class='ident'>VoiceFrameDescrambler</span>(<span class='kw-2'>&amp;</span>[
-        <span class='ident'>ZigZag</span>::<span class='ident'>hi</span>(<span class='number'>0</span>, <span class='number'>23</span>),
+<span class="doccomment">/// Set of descramblers for each associated chunk `u_0`, ..., `u_7`.</span>
+<span class="kw">const</span> <span class="ident">DESCRAMBLERS</span>: [<span class="ident">VoiceFrameDescrambler</span>; <span class="number">8</span>] <span class="op">=</span> [
+    <span class="ident">VoiceFrameDescrambler</span>(<span class="kw-2">&amp;</span>[
+        <span class="ident">ZigZag</span>::<span class="ident">hi</span>(<span class="number">0</span>, <span class="number">23</span>),
     ]),
-    <span class='ident'>VoiceFrameDescrambler</span>(<span class='kw-2'>&amp;</span>[
-        <span class='ident'>ZigZag</span>::<span class='ident'>lo</span>(<span class='number'>69</span>, <span class='number'>1</span>),
-        <span class='ident'>ZigZag</span>::<span class='ident'>lo</span>(<span class='number'>0</span>, <span class='number'>22</span>),
+    <span class="ident">VoiceFrameDescrambler</span>(<span class="kw-2">&amp;</span>[
+        <span class="ident">ZigZag</span>::<span class="ident">lo</span>(<span class="number">69</span>, <span class="number">1</span>),
+        <span class="ident">ZigZag</span>::<span class="ident">lo</span>(<span class="number">0</span>, <span class="number">22</span>),
     ]),
-    <span class='ident'>VoiceFrameDescrambler</span>(<span class='kw-2'>&amp;</span>[
-        <span class='ident'>ZigZag</span>::<span class='ident'>lo</span>(<span class='number'>66</span>, <span class='number'>2</span>),
-        <span class='ident'>ZigZag</span>::<span class='ident'>hi</span>(<span class='number'>1</span>, <span class='number'>21</span>),
+    <span class="ident">VoiceFrameDescrambler</span>(<span class="kw-2">&amp;</span>[
+        <span class="ident">ZigZag</span>::<span class="ident">lo</span>(<span class="number">66</span>, <span class="number">2</span>),
+        <span class="ident">ZigZag</span>::<span class="ident">hi</span>(<span class="number">1</span>, <span class="number">21</span>),
     ]),
-    <span class='ident'>VoiceFrameDescrambler</span>(<span class='kw-2'>&amp;</span>[
-        <span class='ident'>ZigZag</span>::<span class='ident'>lo</span>(<span class='number'>64</span>, <span class='number'>3</span>),
-        <span class='ident'>ZigZag</span>::<span class='ident'>lo</span>(<span class='number'>1</span>, <span class='number'>20</span>),
+    <span class="ident">VoiceFrameDescrambler</span>(<span class="kw-2">&amp;</span>[
+        <span class="ident">ZigZag</span>::<span class="ident">lo</span>(<span class="number">64</span>, <span class="number">3</span>),
+        <span class="ident">ZigZag</span>::<span class="ident">lo</span>(<span class="number">1</span>, <span class="number">20</span>),
     ]),
-    <span class='ident'>VoiceFrameDescrambler</span>(<span class='kw-2'>&amp;</span>[
-        <span class='ident'>ZigZag</span>::<span class='ident'>lo</span>(<span class='number'>61</span>, <span class='number'>4</span>),
-        <span class='ident'>ZigZag</span>::<span class='ident'>hi</span>(<span class='number'>2</span>, <span class='number'>11</span>),
+    <span class="ident">VoiceFrameDescrambler</span>(<span class="kw-2">&amp;</span>[
+        <span class="ident">ZigZag</span>::<span class="ident">lo</span>(<span class="number">61</span>, <span class="number">4</span>),
+        <span class="ident">ZigZag</span>::<span class="ident">hi</span>(<span class="number">2</span>, <span class="number">11</span>),
     ]),
-    <span class='ident'>VoiceFrameDescrambler</span>(<span class='kw-2'>&amp;</span>[
-        <span class='ident'>ZigZag</span>::<span class='ident'>lo</span>(<span class='number'>35</span>, <span class='number'>13</span>),
-        <span class='ident'>ZigZag</span>::<span class='ident'>lo</span>(<span class='number'>2</span>, <span class='number'>2</span>),
+    <span class="ident">VoiceFrameDescrambler</span>(<span class="kw-2">&amp;</span>[
+        <span class="ident">ZigZag</span>::<span class="ident">lo</span>(<span class="number">35</span>, <span class="number">13</span>),
+        <span class="ident">ZigZag</span>::<span class="ident">lo</span>(<span class="number">2</span>, <span class="number">2</span>),
     ]),
-    <span class='ident'>VoiceFrameDescrambler</span>(<span class='kw-2'>&amp;</span>[
-        <span class='ident'>ZigZag</span>::<span class='ident'>lo</span>(<span class='number'>8</span>, <span class='number'>15</span>),
+    <span class="ident">VoiceFrameDescrambler</span>(<span class="kw-2">&amp;</span>[
+        <span class="ident">ZigZag</span>::<span class="ident">lo</span>(<span class="number">8</span>, <span class="number">15</span>),
     ]),
-    <span class='ident'>VoiceFrameDescrambler</span>(<span class='kw-2'>&amp;</span>[
-        <span class='ident'>ZigZag</span>::<span class='ident'>hi</span>(<span class='number'>53</span>, <span class='number'>7</span>),
+    <span class="ident">VoiceFrameDescrambler</span>(<span class="kw-2">&amp;</span>[
+        <span class="ident">ZigZag</span>::<span class="ident">hi</span>(<span class="number">53</span>, <span class="number">7</span>),
     ]),
 ];
 
-<span class='doccomment'>/// Descrambles input dibits according to the enclosed zigzag sequences.</span>
-<span class='kw'>struct</span> <span class='ident'>VoiceFrameDescrambler</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='ident'>ZigZag</span>]);
+<span class="doccomment">/// Descrambles input dibits according to the enclosed zigzag sequences.</span>
+<span class="kw">struct</span> <span class="ident">VoiceFrameDescrambler</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">ZigZag</span>]);
 
-<span class='kw'>impl</span> <span class='ident'>VoiceFrameDescrambler</span> {
-    <span class='doccomment'>/// Descramble the given dibits into a chunk.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>descramble</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>dibits</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>Dibit</span>; <span class='ident'>consts</span>::<span class='ident'>FRAME_DIBITS</span>]) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
-        <span class='comment'>// Zigzag results are concatenated.</span>
-        <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>iter</span>().<span class='ident'>fold</span>(<span class='number'>0</span>, <span class='op'>|</span><span class='ident'>word</span>, <span class='ident'>zz</span><span class='op'>|</span> {
-            <span class='ident'>zz</span>.<span class='ident'>fold</span>(<span class='ident'>word</span>, <span class='op'>|</span><span class='ident'>buf</span>, (<span class='ident'>idx</span>, <span class='ident'>hi</span>)<span class='op'>|</span> {
-                <span class='ident'>buf</span> <span class='op'>&lt;&lt;</span> <span class='number'>1</span> <span class='op'>|</span> <span class='kw'>if</span> <span class='ident'>hi</span> {
-                    <span class='ident'>dibits</span>[<span class='ident'>idx</span>].<span class='ident'>hi</span>() <span class='kw'>as</span> <span class='ident'>u32</span>
-                } <span class='kw'>else</span> {
-                    <span class='ident'>dibits</span>[<span class='ident'>idx</span>].<span class='ident'>lo</span>() <span class='kw'>as</span> <span class='ident'>u32</span>
+<span class="kw">impl</span> <span class="ident">VoiceFrameDescrambler</span> {
+    <span class="doccomment">/// Descramble the given dibits into a chunk.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">descramble</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">dibits</span>: <span class="kw-2">&amp;</span>[<span class="ident">Dibit</span>; <span class="ident">consts</span>::<span class="ident">FRAME_DIBITS</span>]) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+        <span class="comment">// Zigzag results are concatenated.</span>
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">iter</span>().<span class="ident">fold</span>(<span class="number">0</span>, <span class="op">|</span><span class="ident">word</span>, <span class="ident">zz</span><span class="op">|</span> {
+            <span class="ident">zz</span>.<span class="ident">fold</span>(<span class="ident">word</span>, <span class="op">|</span><span class="ident">buf</span>, (<span class="ident">idx</span>, <span class="ident">hi</span>)<span class="op">|</span> {
+                <span class="ident">buf</span> <span class="op">&lt;&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="kw">if</span> <span class="ident">hi</span> {
+                    <span class="ident">dibits</span>[<span class="ident">idx</span>].<span class="ident">hi</span>() <span class="kw">as</span> <span class="ident">u32</span>
+                } <span class="kw">else</span> {
+                    <span class="ident">dibits</span>[<span class="ident">idx</span>].<span class="ident">lo</span>() <span class="kw">as</span> <span class="ident">u32</span>
                 }
             })
         })
     }
 }
 
-<span class='doccomment'>/// Walks the zigzagging interleave schedule used for voice frames.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Copy</span>)]</span>
-<span class='kw'>struct</span> <span class='ident'>ZigZag</span> {
-    <span class='doccomment'>/// Whether to use the high/MSB or low/LSB bit of the current dibit.</span>
-    <span class='ident'>hi</span>: <span class='ident'>bool</span>,
-    <span class='doccomment'>/// Current dibit index into the packet.</span>
-    <span class='ident'>idx</span>: <span class='ident'>usize</span>,
-    <span class='doccomment'>/// Number of symbols remaining in this zigzag.</span>
-    <span class='ident'>remain</span>: <span class='ident'>usize</span>,
+<span class="doccomment">/// Walks the zigzagging interleave schedule used for voice frames.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
+<span class="kw">struct</span> <span class="ident">ZigZag</span> {
+    <span class="doccomment">/// Whether to use the high/MSB or low/LSB bit of the current dibit.</span>
+    <span class="ident">hi</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// Current dibit index into the packet.</span>
+    <span class="ident">idx</span>: <span class="ident">usize</span>,
+    <span class="doccomment">/// Number of symbols remaining in this zigzag.</span>
+    <span class="ident">remain</span>: <span class="ident">usize</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>ZigZag</span> {
-    <span class='doccomment'>/// Start a zigzag at the high bit of the given index to decode the given number of</span>
-    <span class='doccomment'>/// bits.</span>
-    <span class='kw'>pub</span> <span class='kw'>const</span> <span class='kw'>fn</span> <span class='ident'>hi</span>(<span class='ident'>start</span>: <span class='ident'>usize</span>, <span class='ident'>num</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>ZigZag</span> {
-        <span class='ident'>ZigZag</span> {
-            <span class='ident'>hi</span>: <span class='bool-val'>true</span>,
-            <span class='ident'>idx</span>: <span class='ident'>start</span>,
-            <span class='ident'>remain</span>: <span class='ident'>num</span>,
+<span class="kw">impl</span> <span class="ident">ZigZag</span> {
+    <span class="doccomment">/// Start a zigzag at the high bit of the given index to decode the given number of</span>
+    <span class="doccomment">/// bits.</span>
+    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">hi</span>(<span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">num</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">ZigZag</span> {
+        <span class="ident">ZigZag</span> {
+            <span class="ident">hi</span>: <span class="bool-val">true</span>,
+            <span class="ident">idx</span>: <span class="ident">start</span>,
+            <span class="ident">remain</span>: <span class="ident">num</span>,
         }
     }
 
-    <span class='doccomment'>/// Start a zigzag at the low bit of the given index to decode the given number of</span>
-    <span class='doccomment'>/// bits.</span>
-    <span class='kw'>pub</span> <span class='kw'>const</span> <span class='kw'>fn</span> <span class='ident'>lo</span>(<span class='ident'>start</span>: <span class='ident'>usize</span>, <span class='ident'>num</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>ZigZag</span> {
-        <span class='ident'>ZigZag</span> {
-            <span class='ident'>hi</span>: <span class='bool-val'>false</span>,
-            <span class='ident'>idx</span>: <span class='ident'>start</span>,
-            <span class='ident'>remain</span>: <span class='ident'>num</span>,
+    <span class="doccomment">/// Start a zigzag at the low bit of the given index to decode the given number of</span>
+    <span class="doccomment">/// bits.</span>
+    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">lo</span>(<span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">num</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">ZigZag</span> {
+        <span class="ident">ZigZag</span> {
+            <span class="ident">hi</span>: <span class="bool-val">false</span>,
+            <span class="ident">idx</span>: <span class="ident">start</span>,
+            <span class="ident">remain</span>: <span class="ident">num</span>,
         }
     }
 }
 
-<span class='kw'>impl</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>ZigZag</span> {
-    <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> (<span class='ident'>usize</span>, <span class='ident'>bool</span>);
+<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">ZigZag</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="ident">usize</span>, <span class="ident">bool</span>);
 
-    <span class='doccomment'>/// If the zigzag isn&#39;t exhausted, go to the next dibit in the sequence and return</span>
-    <span class='doccomment'>/// `Some((idx, hi))`, where `idx` is its index in the packet, and `hi` indicates</span>
-    <span class='doccomment'>/// whether to use its high or low bit. Otherwise, return `None`.</span>
-    <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='self'>Self</span>::<span class='ident'>Item</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>remain</span> <span class='op'>==</span> <span class='number'>0</span> {
-            <span class='kw'>return</span> <span class='prelude-val'>None</span>;
+    <span class="doccomment">/// If the zigzag isn&#39;t exhausted, go to the next dibit in the sequence and return</span>
+    <span class="doccomment">/// `Some((idx, hi))`, where `idx` is its index in the packet, and `hi` indicates</span>
+    <span class="doccomment">/// whether to use its high or low bit. Otherwise, return `None`.</span>
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">remain</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="kw">return</span> <span class="prelude-val">None</span>;
         }
 
-        <span class='kw'>let</span> <span class='ident'>cur</span> <span class='op'>=</span> (<span class='self'>self</span>.<span class='ident'>idx</span>, <span class='self'>self</span>.<span class='ident'>hi</span>);
+        <span class="kw">let</span> <span class="ident">cur</span> <span class="op">=</span> (<span class="self">self</span>.<span class="ident">idx</span>, <span class="self">self</span>.<span class="ident">hi</span>);
 
-        <span class='self'>self</span>.<span class='ident'>idx</span> <span class='op'>+=</span> <span class='number'>3</span>;
-        <span class='self'>self</span>.<span class='ident'>remain</span> <span class='op'>-=</span> <span class='number'>1</span>;
-        <span class='self'>self</span>.<span class='ident'>hi</span> <span class='op'>=</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>hi</span>;
+        <span class="self">self</span>.<span class="ident">idx</span> <span class="op">+=</span> <span class="number">3</span>;
+        <span class="self">self</span>.<span class="ident">remain</span> <span class="op">-=</span> <span class="number">1</span>;
+        <span class="self">self</span>.<span class="ident">hi</span> <span class="op">=</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">hi</span>;
 
-        <span class='prelude-val'>Some</span>(<span class='ident'>cur</span>)
+        <span class="prelude-val">Some</span>(<span class="ident">cur</span>)
     }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>DESCRAMBLERS</span>;
-    <span class='kw'>use</span> <span class='ident'>consts</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">DESCRAMBLERS</span>;
+    <span class="kw">use</span> <span class="ident">consts</span>;
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_steps_exhaustive</span>() {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>visited</span> <span class='op'>=</span> [<span class='number'>0u32</span>; <span class='ident'>consts</span>::<span class='ident'>FRAME_DIBITS</span>];
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_steps_exhaustive</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">visited</span> <span class="op">=</span> [<span class="number">0u32</span>; <span class="ident">consts</span>::<span class="ident">FRAME_DIBITS</span>];
 
-        <span class='kw'>for</span> <span class='ident'>d</span> <span class='kw'>in</span> <span class='ident'>DESCRAMBLERS</span>.<span class='ident'>iter</span>() {
-            <span class='kw'>for</span> <span class='kw-2'>&amp;</span><span class='ident'>zz</span> <span class='kw'>in</span> <span class='ident'>d</span>.<span class='number'>0</span>.<span class='ident'>iter</span>() {
-                <span class='kw'>for</span> (<span class='ident'>idx</span>, _) <span class='kw'>in</span> <span class='ident'>zz</span> {
-                    <span class='ident'>visited</span>[<span class='ident'>idx</span>] <span class='op'>+=</span> <span class='number'>1</span>;
+        <span class="kw">for</span> <span class="ident">d</span> <span class="kw">in</span> <span class="ident">DESCRAMBLERS</span>.<span class="ident">iter</span>() {
+            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">zz</span> <span class="kw">in</span> <span class="ident">d</span>.<span class="number">0</span>.<span class="ident">iter</span>() {
+                <span class="kw">for</span> (<span class="ident">idx</span>, _) <span class="kw">in</span> <span class="ident">zz</span> {
+                    <span class="ident">visited</span>[<span class="ident">idx</span>] <span class="op">+=</span> <span class="number">1</span>;
                 }
             }
         }
 
-        <span class='kw'>for</span> <span class='kw-2'>&amp;</span><span class='ident'>v</span> <span class='kw'>in</span> <span class='ident'>visited</span>.<span class='ident'>iter</span>() {
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>, <span class='number'>2</span>);
+        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">v</span> <span class="kw">in</span> <span class="ident">visited</span>.<span class="ident">iter</span>() {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>, <span class="number">2</span>);
         }
     }
 }
@@ -340,13 +341,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -380,7 +383,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

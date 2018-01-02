@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["allocs","Retrieve the set of quantized amplitude bit allocations B<sub>m</sub> and max(B<sub>m</sub>) for the given harmonics parameter L."]]});
+initSidebarItems({"fn":[["allocs","Retrieve the set of quantized amplitude bit allocations Bm and max(Bm) for the given harmonics parameter L."]]});

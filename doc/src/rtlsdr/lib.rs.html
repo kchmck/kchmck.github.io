@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -308,272 +309,272 @@
 <span id="263">263</span>
 <span id="264">264</span>
 <span id="265">265</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! This crate provides a high-level interface to the RTL-SDR that separates controlling</span>
-<span class='doccomment'>//! and reading from the device, for integration into multithreaded applications.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ## Example</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! This example reads incoming samples, printing the first I/Q pair, in the main thread</span>
-<span class='doccomment'>//! while incrementing the receive frequency by 1kHz every second in a subthread.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ```rust,no_run</span>
-<span class='doccomment'>//! let (mut ctl, mut reader) = rtlsdr::open(0).unwrap();</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ctl.enable_agc().unwrap();</span>
-<span class='doccomment'>//! ctl.set_ppm(-2).unwrap();</span>
-<span class='doccomment'>//! ctl.set_center_freq(774_781_250).unwrap();</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! std::thread::spawn(move || {</span>
-<span class='doccomment'>//!     loop {</span>
-<span class='doccomment'>//!         let next = ctl.center_freq() + 1000;</span>
-<span class='doccomment'>//!         ctl.set_center_freq(next).unwrap();</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//!         std::thread::sleep(std::time::Duration::from_secs(1));</span>
-<span class='doccomment'>//!     }</span>
-<span class='doccomment'>//! });</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! reader.read_async(4, 32768, |bytes| {</span>
-<span class='doccomment'>//!     println!(&quot;i[0] = {}&quot;, bytes[0]);</span>
-<span class='doccomment'>//!     println!(&quot;q[0] = {}&quot;, bytes[1]);</span>
-<span class='doccomment'>//! }).unwrap();</span>
-<span class='doccomment'>//! ```</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! This crate provides a high-level interface to the RTL-SDR that separates controlling</span>
+<span class="doccomment">//! the device and reading samples, for integration into multithreaded applications.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## Example</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This example reads incoming samples, printing the first I/Q pair, in the main thread</span>
+<span class="doccomment">//! while incrementing the receive frequency by 1kHz every second in a subthread.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```rust,no_run</span>
+<span class="doccomment">//! let (mut ctl, mut reader) = rtlsdr::open(0).unwrap();</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ctl.enable_agc().unwrap();</span>
+<span class="doccomment">//! ctl.set_ppm(-2).unwrap();</span>
+<span class="doccomment">//! ctl.set_center_freq(774_781_250).unwrap();</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! std::thread::spawn(move || {</span>
+<span class="doccomment">//!     loop {</span>
+<span class="doccomment">//!         let next = ctl.center_freq() + 1000;</span>
+<span class="doccomment">//!         ctl.set_center_freq(next).unwrap();</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!         std::thread::sleep(std::time::Duration::from_secs(1));</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! });</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! reader.read_async(4, 32768, |bytes| {</span>
+<span class="doccomment">//!     println!(&quot;i[0] = {}&quot;, bytes[0]);</span>
+<span class="doccomment">//!     println!(&quot;q[0] = {}&quot;, bytes[1]);</span>
+<span class="doccomment">//! }).unwrap();</span>
+<span class="doccomment">//! ```</span>
 
-<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>feature</span>(<span class='ident'>conservative_impl_trait</span>)]</span>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">conservative_impl_trait</span>)]</span>
 
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>libc</span>;
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rtlsdr_sys</span> <span class='kw'>as</span> <span class='ident'>ffi</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">libc</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rtlsdr_sys</span> <span class="kw">as</span> <span class="ident">ffi</span>;
 
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ffi</span>::<span class='ident'>CStr</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>Arc</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ffi</span>::<span class="ident">CStr</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
 
-<span class='kw'>use</span> <span class='ident'>libc</span>::{<span class='ident'>c_uchar</span>, <span class='ident'>uint32_t</span>, <span class='ident'>c_void</span>};
+<span class="kw">use</span> <span class="ident">libc</span>::{<span class="ident">c_uchar</span>, <span class="ident">uint32_t</span>, <span class="ident">c_void</span>};
 
-<span class='doccomment'>/// Holds a list of valid gain values.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>TunerGains</span> <span class='op'>=</span> [<span class='ident'>i32</span>; <span class='number'>32</span>];
+<span class="doccomment">/// Holds a list of valid gain values.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TunerGains</span> <span class="op">=</span> [<span class="ident">i32</span>; <span class="number">32</span>];
 
-<span class='doccomment'>/// Error type for this crate.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Error</span> <span class='op'>=</span> ();
+<span class="doccomment">/// Error type for this crate.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> ();
 
-<span class='doccomment'>/// Result type for this crate.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>std</span>::<span class='ident'>result</span>::<span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>Error</span><span class='op'>&gt;</span>;
+<span class="doccomment">/// Result type for this crate.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
 
-<span class='doccomment'>/// Create an iterator over available RTL-SDR devices.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// The iterator yields device names in index order, so the device with the first yielded</span>
-<span class='doccomment'>/// name can be opened at index 0, and so on.</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>devices</span>() <span class='op'>-&gt;</span> <span class='kw'>impl</span> <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>CStr</span><span class='op'>&gt;</span> {
-    <span class='kw'>let</span> <span class='ident'>count</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_get_device_count</span>() };
+<span class="doccomment">/// Create an iterator over available RTL-SDR devices.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The iterator yields device names in index order, so the device with the first yielded</span>
+<span class="doccomment">/// name can be opened at index 0, and so on.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">devices</span>() <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">CStr</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_get_device_count</span>() };
 
-    (<span class='number'>0</span>..<span class='ident'>count</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>idx</span><span class='op'>|</span> <span class='kw'>unsafe</span> {
-        <span class='ident'>CStr</span>::<span class='ident'>from_ptr</span>(<span class='ident'>ffi</span>::<span class='ident'>rtlsdr_get_device_name</span>(<span class='ident'>idx</span>))
+    (<span class="number">0</span>..<span class="ident">count</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">idx</span><span class="op">|</span> <span class="kw">unsafe</span> {
+        <span class="ident">CStr</span>::<span class="ident">from_ptr</span>(<span class="ident">ffi</span>::<span class="ident">rtlsdr_get_device_name</span>(<span class="ident">idx</span>))
     })
 }
 
-<span class='doccomment'>/// Try to open the RTL-SDR device at the given index.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// Return a controller and reader for the device on success.</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>open</span>(<span class='ident'>idx</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(<span class='ident'>Controller</span>, <span class='ident'>Reader</span>)<span class='op'>&gt;</span> {
-    <span class='ident'>Device</span>::<span class='ident'>open</span>(<span class='ident'>idx</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>dev</span><span class='op'>|</span> <span class='ident'>Arc</span>::<span class='ident'>new</span>(<span class='ident'>dev</span>)).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>arc</span><span class='op'>|</span> {
-        (<span class='ident'>Controller</span>::<span class='ident'>new</span>(<span class='ident'>arc</span>.<span class='ident'>clone</span>()), <span class='ident'>Reader</span>::<span class='ident'>new</span>(<span class='ident'>arc</span>.<span class='ident'>clone</span>()))
+<span class="doccomment">/// Try to open the RTL-SDR device at the given index.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Return a controller and reader for the device on success.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">open</span>(<span class="ident">idx</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">Controller</span>, <span class="ident">Reader</span>)<span class="op">&gt;</span> {
+    <span class="ident">Device</span>::<span class="ident">open</span>(<span class="ident">idx</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">dev</span><span class="op">|</span> <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">dev</span>)).<span class="ident">map</span>(<span class="op">|</span><span class="ident">arc</span><span class="op">|</span> {
+        (<span class="ident">Controller</span>::<span class="ident">new</span>(<span class="ident">arc</span>.<span class="ident">clone</span>()), <span class="ident">Reader</span>::<span class="ident">new</span>(<span class="ident">arc</span>.<span class="ident">clone</span>()))
     })
 }
 
-<span class='doccomment'>/// Wraps a raw device pointer.</span>
-<span class='kw'>struct</span> <span class='ident'>Device</span>(<span class='ident'>ffi</span>::<span class='ident'>rtlsdr_dev_t</span>);
+<span class="doccomment">/// Wraps a raw device pointer.</span>
+<span class="kw">struct</span> <span class="ident">Device</span>(<span class="ident">ffi</span>::<span class="ident">rtlsdr_dev_t</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Device</span> {
-    <span class='doccomment'>/// Try to open and initialize the device at the given index.</span>
-    <span class='kw'>fn</span> <span class='ident'>open</span>(<span class='ident'>idx</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='self'>Self</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>dev</span> <span class='op'>=</span> <span class='ident'>Device</span>(<span class='ident'>std</span>::<span class='ident'>ptr</span>::<span class='ident'>null_mut</span>());
+<span class="kw">impl</span> <span class="ident">Device</span> {
+    <span class="doccomment">/// Try to open and initialize the device at the given index.</span>
+    <span class="kw">fn</span> <span class="ident">open</span>(<span class="ident">idx</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dev</span> <span class="op">=</span> <span class="ident">Device</span>(<span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">null_mut</span>());
 
-        <span class='kw'>if</span> <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_open</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>dev</span>.<span class='number'>0</span>, <span class='ident'>idx</span>) } <span class='op'>==</span> <span class='number'>0</span> <span class='op'>&amp;&amp;</span>
-           <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_reset_buffer</span>(<span class='ident'>dev</span>.<span class='number'>0</span>) } <span class='op'>==</span> <span class='number'>0</span>
+        <span class="kw">if</span> <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_open</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">dev</span>.<span class="number">0</span>, <span class="ident">idx</span>) } <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span>
+           <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_reset_buffer</span>(<span class="ident">dev</span>.<span class="number">0</span>) } <span class="op">==</span> <span class="number">0</span>
         {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>dev</span>)
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Err</span>(())
+            <span class="prelude-val">Ok</span>(<span class="ident">dev</span>)
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(())
         }
     }
 
-    <span class='doccomment'>/// Close the device.</span>
-    <span class='kw'>fn</span> <span class='ident'>close</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) {
-        <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_close</span>(<span class='self'>self</span>.<span class='number'>0</span>); }
+    <span class="doccomment">/// Close the device.</span>
+    <span class="kw">fn</span> <span class="ident">close</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_close</span>(<span class="self">self</span>.<span class="number">0</span>); }
     }
 }
 
-<span class='kw'>impl</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Drop</span> <span class='kw'>for</span> <span class='ident'>Device</span> {
-    <span class='kw'>fn</span> <span class='ident'>drop</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
-        <span class='self'>self</span>.<span class='ident'>close</span>();
+<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">Device</span> {
+    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+        <span class="self">self</span>.<span class="ident">close</span>();
     }
 }
 
-<span class='kw'>impl</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Deref</span> <span class='kw'>for</span> <span class='ident'>Device</span> {
-    <span class='kw'>type</span> <span class='ident'>Target</span> <span class='op'>=</span> <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_dev_t</span>;
-    <span class='kw'>fn</span> <span class='ident'>deref</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='self'>Self</span>::<span class='ident'>Target</span> { <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span> }
+<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">Device</span> {
+    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">ffi</span>::<span class="ident">rtlsdr_dev_t</span>;
+    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Target</span> { <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span> }
 }
 
-<span class='doccomment'>/// Controls hardware parameters.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Controller</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Device</span><span class='op'>&gt;</span>);
+<span class="doccomment">/// Controls hardware parameters.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Controller</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Device</span><span class="op">&gt;</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Controller</span> {
-    <span class='doccomment'>/// Create a new `Controller` for controlling the given device.</span>
-    <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>dev</span>: <span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Device</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='ident'>Controller</span>(<span class='ident'>dev</span>)
+<span class="kw">impl</span> <span class="ident">Controller</span> {
+    <span class="doccomment">/// Create a new `Controller` for controlling the given device.</span>
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">dev</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Device</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">Controller</span>(<span class="ident">dev</span>)
     }
 
-    <span class='doccomment'>/// Get the current sample rate (megasamples/sec).</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>sample_rate</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_get_sample_rate</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>) }
+    <span class="doccomment">/// Get the current sample rate (megasamples/sec).</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sample_rate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+        <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_get_sample_rate</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>) }
     }
 
-    <span class='doccomment'>/// Set the sample rate (megasamples/sec).</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_sample_rate</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>rate</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_set_sample_rate</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='ident'>rate</span>) } <span class='op'>==</span> <span class='number'>0</span> {
-            <span class='prelude-val'>Ok</span>(())
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Err</span>(())
+    <span class="doccomment">/// Set the sample rate (megasamples/sec).</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_sample_rate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rate</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_set_sample_rate</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>, <span class="ident">rate</span>) } <span class="op">==</span> <span class="number">0</span> {
+            <span class="prelude-val">Ok</span>(())
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(())
         }
     }
 
-    <span class='doccomment'>/// Get the current center frequency (Hz).</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>center_freq</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_get_center_freq</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>) }
+    <span class="doccomment">/// Get the current center frequency (Hz).</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">center_freq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+        <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_get_center_freq</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>) }
     }
 
-    <span class='doccomment'>/// Set the center frequency (Hz).</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_center_freq</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>freq</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_set_center_freq</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='ident'>freq</span>) } <span class='op'>==</span> <span class='number'>0</span> {
-            <span class='prelude-val'>Ok</span>(())
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Err</span>(())
+    <span class="doccomment">/// Set the center frequency (Hz).</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_center_freq</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">freq</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_set_center_freq</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>, <span class="ident">freq</span>) } <span class="op">==</span> <span class="number">0</span> {
+            <span class="prelude-val">Ok</span>(())
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(())
         }
     }
 
-    <span class='doccomment'>/// Get the current frequency correction (ppm).</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>ppm</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>i32</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_get_freq_correction</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>) }
+    <span class="doccomment">/// Get the current frequency correction (ppm).</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ppm</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">i32</span> {
+        <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_get_freq_correction</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>) }
     }
 
-    <span class='doccomment'>/// Set the frequency correction (ppm).</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_ppm</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>ppm</span>: <span class='ident'>i32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_set_freq_correction</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='ident'>ppm</span>) };
+    <span class="doccomment">/// Set the frequency correction (ppm).</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_ppm</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ppm</span>: <span class="ident">i32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_set_freq_correction</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>, <span class="ident">ppm</span>) };
 
-        <span class='comment'>// librtlsdr returns -2 if the ppm is already set to the given value.</span>
-        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='number'>0</span> <span class='op'>||</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='op'>-</span><span class='number'>2</span> {
-            <span class='prelude-val'>Ok</span>(())
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Err</span>(())
+        <span class="comment">// librtlsdr returns -2 if the ppm is already set to the given value.</span>
+        <span class="kw">if</span> <span class="ident">ret</span> <span class="op">==</span> <span class="number">0</span> <span class="op">||</span> <span class="ident">ret</span> <span class="op">==</span> <span class="op">-</span><span class="number">2</span> {
+            <span class="prelude-val">Ok</span>(())
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(())
         }
     }
 
-    <span class='doccomment'>/// Enable the hardware AGC.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Note that this also disables manual tuner gain.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>enable_agc</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_set_tuner_gain_mode</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='number'>0</span>) } <span class='op'>==</span> <span class='number'>0</span> <span class='op'>&amp;&amp;</span>
-           <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_set_agc_mode</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='number'>1</span>) } <span class='op'>==</span> <span class='number'>0</span>
+    <span class="doccomment">/// Enable the hardware AGC.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that this also disables manual tuner gain.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">enable_agc</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_set_tuner_gain_mode</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>, <span class="number">0</span>) } <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span>
+           <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_set_agc_mode</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>, <span class="number">1</span>) } <span class="op">==</span> <span class="number">0</span>
         {
-            <span class='prelude-val'>Ok</span>(())
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Err</span>(())
+            <span class="prelude-val">Ok</span>(())
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(())
         }
     }
 
-    <span class='doccomment'>/// Disable the hardware AGC.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Note that this also enables manual tuner gain.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>disable_agc</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_set_tuner_gain_mode</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='number'>1</span>) } <span class='op'>==</span> <span class='number'>0</span> <span class='op'>&amp;&amp;</span>
-           <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_set_agc_mode</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='number'>0</span>) } <span class='op'>==</span> <span class='number'>0</span>
+    <span class="doccomment">/// Disable the hardware AGC.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that this also enables manual tuner gain.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">disable_agc</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_set_tuner_gain_mode</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>, <span class="number">1</span>) } <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span>
+           <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_set_agc_mode</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>, <span class="number">0</span>) } <span class="op">==</span> <span class="number">0</span>
         {
-            <span class='prelude-val'>Ok</span>(())
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Err</span>(())
+            <span class="prelude-val">Ok</span>(())
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(())
         }
     }
 
-    <span class='doccomment'>/// Get the list of valid tuner gain values.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Each value represents a dB gain with the decimal place shifted right. For example,</span>
-    <span class='doccomment'>/// the value 496 represents 49.6dB.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>tuner_gains</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>gains</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>TunerGains</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>i32</span>] {
-        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
-            <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_get_tuner_gains</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='ident'>gains</span>.<span class='ident'>as_mut_ptr</span>())
+    <span class="doccomment">/// Get the list of valid tuner gain values.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Each value represents a dB gain with the decimal place shifted right. For example,</span>
+    <span class="doccomment">/// the value 496 represents 49.6dB.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tuner_gains</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">gains</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">TunerGains</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">i32</span>] {
+        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+            <span class="ident">ffi</span>::<span class="ident">rtlsdr_get_tuner_gains</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>, <span class="ident">gains</span>.<span class="ident">as_mut_ptr</span>())
         };
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>ret</span> <span class='op'>&gt;</span> <span class='number'>0</span> <span class='op'>&amp;&amp;</span> <span class='ident'>ret</span> <span class='kw'>as</span> <span class='ident'>usize</span> <span class='op'>&lt;=</span> <span class='ident'>gains</span>.<span class='ident'>len</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">ret</span> <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">ret</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&lt;=</span> <span class="ident">gains</span>.<span class="ident">len</span>());
 
-        <span class='kw-2'>&amp;</span><span class='ident'>gains</span>[..<span class='ident'>ret</span> <span class='kw'>as</span> <span class='ident'>usize</span>]
+        <span class="kw-2">&amp;</span><span class="ident">gains</span>[..<span class="ident">ret</span> <span class="kw">as</span> <span class="ident">usize</span>]
     }
 
-    <span class='doccomment'>/// Get the current tuner gain in the same format as that returned by `tuner_gains()`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>tuner_gain</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>i32</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_get_tuner_gain</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>) }
+    <span class="doccomment">/// Get the current tuner gain in the same format as that returned by `tuner_gains()`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tuner_gain</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">i32</span> {
+        <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_get_tuner_gain</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>) }
     }
 
-    <span class='doccomment'>/// Set the tuner gain in the same format as that returned by `tuner_gains()`.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Note that this also disables the hardware AGC.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_tuner_gain</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>gain</span>: <span class='ident'>i32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_set_tuner_gain_mode</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='number'>1</span>) } <span class='op'>==</span> <span class='number'>0</span> <span class='op'>&amp;&amp;</span>
-           <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_set_tuner_gain</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='ident'>gain</span>) } <span class='op'>==</span> <span class='number'>0</span>
+    <span class="doccomment">/// Set the tuner gain in the same format as that returned by `tuner_gains()`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that this also disables the hardware AGC.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_tuner_gain</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">gain</span>: <span class="ident">i32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_set_tuner_gain_mode</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>, <span class="number">1</span>) } <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span>
+           <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_set_tuner_gain</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>, <span class="ident">gain</span>) } <span class="op">==</span> <span class="number">0</span>
         {
-            <span class='prelude-val'>Ok</span>(())
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Err</span>(())
+            <span class="prelude-val">Ok</span>(())
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(())
         }
     }
 
-    <span class='doccomment'>/// Cancel an asynchronous read if one is running.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>cancel_async_read</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
-        <span class='kw'>unsafe</span> { <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_cancel_async</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>); }
+    <span class="doccomment">/// Cancel an asynchronous read if one is running.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cancel_async_read</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+        <span class="kw">unsafe</span> { <span class="ident">ffi</span>::<span class="ident">rtlsdr_cancel_async</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>); }
     }
 }
 
-<span class='kw'>unsafe</span> <span class='kw'>impl</span> <span class='ident'>Send</span> <span class='kw'>for</span> <span class='ident'>Controller</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">Controller</span> {}
 
-<span class='doccomment'>/// Reads I/Q samples.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Reader</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Device</span><span class='op'>&gt;</span>);
+<span class="doccomment">/// Reads I/Q samples.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Reader</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Device</span><span class="op">&gt;</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Reader</span> {
-    <span class='doccomment'>/// Create a new `Reader` for reading from the given device.</span>
-    <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>dev</span>: <span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Device</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='ident'>Reader</span>(<span class='ident'>dev</span>)
+<span class="kw">impl</span> <span class="ident">Reader</span> {
+    <span class="doccomment">/// Create a new `Reader` for reading from the given device.</span>
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">dev</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Device</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">Reader</span>(<span class="ident">dev</span>)
     }
 
-    <span class='doccomment'>/// Begin reading I/Q samples, buffering into the given number of chunks, with each</span>
-    <span class='doccomment'>/// chunk holding the given number of bytes. The given callback is called whenever new</span>
-    <span class='doccomment'>/// samples are available, receiving a chunk at a time.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// This function blocks until the read is cancelled or otherwise terminated. Hardware</span>
-    <span class='doccomment'>/// parameters can be changed in a separate thread while this function is running.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>read_async</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>bufs</span>: <span class='ident'>u32</span>, <span class='ident'>len</span>: <span class='ident'>u32</span>, <span class='ident'>cb</span>: <span class='ident'>F</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span>
-        <span class='kw'>where</span> <span class='ident'>F</span>: <span class='ident'>FnMut</span>(<span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>])
+    <span class="doccomment">/// Begin reading I/Q samples, buffering into the given number of chunks, with each</span>
+    <span class="doccomment">/// chunk holding the given number of bytes. The given callback is called whenever new</span>
+    <span class="doccomment">/// samples are available, receiving a chunk at a time.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This function blocks until the read is cancelled or otherwise terminated. Hardware</span>
+    <span class="doccomment">/// parameters can be changed in a separate thread while this function is running.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_async</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bufs</span>: <span class="ident">u32</span>, <span class="ident">len</span>: <span class="ident">u32</span>, <span class="ident">cb</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
+        <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span>[<span class="ident">u8</span>])
     {
-        <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='ident'>cb</span> <span class='kw'>as</span> <span class='kw-2'>*</span><span class='kw'>const</span> _ <span class='kw'>as</span> <span class='kw-2'>*</span><span class='kw-2'>mut</span> <span class='ident'>c_void</span>;
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">cb</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> _ <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>;
 
-        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
-            <span class='ident'>ffi</span>::<span class='ident'>rtlsdr_read_async</span>(<span class='kw-2'>*</span><span class='kw-2'>*</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='ident'>async_wrapper</span>::<span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>, <span class='ident'>ctx</span>, <span class='ident'>bufs</span>, <span class='ident'>len</span>)
+        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+            <span class="ident">ffi</span>::<span class="ident">rtlsdr_read_async</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>.<span class="number">0</span>, <span class="ident">async_wrapper</span>::<span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>, <span class="ident">ctx</span>, <span class="ident">bufs</span>, <span class="ident">len</span>)
         };
 
-        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='number'>0</span> {
-            <span class='prelude-val'>Ok</span>(())
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Err</span>(())
+        <span class="kw">if</span> <span class="ident">ret</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="prelude-val">Ok</span>(())
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(())
         }
     }
 }
 
-<span class='doccomment'>/// Wraps a callback for use as a librtlsdr async callback.</span>
-<span class='kw'>extern</span> <span class='kw'>fn</span> <span class='ident'>async_wrapper</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>(<span class='ident'>buf</span>: <span class='kw-2'>*</span><span class='kw-2'>mut</span> <span class='ident'>c_uchar</span>, <span class='ident'>len</span>: <span class='ident'>uint32_t</span>, <span class='ident'>ctx</span>: <span class='kw-2'>*</span><span class='kw-2'>mut</span> <span class='ident'>c_void</span>)
-    <span class='kw'>where</span> <span class='ident'>F</span>: <span class='ident'>FnMut</span>(<span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>])
+<span class="doccomment">/// Wraps a callback for use as a librtlsdr async callback.</span>
+<span class="kw">extern</span> <span class="kw">fn</span> <span class="ident">async_wrapper</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_uchar</span>, <span class="ident">len</span>: <span class="ident">uint32_t</span>, <span class="ident">ctx</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>)
+    <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span>[<span class="ident">u8</span>])
 {
-    <span class='kw'>let</span> <span class='ident'>closure</span> <span class='op'>=</span> <span class='ident'>ctx</span> <span class='kw'>as</span> <span class='kw-2'>*</span><span class='kw-2'>mut</span> <span class='ident'>F</span>;
-    <span class='kw'>unsafe</span> { (<span class='kw-2'>*</span><span class='ident'>closure</span>)(<span class='ident'>std</span>::<span class='ident'>slice</span>::<span class='ident'>from_raw_parts</span>(<span class='ident'>buf</span>, <span class='ident'>len</span> <span class='kw'>as</span> <span class='ident'>usize</span>)); }
+    <span class="kw">let</span> <span class="ident">closure</span> <span class="op">=</span> <span class="ident">ctx</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">F</span>;
+    <span class="kw">unsafe</span> { (<span class="kw-2">*</span><span class="ident">closure</span>)(<span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">from_raw_parts</span>(<span class="ident">buf</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>)); }
 }
 
-<span class='kw'>unsafe</span> <span class='kw'>impl</span> <span class='ident'>Send</span> <span class='kw'>for</span> <span class='ident'>Reader</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">Reader</span> {}
 </pre>
 </section>
     <section id='search' class="content hidden"></section>
@@ -592,13 +593,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -632,7 +635,6 @@
         window.rootPath = "../../";
         window.currentCrate = "rtlsdr";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

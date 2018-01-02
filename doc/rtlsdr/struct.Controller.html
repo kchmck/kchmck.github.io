@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc struct">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='index.html'>rtlsdr</a></p><script>window.sidebarCurrent = {name: 'Controller', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct Controller</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.sample_rate">sample_rate</a><a href="#method.set_sample_rate">set_sample_rate</a><a href="#method.center_freq">center_freq</a><a href="#method.set_center_freq">set_center_freq</a><a href="#method.ppm">ppm</a><a href="#method.set_ppm">set_ppm</a><a href="#method.enable_agc">enable_agc</a><a href="#method.disable_agc">disable_agc</a><a href="#method.tuner_gains">tuner_gains</a><a href="#method.tuner_gain">tuner_gain</a><a href="#method.set_tuner_gain">set_tuner_gain</a><a href="#method.cancel_async_read">cancel_async_read</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Send">Send</a></div></div><p class='location'><a href='index.html'>rtlsdr</a></p><script>window.sidebarCurrent = {name: 'Controller', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -43,48 +44,56 @@
         </form>
     </nav>
 
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>rtlsdr</a>::<wbr><a class='struct' href=''>Controller</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>rtlsdr</a>::<wbr><a class="struct" href=''>Controller</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/rtlsdr/lib.rs.html#106' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Controller(_);</pre><div class='docblock'><p>Controls hardware parameters.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../rtlsdr/struct.Controller.html' title='rtlsdr::Controller'>Controller</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#108-221' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.sample_rate' class='method'><span id='sample_rate.v' class='invisible'><code>fn <a href='#method.sample_rate' class='fnname'>sample_rate</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></span></h4>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../rtlsdr/struct.Controller.html" title="struct rtlsdr::Controller">Controller</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#108-221' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.sample_rate' class="method"><span id='sample_rate.v' class='invisible'><code>pub fn <a href='#method.sample_rate' class='fnname'>sample_rate</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#115-117' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Get the current sample rate (megasamples/sec).</p>
-</div><h4 id='method.set_sample_rate' class='method'><span id='set_sample_rate.v' class='invisible'><code>fn <a href='#method.set_sample_rate' class='fnname'>set_sample_rate</a>(&amp;mut self, rate: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>) -&gt; <a class='type' href='../rtlsdr/type.Result.html' title='rtlsdr::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></span></h4>
+</div><h4 id='method.set_sample_rate' class="method"><span id='set_sample_rate.v' class='invisible'><code>pub fn <a href='#method.set_sample_rate' class='fnname'>set_sample_rate</a>(&amp;mut self, rate: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; <a class="type" href="../rtlsdr/type.Result.html" title="type rtlsdr::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#120-126' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Set the sample rate (megasamples/sec).</p>
-</div><h4 id='method.center_freq' class='method'><span id='center_freq.v' class='invisible'><code>fn <a href='#method.center_freq' class='fnname'>center_freq</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></span></h4>
+</div><h4 id='method.center_freq' class="method"><span id='center_freq.v' class='invisible'><code>pub fn <a href='#method.center_freq' class='fnname'>center_freq</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#129-131' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Get the current center frequency (Hz).</p>
-</div><h4 id='method.set_center_freq' class='method'><span id='set_center_freq.v' class='invisible'><code>fn <a href='#method.set_center_freq' class='fnname'>set_center_freq</a>(&amp;mut self, freq: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>) -&gt; <a class='type' href='../rtlsdr/type.Result.html' title='rtlsdr::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></span></h4>
+</div><h4 id='method.set_center_freq' class="method"><span id='set_center_freq.v' class='invisible'><code>pub fn <a href='#method.set_center_freq' class='fnname'>set_center_freq</a>(&amp;mut self, freq: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; <a class="type" href="../rtlsdr/type.Result.html" title="type rtlsdr::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#134-140' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Set the center frequency (Hz).</p>
-</div><h4 id='method.ppm' class='method'><span id='ppm.v' class='invisible'><code>fn <a href='#method.ppm' class='fnname'>ppm</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></span></h4>
+</div><h4 id='method.ppm' class="method"><span id='ppm.v' class='invisible'><code>pub fn <a href='#method.ppm' class='fnname'>ppm</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#143-145' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Get the current frequency correction (ppm).</p>
-</div><h4 id='method.set_ppm' class='method'><span id='set_ppm.v' class='invisible'><code>fn <a href='#method.set_ppm' class='fnname'>set_ppm</a>(&amp;mut self, ppm: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>) -&gt; <a class='type' href='../rtlsdr/type.Result.html' title='rtlsdr::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></span></h4>
+</div><h4 id='method.set_ppm' class="method"><span id='set_ppm.v' class='invisible'><code>pub fn <a href='#method.set_ppm' class='fnname'>set_ppm</a>(&amp;mut self, ppm: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i32.html">i32</a>) -&gt; <a class="type" href="../rtlsdr/type.Result.html" title="type rtlsdr::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#148-157' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Set the frequency correction (ppm).</p>
-</div><h4 id='method.enable_agc' class='method'><span id='enable_agc.v' class='invisible'><code>fn <a href='#method.enable_agc' class='fnname'>enable_agc</a>(&amp;mut self) -&gt; <a class='type' href='../rtlsdr/type.Result.html' title='rtlsdr::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></span></h4>
+</div><h4 id='method.enable_agc' class="method"><span id='enable_agc.v' class='invisible'><code>pub fn <a href='#method.enable_agc' class='fnname'>enable_agc</a>(&amp;mut self) -&gt; <a class="type" href="../rtlsdr/type.Result.html" title="type rtlsdr::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#162-170' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Enable the hardware AGC.</p>
 
 <p>Note that this also disables manual tuner gain.</p>
-</div><h4 id='method.disable_agc' class='method'><span id='disable_agc.v' class='invisible'><code>fn <a href='#method.disable_agc' class='fnname'>disable_agc</a>(&amp;mut self) -&gt; <a class='type' href='../rtlsdr/type.Result.html' title='rtlsdr::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></span></h4>
+</div><h4 id='method.disable_agc' class="method"><span id='disable_agc.v' class='invisible'><code>pub fn <a href='#method.disable_agc' class='fnname'>disable_agc</a>(&amp;mut self) -&gt; <a class="type" href="../rtlsdr/type.Result.html" title="type rtlsdr::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#175-183' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Disable the hardware AGC.</p>
 
 <p>Note that this also enables manual tuner gain.</p>
-</div><h4 id='method.tuner_gains' class='method'><span id='tuner_gains.v' class='invisible'><code>fn <a href='#method.tuner_gains' class='fnname'>tuner_gains</a>&lt;'a&gt;(&amp;self, gains: &amp;'a mut <a class='type' href='../rtlsdr/type.TunerGains.html' title='rtlsdr::TunerGains'>TunerGains</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a></code></span></h4>
+</div><h4 id='method.tuner_gains' class="method"><span id='tuner_gains.v' class='invisible'><code>pub fn <a href='#method.tuner_gains' class='fnname'>tuner_gains</a>&lt;'a&gt;(&amp;self, gains: &amp;'a mut <a class="type" href="../rtlsdr/type.TunerGains.html" title="type rtlsdr::TunerGains">TunerGains</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;'a [</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i32.html">i32</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">]</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#189-197' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Get the list of valid tuner gain values.</p>
 
 <p>Each value represents a dB gain with the decimal place shifted right. For example,
 the value 496 represents 49.6dB.</p>
-</div><h4 id='method.tuner_gain' class='method'><span id='tuner_gain.v' class='invisible'><code>fn <a href='#method.tuner_gain' class='fnname'>tuner_gain</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></span></h4>
+</div><h4 id='method.tuner_gain' class="method"><span id='tuner_gain.v' class='invisible'><code>pub fn <a href='#method.tuner_gain' class='fnname'>tuner_gain</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#200-202' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Get the current tuner gain in the same format as that returned by <code>tuner_gains()</code>.</p>
-</div><h4 id='method.set_tuner_gain' class='method'><span id='set_tuner_gain.v' class='invisible'><code>fn <a href='#method.set_tuner_gain' class='fnname'>set_tuner_gain</a>(&amp;mut self, gain: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>) -&gt; <a class='type' href='../rtlsdr/type.Result.html' title='rtlsdr::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></span></h4>
+</div><h4 id='method.set_tuner_gain' class="method"><span id='set_tuner_gain.v' class='invisible'><code>pub fn <a href='#method.set_tuner_gain' class='fnname'>set_tuner_gain</a>(&amp;mut self, gain: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i32.html">i32</a>) -&gt; <a class="type" href="../rtlsdr/type.Result.html" title="type rtlsdr::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#207-215' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Set the tuner gain in the same format as that returned by <code>tuner_gains()</code>.</p>
 
 <p>Note that this also disables the hardware AGC.</p>
-</div><h4 id='method.cancel_async_read' class='method'><span id='cancel_async_read.v' class='invisible'><code>fn <a href='#method.cancel_async_read' class='fnname'>cancel_async_read</a>(&amp;mut self)</code></span></h4>
+</div><h4 id='method.cancel_async_read' class="method"><span id='cancel_async_read.v' class='invisible'><code>pub fn <a href='#method.cancel_async_read' class='fnname'>cancel_async_read</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#218-220' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Cancel an asynchronous read if one is running.</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> for <a class='struct' href='../rtlsdr/struct.Controller.html' title='rtlsdr::Controller'>Controller</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#223' title='goto source code'>[src]</a></span></h3>
+</div></div>
+            <h2 id='implementations' class='small-section-header'>
+              Trait Implementations<a href='#implementations' class='anchor'></a>
+            </h2>
+        <h3 id='impl-Send' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> for <a class="struct" href="../rtlsdr/struct.Controller.html" title="struct rtlsdr::Controller">Controller</a></code><a href='#impl-Send' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/rtlsdr/lib.rs.html#223' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'></div></section>
     <section id='search' class="content hidden"></section>
 
@@ -102,13 +111,15 @@ the value 496 represents 49.6dB.</p>
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -142,7 +153,6 @@ the value 496 represents 49.6dB.</p>
         window.rootPath = "../";
         window.currentCrate = "rtlsdr";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

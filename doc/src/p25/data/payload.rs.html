@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -471,432 +472,432 @@
 <span id="426">426</span>
 <span id="427">427</span>
 <span id="428">428</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Generate data blocks from a slice of bytes.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Generate data blocks from a slice of bytes.</span>
 
-<span class='kw'>use</span> <span class='ident'>std</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Range</span>;
+<span class="kw">use</span> <span class="ident">std</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Range</span>;
 
-<span class='kw'>use</span> <span class='ident'>data</span>::<span class='ident'>crc</span>;
-<span class='kw'>use</span> <span class='ident'>data</span>::<span class='ident'>params</span>::<span class='kw-2'>*</span>;
+<span class="kw">use</span> <span class="ident">data</span>::<span class="ident">crc</span>;
+<span class="kw">use</span> <span class="ident">data</span>::<span class="ident">params</span>::<span class="kw-2">*</span>;
 
-<span class='doccomment'>/// Payload blocks for a confirmed data packet.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>ConfirmedPayload</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Payload</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>ConfirmedParams</span><span class='op'>&gt;</span>;
+<span class="doccomment">/// Payload blocks for a confirmed data packet.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ConfirmedPayload</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Payload</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">ConfirmedParams</span><span class="op">&gt;</span>;
 
-<span class='doccomment'>/// Payload blocks for an unconfirmed data packet.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>UnconfirmedPayload</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Payload</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>UnconfirmedParams</span><span class='op'>&gt;</span>;
+<span class="doccomment">/// Payload blocks for an unconfirmed data packet.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">UnconfirmedPayload</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Payload</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">UnconfirmedParams</span><span class="op">&gt;</span>;
 
-<span class='doccomment'>/// Wraps a buffer of bytes, splitting them over payload blocks.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Payload</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span>: <span class='ident'>PacketParams</span><span class='op'>&gt;</span> {
-    <span class='ident'>params</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span><span class='op'>&lt;</span><span class='ident'>P</span><span class='op'>&gt;</span>,
-    <span class='doccomment'>/// Data to split into blocks.</span>
-    <span class='ident'>data</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>],
+<span class="doccomment">/// Wraps a buffer of bytes, splitting them over payload blocks.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Payload</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span>: <span class="ident">PacketParams</span><span class="op">&gt;</span> {
+    <span class="ident">params</span>: <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Data to split into blocks.</span>
+    <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>],
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span>: <span class='ident'>PacketParams</span><span class='op'>&gt;</span> <span class='ident'>Payload</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Construct a new `Payload` over the given data bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>data</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='ident'>Payload</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span><span class='op'>&gt;</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>data</span>.<span class='ident'>len</span>() <span class='op'>&lt;=</span> <span class='ident'>P</span>::<span class='ident'>packet_bytes</span>());
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span>: <span class="ident">PacketParams</span><span class="op">&gt;</span> <span class="ident">Payload</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Construct a new `Payload` over the given data bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">Payload</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&gt;</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">data</span>.<span class="ident">len</span>() <span class="op">&lt;=</span> <span class="ident">P</span>::<span class="ident">packet_bytes</span>());
 
-        <span class='ident'>Payload</span> {
-            <span class='ident'>params</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>,
-            <span class='ident'>data</span>: <span class='ident'>data</span>,
+        <span class="ident">Payload</span> {
+            <span class="ident">params</span>: <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>,
+            <span class="ident">data</span>: <span class="ident">data</span>,
         }
     }
 
-    <span class='doccomment'>/// Total number of blocks in the payload.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>blocks</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='ident'>P</span>::<span class='ident'>blocks</span>(<span class='self'>self</span>.<span class='ident'>data</span>.<span class='ident'>len</span>()) }
+    <span class="doccomment">/// Total number of blocks in the payload.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blocks</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="ident">P</span>::<span class="ident">blocks</span>(<span class="self">self</span>.<span class="ident">data</span>.<span class="ident">len</span>()) }
 
-    <span class='doccomment'>/// Number of pad bytes in the payload.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>pads</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='ident'>P</span>::<span class='ident'>pads</span>(<span class='self'>self</span>.<span class='ident'>data</span>.<span class='ident'>len</span>()) }
+    <span class="doccomment">/// Number of pad bytes in the payload.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pads</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="ident">P</span>::<span class="ident">pads</span>(<span class="self">self</span>.<span class="ident">data</span>.<span class="ident">len</span>()) }
 
-    <span class='doccomment'>/// Construct an iterator over the normal blocks for the payload.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>iter</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>PayloadIter</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span><span class='op'>&gt;</span> {
-        <span class='ident'>PayloadIter</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>data</span>)
+    <span class="doccomment">/// Construct an iterator over the normal blocks for the payload.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">PayloadIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&gt;</span> {
+        <span class="ident">PayloadIter</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="ident">data</span>)
     }
 
-    <span class='doccomment'>/// Get the tail block of the payload.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>tail</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>TailBlock</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Clamp to index just past the end, so we get an empty slice in the case of no</span>
-        <span class='comment'>// data and just pads.</span>
-        <span class='kw'>let</span> <span class='ident'>start</span> <span class='op'>=</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::<span class='ident'>min</span>(<span class='ident'>P</span>::<span class='ident'>full_blocks</span>(<span class='self'>self</span>.<span class='ident'>data</span>.<span class='ident'>len</span>()) <span class='op'>*</span> <span class='ident'>P</span>::<span class='ident'>block_bytes</span>(),
-                                  <span class='self'>self</span>.<span class='ident'>data</span>.<span class='ident'>len</span>());
-        <span class='kw'>let</span> <span class='ident'>checksum</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>checksum</span>();
+    <span class="doccomment">/// Get the tail block of the payload.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tail</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TailBlock</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&gt;</span> {
+        <span class="comment">// Clamp to index just past the end, so we get an empty slice in the case of no</span>
+        <span class="comment">// data and just pads.</span>
+        <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">min</span>(<span class="ident">P</span>::<span class="ident">full_blocks</span>(<span class="self">self</span>.<span class="ident">data</span>.<span class="ident">len</span>()) <span class="op">*</span> <span class="ident">P</span>::<span class="ident">block_bytes</span>(),
+                                  <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">len</span>());
+        <span class="kw">let</span> <span class="ident">checksum</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">checksum</span>();
 
-        <span class='ident'>TailBlock</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>data</span>[<span class='ident'>start</span>..], <span class='ident'>checksum</span>)
+        <span class="ident">TailBlock</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">data</span>[<span class="ident">start</span>..], <span class="ident">checksum</span>)
     }
 
-    <span class='doccomment'>/// Calculate the packet checksum over all data and pads.</span>
-    <span class='kw'>fn</span> <span class='ident'>checksum</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
-        <span class='ident'>crc</span>::<span class='ident'>CRC32</span>::<span class='ident'>new</span>()
-            .<span class='ident'>feed_bytes</span>(<span class='self'>self</span>.<span class='ident'>data</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>())
-            .<span class='ident'>feed_bytes</span>((<span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>pads</span>()).<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> <span class='number'>0</span>))
-            .<span class='ident'>finish</span>() <span class='kw'>as</span> <span class='ident'>u32</span>
+    <span class="doccomment">/// Calculate the packet checksum over all data and pads.</span>
+    <span class="kw">fn</span> <span class="ident">checksum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+        <span class="ident">crc</span>::<span class="ident">CRC32</span>::<span class="ident">new</span>()
+            .<span class="ident">feed_bytes</span>(<span class="self">self</span>.<span class="ident">data</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+            .<span class="ident">feed_bytes</span>((<span class="number">0</span>..<span class="self">self</span>.<span class="ident">pads</span>()).<span class="ident">map</span>(<span class="op">|</span>_<span class="op">|</span> <span class="number">0</span>))
+            .<span class="ident">finish</span>() <span class="kw">as</span> <span class="ident">u32</span>
     }
 }
 
-<span class='doccomment'>/// Iterator over the normal (non-tail) blocks in a payload.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>PayloadIter</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span>: <span class='ident'>PacketParams</span><span class='op'>&gt;</span> {
-    <span class='ident'>params</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span><span class='op'>&lt;</span><span class='ident'>P</span><span class='op'>&gt;</span>,
-    <span class='doccomment'>/// Data to split into blocks (not all of it may be used).</span>
-    <span class='ident'>data</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>],
-    <span class='doccomment'>/// Current block into the payload</span>
-    <span class='ident'>block</span>: <span class='ident'>Range</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>,
+<span class="doccomment">/// Iterator over the normal (non-tail) blocks in a payload.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PayloadIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span>: <span class="ident">PacketParams</span><span class="op">&gt;</span> {
+    <span class="ident">params</span>: <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Data to split into blocks (not all of it may be used).</span>
+    <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>],
+    <span class="doccomment">/// Current block into the payload</span>
+    <span class="ident">block</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span>: <span class='ident'>PacketParams</span><span class='op'>&gt;</span> <span class='ident'>PayloadIter</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Construct a new `PayloadIter` from the given data bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>data</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='ident'>PayloadIter</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span><span class='op'>&gt;</span> {
-        <span class='ident'>PayloadIter</span> {
-            <span class='ident'>params</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>,
-            <span class='ident'>block</span>: <span class='number'>0</span>..<span class='ident'>P</span>::<span class='ident'>full_blocks</span>(<span class='ident'>data</span>.<span class='ident'>len</span>()),
-            <span class='ident'>data</span>: <span class='ident'>data</span>,
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span>: <span class="ident">PacketParams</span><span class="op">&gt;</span> <span class="ident">PayloadIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Construct a new `PayloadIter` from the given data bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">PayloadIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&gt;</span> {
+        <span class="ident">PayloadIter</span> {
+            <span class="ident">params</span>: <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>,
+            <span class="ident">block</span>: <span class="number">0</span>..<span class="ident">P</span>::<span class="ident">full_blocks</span>(<span class="ident">data</span>.<span class="ident">len</span>()),
+            <span class="ident">data</span>: <span class="ident">data</span>,
         }
     }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span>: <span class='ident'>PacketParams</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>PayloadIter</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span><span class='op'>&gt;</span> {
-    <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>PayloadBlock</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span><span class='op'>&gt;</span>;
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span>: <span class="ident">PacketParams</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">PayloadIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">PayloadBlock</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&gt;</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='self'>Self</span>::<span class='ident'>Item</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>start</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>block</span>.<span class='ident'>next</span>() {
-            <span class='prelude-val'>Some</span>(<span class='ident'>b</span>) <span class='op'>=&gt;</span> <span class='ident'>b</span> <span class='op'>*</span> <span class='ident'>P</span>::<span class='ident'>block_bytes</span>(),
-            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>None</span>,
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">block</span>.<span class="ident">next</span>() {
+            <span class="prelude-val">Some</span>(<span class="ident">b</span>) <span class="op">=&gt;</span> <span class="ident">b</span> <span class="op">*</span> <span class="ident">P</span>::<span class="ident">block_bytes</span>(),
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
         };
 
-        <span class='kw'>let</span> <span class='ident'>stop</span> <span class='op'>=</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::<span class='ident'>min</span>(<span class='ident'>start</span> <span class='op'>+</span> <span class='ident'>P</span>::<span class='ident'>block_bytes</span>(), <span class='self'>self</span>.<span class='ident'>data</span>.<span class='ident'>len</span>());
+        <span class="kw">let</span> <span class="ident">stop</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">min</span>(<span class="ident">start</span> <span class="op">+</span> <span class="ident">P</span>::<span class="ident">block_bytes</span>(), <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">len</span>());
 
-        <span class='prelude-val'>Some</span>(<span class='ident'>PayloadBlock</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>data</span>[<span class='ident'>start</span>..<span class='ident'>stop</span>]))
+        <span class="prelude-val">Some</span>(<span class="ident">PayloadBlock</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">data</span>[<span class="ident">start</span>..<span class="ident">stop</span>]))
     }
 }
 
-<span class='doccomment'>/// Normal payload block.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>PayloadBlock</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span>: <span class='ident'>PacketParams</span><span class='op'>&gt;</span> {
-    <span class='ident'>params</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span><span class='op'>&lt;</span><span class='ident'>P</span><span class='op'>&gt;</span>,
-    <span class='doccomment'>/// Data part of the block.</span>
-    <span class='ident'>data</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>],
+<span class="doccomment">/// Normal payload block.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PayloadBlock</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span>: <span class="ident">PacketParams</span><span class="op">&gt;</span> {
+    <span class="ident">params</span>: <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Data part of the block.</span>
+    <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>],
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span>: <span class='ident'>PacketParams</span><span class='op'>&gt;</span> <span class='ident'>PayloadBlock</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Construct a new `PayloadBlock` from the given data bytes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>data</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='ident'>PayloadBlock</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span><span class='op'>&gt;</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>data</span>.<span class='ident'>len</span>() <span class='op'>&lt;=</span> <span class='ident'>P</span>::<span class='ident'>block_bytes</span>());
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span>: <span class="ident">PacketParams</span><span class="op">&gt;</span> <span class="ident">PayloadBlock</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Construct a new `PayloadBlock` from the given data bytes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">PayloadBlock</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&gt;</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">data</span>.<span class="ident">len</span>() <span class="op">&lt;=</span> <span class="ident">P</span>::<span class="ident">block_bytes</span>());
 
-        <span class='ident'>PayloadBlock</span> {
-            <span class='ident'>params</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>,
-            <span class='ident'>data</span>: <span class='ident'>data</span>,
+        <span class="ident">PayloadBlock</span> {
+            <span class="ident">params</span>: <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>,
+            <span class="ident">data</span>: <span class="ident">data</span>,
         }
     }
 
-    <span class='doccomment'>/// Get the data and pad bytes that make up the block, in that order.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>build</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>], <span class='ident'>Range</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) {
-        (<span class='self'>self</span>.<span class='ident'>data</span>, <span class='number'>0</span>..<span class='ident'>P</span>::<span class='ident'>block_bytes</span>() <span class='op'>-</span> <span class='self'>self</span>.<span class='ident'>data</span>.<span class='ident'>len</span>())
+    <span class="doccomment">/// Get the data and pad bytes that make up the block, in that order.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> (<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>], <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
+        (<span class="self">self</span>.<span class="ident">data</span>, <span class="number">0</span>..<span class="ident">P</span>::<span class="ident">block_bytes</span>() <span class="op">-</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">len</span>())
     }
 }
 
-<span class='doccomment'>/// Tail payload block, which has the packet checksum.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>TailBlock</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span>: <span class='ident'>PacketParams</span><span class='op'>&gt;</span> {
-    <span class='ident'>params</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span><span class='op'>&lt;</span><span class='ident'>P</span><span class='op'>&gt;</span>,
-    <span class='doccomment'>/// Data part of the block.</span>
-    <span class='ident'>data</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>],
-    <span class='doccomment'>/// Packet checksum over all data and pad bytes.</span>
-    <span class='ident'>checksum</span>: <span class='ident'>u32</span>,
+<span class="doccomment">/// Tail payload block, which has the packet checksum.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TailBlock</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span>: <span class="ident">PacketParams</span><span class="op">&gt;</span> {
+    <span class="ident">params</span>: <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Data part of the block.</span>
+    <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>],
+    <span class="doccomment">/// Packet checksum over all data and pad bytes.</span>
+    <span class="ident">checksum</span>: <span class="ident">u32</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span>: <span class='ident'>PacketParams</span><span class='op'>&gt;</span> <span class='ident'>TailBlock</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Construct a new `TailBlock` from the given data bytes and packet checksum.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>data</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>], <span class='ident'>checksum</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>TailBlock</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>P</span><span class='op'>&gt;</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>data</span>.<span class='ident'>len</span>() <span class='op'>&lt;=</span> <span class='ident'>P</span>::<span class='ident'>tail_bytes</span>());
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span>: <span class="ident">PacketParams</span><span class="op">&gt;</span> <span class="ident">TailBlock</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Construct a new `TailBlock` from the given data bytes and packet checksum.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>], <span class="ident">checksum</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="ident">TailBlock</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&gt;</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">data</span>.<span class="ident">len</span>() <span class="op">&lt;=</span> <span class="ident">P</span>::<span class="ident">tail_bytes</span>());
 
-        <span class='ident'>TailBlock</span> {
-            <span class='ident'>params</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>,
-            <span class='ident'>data</span>: <span class='ident'>data</span>,
-            <span class='ident'>checksum</span>: <span class='ident'>checksum</span>,
+        <span class="ident">TailBlock</span> {
+            <span class="ident">params</span>: <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>,
+            <span class="ident">data</span>: <span class="ident">data</span>,
+            <span class="ident">checksum</span>: <span class="ident">checksum</span>,
         }
     }
 
-    <span class='doccomment'>/// Get the data, pad, and checksum bytes that make up the block, in that order.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>build</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>], <span class='ident'>Range</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>, [<span class='ident'>u8</span>; <span class='number'>4</span>]) {
-        (<span class='self'>self</span>.<span class='ident'>data</span>, <span class='number'>0</span>..<span class='ident'>P</span>::<span class='ident'>tail_bytes</span>() <span class='op'>-</span> <span class='self'>self</span>.<span class='ident'>data</span>.<span class='ident'>len</span>(), <span class='self'>self</span>.<span class='ident'>checksum</span>())
+    <span class="doccomment">/// Get the data, pad, and checksum bytes that make up the block, in that order.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> (<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>], <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>, [<span class="ident">u8</span>; <span class="number">4</span>]) {
+        (<span class="self">self</span>.<span class="ident">data</span>, <span class="number">0</span>..<span class="ident">P</span>::<span class="ident">tail_bytes</span>() <span class="op">-</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">len</span>(), <span class="self">self</span>.<span class="ident">checksum</span>())
     }
 
-    <span class='doccomment'>/// Convert the checksum to a byte array.</span>
-    <span class='kw'>fn</span> <span class='ident'>checksum</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> [<span class='ident'>u8</span>; <span class='number'>4</span>] {
+    <span class="doccomment">/// Convert the checksum to a byte array.</span>
+    <span class="kw">fn</span> <span class="ident">checksum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> [<span class="ident">u8</span>; <span class="number">4</span>] {
         [
-            (<span class='self'>self</span>.<span class='ident'>checksum</span> <span class='op'>&gt;&gt;</span> <span class='number'>24</span>) <span class='kw'>as</span> <span class='ident'>u8</span>,
-            (<span class='self'>self</span>.<span class='ident'>checksum</span> <span class='op'>&gt;&gt;</span> <span class='number'>16</span>) <span class='kw'>as</span> <span class='ident'>u8</span>,
-            (<span class='self'>self</span>.<span class='ident'>checksum</span> <span class='op'>&gt;&gt;</span> <span class='number'>8</span>) <span class='kw'>as</span> <span class='ident'>u8</span>,
-            <span class='self'>self</span>.<span class='ident'>checksum</span> <span class='kw'>as</span> <span class='ident'>u8</span>
+            (<span class="self">self</span>.<span class="ident">checksum</span> <span class="op">&gt;&gt;</span> <span class="number">24</span>) <span class="kw">as</span> <span class="ident">u8</span>,
+            (<span class="self">self</span>.<span class="ident">checksum</span> <span class="op">&gt;&gt;</span> <span class="number">16</span>) <span class="kw">as</span> <span class="ident">u8</span>,
+            (<span class="self">self</span>.<span class="ident">checksum</span> <span class="op">&gt;&gt;</span> <span class="number">8</span>) <span class="kw">as</span> <span class="ident">u8</span>,
+            <span class="self">self</span>.<span class="ident">checksum</span> <span class="kw">as</span> <span class="ident">u8</span>
         ]
     }
 }
 
-<span class='doccomment'>/// Additional fields used in confirmed data packet blocks.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ConfirmedBlockHeader</span> {
-    <span class='doccomment'>/// 7-bit serial number, used for retransmissions.</span>
-    <span class='ident'>serial_number</span>: <span class='ident'>u8</span>,
-    <span class='doccomment'>/// 9-bit checksum over data and pad bytes in the block</span>
-    <span class='ident'>checksum</span>: <span class='ident'>u16</span>,
+<span class="doccomment">/// Additional fields used in confirmed data packet blocks.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConfirmedBlockHeader</span> {
+    <span class="doccomment">/// 7-bit serial number, used for retransmissions.</span>
+    <span class="ident">serial_number</span>: <span class="ident">u8</span>,
+    <span class="doccomment">/// 9-bit checksum over data and pad bytes in the block</span>
+    <span class="ident">checksum</span>: <span class="ident">u16</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>ConfirmedBlockHeader</span> {
-    <span class='doccomment'>/// Construct a new `ConfirmedBlockHeader` from the given 7-bit serial number, and use</span>
-    <span class='doccomment'>/// the given data and pads to calculate the checksum.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>serial_number</span>: <span class='ident'>u8</span>, <span class='ident'>data</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>], <span class='ident'>pads</span>: <span class='ident'>Range</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>ConfirmedBlockHeader</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>serial_number</span> <span class='op'>&gt;&gt;</span> <span class='number'>7</span> <span class='op'>==</span> <span class='number'>0</span>);
+<span class="kw">impl</span> <span class="ident">ConfirmedBlockHeader</span> {
+    <span class="doccomment">/// Construct a new `ConfirmedBlockHeader` from the given 7-bit serial number, and use</span>
+    <span class="doccomment">/// the given data and pads to calculate the checksum.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">serial_number</span>: <span class="ident">u8</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">pads</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ConfirmedBlockHeader</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">serial_number</span> <span class="op">&gt;&gt;</span> <span class="number">7</span> <span class="op">==</span> <span class="number">0</span>);
 
-        <span class='ident'>ConfirmedBlockHeader</span> {
-            <span class='ident'>serial_number</span>: <span class='ident'>serial_number</span>,
-            <span class='ident'>checksum</span>: <span class='self'>Self</span>::<span class='ident'>checksum</span>(<span class='ident'>serial_number</span>, <span class='ident'>data</span>, <span class='ident'>pads</span>),
+        <span class="ident">ConfirmedBlockHeader</span> {
+            <span class="ident">serial_number</span>: <span class="ident">serial_number</span>,
+            <span class="ident">checksum</span>: <span class="self">Self</span>::<span class="ident">checksum</span>(<span class="ident">serial_number</span>, <span class="ident">data</span>, <span class="ident">pads</span>),
         }
     }
 
-    <span class='doccomment'>/// Get the header field.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>build</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> [<span class='ident'>u8</span>; <span class='number'>2</span>] {
+    <span class="doccomment">/// Get the header field.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> [<span class="ident">u8</span>; <span class="number">2</span>] {
         [
-            <span class='comment'>// Combine the serial number and MSB of the checksum.</span>
-            <span class='self'>self</span>.<span class='ident'>serial_number</span> <span class='op'>&lt;&lt;</span> <span class='number'>1</span> <span class='op'>|</span> (<span class='self'>self</span>.<span class='ident'>checksum</span> <span class='op'>&gt;&gt;</span> <span class='number'>8</span>) <span class='kw'>as</span> <span class='ident'>u8</span>,
-            <span class='comment'>// Strip off the MSB.</span>
-            <span class='self'>self</span>.<span class='ident'>checksum</span> <span class='kw'>as</span> <span class='ident'>u8</span>,
+            <span class="comment">// Combine the serial number and MSB of the checksum.</span>
+            <span class="self">self</span>.<span class="ident">serial_number</span> <span class="op">&lt;&lt;</span> <span class="number">1</span> <span class="op">|</span> (<span class="self">self</span>.<span class="ident">checksum</span> <span class="op">&gt;&gt;</span> <span class="number">8</span>) <span class="kw">as</span> <span class="ident">u8</span>,
+            <span class="comment">// Strip off the MSB.</span>
+            <span class="self">self</span>.<span class="ident">checksum</span> <span class="kw">as</span> <span class="ident">u8</span>,
         ]
     }
 
-    <span class='doccomment'>/// Calculate the block checksum.</span>
-    <span class='kw'>fn</span> <span class='ident'>checksum</span>(<span class='ident'>sn</span>: <span class='ident'>u8</span>, <span class='ident'>data</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>], <span class='ident'>pads</span>: <span class='ident'>Range</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>u16</span> {
-        <span class='ident'>crc</span>::<span class='ident'>CRC9</span>::<span class='ident'>new</span>()
-            .<span class='ident'>feed_bits</span>(<span class='ident'>sn</span>, <span class='number'>7</span>)
-            .<span class='ident'>feed_bytes</span>(<span class='ident'>data</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>().<span class='ident'>chain</span>(<span class='ident'>pads</span>.<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> <span class='number'>0</span>)))
-            .<span class='ident'>finish</span>() <span class='kw'>as</span> <span class='ident'>u16</span>
+    <span class="doccomment">/// Calculate the block checksum.</span>
+    <span class="kw">fn</span> <span class="ident">checksum</span>(<span class="ident">sn</span>: <span class="ident">u8</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">pads</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">u16</span> {
+        <span class="ident">crc</span>::<span class="ident">CRC9</span>::<span class="ident">new</span>()
+            .<span class="ident">feed_bits</span>(<span class="ident">sn</span>, <span class="number">7</span>)
+            .<span class="ident">feed_bytes</span>(<span class="ident">data</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">chain</span>(<span class="ident">pads</span>.<span class="ident">map</span>(<span class="op">|</span>_<span class="op">|</span> <span class="number">0</span>)))
+            .<span class="ident">finish</span>() <span class="kw">as</span> <span class="ident">u16</span>
     }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
-    <span class='kw'>use</span> <span class='ident'>data</span>::<span class='ident'>params</span>::<span class='kw-2'>*</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">data</span>::<span class="ident">params</span>::<span class="kw-2">*</span>;
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_iter_nopad</span>() {
-        <span class='kw'>struct</span> <span class='ident'>TestParams</span>;
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_iter_nopad</span>() {
+        <span class="kw">struct</span> <span class="ident">TestParams</span>;
 
-        <span class='kw'>impl</span> <span class='ident'>PacketParams</span> <span class='kw'>for</span> <span class='ident'>TestParams</span> {
-            <span class='kw'>fn</span> <span class='ident'>block_bytes</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>2</span> }
-            <span class='kw'>fn</span> <span class='ident'>tail_bytes</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>1</span> }
+        <span class="kw">impl</span> <span class="ident">PacketParams</span> <span class="kw">for</span> <span class="ident">TestParams</span> {
+            <span class="kw">fn</span> <span class="ident">block_bytes</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">2</span> }
+            <span class="kw">fn</span> <span class="ident">tail_bytes</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">1</span> }
         }
 
-        <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> [<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>];
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Payload</span>::<span class='op'>&lt;</span><span class='ident'>TestParams</span><span class='op'>&gt;</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>bytes</span>);
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">Payload</span>::<span class="op">&lt;</span><span class="ident">TestParams</span><span class="op">&gt;</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>blocks</span>(), <span class='number'>3</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>pads</span>(), <span class='number'>0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">blocks</span>(), <span class="number">3</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">pads</span>(), <span class="number">0</span>);
 
         {
-            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>iter</span> <span class='op'>=</span> <span class='ident'>b</span>.<span class='ident'>iter</span>();
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>) <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>build</span>();
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>2</span>]);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>pads</span>.<span class='ident'>len</span>(), <span class='number'>0</span>);
-            <span class='kw'>let</span> <span class='ident'>block</span> <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>();
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>) <span class='op'>=</span> <span class='ident'>block</span>.<span class='ident'>build</span>();
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='kw-2'>&amp;</span>[<span class='number'>3</span>, <span class='number'>4</span>]);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>pads</span>.<span class='ident'>len</span>(), <span class='number'>0</span>);
-            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>iter</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">b</span>.<span class="ident">iter</span>();
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>) <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">build</span>();
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">data</span>, <span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">2</span>]);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">pads</span>.<span class="ident">len</span>(), <span class="number">0</span>);
+            <span class="kw">let</span> <span class="ident">block</span> <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>();
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>) <span class="op">=</span> <span class="ident">block</span>.<span class="ident">build</span>();
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">data</span>, <span class="kw-2">&amp;</span>[<span class="number">3</span>, <span class="number">4</span>]);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">pads</span>.<span class="ident">len</span>(), <span class="number">0</span>);
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
         }
 
         {
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>, _) <span class='op'>=</span> <span class='ident'>b</span>.<span class='ident'>tail</span>().<span class='ident'>build</span>();
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='kw-2'>&amp;</span>[<span class='number'>5</span>]);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>pads</span>.<span class='ident'>len</span>(), <span class='number'>0</span>);
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>, _) <span class="op">=</span> <span class="ident">b</span>.<span class="ident">tail</span>().<span class="ident">build</span>();
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">data</span>, <span class="kw-2">&amp;</span>[<span class="number">5</span>]);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">pads</span>.<span class="ident">len</span>(), <span class="number">0</span>);
         }
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_iter_pad</span>() {
-        <span class='kw'>struct</span> <span class='ident'>TestParams</span>;
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_iter_pad</span>() {
+        <span class="kw">struct</span> <span class="ident">TestParams</span>;
 
-        <span class='kw'>impl</span> <span class='ident'>PacketParams</span> <span class='kw'>for</span> <span class='ident'>TestParams</span> {
-            <span class='kw'>fn</span> <span class='ident'>block_bytes</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>3</span> }
-            <span class='kw'>fn</span> <span class='ident'>tail_bytes</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>1</span> }
+        <span class="kw">impl</span> <span class="ident">PacketParams</span> <span class="kw">for</span> <span class="ident">TestParams</span> {
+            <span class="kw">fn</span> <span class="ident">block_bytes</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">3</span> }
+            <span class="kw">fn</span> <span class="ident">tail_bytes</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">1</span> }
         }
 
-        <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> [<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>];
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='ident'>Payload</span>::<span class='op'>&lt;</span><span class='ident'>TestParams</span><span class='op'>&gt;</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>bytes</span>);
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">Payload</span>::<span class="op">&lt;</span><span class="ident">TestParams</span><span class="op">&gt;</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>blocks</span>(), <span class='number'>3</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>b</span>.<span class='ident'>pads</span>(), <span class='number'>2</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">blocks</span>(), <span class="number">3</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>.<span class="ident">pads</span>(), <span class="number">2</span>);
 
         {
-            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>iter</span> <span class='op'>=</span> <span class='ident'>b</span>.<span class='ident'>iter</span>();
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>) <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>build</span>();
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>]);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>pads</span>.<span class='ident'>count</span>(), <span class='number'>0</span>);
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>) <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>build</span>();
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='kw-2'>&amp;</span>[<span class='number'>4</span>, <span class='number'>5</span>]);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>pads</span>.<span class='ident'>count</span>(), <span class='number'>1</span>);
-            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>iter</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">b</span>.<span class="ident">iter</span>();
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>) <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">build</span>();
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">data</span>, <span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">pads</span>.<span class="ident">count</span>(), <span class="number">0</span>);
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>) <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">build</span>();
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">data</span>, <span class="kw-2">&amp;</span>[<span class="number">4</span>, <span class="number">5</span>]);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">pads</span>.<span class="ident">count</span>(), <span class="number">1</span>);
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
         }
 
         {
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>, _) <span class='op'>=</span> <span class='ident'>b</span>.<span class='ident'>tail</span>().<span class='ident'>build</span>();
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>data</span>.<span class='ident'>len</span>(), <span class='number'>0</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>pads</span>.<span class='ident'>count</span>(), <span class='number'>1</span>);
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>, _) <span class="op">=</span> <span class="ident">b</span>.<span class="ident">tail</span>().<span class="ident">build</span>();
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">data</span>.<span class="ident">len</span>(), <span class="number">0</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">pads</span>.<span class="ident">count</span>(), <span class="number">1</span>);
         }
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_confirmed_payload</span>() {
-        <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> [
-            <span class='number'>0xFF</span>, <span class='number'>0xF0</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-            <span class='number'>0xFF</span>, <span class='number'>0xFF</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-            <span class='number'>0xFF</span>, <span class='number'>0xF0</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-            <span class='number'>0xFF</span>, <span class='number'>0xFF</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-            <span class='number'>0xFF</span>, <span class='number'>0xF0</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_confirmed_payload</span>() {
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [
+            <span class="number">0xFF</span>, <span class="number">0xF0</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+            <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+            <span class="number">0xFF</span>, <span class="number">0xF0</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+            <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+            <span class="number">0xFF</span>, <span class="number">0xF0</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>ConfirmedPayload</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>bytes</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ConfirmedPayload</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>blocks</span>(), <span class='number'>2</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>pads</span>(), <span class='number'>8</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">blocks</span>(), <span class="number">2</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">pads</span>(), <span class="number">8</span>);
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>iter</span> <span class='op'>=</span> <span class='ident'>p</span>.<span class='ident'>iter</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">iter</span>();
 
         {
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>) <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>build</span>();
-            <span class='kw'>let</span> <span class='ident'>header</span> <span class='op'>=</span> <span class='ident'>ConfirmedBlockHeader</span>::<span class='ident'>new</span>(<span class='number'>0b1100110</span>, <span class='ident'>data</span>, <span class='ident'>pads</span>.<span class='ident'>clone</span>()).<span class='ident'>build</span>();
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>) <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">build</span>();
+            <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">ConfirmedBlockHeader</span>::<span class="ident">new</span>(<span class="number">0b1100110</span>, <span class="ident">data</span>, <span class="ident">pads</span>.<span class="ident">clone</span>()).<span class="ident">build</span>();
 
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>header</span>, [
-                <span class='number'>0b11001100</span>,
-                <span class='number'>0b01100101</span>,
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">header</span>, [
+                <span class="number">0b11001100</span>,
+                <span class="number">0b01100101</span>,
             ]);
 
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='kw-2'>&amp;</span>[
-                <span class='number'>0xFF</span>, <span class='number'>0xF0</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-                <span class='number'>0xFF</span>, <span class='number'>0xFF</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-                <span class='number'>0xFF</span>, <span class='number'>0xF0</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-                <span class='number'>0xFF</span>, <span class='number'>0xFF</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">data</span>, <span class="kw-2">&amp;</span>[
+                <span class="number">0xFF</span>, <span class="number">0xF0</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+                <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+                <span class="number">0xFF</span>, <span class="number">0xF0</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+                <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
             ]);
 
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>pads</span>.<span class='ident'>count</span>(), <span class='number'>0</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">pads</span>.<span class="ident">count</span>(), <span class="number">0</span>);
         }
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>iter</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
 
         {
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>, <span class='ident'>checksum</span>) <span class='op'>=</span> <span class='ident'>p</span>.<span class='ident'>tail</span>().<span class='ident'>build</span>();
-            <span class='kw'>let</span> <span class='ident'>header</span> <span class='op'>=</span> <span class='ident'>ConfirmedBlockHeader</span>::<span class='ident'>new</span>(<span class='number'>0b1100110</span>, <span class='ident'>data</span>, <span class='ident'>pads</span>.<span class='ident'>clone</span>()).<span class='ident'>build</span>();
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>, <span class="ident">checksum</span>) <span class="op">=</span> <span class="ident">p</span>.<span class="ident">tail</span>().<span class="ident">build</span>();
+            <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">ConfirmedBlockHeader</span>::<span class="ident">new</span>(<span class="number">0b1100110</span>, <span class="ident">data</span>, <span class="ident">pads</span>.<span class="ident">clone</span>()).<span class="ident">build</span>();
 
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>header</span>, [
-                <span class='number'>0b11001101</span>,
-                <span class='number'>0b01000000</span>,
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">header</span>, [
+                <span class="number">0b11001101</span>,
+                <span class="number">0b01000000</span>,
             ]);
 
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='kw-2'>&amp;</span>[
-                <span class='number'>0xFF</span>, <span class='number'>0xF0</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">data</span>, <span class="kw-2">&amp;</span>[
+                <span class="number">0xFF</span>, <span class="number">0xF0</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
             ]);
 
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>pads</span>.<span class='ident'>count</span>(), <span class='number'>8</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>checksum</span>, [<span class='number'>0x0C</span>, <span class='number'>0x23</span>, <span class='number'>0xD9</span>, <span class='number'>0x14</span>]);
-        }
-    }
-
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_unconfirmed_payload</span>() {
-        <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> [
-            <span class='number'>0xFF</span>, <span class='number'>0xF0</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-            <span class='number'>0xFF</span>, <span class='number'>0xFF</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-            <span class='number'>0xFF</span>, <span class='number'>0xF0</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-
-            <span class='number'>0xFF</span>, <span class='number'>0xFF</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-            <span class='number'>0xFF</span>, <span class='number'>0xF0</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-            <span class='number'>0xFF</span>, <span class='number'>0xF0</span>,
-        ];
-
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>UnconfirmedPayload</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>bytes</span>);
-
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>blocks</span>(), <span class='number'>3</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>pads</span>(), <span class='number'>10</span>);
-
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>iter</span> <span class='op'>=</span> <span class='ident'>p</span>.<span class='ident'>iter</span>();
-
-        {
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>) <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>build</span>();
-
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='kw-2'>&amp;</span>[
-                <span class='number'>0xFF</span>, <span class='number'>0xF0</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-                <span class='number'>0xFF</span>, <span class='number'>0xFF</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-                <span class='number'>0xFF</span>, <span class='number'>0xF0</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-            ]);
-
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>pads</span>.<span class='ident'>count</span>(), <span class='number'>0</span>);
-
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>) <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>build</span>();
-
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='kw-2'>&amp;</span>[
-                <span class='number'>0xFF</span>, <span class='number'>0xFF</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-                <span class='number'>0xFF</span>, <span class='number'>0xF0</span>, <span class='number'>0x0F</span>, <span class='number'>0x00</span>,
-                <span class='number'>0xFF</span>, <span class='number'>0xF0</span>,
-            ]);
-
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>pads</span>.<span class='ident'>count</span>(), <span class='number'>2</span>);
-        }
-
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>iter</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
-
-        {
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>, <span class='ident'>checksum</span>) <span class='op'>=</span> <span class='ident'>p</span>.<span class='ident'>tail</span>().<span class='ident'>build</span>();
-
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='kw-2'>&amp;</span>[]);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>pads</span>.<span class='ident'>count</span>(), <span class='number'>8</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>checksum</span>, [<span class='number'>0x95</span>, <span class='number'>0xe6</span>, <span class='number'>0x14</span>, <span class='number'>0xa2</span>]);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">pads</span>.<span class="ident">count</span>(), <span class="number">8</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">checksum</span>, [<span class="number">0x0C</span>, <span class="number">0x23</span>, <span class="number">0xD9</span>, <span class="number">0x14</span>]);
         }
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_confirmed_checksums</span>() {
-        <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> [
-            <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_unconfirmed_payload</span>() {
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [
+            <span class="number">0xFF</span>, <span class="number">0xF0</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+            <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+            <span class="number">0xFF</span>, <span class="number">0xF0</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+
+            <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+            <span class="number">0xFF</span>, <span class="number">0xF0</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+            <span class="number">0xFF</span>, <span class="number">0xF0</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>ConfirmedPayload</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>bytes</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">UnconfirmedPayload</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>blocks</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>pads</span>(), <span class='number'>8</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">blocks</span>(), <span class="number">3</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">pads</span>(), <span class="number">10</span>);
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">iter</span>();
 
         {
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>, <span class='ident'>checksum</span>) <span class='op'>=</span> <span class='ident'>p</span>.<span class='ident'>tail</span>().<span class='ident'>build</span>();
-            <span class='kw'>let</span> <span class='ident'>header</span> <span class='op'>=</span> <span class='ident'>ConfirmedBlockHeader</span>::<span class='ident'>new</span>(<span class='number'>0</span>, <span class='ident'>data</span>, <span class='ident'>pads</span>.<span class='ident'>clone</span>()).<span class='ident'>build</span>();
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>) <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">build</span>();
 
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>header</span>, [
-                <span class='number'>0b00000001</span>,
-                <span class='number'>0b11111111</span>,
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">data</span>, <span class="kw-2">&amp;</span>[
+                <span class="number">0xFF</span>, <span class="number">0xF0</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+                <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+                <span class="number">0xFF</span>, <span class="number">0xF0</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
             ]);
 
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>checksum</span>, [<span class='number'>0xFF</span>, <span class='number'>0xFF</span>, <span class='number'>0xFF</span>, <span class='number'>0xFF</span>]);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">pads</span>.<span class="ident">count</span>(), <span class="number">0</span>);
+
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>) <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">build</span>();
+
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">data</span>, <span class="kw-2">&amp;</span>[
+                <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+                <span class="number">0xFF</span>, <span class="number">0xF0</span>, <span class="number">0x0F</span>, <span class="number">0x00</span>,
+                <span class="number">0xFF</span>, <span class="number">0xF0</span>,
+            ]);
+
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">pads</span>.<span class="ident">count</span>(), <span class="number">2</span>);
+        }
+
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
+
+        {
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>, <span class="ident">checksum</span>) <span class="op">=</span> <span class="ident">p</span>.<span class="ident">tail</span>().<span class="ident">build</span>();
+
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">data</span>, <span class="kw-2">&amp;</span>[]);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">pads</span>.<span class="ident">count</span>(), <span class="number">8</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">checksum</span>, [<span class="number">0x95</span>, <span class="number">0xe6</span>, <span class="number">0x14</span>, <span class="number">0xa2</span>]);
         }
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_unconfirmed_checksum</span>() {
-        <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> [
-            <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>,
-            <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>,
-            <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>,
-
-            <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>,
-            <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>,
-            <span class='number'>0x00</span>, <span class='number'>0x00</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_confirmed_checksums</span>() {
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [
+            <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>UnconfirmedPayload</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>bytes</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ConfirmedPayload</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>blocks</span>(), <span class='number'>3</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>pads</span>(), <span class='number'>10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">blocks</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">pads</span>(), <span class="number">8</span>);
 
         {
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>, <span class='ident'>checksum</span>) <span class='op'>=</span> <span class='ident'>p</span>.<span class='ident'>tail</span>().<span class='ident'>build</span>();
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>, <span class="ident">checksum</span>) <span class="op">=</span> <span class="ident">p</span>.<span class="ident">tail</span>().<span class="ident">build</span>();
+            <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">ConfirmedBlockHeader</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">data</span>, <span class="ident">pads</span>.<span class="ident">clone</span>()).<span class="ident">build</span>();
 
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>data</span>, <span class='kw-2'>&amp;</span>[]);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>pads</span>.<span class='ident'>count</span>(), <span class='number'>8</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>checksum</span>, [<span class='number'>0xFF</span>, <span class='number'>0xFF</span>, <span class='number'>0xFF</span>, <span class='number'>0xFF</span>]);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">header</span>, [
+                <span class="number">0b00000001</span>,
+                <span class="number">0b11111111</span>,
+            ]);
+
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">checksum</span>, [<span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>]);
+        }
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_unconfirmed_checksum</span>() {
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [
+            <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,
+            <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,
+            <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,
+
+            <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,
+            <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,
+            <span class="number">0x00</span>, <span class="number">0x00</span>,
+        ];
+
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">UnconfirmedPayload</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>);
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">blocks</span>(), <span class="number">3</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">pads</span>(), <span class="number">10</span>);
+
+        {
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>, <span class="ident">checksum</span>) <span class="op">=</span> <span class="ident">p</span>.<span class="ident">tail</span>().<span class="ident">build</span>();
+
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">data</span>, <span class="kw-2">&amp;</span>[]);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">pads</span>.<span class="ident">count</span>(), <span class="number">8</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">checksum</span>, [<span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>]);
         }
     }
 }
@@ -918,13 +919,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -958,7 +961,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

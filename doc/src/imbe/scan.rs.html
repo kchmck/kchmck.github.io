@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -483,445 +484,445 @@
 <span id="438">438</span>
 <span id="439">439</span>
 <span id="440">440</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Scanning procedure used in descrambling.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Scanning procedure used in descrambling.</span>
 
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Range</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Range</span>;
 
-<span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
-<span class='kw'>use</span> <span class='ident'>frame</span>::<span class='ident'>Chunks</span>;
+<span class="kw">use</span> <span class="ident">params</span>::<span class="ident">BaseParams</span>;
+<span class="kw">use</span> <span class="ident">frame</span>::<span class="ident">Chunks</span>;
 
-<span class='doccomment'>/// Decodes voiced/unvoiced decisions and the quantized gain index fragment from</span>
-<span class='doccomment'>/// prioritized chunks.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// Between the chunks created by the two scanning procedures, there is a 22-bit</span>
-<span class='doccomment'>/// vector made up of u&lt;sub&gt;4&lt;/sub&gt; and u&lt;sub&gt;5&lt;/sub&gt; that contains the</span>
-<span class='doccomment'>/// voiced/unvoiced vector, part of the quantized gain index, and the initial bits in</span>
-<span class='doccomment'>/// the second scanning procedure.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ScanSep</span> {
-    <span class='doccomment'>/// Voiced/Unvoiced Boolean bit vector, b&lt;sub&gt;1&lt;/sub&gt; [p25].</span>
-    <span class='kw'>pub</span> <span class='ident'>voiced</span>: <span class='ident'>u32</span>,
-    <span class='doccomment'>/// Bits 1 and 2 of the 6-bit quantized gain index, b&lt;sub&gt;2&lt;/sub&gt; [p30].</span>
-    <span class='kw'>pub</span> <span class='ident'>idx_part</span>: <span class='ident'>u32</span>,
-    <span class='doccomment'>/// Chunk of some b&lt;sub&gt;m&lt;/sub&gt; used in the scanning procedure [p39].</span>
-    <span class='kw'>pub</span> <span class='ident'>scanned</span>: <span class='ident'>u32</span>,
+<span class="doccomment">/// Decodes voiced/unvoiced decisions and the quantized gain index fragment from</span>
+<span class="doccomment">/// prioritized chunks.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Between the chunks created by the two scanning procedures, there is a 22-bit</span>
+<span class="doccomment">/// vector made up of u&lt;sub&gt;4&lt;/sub&gt; and u&lt;sub&gt;5&lt;/sub&gt; that contains the</span>
+<span class="doccomment">/// voiced/unvoiced vector, part of the quantized gain index, and the initial bits in</span>
+<span class="doccomment">/// the second scanning procedure.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ScanSep</span> {
+    <span class="doccomment">/// Voiced/Unvoiced Boolean bit vector, b&lt;sub&gt;1&lt;/sub&gt; [p25].</span>
+    <span class="kw">pub</span> <span class="ident">voiced</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// Bits 1 and 2 of the 6-bit quantized gain index, b&lt;sub&gt;2&lt;/sub&gt; [p30].</span>
+    <span class="kw">pub</span> <span class="ident">idx_part</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// Chunk of some b&lt;sub&gt;m&lt;/sub&gt; used in the scanning procedure [p39].</span>
+    <span class="kw">pub</span> <span class="ident">scanned</span>: <span class="ident">u32</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>ScanSep</span> {
-    <span class='doccomment'>/// Create a new `ScanSep` decoder from the given chunks and frame parameters.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>chunks</span>: <span class='kw-2'>&amp;</span><span class='ident'>Chunks</span>, <span class='ident'>params</span>: <span class='kw-2'>&amp;</span><span class='ident'>BaseParams</span>) <span class='op'>-&gt;</span> <span class='ident'>ScanSep</span> {
-        <span class='comment'>// Concatenate u_4 and u_5 into a 22-bit vector.</span>
-        <span class='kw'>let</span> <span class='ident'>parts</span> <span class='op'>=</span> <span class='ident'>chunks</span>[<span class='number'>4</span>] <span class='op'>&lt;&lt;</span> <span class='number'>11</span> <span class='op'>|</span> <span class='ident'>chunks</span>[<span class='number'>5</span>];
+<span class="kw">impl</span> <span class="ident">ScanSep</span> {
+    <span class="doccomment">/// Create a new `ScanSep` decoder from the given chunks and frame parameters.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">chunks</span>: <span class="kw-2">&amp;</span><span class="ident">Chunks</span>, <span class="ident">params</span>: <span class="kw-2">&amp;</span><span class="ident">BaseParams</span>) <span class="op">-&gt;</span> <span class="ident">ScanSep</span> {
+        <span class="comment">// Concatenate u_4 and u_5 into a 22-bit vector.</span>
+        <span class="kw">let</span> <span class="ident">parts</span> <span class="op">=</span> <span class="ident">chunks</span>[<span class="number">4</span>] <span class="op">&lt;&lt;</span> <span class="number">11</span> <span class="op">|</span> <span class="ident">chunks</span>[<span class="number">5</span>];
 
-        <span class='ident'>ScanSep</span> {
-            <span class='comment'>// Take first K MSBs as the voiced/unvoiced vector [p39].</span>
-            <span class='ident'>voiced</span>: <span class='ident'>parts</span> <span class='op'>&gt;&gt;</span> (<span class='number'>22</span> <span class='op'>-</span> <span class='ident'>params</span>.<span class='ident'>bands</span>),
-            <span class='comment'>// Take next 2 bits as bit 1 and 2 of b_2 [p39].</span>
-            <span class='ident'>idx_part</span>: <span class='ident'>parts</span> <span class='op'>&gt;&gt;</span> (<span class='number'>20</span> <span class='op'>-</span> <span class='ident'>params</span>.<span class='ident'>bands</span>) <span class='op'>&amp;</span> <span class='number'>0b11</span>,
-            <span class='comment'>// Take the remaining K-2 LSBs as part of the scanning procedure [p39].</span>
-            <span class='comment'>// Since the underlying word is 32 bits, (32-22) + K+2 = 12 + K.</span>
-            <span class='ident'>scanned</span>: <span class='ident'>parts</span> <span class='op'>&amp;</span> <span class='op'>!</span><span class='number'>0</span> <span class='op'>&gt;&gt;</span> (<span class='number'>12</span> <span class='op'>+</span> <span class='ident'>params</span>.<span class='ident'>bands</span>),
+        <span class="ident">ScanSep</span> {
+            <span class="comment">// Take first K MSBs as the voiced/unvoiced vector [p39].</span>
+            <span class="ident">voiced</span>: <span class="ident">parts</span> <span class="op">&gt;&gt;</span> (<span class="number">22</span> <span class="op">-</span> <span class="ident">params</span>.<span class="ident">bands</span>),
+            <span class="comment">// Take next 2 bits as bit 1 and 2 of b_2 [p39].</span>
+            <span class="ident">idx_part</span>: <span class="ident">parts</span> <span class="op">&gt;&gt;</span> (<span class="number">20</span> <span class="op">-</span> <span class="ident">params</span>.<span class="ident">bands</span>) <span class="op">&amp;</span> <span class="number">0b11</span>,
+            <span class="comment">// Take the remaining K-2 LSBs as part of the scanning procedure [p39].</span>
+            <span class="comment">// Since the underlying word is 32 bits, (32-22) + K+2 = 12 + K.</span>
+            <span class="ident">scanned</span>: <span class="ident">parts</span> <span class="op">&amp;</span> <span class="op">!</span><span class="number">0</span> <span class="op">&gt;&gt;</span> (<span class="number">12</span> <span class="op">+</span> <span class="ident">params</span>.<span class="ident">bands</span>),
         }
     }
 }
 
-<span class='doccomment'>/// Iterates over the chunks covered in the scanning procedure [p39].</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ScanChunks</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Chunks to scan.</span>
-    <span class='ident'>chunks</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>Chunks</span>,
-    <span class='doccomment'>/// Separator chunk and its length in bits.</span>
-    <span class='ident'>sep</span>: (<span class='ident'>u32</span>, <span class='ident'>u8</span>),
-    <span class='doccomment'>/// Current chunk in scan.</span>
-    <span class='ident'>pos</span>: <span class='ident'>Range</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>,
+<span class="doccomment">/// Iterates over the chunks covered in the scanning procedure [p39].</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ScanChunks</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Chunks to scan.</span>
+    <span class="ident">chunks</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Chunks</span>,
+    <span class="doccomment">/// Separator chunk and its length in bits.</span>
+    <span class="ident">sep</span>: (<span class="ident">u32</span>, <span class="ident">u8</span>),
+    <span class="doccomment">/// Current chunk in scan.</span>
+    <span class="ident">pos</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>ScanChunks</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `ScanChunks` iterator over the given chunks.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>chunks</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>Chunks</span>, <span class='ident'>sep</span>: <span class='ident'>u32</span>, <span class='ident'>params</span>: <span class='kw-2'>&amp;</span><span class='ident'>BaseParams</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='ident'>ScanChunks</span> {
-            <span class='ident'>chunks</span>: <span class='ident'>chunks</span>,
-            <span class='comment'>// 22 - (K + 2) = 20 - K.</span>
-            <span class='ident'>sep</span>: (<span class='ident'>sep</span>, (<span class='number'>20</span> <span class='op'>-</span> <span class='ident'>params</span>.<span class='ident'>bands</span>) <span class='kw'>as</span> <span class='ident'>u8</span>),
-            <span class='comment'>// Each scan is made up of 7 chunks, each in whole or partial form.</span>
-            <span class='ident'>pos</span>: <span class='number'>0</span>..<span class='number'>7</span>,
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">ScanChunks</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `ScanChunks` iterator over the given chunks.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">chunks</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Chunks</span>, <span class="ident">sep</span>: <span class="ident">u32</span>, <span class="ident">params</span>: <span class="kw-2">&amp;</span><span class="ident">BaseParams</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">ScanChunks</span> {
+            <span class="ident">chunks</span>: <span class="ident">chunks</span>,
+            <span class="comment">// 22 - (K + 2) = 20 - K.</span>
+            <span class="ident">sep</span>: (<span class="ident">sep</span>, (<span class="number">20</span> <span class="op">-</span> <span class="ident">params</span>.<span class="ident">bands</span>) <span class="kw">as</span> <span class="ident">u8</span>),
+            <span class="comment">// Each scan is made up of 7 chunks, each in whole or partial form.</span>
+            <span class="ident">pos</span>: <span class="number">0</span>..<span class="number">7</span>,
         }
     }
 }
 
-<span class='doccomment'>/// At each iteration, yield a chunk of bits along with the number of LSBs to use from the</span>
-<span class='doccomment'>/// chunk.</span>
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>ScanChunks</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> (<span class='ident'>u32</span>, <span class='ident'>u8</span>);
+<span class="doccomment">/// At each iteration, yield a chunk of bits along with the number of LSBs to use from the</span>
+<span class="doccomment">/// chunk.</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">ScanChunks</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="ident">u32</span>, <span class="ident">u8</span>);
 
-    <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='self'>Self</span>::<span class='ident'>Item</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>pos</span>.<span class='ident'>next</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>n</span><span class='op'>|</span> {
-            <span class='kw'>match</span> <span class='ident'>n</span> {
-                <span class='comment'>// Last 3 LSBs of u_0.</span>
-                <span class='number'>0</span> <span class='op'>=&gt;</span> (<span class='self'>self</span>.<span class='ident'>chunks</span>[<span class='number'>0</span>] <span class='op'>&amp;</span> <span class='number'>0b111</span>, <span class='number'>3</span>),
-                <span class='comment'>// All of u_1, u_2, and u_3.</span>
-                <span class='number'>1</span> <span class='op'>=&gt;</span> (<span class='self'>self</span>.<span class='ident'>chunks</span>[<span class='number'>1</span>], <span class='number'>12</span>),
-                <span class='number'>2</span> <span class='op'>=&gt;</span> (<span class='self'>self</span>.<span class='ident'>chunks</span>[<span class='number'>2</span>], <span class='number'>12</span>),
-                <span class='number'>3</span> <span class='op'>=&gt;</span> (<span class='self'>self</span>.<span class='ident'>chunks</span>[<span class='number'>3</span>], <span class='number'>12</span>),
-                <span class='comment'>// Some LSBs of u_4/u_5.</span>
-                <span class='number'>4</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>sep</span>,
-                <span class='comment'>// All of u_6.</span>
-                <span class='number'>5</span> <span class='op'>=&gt;</span> (<span class='self'>self</span>.<span class='ident'>chunks</span>[<span class='number'>6</span>], <span class='number'>11</span>),
-                <span class='comment'>// First 3 MSBs of u_7.</span>
-                <span class='number'>6</span> <span class='op'>=&gt;</span> (<span class='self'>self</span>.<span class='ident'>chunks</span>[<span class='number'>7</span>] <span class='op'>&gt;&gt;</span> <span class='number'>4</span>, <span class='number'>3</span>),
-                _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>()
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">pos</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> {
+            <span class="kw">match</span> <span class="ident">n</span> {
+                <span class="comment">// Last 3 LSBs of u_0.</span>
+                <span class="number">0</span> <span class="op">=&gt;</span> (<span class="self">self</span>.<span class="ident">chunks</span>[<span class="number">0</span>] <span class="op">&amp;</span> <span class="number">0b111</span>, <span class="number">3</span>),
+                <span class="comment">// All of u_1, u_2, and u_3.</span>
+                <span class="number">1</span> <span class="op">=&gt;</span> (<span class="self">self</span>.<span class="ident">chunks</span>[<span class="number">1</span>], <span class="number">12</span>),
+                <span class="number">2</span> <span class="op">=&gt;</span> (<span class="self">self</span>.<span class="ident">chunks</span>[<span class="number">2</span>], <span class="number">12</span>),
+                <span class="number">3</span> <span class="op">=&gt;</span> (<span class="self">self</span>.<span class="ident">chunks</span>[<span class="number">3</span>], <span class="number">12</span>),
+                <span class="comment">// Some LSBs of u_4/u_5.</span>
+                <span class="number">4</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">sep</span>,
+                <span class="comment">// All of u_6.</span>
+                <span class="number">5</span> <span class="op">=&gt;</span> (<span class="self">self</span>.<span class="ident">chunks</span>[<span class="number">6</span>], <span class="number">11</span>),
+                <span class="comment">// First 3 MSBs of u_7.</span>
+                <span class="number">6</span> <span class="op">=&gt;</span> (<span class="self">self</span>.<span class="ident">chunks</span>[<span class="number">7</span>] <span class="op">&gt;&gt;</span> <span class="number">4</span>, <span class="number">3</span>),
+                _ <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>()
             }
         })
     }
 }
 
-<span class='doccomment'>/// Sequentially extracts the bits scanned into prioritized chunks.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ScanBits</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Chunks in the scan.</span>
-    <span class='ident'>chunks</span>: <span class='ident'>ScanChunks</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>,
-    <span class='doccomment'>/// Current chunk bits, stored starting at the MSB.</span>
-    <span class='ident'>chunk</span>: <span class='ident'>u32</span>,
-    <span class='doccomment'>/// Bits remaining to yield from the current chunk.</span>
-    <span class='ident'>remain</span>: <span class='ident'>u8</span>,
+<span class="doccomment">/// Sequentially extracts the bits scanned into prioritized chunks.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ScanBits</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Chunks in the scan.</span>
+    <span class="ident">chunks</span>: <span class="ident">ScanChunks</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Current chunk bits, stored starting at the MSB.</span>
+    <span class="ident">chunk</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// Bits remaining to yield from the current chunk.</span>
+    <span class="ident">remain</span>: <span class="ident">u8</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>ScanBits</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `ScanBits` iterator over the given scan chunks.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>chunks</span>: <span class='ident'>ScanChunks</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='ident'>ScanBits</span> {
-            <span class='ident'>chunks</span>: <span class='ident'>chunks</span>,
-            <span class='ident'>chunk</span>: <span class='number'>0</span>,
-            <span class='ident'>remain</span>: <span class='number'>0</span>,
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">ScanBits</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `ScanBits` iterator over the given scan chunks.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">chunks</span>: <span class="ident">ScanChunks</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">ScanBits</span> {
+            <span class="ident">chunks</span>: <span class="ident">chunks</span>,
+            <span class="ident">chunk</span>: <span class="number">0</span>,
+            <span class="ident">remain</span>: <span class="number">0</span>,
         }
     }
 }
 
-<span class='doccomment'>/// At each iteration, yield the next single bit in the scan.</span>
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>ScanBits</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>u32</span>;
+<span class="doccomment">/// At each iteration, yield the next single bit in the scan.</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">ScanBits</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">u32</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='self'>Self</span>::<span class='ident'>Item</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>remain</span> <span class='op'>==</span> <span class='number'>0</span> {
-            <span class='kw'>let</span> (<span class='ident'>c</span>, <span class='ident'>r</span>) <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>chunks</span>.<span class='ident'>next</span>() {
-                <span class='prelude-val'>Some</span>(<span class='ident'>x</span>) <span class='op'>=&gt;</span> <span class='ident'>x</span>,
-                <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>None</span>,
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">remain</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="kw">let</span> (<span class="ident">c</span>, <span class="ident">r</span>) <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">chunks</span>.<span class="ident">next</span>() {
+                <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">x</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
             };
 
-            <span class='self'>self</span>.<span class='ident'>chunk</span> <span class='op'>=</span> <span class='ident'>c</span>;
-            <span class='self'>self</span>.<span class='ident'>remain</span> <span class='op'>=</span> <span class='ident'>r</span>;
+            <span class="self">self</span>.<span class="ident">chunk</span> <span class="op">=</span> <span class="ident">c</span>;
+            <span class="self">self</span>.<span class="ident">remain</span> <span class="op">=</span> <span class="ident">r</span>;
 
-            <span class='comment'>// Move bits to MSB of 32-bit word.</span>
-            <span class='self'>self</span>.<span class='ident'>chunk</span> <span class='op'>&lt;&lt;=</span> <span class='number'>32</span> <span class='op'>-</span> <span class='self'>self</span>.<span class='ident'>remain</span>;
+            <span class="comment">// Move bits to MSB of 32-bit word.</span>
+            <span class="self">self</span>.<span class="ident">chunk</span> <span class="op">&lt;&lt;=</span> <span class="number">32</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">remain</span>;
         }
 
-        <span class='comment'>// Extract the MSB and shift it off.</span>
-        <span class='kw'>let</span> <span class='ident'>bit</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>chunk</span> <span class='op'>&gt;&gt;</span> <span class='number'>31</span>;
-        <span class='self'>self</span>.<span class='ident'>chunk</span> <span class='op'>&lt;&lt;=</span> <span class='number'>1</span>;
-        <span class='self'>self</span>.<span class='ident'>remain</span> <span class='op'>-=</span> <span class='number'>1</span>;
+        <span class="comment">// Extract the MSB and shift it off.</span>
+        <span class="kw">let</span> <span class="ident">bit</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">chunk</span> <span class="op">&gt;&gt;</span> <span class="number">31</span>;
+        <span class="self">self</span>.<span class="ident">chunk</span> <span class="op">&lt;&lt;=</span> <span class="number">1</span>;
+        <span class="self">self</span>.<span class="ident">remain</span> <span class="op">-=</span> <span class="number">1</span>;
 
-        <span class='prelude-val'>Some</span>(<span class='ident'>bit</span>)
+        <span class="prelude-val">Some</span>(<span class="ident">bit</span>)
     }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>tests</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
-    <span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">tests</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">params</span>::<span class="ident">BaseParams</span>;
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_chunks_16</span>() {
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0b101</span>,
-            <span class='number'>0b101010101010</span>,
-            <span class='number'>0b101010101010</span>,
-            <span class='number'>0b101010101010</span>,
-            <span class='number'>0b11111111111</span>,
-            <span class='number'>0b01010101010</span>,
-            <span class='number'>0b10101010101</span>,
-            <span class='number'>0b1010000</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_chunks_16</span>() {
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0b101</span>,
+            <span class="number">0b101010101010</span>,
+            <span class="number">0b101010101010</span>,
+            <span class="number">0b101010101010</span>,
+            <span class="number">0b11111111111</span>,
+            <span class="number">0b01010101010</span>,
+            <span class="number">0b10101010101</span>,
+            <span class="number">0b1010000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='number'>32</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="number">32</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>harmonics</span>, <span class='number'>16</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>bands</span>, <span class='number'>6</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">harmonics</span>, <span class="number">16</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">bands</span>, <span class="number">6</span>);
 
-        <span class='kw'>let</span> <span class='ident'>parts</span> <span class='op'>=</span> <span class='ident'>ScanSep</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>ScanChunks</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='ident'>parts</span>.<span class='ident'>scanned</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
+        <span class="kw">let</span> <span class="ident">parts</span> <span class="op">=</span> <span class="ident">ScanSep</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">ScanChunks</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="ident">parts</span>.<span class="ident">scanned</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b101</span>, <span class='number'>3</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b101010101010</span>, <span class='number'>12</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b101010101010</span>, <span class='number'>12</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b101010101010</span>, <span class='number'>12</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b11101010101010</span>, <span class='number'>14</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b10101010101</span>, <span class='number'>11</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b101</span>, <span class='number'>3</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b101</span>, <span class="number">3</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b101010101010</span>, <span class="number">12</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b101010101010</span>, <span class="number">12</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b101010101010</span>, <span class="number">12</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b11101010101010</span>, <span class="number">14</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b10101010101</span>, <span class="number">11</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b101</span>, <span class="number">3</span>));
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_chunks_10</span>() {
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0b111111111101</span>,
-            <span class='number'>0b101010101010</span>,
-            <span class='number'>0b101010101010</span>,
-            <span class='number'>0b101010101010</span>,
-            <span class='number'>0b11111111111</span>,
-            <span class='number'>0b01010101010</span>,
-            <span class='number'>0b10101010101</span>,
-            <span class='number'>0b1010000</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_chunks_10</span>() {
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0b111111111101</span>,
+            <span class="number">0b101010101010</span>,
+            <span class="number">0b101010101010</span>,
+            <span class="number">0b101010101010</span>,
+            <span class="number">0b11111111111</span>,
+            <span class="number">0b01010101010</span>,
+            <span class="number">0b10101010101</span>,
+            <span class="number">0b1010000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='number'>4</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="number">4</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>harmonics</span>, <span class='number'>10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>bands</span>, <span class='number'>4</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">harmonics</span>, <span class="number">10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">bands</span>, <span class="number">4</span>);
 
-        <span class='kw'>let</span> <span class='ident'>parts</span> <span class='op'>=</span> <span class='ident'>ScanSep</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>ScanChunks</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='ident'>parts</span>.<span class='ident'>scanned</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
+        <span class="kw">let</span> <span class="ident">parts</span> <span class="op">=</span> <span class="ident">ScanSep</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">ScanChunks</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="ident">parts</span>.<span class="ident">scanned</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b101</span>, <span class='number'>3</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b101010101010</span>, <span class='number'>12</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b101010101010</span>, <span class='number'>12</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b101010101010</span>, <span class='number'>12</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b1111101010101010</span>, <span class='number'>16</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b10101010101</span>, <span class='number'>11</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), (<span class='number'>0b101</span>, <span class='number'>3</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b101</span>, <span class="number">3</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b101010101010</span>, <span class="number">12</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b101010101010</span>, <span class="number">12</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b101010101010</span>, <span class="number">12</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b1111101010101010</span>, <span class="number">16</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b10101010101</span>, <span class="number">11</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), (<span class="number">0b101</span>, <span class="number">3</span>));
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_bits_16</span>() {
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0b111111111101</span>,
-            <span class='number'>0b010101010101</span>,
-            <span class='number'>0b010101010101</span>,
-            <span class='number'>0b010101010101</span>,
-            <span class='number'>0b11111111111</span>,
-            <span class='number'>0b01010101010</span>,
-            <span class='number'>0b10101010101</span>,
-            <span class='number'>0b1010000</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_bits_16</span>() {
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0b111111111101</span>,
+            <span class="number">0b010101010101</span>,
+            <span class="number">0b010101010101</span>,
+            <span class="number">0b010101010101</span>,
+            <span class="number">0b11111111111</span>,
+            <span class="number">0b01010101010</span>,
+            <span class="number">0b10101010101</span>,
+            <span class="number">0b1010000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='number'>32</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="number">32</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>harmonics</span>, <span class='number'>16</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>bands</span>, <span class='number'>6</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">harmonics</span>, <span class="number">16</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">bands</span>, <span class="number">6</span>);
 
-        <span class='kw'>let</span> <span class='ident'>parts</span> <span class='op'>=</span> <span class='ident'>ScanSep</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>ScanBits</span>::<span class='ident'>new</span>(<span class='ident'>ScanChunks</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='ident'>parts</span>.<span class='ident'>scanned</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>));
+        <span class="kw">let</span> <span class="ident">parts</span> <span class="op">=</span> <span class="ident">ScanSep</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">ScanBits</span>::<span class="ident">new</span>(<span class="ident">ScanChunks</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="ident">parts</span>.<span class="ident">scanned</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>));
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_bits_10</span>() {
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0b111111111101</span>,
-            <span class='number'>0b010101010101</span>,
-            <span class='number'>0b010101010101</span>,
-            <span class='number'>0b010101010101</span>,
-            <span class='number'>0b11111111111</span>,
-            <span class='number'>0b01010101010</span>,
-            <span class='number'>0b10101010101</span>,
-            <span class='number'>0b1010000</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_bits_10</span>() {
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0b111111111101</span>,
+            <span class="number">0b010101010101</span>,
+            <span class="number">0b010101010101</span>,
+            <span class="number">0b010101010101</span>,
+            <span class="number">0b11111111111</span>,
+            <span class="number">0b01010101010</span>,
+            <span class="number">0b10101010101</span>,
+            <span class="number">0b1010000</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='number'>4</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="number">4</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>harmonics</span>, <span class='number'>10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>bands</span>, <span class='number'>4</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">harmonics</span>, <span class="number">10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">bands</span>, <span class="number">4</span>);
 
-        <span class='kw'>let</span> <span class='ident'>parts</span> <span class='op'>=</span> <span class='ident'>ScanSep</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>ScanBits</span>::<span class='ident'>new</span>(<span class='ident'>ScanChunks</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='ident'>parts</span>.<span class='ident'>scanned</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>));
+        <span class="kw">let</span> <span class="ident">parts</span> <span class="op">=</span> <span class="ident">ScanSep</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">ScanBits</span>::<span class="ident">new</span>(<span class="ident">ScanChunks</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="ident">parts</span>.<span class="ident">scanned</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>));
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_parts_16</span>() {
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>0</span>,
-            <span class='number'>0b11110110101</span>,
-            <span class='number'>0b00001111010</span>,
-            <span class='number'>0</span>, <span class='number'>0</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_parts_16</span>() {
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>,
+            <span class="number">0b11110110101</span>,
+            <span class="number">0b00001111010</span>,
+            <span class="number">0</span>, <span class="number">0</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='number'>32</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="number">32</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>harmonics</span>, <span class='number'>16</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>bands</span>, <span class='number'>6</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">harmonics</span>, <span class="number">16</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">bands</span>, <span class="number">6</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>ScanSep</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">ScanSep</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>voiced</span>, <span class='number'>0b111101</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>idx_part</span>, <span class='number'>0b10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>scanned</span>, <span class='number'>0b10100001111010</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">voiced</span>, <span class="number">0b111101</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">idx_part</span>, <span class="number">0b10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">scanned</span>, <span class="number">0b10100001111010</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_parts_10</span>() {
-        <span class='kw'>let</span> <span class='ident'>chunks</span> <span class='op'>=</span> [
-            <span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>0</span>,
-            <span class='number'>0b11110110101</span>,
-            <span class='number'>0b00001111010</span>,
-            <span class='number'>0</span>, <span class='number'>0</span>,
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_parts_10</span>() {
+        <span class="kw">let</span> <span class="ident">chunks</span> <span class="op">=</span> [
+            <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>,
+            <span class="number">0b11110110101</span>,
+            <span class="number">0b00001111010</span>,
+            <span class="number">0</span>, <span class="number">0</span>,
         ];
 
-        <span class='kw'>let</span> <span class='ident'>p</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='number'>4</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="number">4</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>harmonics</span>, <span class='number'>10</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>p</span>.<span class='ident'>bands</span>, <span class='number'>4</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">harmonics</span>, <span class="number">10</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">bands</span>, <span class="number">4</span>);
 
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>ScanSep</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>p</span>);
+        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">ScanSep</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>voiced</span>, <span class='number'>0b1111</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>idx_part</span>, <span class='number'>0b01</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>scanned</span>, <span class='number'>0b1010100001111010</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">voiced</span>, <span class="number">0b1111</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">idx_part</span>, <span class="number">0b01</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">scanned</span>, <span class="number">0b1010100001111010</span>);
     }
 }
 </pre>
@@ -942,13 +943,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -982,7 +985,6 @@
         window.rootPath = "../../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

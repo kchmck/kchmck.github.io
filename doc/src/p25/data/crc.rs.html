@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -234,196 +235,196 @@
 <span id="189">189</span>
 <span id="190">190</span>
 <span id="191">191</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Implements the 9, 16, and 32-bit CRCs defined by P25 for data checksums.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! This implementation uses the typical long division and takes advantage of the short</span>
-<span class='doccomment'>//! lengths to use only a 64-bit word as a buffer, allowing simple bitwise operations.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Implements the 9, 16, and 32-bit CRCs defined by P25 for data checksums.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This implementation uses the typical long division and takes advantage of the short</span>
+<span class="doccomment">//! lengths to use only a 64-bit word as a buffer, allowing simple bitwise operations.</span>
 
-<span class='kw'>use</span> <span class='ident'>std</span>;
+<span class="kw">use</span> <span class="ident">std</span>;
 
-<span class='doccomment'>/// 9-bit CRC calculator.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>CRC9</span> <span class='op'>=</span> <span class='ident'>CRC</span><span class='op'>&lt;</span><span class='ident'>CRC9Params</span><span class='op'>&gt;</span>;
+<span class="doccomment">/// 9-bit CRC calculator.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CRC9</span> <span class="op">=</span> <span class="ident">CRC</span><span class="op">&lt;</span><span class="ident">CRC9Params</span><span class="op">&gt;</span>;
 
-<span class='doccomment'>/// 16-bit CRC calculator.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>CRC16</span> <span class='op'>=</span> <span class='ident'>CRC</span><span class='op'>&lt;</span><span class='ident'>CRC16Params</span><span class='op'>&gt;</span>;
+<span class="doccomment">/// 16-bit CRC calculator.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CRC16</span> <span class="op">=</span> <span class="ident">CRC</span><span class="op">&lt;</span><span class="ident">CRC16Params</span><span class="op">&gt;</span>;
 
-<span class='doccomment'>/// 32-bit CRC calculator.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>CRC32</span> <span class='op'>=</span> <span class='ident'>CRC</span><span class='op'>&lt;</span><span class='ident'>CRC32Params</span><span class='op'>&gt;</span>;
+<span class="doccomment">/// 32-bit CRC calculator.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CRC32</span> <span class="op">=</span> <span class="ident">CRC</span><span class="op">&lt;</span><span class="ident">CRC32Params</span><span class="op">&gt;</span>;
 
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>CRCParams</span> {
-    <span class='doccomment'>/// Generator polynomial, with the MSB being the coefficient of highest degree.</span>
-    <span class='kw'>fn</span> <span class='ident'>gen</span>() <span class='op'>-&gt;</span> <span class='ident'>u64</span>;
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">CRCParams</span> {
+    <span class="doccomment">/// Generator polynomial, with the MSB being the coefficient of highest degree.</span>
+    <span class="kw">fn</span> <span class="ident">gen</span>() <span class="op">-&gt;</span> <span class="ident">u64</span>;
 
-    <span class='doccomment'>/// Inversion polynomial, with the MSB being the coefficient of highest degree.</span>
-    <span class='kw'>fn</span> <span class='ident'>inv</span>() <span class='op'>-&gt;</span> <span class='ident'>u64</span>;
+    <span class="doccomment">/// Inversion polynomial, with the MSB being the coefficient of highest degree.</span>
+    <span class="kw">fn</span> <span class="ident">inv</span>() <span class="op">-&gt;</span> <span class="ident">u64</span>;
 
-    <span class='doccomment'>/// Amount to left-shift the message (multiply by x^i) before division.</span>
-    <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
+    <span class="doccomment">/// Amount to left-shift the message (multiply by x^i) before division.</span>
+    <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span>;
 
-    <span class='doccomment'>/// Verify the parameters are well-formed.</span>
-    <span class='kw'>fn</span> <span class='ident'>validate</span>() {
-        <span class='comment'>// Prevent division by zero.</span>
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>Self</span>::<span class='ident'>gen</span>() <span class='op'>!=</span> <span class='number'>0</span>);
-        <span class='comment'>// Ensure the generator can be left-shifted by up to a byte (since that&#39;s the</span>
-        <span class='comment'>// maximum number of bits that will be fed in per long division step.)</span>
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>degree</span>(<span class='self'>Self</span>::<span class='ident'>gen</span>()) <span class='op'>&lt;</span> <span class='number'>64</span> <span class='op'>-</span> <span class='number'>8</span>);
+    <span class="doccomment">/// Verify the parameters are well-formed.</span>
+    <span class="kw">fn</span> <span class="ident">validate</span>() {
+        <span class="comment">// Prevent division by zero.</span>
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="self">Self</span>::<span class="ident">gen</span>() <span class="op">!=</span> <span class="number">0</span>);
+        <span class="comment">// Ensure the generator can be left-shifted by up to a byte (since that&#39;s the</span>
+        <span class="comment">// maximum number of bits that will be fed in per long division step.)</span>
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">degree</span>(<span class="self">Self</span>::<span class="ident">gen</span>()) <span class="op">&lt;</span> <span class="number">64</span> <span class="op">-</span> <span class="number">8</span>);
     }
 }
 
-<span class='doccomment'>/// Params for 9-bit CRC.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CRC9Params</span>;
+<span class="doccomment">/// Params for 9-bit CRC.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CRC9Params</span>;
 
-<span class='kw'>impl</span> <span class='ident'>CRCParams</span> <span class='kw'>for</span> <span class='ident'>CRC9Params</span> {
-    <span class='kw'>fn</span> <span class='ident'>gen</span>() <span class='op'>-&gt;</span> <span class='ident'>u64</span> { <span class='number'>0b1001011001</span> }
-    <span class='kw'>fn</span> <span class='ident'>inv</span>() <span class='op'>-&gt;</span> <span class='ident'>u64</span> { <span class='number'>0b111111111</span> }
-    <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>9</span> }
+<span class="kw">impl</span> <span class="ident">CRCParams</span> <span class="kw">for</span> <span class="ident">CRC9Params</span> {
+    <span class="kw">fn</span> <span class="ident">gen</span>() <span class="op">-&gt;</span> <span class="ident">u64</span> { <span class="number">0b1001011001</span> }
+    <span class="kw">fn</span> <span class="ident">inv</span>() <span class="op">-&gt;</span> <span class="ident">u64</span> { <span class="number">0b111111111</span> }
+    <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">9</span> }
 }
 
-<span class='doccomment'>/// Params for 16-bit CRC.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CRC16Params</span>;
+<span class="doccomment">/// Params for 16-bit CRC.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CRC16Params</span>;
 
-<span class='kw'>impl</span> <span class='ident'>CRCParams</span> <span class='kw'>for</span> <span class='ident'>CRC16Params</span> {
-    <span class='kw'>fn</span> <span class='ident'>gen</span>() <span class='op'>-&gt;</span> <span class='ident'>u64</span> { <span class='number'>0b10001000000100001</span> }
-    <span class='kw'>fn</span> <span class='ident'>inv</span>() <span class='op'>-&gt;</span> <span class='ident'>u64</span> { <span class='number'>0b1111111111111111</span> }
-    <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>16</span> }
+<span class="kw">impl</span> <span class="ident">CRCParams</span> <span class="kw">for</span> <span class="ident">CRC16Params</span> {
+    <span class="kw">fn</span> <span class="ident">gen</span>() <span class="op">-&gt;</span> <span class="ident">u64</span> { <span class="number">0b10001000000100001</span> }
+    <span class="kw">fn</span> <span class="ident">inv</span>() <span class="op">-&gt;</span> <span class="ident">u64</span> { <span class="number">0b1111111111111111</span> }
+    <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">16</span> }
 }
 
-<span class='doccomment'>/// Params for 32-bit CRC.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CRC32Params</span>;
+<span class="doccomment">/// Params for 32-bit CRC.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CRC32Params</span>;
 
-<span class='kw'>impl</span> <span class='ident'>CRCParams</span> <span class='kw'>for</span> <span class='ident'>CRC32Params</span> {
-    <span class='kw'>fn</span> <span class='ident'>gen</span>() <span class='op'>-&gt;</span> <span class='ident'>u64</span> { <span class='number'>0b100000100110000010001110110110111</span> }
-    <span class='kw'>fn</span> <span class='ident'>inv</span>() <span class='op'>-&gt;</span> <span class='ident'>u64</span> { <span class='number'>0b11111111111111111111111111111111</span> }
-    <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>32</span> }
+<span class="kw">impl</span> <span class="ident">CRCParams</span> <span class="kw">for</span> <span class="ident">CRC32Params</span> {
+    <span class="kw">fn</span> <span class="ident">gen</span>() <span class="op">-&gt;</span> <span class="ident">u64</span> { <span class="number">0b100000100110000010001110110110111</span> }
+    <span class="kw">fn</span> <span class="ident">inv</span>() <span class="op">-&gt;</span> <span class="ident">u64</span> { <span class="number">0b11111111111111111111111111111111</span> }
+    <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">32</span> }
 }
 
-<span class='doccomment'>/// CRC calculator using long division.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CRC</span><span class='op'>&lt;</span><span class='ident'>P</span>: <span class='ident'>CRCParams</span><span class='op'>&gt;</span> {
-    <span class='ident'>params</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span><span class='op'>&lt;</span><span class='ident'>P</span><span class='op'>&gt;</span>,
-    <span class='doccomment'>/// Current output of the calculator.</span>
-    <span class='ident'>word</span>: <span class='ident'>u64</span>
+<span class="doccomment">/// CRC calculator using long division.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CRC</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">CRCParams</span><span class="op">&gt;</span> {
+    <span class="ident">params</span>: <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Current output of the calculator.</span>
+    <span class="ident">word</span>: <span class="ident">u64</span>
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>P</span>: <span class='ident'>CRCParams</span><span class='op'>&gt;</span> <span class='ident'>CRC</span><span class='op'>&lt;</span><span class='ident'>P</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Construct a new `CRC` with empty output.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>CRC</span><span class='op'>&lt;</span><span class='ident'>P</span><span class='op'>&gt;</span> {
-        <span class='ident'>CRC</span> {
-            <span class='ident'>params</span>: <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>,
-            <span class='ident'>word</span>: <span class='number'>0</span>,
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">CRCParams</span><span class="op">&gt;</span> <span class="ident">CRC</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Construct a new `CRC` with empty output.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">CRC</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span> {
+        <span class="ident">CRC</span> {
+            <span class="ident">params</span>: <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>,
+            <span class="ident">word</span>: <span class="number">0</span>,
         }
     }
 
-    <span class='doccomment'>/// Feed in `num` LSBs of the given byte.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed_bits</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>bits</span>: <span class='ident'>u8</span>, <span class='ident'>num</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>Self</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>num</span> <span class='op'>&lt;=</span> <span class='number'>8</span>);
-        <span class='comment'>// Verify there are no stray MSBs.</span>
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>bits</span> <span class='kw'>as</span> <span class='ident'>u16</span>) <span class='op'>&gt;&gt;</span> <span class='ident'>num</span> <span class='op'>==</span> <span class='number'>0</span>);
+    <span class="doccomment">/// Feed in `num` LSBs of the given byte.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">feed_bits</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bits</span>: <span class="ident">u8</span>, <span class="ident">num</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">num</span> <span class="op">&lt;=</span> <span class="number">8</span>);
+        <span class="comment">// Verify there are no stray MSBs.</span>
+        <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">bits</span> <span class="kw">as</span> <span class="ident">u16</span>) <span class="op">&gt;&gt;</span> <span class="ident">num</span> <span class="op">==</span> <span class="number">0</span>);
 
-        <span class='self'>self</span>.<span class='ident'>word</span> <span class='op'>&lt;&lt;=</span> <span class='ident'>num</span>;
-        <span class='self'>self</span>.<span class='ident'>word</span> <span class='op'>|=</span> <span class='ident'>bits</span> <span class='kw'>as</span> <span class='ident'>u64</span>;
+        <span class="self">self</span>.<span class="ident">word</span> <span class="op">&lt;&lt;=</span> <span class="ident">num</span>;
+        <span class="self">self</span>.<span class="ident">word</span> <span class="op">|=</span> <span class="ident">bits</span> <span class="kw">as</span> <span class="ident">u64</span>;
 
-        <span class='self'>self</span>.<span class='ident'>div</span>();
-        <span class='self'>self</span>
+        <span class="self">self</span>.<span class="ident">div</span>();
+        <span class="self">self</span>
     }
 
-    <span class='doccomment'>/// Feed in the given byte stream.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>feed_bytes</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>IntoIterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>u8</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>bytes</span>: <span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>Self</span> {
-        <span class='kw'>for</span> <span class='ident'>byte</span> <span class='kw'>in</span> <span class='ident'>bytes</span> {
-            <span class='self'>self</span>.<span class='ident'>feed_bits</span>(<span class='ident'>byte</span>, <span class='number'>8</span>);
+    <span class="doccomment">/// Feed in the given byte stream.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">feed_bytes</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">u8</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bytes</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
+        <span class="kw">for</span> <span class="ident">byte</span> <span class="kw">in</span> <span class="ident">bytes</span> {
+            <span class="self">self</span>.<span class="ident">feed_bits</span>(<span class="ident">byte</span>, <span class="number">8</span>);
         }
 
-        <span class='self'>self</span>
+        <span class="self">self</span>
     }
 
-    <span class='doccomment'>/// Finish the CRC calculation and return the resulting CRC.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>finish</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u64</span> {
-        <span class='self'>self</span>.<span class='ident'>flush</span>();
-        <span class='self'>self</span>.<span class='ident'>word</span> <span class='op'>^</span> <span class='ident'>P</span>::<span class='ident'>inv</span>()
+    <span class="doccomment">/// Finish the CRC calculation and return the resulting CRC.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">finish</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u64</span> {
+        <span class="self">self</span>.<span class="ident">flush</span>();
+        <span class="self">self</span>.<span class="ident">word</span> <span class="op">^</span> <span class="ident">P</span>::<span class="ident">inv</span>()
     }
 
-    <span class='doccomment'>/// Reduce the current word by dividing by the generator.</span>
-    <span class='kw'>fn</span> <span class='ident'>div</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
-        <span class='kw'>while</span> <span class='self'>self</span>.<span class='ident'>word</span> <span class='op'>!=</span> <span class='number'>0</span> {
-            <span class='kw'>let</span> <span class='ident'>diff</span> <span class='op'>=</span> <span class='ident'>degree</span>(<span class='self'>self</span>.<span class='ident'>word</span>) <span class='kw'>as</span> <span class='ident'>i32</span> <span class='op'>-</span> <span class='ident'>degree</span>(<span class='ident'>P</span>::<span class='ident'>gen</span>()) <span class='kw'>as</span> <span class='ident'>i32</span>;
+    <span class="doccomment">/// Reduce the current word by dividing by the generator.</span>
+    <span class="kw">fn</span> <span class="ident">div</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+        <span class="kw">while</span> <span class="self">self</span>.<span class="ident">word</span> <span class="op">!=</span> <span class="number">0</span> {
+            <span class="kw">let</span> <span class="ident">diff</span> <span class="op">=</span> <span class="ident">degree</span>(<span class="self">self</span>.<span class="ident">word</span>) <span class="kw">as</span> <span class="ident">i32</span> <span class="op">-</span> <span class="ident">degree</span>(<span class="ident">P</span>::<span class="ident">gen</span>()) <span class="kw">as</span> <span class="ident">i32</span>;
 
-            <span class='comment'>// If the divisor (generator) has higher degree than the dividend (word), then</span>
-            <span class='comment'>// no more division can be done.</span>
-            <span class='kw'>if</span> <span class='ident'>diff</span> <span class='op'>&lt;</span> <span class='number'>0</span> {
-                <span class='kw'>break</span>;
+            <span class="comment">// If the divisor (generator) has higher degree than the dividend (word), then</span>
+            <span class="comment">// no more division can be done.</span>
+            <span class="kw">if</span> <span class="ident">diff</span> <span class="op">&lt;</span> <span class="number">0</span> {
+                <span class="kw">break</span>;
             }
 
-            <span class='comment'>// Bring the generator up to the same degree and knock off at least one of the</span>
-            <span class='comment'>// word&#39;s MSBs.</span>
-            <span class='self'>self</span>.<span class='ident'>word</span> <span class='op'>^=</span> <span class='ident'>P</span>::<span class='ident'>gen</span>() <span class='op'>&lt;&lt;</span> <span class='ident'>diff</span>;
+            <span class="comment">// Bring the generator up to the same degree and knock off at least one of the</span>
+            <span class="comment">// word&#39;s MSBs.</span>
+            <span class="self">self</span>.<span class="ident">word</span> <span class="op">^=</span> <span class="ident">P</span>::<span class="ident">gen</span>() <span class="op">&lt;&lt;</span> <span class="ident">diff</span>;
         }
     }
 
-    <span class='doccomment'>/// Perform the final shift and division of the word.</span>
-    <span class='kw'>fn</span> <span class='ident'>flush</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
-        <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>P</span>::<span class='ident'>shift</span>() {
-            <span class='self'>self</span>.<span class='ident'>word</span> <span class='op'>&lt;&lt;=</span> <span class='number'>1</span>;
-            <span class='self'>self</span>.<span class='ident'>div</span>();
+    <span class="doccomment">/// Perform the final shift and division of the word.</span>
+    <span class="kw">fn</span> <span class="ident">flush</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="number">0</span>..<span class="ident">P</span>::<span class="ident">shift</span>() {
+            <span class="self">self</span>.<span class="ident">word</span> <span class="op">&lt;&lt;=</span> <span class="number">1</span>;
+            <span class="self">self</span>.<span class="ident">div</span>();
         }
     }
 }
 
-<span class='comment'>// Calculate the degree of the polynomial represented by x, where x &gt; 0.</span>
-<span class='kw'>fn</span> <span class='ident'>degree</span>(<span class='ident'>x</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
-    <span class='number'>64</span> <span class='op'>-</span> <span class='number'>1</span> <span class='op'>-</span> <span class='ident'>x</span>.<span class='ident'>leading_zeros</span>()
+<span class="comment">// Calculate the degree of the polynomial represented by x, where x &gt; 0.</span>
+<span class="kw">fn</span> <span class="ident">degree</span>(<span class="ident">x</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+    <span class="number">64</span> <span class="op">-</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">x</span>.<span class="ident">leading_zeros</span>()
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-    <span class='kw'>struct</span> <span class='ident'>CRCTest</span>;
+    <span class="kw">struct</span> <span class="ident">CRCTest</span>;
 
-    <span class='kw'>impl</span> <span class='ident'>CRCParams</span> <span class='kw'>for</span> <span class='ident'>CRCTest</span> {
-        <span class='kw'>fn</span> <span class='ident'>gen</span>() <span class='op'>-&gt;</span> <span class='ident'>u64</span> { <span class='number'>0b100011011</span> }
-        <span class='kw'>fn</span> <span class='ident'>inv</span>() <span class='op'>-&gt;</span> <span class='ident'>u64</span> { <span class='number'>0b111</span> }
-        <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>0</span> }
+    <span class="kw">impl</span> <span class="ident">CRCParams</span> <span class="kw">for</span> <span class="ident">CRCTest</span> {
+        <span class="kw">fn</span> <span class="ident">gen</span>() <span class="op">-&gt;</span> <span class="ident">u64</span> { <span class="number">0b100011011</span> }
+        <span class="kw">fn</span> <span class="ident">inv</span>() <span class="op">-&gt;</span> <span class="ident">u64</span> { <span class="number">0b111</span> }
+        <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">0</span> }
     }
 
-    <span class='kw'>struct</span> <span class='ident'>CRCTestShifted</span>;
+    <span class="kw">struct</span> <span class="ident">CRCTestShifted</span>;
 
-    <span class='kw'>impl</span> <span class='ident'>CRCParams</span> <span class='kw'>for</span> <span class='ident'>CRCTestShifted</span> {
-        <span class='kw'>fn</span> <span class='ident'>gen</span>() <span class='op'>-&gt;</span> <span class='ident'>u64</span> { <span class='number'>0b10001101100</span> }
-        <span class='kw'>fn</span> <span class='ident'>inv</span>() <span class='op'>-&gt;</span> <span class='ident'>u64</span> { <span class='number'>0b111</span> }
-        <span class='kw'>fn</span> <span class='ident'>shift</span>() <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='number'>2</span> }
+    <span class="kw">impl</span> <span class="ident">CRCParams</span> <span class="kw">for</span> <span class="ident">CRCTestShifted</span> {
+        <span class="kw">fn</span> <span class="ident">gen</span>() <span class="op">-&gt;</span> <span class="ident">u64</span> { <span class="number">0b10001101100</span> }
+        <span class="kw">fn</span> <span class="ident">inv</span>() <span class="op">-&gt;</span> <span class="ident">u64</span> { <span class="number">0b111</span> }
+        <span class="kw">fn</span> <span class="ident">shift</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">2</span> }
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>validate_params</span>() {
-        <span class='ident'>CRC9Params</span>::<span class='ident'>validate</span>();
-        <span class='ident'>CRC16Params</span>::<span class='ident'>validate</span>();
-        <span class='ident'>CRC32Params</span>::<span class='ident'>validate</span>();
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">validate_params</span>() {
+        <span class="ident">CRC9Params</span>::<span class="ident">validate</span>();
+        <span class="ident">CRC16Params</span>::<span class="ident">validate</span>();
+        <span class="ident">CRC32Params</span>::<span class="ident">validate</span>();
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_calc</span>() {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>CRC</span>::<span class='op'>&lt;</span><span class='ident'>CRCTest</span><span class='op'>&gt;</span>::<span class='ident'>new</span>();
-        <span class='ident'>c</span>.<span class='ident'>feed_bytes</span>([
-            <span class='number'>0b00111111</span>,
-            <span class='number'>0b01111110</span>,
-        ].<span class='ident'>iter</span>().<span class='ident'>cloned</span>());
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>c</span>.<span class='ident'>finish</span>(), <span class='number'>0b110</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_calc</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">CRC</span>::<span class="op">&lt;</span><span class="ident">CRCTest</span><span class="op">&gt;</span>::<span class="ident">new</span>();
+        <span class="ident">c</span>.<span class="ident">feed_bytes</span>([
+            <span class="number">0b00111111</span>,
+            <span class="number">0b01111110</span>,
+        ].<span class="ident">iter</span>().<span class="ident">cloned</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>.<span class="ident">finish</span>(), <span class="number">0b110</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_shift</span>() {
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>CRC</span>::<span class='op'>&lt;</span><span class='ident'>CRCTestShifted</span><span class='op'>&gt;</span>::<span class='ident'>new</span>().<span class='ident'>feed_bytes</span>([
-            <span class='number'>0b00111111</span>,
-            <span class='number'>0b01111110</span>,
-        ].<span class='ident'>iter</span>().<span class='ident'>cloned</span>()).<span class='ident'>finish</span>(), <span class='number'>0b011</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_shift</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">CRC</span>::<span class="op">&lt;</span><span class="ident">CRCTestShifted</span><span class="op">&gt;</span>::<span class="ident">new</span>().<span class="ident">feed_bytes</span>([
+            <span class="number">0b00111111</span>,
+            <span class="number">0b01111110</span>,
+        ].<span class="ident">iter</span>().<span class="ident">cloned</span>()).<span class="ident">finish</span>(), <span class="number">0b011</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_crc32</span>() {
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>CRC32</span>::<span class='ident'>new</span>().<span class='ident'>feed_bytes</span>([
-            <span class='number'>0b1010</span>,
-        ].<span class='ident'>iter</span>().<span class='ident'>cloned</span>()).<span class='ident'>finish</span>(),
-        <span class='number'>0b11010000011101010010100100101001</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_crc32</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">CRC32</span>::<span class="ident">new</span>().<span class="ident">feed_bytes</span>([
+            <span class="number">0b1010</span>,
+        ].<span class="ident">iter</span>().<span class="ident">cloned</span>()).<span class="ident">finish</span>(),
+        <span class="number">0b11010000011101010010100100101001</span>);
     }
 }
 </pre>
@@ -444,13 +445,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -484,7 +487,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -406,368 +407,368 @@
 <span id="361">361</span>
 <span id="362">362</span>
 <span id="363">363</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Interleaving and deinterleaving for data packet payloads.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Interleaving and deinterleaving for data packet payloads.</span>
 
-<span class='kw'>use</span> <span class='ident'>std</span>;
+<span class="kw">use</span> <span class="ident">std</span>;
 
-<span class='kw'>use</span> <span class='ident'>bits</span>;
-<span class='kw'>use</span> <span class='ident'>consts</span>;
+<span class="kw">use</span> <span class="ident">bits</span>;
+<span class="kw">use</span> <span class="ident">consts</span>;
 
-<span class='kw'>trait</span> <span class='ident'>Redirector</span> {
-    <span class='doccomment'>/// Redirector the given index to another within the buffer.</span>
-    <span class='kw'>fn</span> <span class='ident'>redirect</span>(<span class='ident'>idx</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
+<span class="kw">trait</span> <span class="ident">Redirector</span> {
+    <span class="doccomment">/// Redirector the given index to another within the buffer.</span>
+    <span class="kw">fn</span> <span class="ident">redirect</span>(<span class="ident">idx</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">usize</span>;
 }
 
-<span class='doccomment'>/// Redirects for interleaving.</span>
-<span class='kw'>struct</span> <span class='ident'>InterleaveRedirector</span>;
+<span class="doccomment">/// Redirects for interleaving.</span>
+<span class="kw">struct</span> <span class="ident">InterleaveRedirector</span>;
 
-<span class='kw'>impl</span> <span class='ident'>Redirector</span> <span class='kw'>for</span> <span class='ident'>InterleaveRedirector</span> {
-    <span class='kw'>fn</span> <span class='ident'>redirect</span>(<span class='ident'>idx</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        <span class='kw'>const</span> <span class='ident'>REDIRECTS</span>: [<span class='ident'>usize</span>; <span class='ident'>consts</span>::<span class='ident'>CODING_DIBITS</span>] <span class='op'>=</span> [
-            <span class='number'>0</span>,
-            <span class='number'>1</span>,
-            <span class='number'>8</span>,
-            <span class='number'>9</span>,
-            <span class='number'>16</span>,
-            <span class='number'>17</span>,
-            <span class='number'>24</span>,
-            <span class='number'>25</span>,
-            <span class='number'>32</span>,
-            <span class='number'>33</span>,
-            <span class='number'>40</span>,
-            <span class='number'>41</span>,
-            <span class='number'>48</span>,
-            <span class='number'>49</span>,
-            <span class='number'>56</span>,
-            <span class='number'>57</span>,
-            <span class='number'>64</span>,
-            <span class='number'>65</span>,
-            <span class='number'>72</span>,
-            <span class='number'>73</span>,
-            <span class='number'>80</span>,
-            <span class='number'>81</span>,
-            <span class='number'>88</span>,
-            <span class='number'>89</span>,
-            <span class='number'>96</span>,
-            <span class='number'>97</span>,
-            <span class='number'>2</span>,
-            <span class='number'>3</span>,
-            <span class='number'>10</span>,
-            <span class='number'>11</span>,
-            <span class='number'>18</span>,
-            <span class='number'>19</span>,
-            <span class='number'>26</span>,
-            <span class='number'>27</span>,
-            <span class='number'>34</span>,
-            <span class='number'>35</span>,
-            <span class='number'>42</span>,
-            <span class='number'>43</span>,
-            <span class='number'>50</span>,
-            <span class='number'>51</span>,
-            <span class='number'>58</span>,
-            <span class='number'>59</span>,
-            <span class='number'>66</span>,
-            <span class='number'>67</span>,
-            <span class='number'>74</span>,
-            <span class='number'>75</span>,
-            <span class='number'>82</span>,
-            <span class='number'>83</span>,
-            <span class='number'>90</span>,
-            <span class='number'>91</span>,
-            <span class='number'>4</span>,
-            <span class='number'>5</span>,
-            <span class='number'>12</span>,
-            <span class='number'>13</span>,
-            <span class='number'>20</span>,
-            <span class='number'>21</span>,
-            <span class='number'>28</span>,
-            <span class='number'>29</span>,
-            <span class='number'>36</span>,
-            <span class='number'>37</span>,
-            <span class='number'>44</span>,
-            <span class='number'>45</span>,
-            <span class='number'>52</span>,
-            <span class='number'>53</span>,
-            <span class='number'>60</span>,
-            <span class='number'>61</span>,
-            <span class='number'>68</span>,
-            <span class='number'>69</span>,
-            <span class='number'>76</span>,
-            <span class='number'>77</span>,
-            <span class='number'>84</span>,
-            <span class='number'>85</span>,
-            <span class='number'>92</span>,
-            <span class='number'>93</span>,
-            <span class='number'>6</span>,
-            <span class='number'>7</span>,
-            <span class='number'>14</span>,
-            <span class='number'>15</span>,
-            <span class='number'>22</span>,
-            <span class='number'>23</span>,
-            <span class='number'>30</span>,
-            <span class='number'>31</span>,
-            <span class='number'>38</span>,
-            <span class='number'>39</span>,
-            <span class='number'>46</span>,
-            <span class='number'>47</span>,
-            <span class='number'>54</span>,
-            <span class='number'>55</span>,
-            <span class='number'>62</span>,
-            <span class='number'>63</span>,
-            <span class='number'>70</span>,
-            <span class='number'>71</span>,
-            <span class='number'>78</span>,
-            <span class='number'>79</span>,
-            <span class='number'>86</span>,
-            <span class='number'>87</span>,
-            <span class='number'>94</span>,
-            <span class='number'>95</span>,
+<span class="kw">impl</span> <span class="ident">Redirector</span> <span class="kw">for</span> <span class="ident">InterleaveRedirector</span> {
+    <span class="kw">fn</span> <span class="ident">redirect</span>(<span class="ident">idx</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="kw">const</span> <span class="ident">REDIRECTS</span>: [<span class="ident">usize</span>; <span class="ident">consts</span>::<span class="ident">CODING_DIBITS</span>] <span class="op">=</span> [
+            <span class="number">0</span>,
+            <span class="number">1</span>,
+            <span class="number">8</span>,
+            <span class="number">9</span>,
+            <span class="number">16</span>,
+            <span class="number">17</span>,
+            <span class="number">24</span>,
+            <span class="number">25</span>,
+            <span class="number">32</span>,
+            <span class="number">33</span>,
+            <span class="number">40</span>,
+            <span class="number">41</span>,
+            <span class="number">48</span>,
+            <span class="number">49</span>,
+            <span class="number">56</span>,
+            <span class="number">57</span>,
+            <span class="number">64</span>,
+            <span class="number">65</span>,
+            <span class="number">72</span>,
+            <span class="number">73</span>,
+            <span class="number">80</span>,
+            <span class="number">81</span>,
+            <span class="number">88</span>,
+            <span class="number">89</span>,
+            <span class="number">96</span>,
+            <span class="number">97</span>,
+            <span class="number">2</span>,
+            <span class="number">3</span>,
+            <span class="number">10</span>,
+            <span class="number">11</span>,
+            <span class="number">18</span>,
+            <span class="number">19</span>,
+            <span class="number">26</span>,
+            <span class="number">27</span>,
+            <span class="number">34</span>,
+            <span class="number">35</span>,
+            <span class="number">42</span>,
+            <span class="number">43</span>,
+            <span class="number">50</span>,
+            <span class="number">51</span>,
+            <span class="number">58</span>,
+            <span class="number">59</span>,
+            <span class="number">66</span>,
+            <span class="number">67</span>,
+            <span class="number">74</span>,
+            <span class="number">75</span>,
+            <span class="number">82</span>,
+            <span class="number">83</span>,
+            <span class="number">90</span>,
+            <span class="number">91</span>,
+            <span class="number">4</span>,
+            <span class="number">5</span>,
+            <span class="number">12</span>,
+            <span class="number">13</span>,
+            <span class="number">20</span>,
+            <span class="number">21</span>,
+            <span class="number">28</span>,
+            <span class="number">29</span>,
+            <span class="number">36</span>,
+            <span class="number">37</span>,
+            <span class="number">44</span>,
+            <span class="number">45</span>,
+            <span class="number">52</span>,
+            <span class="number">53</span>,
+            <span class="number">60</span>,
+            <span class="number">61</span>,
+            <span class="number">68</span>,
+            <span class="number">69</span>,
+            <span class="number">76</span>,
+            <span class="number">77</span>,
+            <span class="number">84</span>,
+            <span class="number">85</span>,
+            <span class="number">92</span>,
+            <span class="number">93</span>,
+            <span class="number">6</span>,
+            <span class="number">7</span>,
+            <span class="number">14</span>,
+            <span class="number">15</span>,
+            <span class="number">22</span>,
+            <span class="number">23</span>,
+            <span class="number">30</span>,
+            <span class="number">31</span>,
+            <span class="number">38</span>,
+            <span class="number">39</span>,
+            <span class="number">46</span>,
+            <span class="number">47</span>,
+            <span class="number">54</span>,
+            <span class="number">55</span>,
+            <span class="number">62</span>,
+            <span class="number">63</span>,
+            <span class="number">70</span>,
+            <span class="number">71</span>,
+            <span class="number">78</span>,
+            <span class="number">79</span>,
+            <span class="number">86</span>,
+            <span class="number">87</span>,
+            <span class="number">94</span>,
+            <span class="number">95</span>,
         ];
 
-        <span class='ident'>REDIRECTS</span>[<span class='ident'>idx</span>]
+        <span class="ident">REDIRECTS</span>[<span class="ident">idx</span>]
     }
 }
 
-<span class='doccomment'>/// Redirects to undo interleaving.</span>
-<span class='kw'>struct</span> <span class='ident'>DeinterleaveRedirector</span>;
+<span class="doccomment">/// Redirects to undo interleaving.</span>
+<span class="kw">struct</span> <span class="ident">DeinterleaveRedirector</span>;
 
-<span class='kw'>impl</span> <span class='ident'>Redirector</span> <span class='kw'>for</span> <span class='ident'>DeinterleaveRedirector</span> {
-    <span class='kw'>fn</span> <span class='ident'>redirect</span>(<span class='ident'>idx</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        <span class='kw'>const</span> <span class='ident'>REDIRECTS</span>: [<span class='ident'>usize</span>; <span class='ident'>consts</span>::<span class='ident'>CODING_DIBITS</span>] <span class='op'>=</span> [
-            <span class='number'>0</span>,
-            <span class='number'>1</span>,
-            <span class='number'>26</span>,
-            <span class='number'>27</span>,
-            <span class='number'>50</span>,
-            <span class='number'>51</span>,
-            <span class='number'>74</span>,
-            <span class='number'>75</span>,
-            <span class='number'>2</span>,
-            <span class='number'>3</span>,
-            <span class='number'>28</span>,
-            <span class='number'>29</span>,
-            <span class='number'>52</span>,
-            <span class='number'>53</span>,
-            <span class='number'>76</span>,
-            <span class='number'>77</span>,
-            <span class='number'>4</span>,
-            <span class='number'>5</span>,
-            <span class='number'>30</span>,
-            <span class='number'>31</span>,
-            <span class='number'>54</span>,
-            <span class='number'>55</span>,
-            <span class='number'>78</span>,
-            <span class='number'>79</span>,
-            <span class='number'>6</span>,
-            <span class='number'>7</span>,
-            <span class='number'>32</span>,
-            <span class='number'>33</span>,
-            <span class='number'>56</span>,
-            <span class='number'>57</span>,
-            <span class='number'>80</span>,
-            <span class='number'>81</span>,
-            <span class='number'>8</span>,
-            <span class='number'>9</span>,
-            <span class='number'>34</span>,
-            <span class='number'>35</span>,
-            <span class='number'>58</span>,
-            <span class='number'>59</span>,
-            <span class='number'>82</span>,
-            <span class='number'>83</span>,
-            <span class='number'>10</span>,
-            <span class='number'>11</span>,
-            <span class='number'>36</span>,
-            <span class='number'>37</span>,
-            <span class='number'>60</span>,
-            <span class='number'>61</span>,
-            <span class='number'>84</span>,
-            <span class='number'>85</span>,
-            <span class='number'>12</span>,
-            <span class='number'>13</span>,
-            <span class='number'>38</span>,
-            <span class='number'>39</span>,
-            <span class='number'>62</span>,
-            <span class='number'>63</span>,
-            <span class='number'>86</span>,
-            <span class='number'>87</span>,
-            <span class='number'>14</span>,
-            <span class='number'>15</span>,
-            <span class='number'>40</span>,
-            <span class='number'>41</span>,
-            <span class='number'>64</span>,
-            <span class='number'>65</span>,
-            <span class='number'>88</span>,
-            <span class='number'>89</span>,
-            <span class='number'>16</span>,
-            <span class='number'>17</span>,
-            <span class='number'>42</span>,
-            <span class='number'>43</span>,
-            <span class='number'>66</span>,
-            <span class='number'>67</span>,
-            <span class='number'>90</span>,
-            <span class='number'>91</span>,
-            <span class='number'>18</span>,
-            <span class='number'>19</span>,
-            <span class='number'>44</span>,
-            <span class='number'>45</span>,
-            <span class='number'>68</span>,
-            <span class='number'>69</span>,
-            <span class='number'>92</span>,
-            <span class='number'>93</span>,
-            <span class='number'>20</span>,
-            <span class='number'>21</span>,
-            <span class='number'>46</span>,
-            <span class='number'>47</span>,
-            <span class='number'>70</span>,
-            <span class='number'>71</span>,
-            <span class='number'>94</span>,
-            <span class='number'>95</span>,
-            <span class='number'>22</span>,
-            <span class='number'>23</span>,
-            <span class='number'>48</span>,
-            <span class='number'>49</span>,
-            <span class='number'>72</span>,
-            <span class='number'>73</span>,
-            <span class='number'>96</span>,
-            <span class='number'>97</span>,
-            <span class='number'>24</span>,
-            <span class='number'>25</span>,
+<span class="kw">impl</span> <span class="ident">Redirector</span> <span class="kw">for</span> <span class="ident">DeinterleaveRedirector</span> {
+    <span class="kw">fn</span> <span class="ident">redirect</span>(<span class="ident">idx</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="kw">const</span> <span class="ident">REDIRECTS</span>: [<span class="ident">usize</span>; <span class="ident">consts</span>::<span class="ident">CODING_DIBITS</span>] <span class="op">=</span> [
+            <span class="number">0</span>,
+            <span class="number">1</span>,
+            <span class="number">26</span>,
+            <span class="number">27</span>,
+            <span class="number">50</span>,
+            <span class="number">51</span>,
+            <span class="number">74</span>,
+            <span class="number">75</span>,
+            <span class="number">2</span>,
+            <span class="number">3</span>,
+            <span class="number">28</span>,
+            <span class="number">29</span>,
+            <span class="number">52</span>,
+            <span class="number">53</span>,
+            <span class="number">76</span>,
+            <span class="number">77</span>,
+            <span class="number">4</span>,
+            <span class="number">5</span>,
+            <span class="number">30</span>,
+            <span class="number">31</span>,
+            <span class="number">54</span>,
+            <span class="number">55</span>,
+            <span class="number">78</span>,
+            <span class="number">79</span>,
+            <span class="number">6</span>,
+            <span class="number">7</span>,
+            <span class="number">32</span>,
+            <span class="number">33</span>,
+            <span class="number">56</span>,
+            <span class="number">57</span>,
+            <span class="number">80</span>,
+            <span class="number">81</span>,
+            <span class="number">8</span>,
+            <span class="number">9</span>,
+            <span class="number">34</span>,
+            <span class="number">35</span>,
+            <span class="number">58</span>,
+            <span class="number">59</span>,
+            <span class="number">82</span>,
+            <span class="number">83</span>,
+            <span class="number">10</span>,
+            <span class="number">11</span>,
+            <span class="number">36</span>,
+            <span class="number">37</span>,
+            <span class="number">60</span>,
+            <span class="number">61</span>,
+            <span class="number">84</span>,
+            <span class="number">85</span>,
+            <span class="number">12</span>,
+            <span class="number">13</span>,
+            <span class="number">38</span>,
+            <span class="number">39</span>,
+            <span class="number">62</span>,
+            <span class="number">63</span>,
+            <span class="number">86</span>,
+            <span class="number">87</span>,
+            <span class="number">14</span>,
+            <span class="number">15</span>,
+            <span class="number">40</span>,
+            <span class="number">41</span>,
+            <span class="number">64</span>,
+            <span class="number">65</span>,
+            <span class="number">88</span>,
+            <span class="number">89</span>,
+            <span class="number">16</span>,
+            <span class="number">17</span>,
+            <span class="number">42</span>,
+            <span class="number">43</span>,
+            <span class="number">66</span>,
+            <span class="number">67</span>,
+            <span class="number">90</span>,
+            <span class="number">91</span>,
+            <span class="number">18</span>,
+            <span class="number">19</span>,
+            <span class="number">44</span>,
+            <span class="number">45</span>,
+            <span class="number">68</span>,
+            <span class="number">69</span>,
+            <span class="number">92</span>,
+            <span class="number">93</span>,
+            <span class="number">20</span>,
+            <span class="number">21</span>,
+            <span class="number">46</span>,
+            <span class="number">47</span>,
+            <span class="number">70</span>,
+            <span class="number">71</span>,
+            <span class="number">94</span>,
+            <span class="number">95</span>,
+            <span class="number">22</span>,
+            <span class="number">23</span>,
+            <span class="number">48</span>,
+            <span class="number">49</span>,
+            <span class="number">72</span>,
+            <span class="number">73</span>,
+            <span class="number">96</span>,
+            <span class="number">97</span>,
+            <span class="number">24</span>,
+            <span class="number">25</span>,
         ];
 
-        <span class='ident'>REDIRECTS</span>[<span class='ident'>idx</span>]
+        <span class="ident">REDIRECTS</span>[<span class="ident">idx</span>]
     }
 }
 
-<span class='kw'>struct</span> <span class='ident'>Indexes</span><span class='op'>&lt;</span><span class='ident'>R</span>: <span class='ident'>Redirector</span><span class='op'>&gt;</span>(<span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Range</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>, <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span><span class='op'>&lt;</span><span class='ident'>R</span><span class='op'>&gt;</span>);
+<span class="kw">struct</span> <span class="ident">Indexes</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Redirector</span><span class="op">&gt;</span>(<span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>, <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span>);
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>R</span>: <span class='ident'>Redirector</span><span class='op'>&gt;</span> <span class='ident'>Indexes</span><span class='op'>&lt;</span><span class='ident'>R</span><span class='op'>&gt;</span> {
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>Indexes</span><span class='op'>&lt;</span><span class='ident'>R</span><span class='op'>&gt;</span> {
-        <span class='ident'>Indexes</span>(<span class='number'>0</span>..<span class='ident'>consts</span>::<span class='ident'>CODING_DIBITS</span>, <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>)
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Redirector</span><span class="op">&gt;</span> <span class="ident">Indexes</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Indexes</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> {
+        <span class="ident">Indexes</span>(<span class="number">0</span>..<span class="ident">consts</span>::<span class="ident">CODING_DIBITS</span>, <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>)
     }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>R</span>: <span class='ident'>Redirector</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>Indexes</span><span class='op'>&lt;</span><span class='ident'>R</span><span class='op'>&gt;</span> {
-    <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>usize</span>;
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Redirector</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">Indexes</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">usize</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='self'>Self</span>::<span class='ident'>Item</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>next</span>().<span class='ident'>map</span>(<span class='ident'>R</span>::<span class='ident'>redirect</span>)
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="ident">R</span>::<span class="ident">redirect</span>)
     }
 }
 
-<span class='doccomment'>/// Takes ownership of a dibit buffer, yielding deinterleaved dibits.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Interleaver</span> {
-    <span class='doccomment'>/// Wrapped buffer.</span>
-    <span class='ident'>dibits</span>: [<span class='ident'>bits</span>::<span class='ident'>Dibit</span>; <span class='ident'>consts</span>::<span class='ident'>CODING_DIBITS</span>],
-    <span class='doccomment'>/// Redirected indexes.</span>
-    <span class='ident'>idx</span>: <span class='ident'>Indexes</span><span class='op'>&lt;</span><span class='ident'>InterleaveRedirector</span><span class='op'>&gt;</span>,
+<span class="doccomment">/// Takes ownership of a dibit buffer, yielding deinterleaved dibits.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Interleaver</span> {
+    <span class="doccomment">/// Wrapped buffer.</span>
+    <span class="ident">dibits</span>: [<span class="ident">bits</span>::<span class="ident">Dibit</span>; <span class="ident">consts</span>::<span class="ident">CODING_DIBITS</span>],
+    <span class="doccomment">/// Redirected indexes.</span>
+    <span class="ident">idx</span>: <span class="ident">Indexes</span><span class="op">&lt;</span><span class="ident">InterleaveRedirector</span><span class="op">&gt;</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>Interleaver</span> {
-    <span class='doccomment'>/// Construct a new `Interleaver` over the given buffer.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>dibits</span>: [<span class='ident'>bits</span>::<span class='ident'>Dibit</span>; <span class='ident'>consts</span>::<span class='ident'>CODING_DIBITS</span>]) <span class='op'>-&gt;</span> <span class='ident'>Interleaver</span> {
-        <span class='ident'>Interleaver</span> {
-            <span class='ident'>dibits</span>: <span class='ident'>dibits</span>,
-            <span class='ident'>idx</span>: <span class='ident'>Indexes</span>::<span class='ident'>new</span>(),
-        }
-    }
-}
-
-<span class='kw'>impl</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>Interleaver</span> {
-    <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>bits</span>::<span class='ident'>Dibit</span>;
-
-    <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='self'>Self</span>::<span class='ident'>Item</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>idx</span>.<span class='ident'>next</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>idx</span><span class='op'>|</span> <span class='self'>self</span>.<span class='ident'>dibits</span>[<span class='ident'>idx</span>])
-    }
-}
-
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Deinterleaver</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='ident'>dibits</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>bits</span>::<span class='ident'>Dibit</span>; <span class='ident'>consts</span>::<span class='ident'>CODING_DIBITS</span>],
-    <span class='ident'>idx</span>: <span class='ident'>Indexes</span><span class='op'>&lt;</span><span class='ident'>DeinterleaveRedirector</span><span class='op'>&gt;</span>,
-}
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>Deinterleaver</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>dibits</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>bits</span>::<span class='ident'>Dibit</span>; <span class='ident'>consts</span>::<span class='ident'>CODING_DIBITS</span>]) <span class='op'>-&gt;</span> <span class='ident'>Deinterleaver</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-        <span class='ident'>Deinterleaver</span> {
-            <span class='ident'>dibits</span>: <span class='ident'>dibits</span>,
-            <span class='ident'>idx</span>: <span class='ident'>Indexes</span>::<span class='ident'>new</span>(),
+<span class="kw">impl</span> <span class="ident">Interleaver</span> {
+    <span class="doccomment">/// Construct a new `Interleaver` over the given buffer.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">dibits</span>: [<span class="ident">bits</span>::<span class="ident">Dibit</span>; <span class="ident">consts</span>::<span class="ident">CODING_DIBITS</span>]) <span class="op">-&gt;</span> <span class="ident">Interleaver</span> {
+        <span class="ident">Interleaver</span> {
+            <span class="ident">dibits</span>: <span class="ident">dibits</span>,
+            <span class="ident">idx</span>: <span class="ident">Indexes</span>::<span class="ident">new</span>(),
         }
     }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>Deinterleaver</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>bits</span>::<span class='ident'>Dibit</span>;
+<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">Interleaver</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">bits</span>::<span class="ident">Dibit</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='self'>Self</span>::<span class='ident'>Item</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>idx</span>.<span class='ident'>next</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>idx</span><span class='op'>|</span> <span class='self'>self</span>.<span class='ident'>dibits</span>[<span class='ident'>idx</span>])
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">idx</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">idx</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">dibits</span>[<span class="ident">idx</span>])
     }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='kw-2'>*</span>;
-    <span class='kw'>use</span> <span class='ident'>bits</span>::<span class='kw-2'>*</span>;
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Deinterleaver</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="ident">dibits</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">bits</span>::<span class="ident">Dibit</span>; <span class="ident">consts</span>::<span class="ident">CODING_DIBITS</span>],
+    <span class="ident">idx</span>: <span class="ident">Indexes</span><span class="op">&lt;</span><span class="ident">DeinterleaveRedirector</span><span class="op">&gt;</span>,
+}
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_interleave</span>() {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buf</span> <span class='op'>=</span> [<span class='ident'>Dibit</span>::<span class='ident'>default</span>(); <span class='number'>98</span>];
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Deinterleaver</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">dibits</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">bits</span>::<span class="ident">Dibit</span>; <span class="ident">consts</span>::<span class="ident">CODING_DIBITS</span>]) <span class="op">-&gt;</span> <span class="ident">Deinterleaver</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+        <span class="ident">Deinterleaver</span> {
+            <span class="ident">dibits</span>: <span class="ident">dibits</span>,
+            <span class="ident">idx</span>: <span class="ident">Indexes</span>::<span class="ident">new</span>(),
+        }
+    }
+}
 
-        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>98</span> {
-            <span class='ident'>buf</span>[<span class='ident'>i</span>] <span class='op'>=</span> <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u8</span> <span class='op'>%</span> <span class='number'>4</span>);
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">Deinterleaver</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">bits</span>::<span class="ident">Dibit</span>;
+
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">idx</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">idx</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">dibits</span>[<span class="ident">idx</span>])
+    }
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">bits</span>::<span class="kw-2">*</span>;
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_interleave</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> [<span class="ident">Dibit</span>::<span class="ident">default</span>(); <span class="number">98</span>];
+
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">98</span> {
+            <span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">u8</span> <span class="op">%</span> <span class="number">4</span>);
         }
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>int</span> <span class='op'>=</span> <span class='ident'>Interleaver</span>::<span class='ident'>new</span>(<span class='ident'>buf</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">int</span> <span class="op">=</span> <span class="ident">Interleaver</span>::<span class="ident">new</span>(<span class="ident">buf</span>);
 
-        <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>13</span> {
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>int</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>int</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b01</span>);
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="number">0</span>..<span class="number">13</span> {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">int</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b00</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">int</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b01</span>);
         }
 
-        <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>12</span> {
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>int</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>int</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="number">0</span>..<span class="number">12</span> {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">int</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b10</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">int</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b11</span>);
         }
 
-        <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>12</span> {
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>int</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>int</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b01</span>);
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="number">0</span>..<span class="number">12</span> {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">int</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b00</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">int</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b01</span>);
         }
 
-        <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>12</span> {
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>int</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>int</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="number">0</span>..<span class="number">12</span> {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">int</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b10</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">int</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b11</span>);
         }
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>int</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">int</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_deinterleave</span>() {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buf</span> <span class='op'>=</span> [<span class='ident'>Dibit</span>::<span class='ident'>default</span>(); <span class='number'>98</span>];
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_deinterleave</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> [<span class="ident">Dibit</span>::<span class="ident">default</span>(); <span class="number">98</span>];
 
-        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>98</span> {
-            <span class='ident'>buf</span>[<span class='ident'>i</span>] <span class='op'>=</span> <span class='ident'>Dibit</span>::<span class='ident'>new</span>(<span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u8</span> <span class='op'>%</span> <span class='number'>4</span>);
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">98</span> {
+            <span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">Dibit</span>::<span class="ident">new</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">u8</span> <span class="op">%</span> <span class="number">4</span>);
         }
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>out</span> <span class='op'>=</span> [<span class='ident'>Dibit</span>::<span class='ident'>default</span>(); <span class='number'>98</span>];
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span> <span class="op">=</span> [<span class="ident">Dibit</span>::<span class="ident">default</span>(); <span class="number">98</span>];
 
-        <span class='kw'>for</span> (<span class='ident'>i</span>, <span class='ident'>dibit</span>) <span class='kw'>in</span> <span class='ident'>Interleaver</span>::<span class='ident'>new</span>(<span class='ident'>buf</span>).<span class='ident'>enumerate</span>() {
-            <span class='ident'>out</span>[<span class='ident'>i</span>] <span class='op'>=</span> <span class='ident'>dibit</span>;
+        <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">dibit</span>) <span class="kw">in</span> <span class="ident">Interleaver</span>::<span class="ident">new</span>(<span class="ident">buf</span>).<span class="ident">enumerate</span>() {
+            <span class="ident">out</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">dibit</span>;
         }
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>deint</span> <span class='op'>=</span> <span class='ident'>Deinterleaver</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>out</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">deint</span> <span class="op">=</span> <span class="ident">Deinterleaver</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">out</span>);
 
-        <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>24</span> {
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>deint</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>deint</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b01</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>deint</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b10</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>deint</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b11</span>);
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="number">0</span>..<span class="number">24</span> {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">deint</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b00</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">deint</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b01</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">deint</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b10</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">deint</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b11</span>);
         }
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>deint</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b00</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>deint</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>().<span class='ident'>bits</span>(), <span class='number'>0b01</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">deint</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b00</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">deint</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">bits</span>(), <span class="number">0b01</span>);
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>deint</span>.<span class='ident'>next</span>().<span class='ident'>is_none</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">deint</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
     }
 }
 </pre>
@@ -788,13 +789,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -828,7 +831,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

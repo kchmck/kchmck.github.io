@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1"> 1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1"> 1</span>
 <span id="2"> 2</span>
 <span id="3"> 3</span>
 <span id="4"> 4</span>
@@ -75,39 +76,45 @@
 <span id="30">30</span>
 <span id="31">31</span>
 <span id="32">32</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Implements the Project 25 (P25) air interface radio protocol, including baseband frame</span>
-<span class='doccomment'>//! synchronization, symbol decoding, error correction coding, and packet reconstuction.</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Implements the Project 25 (P25) air interface radio protocol, including baseband frame</span>
+<span class="doccomment">//! synchronization, symbol decoding, error correction coding, and packet reconstuction.</span>
 
-<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>feature</span>(<span class='ident'>const_fn</span>)]</span>
-<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>feature</span>(<span class='ident'>inclusive_range_syntax</span>)]</span>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">const_fn</span>)]</span>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">inclusive_range_syntax</span>)]</span>
 
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>collect_slice</span>;
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>num</span>;
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>static_ewma</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">binfield_matrix</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">cai_cyclic</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">collect_slice</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">moving_avg</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">num</span>;
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;ser&quot;</span>)]</span>
-<span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>serde_derive</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ser&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde_derive</span>;
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;ser&quot;</span>)]</span>
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>serde</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ser&quot;</span>)]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde</span>;
 
-<span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>static_fir</span>;
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">static_fir</span>;
 
-<span class='kw'>mod</span> <span class='ident'>buffer</span>;
-<span class='kw'>mod</span> <span class='ident'>util</span>;
+<span class="kw">mod</span> <span class="ident">buffer</span>;
+<span class="kw">mod</span> <span class="ident">util</span>;
 
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>baseband</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>bits</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>coding</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>consts</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>data</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>error</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>message</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>trunking</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>voice</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">baseband</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bits</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">coding</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">consts</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">data</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">error</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">message</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">stats</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">trunking</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">voice</span>;
 </pre>
 </section>
     <section id='search' class="content hidden"></section>
@@ -126,13 +133,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -166,7 +175,6 @@
         window.rootPath = "../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

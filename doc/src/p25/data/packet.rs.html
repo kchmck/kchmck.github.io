@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1"> 1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1"> 1</span>
 <span id="2"> 2</span>
 <span id="3"> 3</span>
 <span id="4"> 4</span>
@@ -140,103 +141,103 @@
 <span id="95">95</span>
 <span id="96">96</span>
 <span id="97">97</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Generate data packets.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Generate data packets.</span>
 
-<span class='kw'>use</span> <span class='ident'>bits</span>;
-<span class='kw'>use</span> <span class='ident'>data</span>::{<span class='self'>self</span>, <span class='ident'>payload</span>, <span class='ident'>coder</span>, <span class='ident'>interleave</span>};
+<span class="kw">use</span> <span class="ident">bits</span>;
+<span class="kw">use</span> <span class="ident">data</span>::{<span class="self">self</span>, <span class="ident">payload</span>, <span class="ident">coder</span>, <span class="ident">interleave</span>};
 
-<span class='doccomment'>/// Construct a confirmed data packet with the given header, payload blocks, and serial</span>
-<span class='doccomment'>/// number generator. The returned value is the coded, interleaved set of dibit symbols</span>
-<span class='doccomment'>/// that make up the packet.</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>confirmed</span><span class='op'>&lt;</span><span class='ident'>S</span><span class='op'>&gt;</span>(<span class='ident'>header</span>: <span class='ident'>data</span>::<span class='ident'>ConfirmedHeader</span>, <span class='ident'>payload</span>: <span class='ident'>data</span>::<span class='ident'>ConfirmedPayload</span>,
-                    <span class='kw-2'>mut</span> <span class='ident'>sn</span>: <span class='ident'>S</span>)
-    <span class='op'>-&gt;</span> <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>bits</span>::<span class='ident'>Dibit</span><span class='op'>&gt;</span> <span class='kw'>where</span> <span class='ident'>S</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>u8</span><span class='op'>&gt;</span>
+<span class="doccomment">/// Construct a confirmed data packet with the given header, payload blocks, and serial</span>
+<span class="doccomment">/// number generator. The returned value is the coded, interleaved set of dibit symbols</span>
+<span class="doccomment">/// that make up the packet.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">confirmed</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">header</span>: <span class="ident">data</span>::<span class="ident">ConfirmedHeader</span>, <span class="ident">payload</span>: <span class="ident">data</span>::<span class="ident">ConfirmedPayload</span>,
+                    <span class="kw-2">mut</span> <span class="ident">sn</span>: <span class="ident">S</span>)
+    <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">bits</span>::<span class="ident">Dibit</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">S</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">u8</span><span class="op">&gt;</span>
 {
-    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>pkt</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pkt</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
 
-    <span class='comment'>// Add in the header.</span>
-    <span class='ident'>pkt</span>.<span class='ident'>extend</span>({
-        <span class='kw'>let</span> (<span class='ident'>fields</span>, <span class='ident'>checksum</span>) <span class='op'>=</span> <span class='ident'>header</span>.<span class='ident'>build</span>();
+    <span class="comment">// Add in the header.</span>
+    <span class="ident">pkt</span>.<span class="ident">extend</span>({
+        <span class="kw">let</span> (<span class="ident">fields</span>, <span class="ident">checksum</span>) <span class="op">=</span> <span class="ident">header</span>.<span class="ident">build</span>();
 
-        <span class='ident'>coder</span>::<span class='ident'>DibitCoder</span>::<span class='ident'>new</span>()
-            .<span class='ident'>feed_bytes</span>(<span class='ident'>fields</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>())
-            .<span class='ident'>feed_bytes</span>(<span class='ident'>checksum</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>())
-            .<span class='ident'>finish</span>()
-            .<span class='ident'>iter</span>().<span class='ident'>cloned</span>()
+        <span class="ident">coder</span>::<span class="ident">DibitCoder</span>::<span class="ident">new</span>()
+            .<span class="ident">feed_bytes</span>(<span class="ident">fields</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+            .<span class="ident">feed_bytes</span>(<span class="ident">checksum</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+            .<span class="ident">finish</span>()
+            .<span class="ident">iter</span>().<span class="ident">cloned</span>()
     });
 
-    <span class='comment'>// Add in the normal data blocks.</span>
-    <span class='kw'>for</span> <span class='ident'>block</span> <span class='kw'>in</span> <span class='ident'>payload</span>.<span class='ident'>iter</span>() {
-        <span class='ident'>pkt</span>.<span class='ident'>extend</span>({
-            <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>) <span class='op'>=</span> <span class='ident'>block</span>.<span class='ident'>build</span>();
-            <span class='kw'>let</span> <span class='ident'>header</span> <span class='op'>=</span> <span class='ident'>payload</span>::<span class='ident'>ConfirmedBlockHeader</span>::<span class='ident'>new</span>(<span class='ident'>sn</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(),
-                <span class='ident'>data</span>, <span class='ident'>pads</span>.<span class='ident'>clone</span>()).<span class='ident'>build</span>();
+    <span class="comment">// Add in the normal data blocks.</span>
+    <span class="kw">for</span> <span class="ident">block</span> <span class="kw">in</span> <span class="ident">payload</span>.<span class="ident">iter</span>() {
+        <span class="ident">pkt</span>.<span class="ident">extend</span>({
+            <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>) <span class="op">=</span> <span class="ident">block</span>.<span class="ident">build</span>();
+            <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">payload</span>::<span class="ident">ConfirmedBlockHeader</span>::<span class="ident">new</span>(<span class="ident">sn</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(),
+                <span class="ident">data</span>, <span class="ident">pads</span>.<span class="ident">clone</span>()).<span class="ident">build</span>();
 
-            <span class='ident'>interleave</span>::<span class='ident'>Interleaver</span>::<span class='ident'>new</span>(<span class='ident'>coder</span>::<span class='ident'>TribitCoder</span>::<span class='ident'>new</span>()
-                .<span class='ident'>feed_bytes</span>(<span class='ident'>header</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>()
-                    .<span class='ident'>chain</span>(<span class='ident'>data</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>())
-                    .<span class='ident'>chain</span>(<span class='ident'>pads</span>.<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> <span class='number'>0</span>)))
-                .<span class='ident'>finish</span>())
+            <span class="ident">interleave</span>::<span class="ident">Interleaver</span>::<span class="ident">new</span>(<span class="ident">coder</span>::<span class="ident">TribitCoder</span>::<span class="ident">new</span>()
+                .<span class="ident">feed_bytes</span>(<span class="ident">header</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>()
+                    .<span class="ident">chain</span>(<span class="ident">data</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+                    .<span class="ident">chain</span>(<span class="ident">pads</span>.<span class="ident">map</span>(<span class="op">|</span>_<span class="op">|</span> <span class="number">0</span>)))
+                .<span class="ident">finish</span>())
         });
     }
 
-    <span class='comment'>// Add in the tail block.</span>
-    <span class='ident'>pkt</span>.<span class='ident'>extend</span>({
-        <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>, <span class='ident'>checksum</span>) <span class='op'>=</span> <span class='ident'>payload</span>.<span class='ident'>tail</span>().<span class='ident'>build</span>();
-        <span class='kw'>let</span> <span class='ident'>header</span> <span class='op'>=</span> <span class='ident'>payload</span>::<span class='ident'>ConfirmedBlockHeader</span>::<span class='ident'>new</span>(<span class='ident'>sn</span>.<span class='ident'>next</span>().<span class='ident'>unwrap</span>(),
-            <span class='ident'>data</span>, <span class='ident'>pads</span>.<span class='ident'>clone</span>()).<span class='ident'>build</span>();
+    <span class="comment">// Add in the tail block.</span>
+    <span class="ident">pkt</span>.<span class="ident">extend</span>({
+        <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>, <span class="ident">checksum</span>) <span class="op">=</span> <span class="ident">payload</span>.<span class="ident">tail</span>().<span class="ident">build</span>();
+        <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">payload</span>::<span class="ident">ConfirmedBlockHeader</span>::<span class="ident">new</span>(<span class="ident">sn</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(),
+            <span class="ident">data</span>, <span class="ident">pads</span>.<span class="ident">clone</span>()).<span class="ident">build</span>();
 
-        <span class='ident'>interleave</span>::<span class='ident'>Interleaver</span>::<span class='ident'>new</span>(<span class='ident'>coder</span>::<span class='ident'>TribitCoder</span>::<span class='ident'>new</span>()
-            .<span class='ident'>feed_bytes</span>(<span class='ident'>header</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>()
-                .<span class='ident'>chain</span>(<span class='ident'>data</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>())
-                .<span class='ident'>chain</span>(<span class='ident'>pads</span>.<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> <span class='number'>0</span>))
-                .<span class='ident'>chain</span>(<span class='ident'>checksum</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>()))
-            .<span class='ident'>finish</span>())
+        <span class="ident">interleave</span>::<span class="ident">Interleaver</span>::<span class="ident">new</span>(<span class="ident">coder</span>::<span class="ident">TribitCoder</span>::<span class="ident">new</span>()
+            .<span class="ident">feed_bytes</span>(<span class="ident">header</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>()
+                .<span class="ident">chain</span>(<span class="ident">data</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+                .<span class="ident">chain</span>(<span class="ident">pads</span>.<span class="ident">map</span>(<span class="op">|</span>_<span class="op">|</span> <span class="number">0</span>))
+                .<span class="ident">chain</span>(<span class="ident">checksum</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>()))
+            .<span class="ident">finish</span>())
     });
 
-    <span class='ident'>pkt</span>
+    <span class="ident">pkt</span>
 }
 
-<span class='doccomment'>/// Construct an unconfirmed data packet with the given header and payload blocks. The</span>
-<span class='doccomment'>/// returned value is the coded, interleaved set of dibit symbols that make up the packet.</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>unconfirmed</span>(<span class='ident'>header</span>: <span class='ident'>data</span>::<span class='ident'>UnconfirmedHeader</span>, <span class='ident'>payload</span>: <span class='ident'>data</span>::<span class='ident'>UnconfirmedPayload</span>)
-    <span class='op'>-&gt;</span> <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>bits</span>::<span class='ident'>Dibit</span><span class='op'>&gt;</span>
+<span class="doccomment">/// Construct an unconfirmed data packet with the given header and payload blocks. The</span>
+<span class="doccomment">/// returned value is the coded, interleaved set of dibit symbols that make up the packet.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unconfirmed</span>(<span class="ident">header</span>: <span class="ident">data</span>::<span class="ident">UnconfirmedHeader</span>, <span class="ident">payload</span>: <span class="ident">data</span>::<span class="ident">UnconfirmedPayload</span>)
+    <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">bits</span>::<span class="ident">Dibit</span><span class="op">&gt;</span>
 {
-    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>pkt</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pkt</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
 
-    <span class='ident'>pkt</span>.<span class='ident'>extend</span>({
-        <span class='kw'>let</span> (<span class='ident'>fields</span>, <span class='ident'>checksum</span>) <span class='op'>=</span> <span class='ident'>header</span>.<span class='ident'>build</span>();
+    <span class="ident">pkt</span>.<span class="ident">extend</span>({
+        <span class="kw">let</span> (<span class="ident">fields</span>, <span class="ident">checksum</span>) <span class="op">=</span> <span class="ident">header</span>.<span class="ident">build</span>();
 
-        <span class='ident'>coder</span>::<span class='ident'>DibitCoder</span>::<span class='ident'>new</span>()
-            .<span class='ident'>feed_bytes</span>(<span class='ident'>fields</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>())
-            .<span class='ident'>feed_bytes</span>(<span class='ident'>checksum</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>())
-            .<span class='ident'>finish</span>()
-            .<span class='ident'>iter</span>().<span class='ident'>cloned</span>()
+        <span class="ident">coder</span>::<span class="ident">DibitCoder</span>::<span class="ident">new</span>()
+            .<span class="ident">feed_bytes</span>(<span class="ident">fields</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+            .<span class="ident">feed_bytes</span>(<span class="ident">checksum</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+            .<span class="ident">finish</span>()
+            .<span class="ident">iter</span>().<span class="ident">cloned</span>()
     });
 
-    <span class='kw'>for</span> <span class='ident'>block</span> <span class='kw'>in</span> <span class='ident'>payload</span>.<span class='ident'>iter</span>() {
-        <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>) <span class='op'>=</span> <span class='ident'>block</span>.<span class='ident'>build</span>();
+    <span class="kw">for</span> <span class="ident">block</span> <span class="kw">in</span> <span class="ident">payload</span>.<span class="ident">iter</span>() {
+        <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>) <span class="op">=</span> <span class="ident">block</span>.<span class="ident">build</span>();
 
-        <span class='ident'>pkt</span>.<span class='ident'>extend</span>({
-            <span class='ident'>interleave</span>::<span class='ident'>Interleaver</span>::<span class='ident'>new</span>(<span class='ident'>coder</span>::<span class='ident'>DibitCoder</span>::<span class='ident'>new</span>()
-                .<span class='ident'>feed_bytes</span>(<span class='ident'>data</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>())
-                .<span class='ident'>feed_bytes</span>(<span class='ident'>pads</span>.<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> <span class='number'>0</span>))
-                .<span class='ident'>finish</span>())
+        <span class="ident">pkt</span>.<span class="ident">extend</span>({
+            <span class="ident">interleave</span>::<span class="ident">Interleaver</span>::<span class="ident">new</span>(<span class="ident">coder</span>::<span class="ident">DibitCoder</span>::<span class="ident">new</span>()
+                .<span class="ident">feed_bytes</span>(<span class="ident">data</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+                .<span class="ident">feed_bytes</span>(<span class="ident">pads</span>.<span class="ident">map</span>(<span class="op">|</span>_<span class="op">|</span> <span class="number">0</span>))
+                .<span class="ident">finish</span>())
         });
     }
 
-    <span class='ident'>pkt</span>.<span class='ident'>extend</span>({
-        <span class='kw'>let</span> (<span class='ident'>data</span>, <span class='ident'>pads</span>, <span class='ident'>checksum</span>) <span class='op'>=</span> <span class='ident'>payload</span>.<span class='ident'>tail</span>().<span class='ident'>build</span>();
+    <span class="ident">pkt</span>.<span class="ident">extend</span>({
+        <span class="kw">let</span> (<span class="ident">data</span>, <span class="ident">pads</span>, <span class="ident">checksum</span>) <span class="op">=</span> <span class="ident">payload</span>.<span class="ident">tail</span>().<span class="ident">build</span>();
 
-        <span class='ident'>interleave</span>::<span class='ident'>Interleaver</span>::<span class='ident'>new</span>(<span class='ident'>coder</span>::<span class='ident'>DibitCoder</span>::<span class='ident'>new</span>()
-            .<span class='ident'>feed_bytes</span>(<span class='ident'>data</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>())
-            .<span class='ident'>feed_bytes</span>(<span class='ident'>pads</span>.<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> <span class='number'>0</span>))
-            .<span class='ident'>feed_bytes</span>(<span class='ident'>checksum</span>.<span class='ident'>iter</span>().<span class='ident'>cloned</span>())
-            .<span class='ident'>finish</span>())
+        <span class="ident">interleave</span>::<span class="ident">Interleaver</span>::<span class="ident">new</span>(<span class="ident">coder</span>::<span class="ident">DibitCoder</span>::<span class="ident">new</span>()
+            .<span class="ident">feed_bytes</span>(<span class="ident">data</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+            .<span class="ident">feed_bytes</span>(<span class="ident">pads</span>.<span class="ident">map</span>(<span class="op">|</span>_<span class="op">|</span> <span class="number">0</span>))
+            .<span class="ident">feed_bytes</span>(<span class="ident">checksum</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+            .<span class="ident">finish</span>())
     });
 
-    <span class='ident'>pkt</span>
+    <span class="ident">pkt</span>
 }
 </pre>
 </section>
@@ -256,13 +257,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -296,7 +299,6 @@
         window.rootPath = "../../../";
         window.currentCrate = "p25";
     </script>
-    <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     <script defer src="../../../search-index.js"></script>
 </body>

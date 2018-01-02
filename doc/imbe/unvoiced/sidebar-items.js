@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Unvoiced","Synthesizes unvoiced spectrum signal s<sub>uv</sub>(n)."],["UnvoicedDft","Constructs unvoiced DFT/IDFT."]]});
+initSidebarItems({"struct":[["Unvoiced","Synthesizes unvoiced spectrum signal suv(n)."],["UnvoicedDft","Constructs unvoiced DFT/IDFT."]]});

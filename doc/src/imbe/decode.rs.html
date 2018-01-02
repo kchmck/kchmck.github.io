@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -43,7 +44,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -196,158 +197,158 @@
 <span id="151">151</span>
 <span id="152">152</span>
 <span id="153">153</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! Decode IMBE frames into an audio signal.</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! Decode IMBE frames into an audio signal.</span>
 
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>Arc</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
 
-<span class='kw'>use</span> <span class='ident'>collect_slice</span>::<span class='ident'>CollectSlice</span>;
-<span class='kw'>use</span> <span class='ident'>crossbeam</span>;
-<span class='kw'>use</span> <span class='ident'>rand</span>;
+<span class="kw">use</span> <span class="ident">collect_slice</span>::<span class="ident">CollectSlice</span>;
+<span class="kw">use</span> <span class="ident">crossbeam</span>;
+<span class="kw">use</span> <span class="ident">rand</span>;
 
-<span class='kw'>use</span> <span class='ident'>coefs</span>::<span class='ident'>Coefficients</span>;
-<span class='kw'>use</span> <span class='ident'>consts</span>::<span class='ident'>SAMPLES_PER_FRAME</span>;
-<span class='kw'>use</span> <span class='ident'>descramble</span>::{<span class='ident'>descramble</span>, <span class='ident'>Bootstrap</span>};
-<span class='kw'>use</span> <span class='ident'>enhance</span>::{<span class='self'>self</span>, <span class='ident'>EnhancedSpectrals</span>, <span class='ident'>FrameEnergy</span>, <span class='ident'>EnhanceErrors</span>};
-<span class='kw'>use</span> <span class='ident'>frame</span>::{<span class='ident'>AudioBuf</span>, <span class='ident'>ReceivedFrame</span>};
-<span class='kw'>use</span> <span class='ident'>gain</span>::<span class='ident'>Gains</span>;
-<span class='kw'>use</span> <span class='ident'>params</span>::<span class='ident'>BaseParams</span>;
-<span class='kw'>use</span> <span class='ident'>prev</span>::<span class='ident'>PrevFrame</span>;
-<span class='kw'>use</span> <span class='ident'>spectral</span>::<span class='ident'>Spectrals</span>;
-<span class='kw'>use</span> <span class='ident'>unvoiced</span>::{<span class='ident'>UnvoicedDft</span>, <span class='ident'>Unvoiced</span>};
-<span class='kw'>use</span> <span class='ident'>voiced</span>::{<span class='ident'>Phase</span>, <span class='ident'>PhaseBase</span>, <span class='ident'>Voiced</span>};
+<span class="kw">use</span> <span class="ident">coefs</span>::<span class="ident">Coefficients</span>;
+<span class="kw">use</span> <span class="ident">consts</span>::<span class="ident">SAMPLES_PER_FRAME</span>;
+<span class="kw">use</span> <span class="ident">descramble</span>::{<span class="ident">descramble</span>, <span class="ident">Bootstrap</span>};
+<span class="kw">use</span> <span class="ident">enhance</span>::{<span class="self">self</span>, <span class="ident">EnhancedSpectrals</span>, <span class="ident">FrameEnergy</span>, <span class="ident">EnhanceErrors</span>};
+<span class="kw">use</span> <span class="ident">frame</span>::{<span class="ident">AudioBuf</span>, <span class="ident">ReceivedFrame</span>};
+<span class="kw">use</span> <span class="ident">gain</span>::<span class="ident">Gains</span>;
+<span class="kw">use</span> <span class="ident">params</span>::<span class="ident">BaseParams</span>;
+<span class="kw">use</span> <span class="ident">prev</span>::<span class="ident">PrevFrame</span>;
+<span class="kw">use</span> <span class="ident">spectral</span>::<span class="ident">Spectrals</span>;
+<span class="kw">use</span> <span class="ident">unvoiced</span>::{<span class="ident">UnvoicedDft</span>, <span class="ident">Unvoiced</span>};
+<span class="kw">use</span> <span class="ident">voiced</span>::{<span class="ident">Phase</span>, <span class="ident">PhaseBase</span>, <span class="ident">Voiced</span>};
 
-<span class='doccomment'>/// Number of threads to spin up per frame.</span>
-<span class='kw'>const</span> <span class='ident'>THREADS</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>4</span>;
-<span class='doccomment'>/// Number of samples to process in each thread.</span>
-<span class='kw'>const</span> <span class='ident'>SAMPLES_PER_THREAD</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='ident'>SAMPLES_PER_FRAME</span> <span class='op'>/</span> <span class='ident'>THREADS</span>;
+<span class="doccomment">/// Number of threads to spin up per frame.</span>
+<span class="kw">const</span> <span class="ident">THREADS</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">4</span>;
+<span class="doccomment">/// Number of samples to process in each thread.</span>
+<span class="kw">const</span> <span class="ident">SAMPLES_PER_THREAD</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">SAMPLES_PER_FRAME</span> <span class="op">/</span> <span class="ident">THREADS</span>;
 
-<span class='doccomment'>/// Decodes a stream of IMBE frames.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ImbeDecoder</span> {
-    <span class='doccomment'>/// Tracks saved parameters across frames.</span>
-    <span class='ident'>prev</span>: <span class='ident'>PrevFrame</span>,
+<span class="doccomment">/// Decodes a stream of IMBE frames.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ImbeDecoder</span> {
+    <span class="doccomment">/// Tracks saved parameters across frames.</span>
+    <span class="ident">prev</span>: <span class="ident">PrevFrame</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>ImbeDecoder</span> {
-    <span class='doccomment'>/// Create a new `ImbeDecoder` in the default state.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>ImbeDecoder</span> {
-        <span class='ident'>ImbeDecoder</span> {
-            <span class='ident'>prev</span>: <span class='ident'>PrevFrame</span>::<span class='ident'>default</span>(),
+<span class="kw">impl</span> <span class="ident">ImbeDecoder</span> {
+    <span class="doccomment">/// Create a new `ImbeDecoder` in the default state.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">ImbeDecoder</span> {
+        <span class="ident">ImbeDecoder</span> {
+            <span class="ident">prev</span>: <span class="ident">PrevFrame</span>::<span class="ident">default</span>(),
         }
     }
 
-    <span class='doccomment'>/// Decode the given frame into the given audio sample buffer.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>decode</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>frame</span>: <span class='ident'>ReceivedFrame</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AudioBuf</span>) {
-        <span class='kw'>let</span> <span class='ident'>period</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>Bootstrap</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>frame</span>.<span class='ident'>chunks</span>) {
-            <span class='ident'>Bootstrap</span>::<span class='ident'>Period</span>(<span class='ident'>p</span>) <span class='op'>=&gt;</span> <span class='ident'>p</span>,
-            <span class='ident'>Bootstrap</span>::<span class='ident'>Invalid</span> <span class='op'>=&gt;</span> {
-                <span class='comment'>// Repeat previous frame on invalid period [p46].</span>
-                <span class='self'>self</span>.<span class='ident'>repeat</span>(<span class='ident'>buf</span>);
-                <span class='kw'>return</span>;
+    <span class="doccomment">/// Decode the given frame into the given audio sample buffer.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">frame</span>: <span class="ident">ReceivedFrame</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AudioBuf</span>) {
+        <span class="kw">let</span> <span class="ident">period</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">Bootstrap</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">frame</span>.<span class="ident">chunks</span>) {
+            <span class="ident">Bootstrap</span>::<span class="ident">Period</span>(<span class="ident">p</span>) <span class="op">=&gt;</span> <span class="ident">p</span>,
+            <span class="ident">Bootstrap</span>::<span class="ident">Invalid</span> <span class="op">=&gt;</span> {
+                <span class="comment">// Repeat previous frame on invalid period [p46].</span>
+                <span class="self">self</span>.<span class="ident">repeat</span>(<span class="ident">buf</span>);
+                <span class="kw">return</span>;
             },
-            <span class='ident'>Bootstrap</span>::<span class='ident'>Silence</span> <span class='op'>=&gt;</span> {
-                <span class='self'>self</span>.<span class='ident'>silence</span>(<span class='ident'>buf</span>);
-                <span class='kw'>return</span>;
+            <span class="ident">Bootstrap</span>::<span class="ident">Silence</span> <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">silence</span>(<span class="ident">buf</span>);
+                <span class="kw">return</span>;
             },
         };
 
-        <span class='kw'>let</span> <span class='ident'>errors</span> <span class='op'>=</span> <span class='ident'>EnhanceErrors</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>frame</span>.<span class='ident'>errors</span>, <span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>err_rate</span>);
+        <span class="kw">let</span> <span class="ident">errors</span> <span class="op">=</span> <span class="ident">EnhanceErrors</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">frame</span>.<span class="ident">errors</span>, <span class="self">self</span>.<span class="ident">prev</span>.<span class="ident">err_rate</span>);
 
-        <span class='kw'>if</span> <span class='ident'>enhance</span>::<span class='ident'>should_repeat</span>(<span class='kw-2'>&amp;</span><span class='ident'>errors</span>) {
-            <span class='self'>self</span>.<span class='ident'>repeat</span>(<span class='ident'>buf</span>);
-            <span class='kw'>return</span>;
+        <span class="kw">if</span> <span class="ident">enhance</span>::<span class="ident">should_repeat</span>(<span class="kw-2">&amp;</span><span class="ident">errors</span>) {
+            <span class="self">self</span>.<span class="ident">repeat</span>(<span class="ident">buf</span>);
+            <span class="kw">return</span>;
         }
 
-        <span class='kw'>if</span> <span class='ident'>enhance</span>::<span class='ident'>should_mute</span>(<span class='kw-2'>&amp;</span><span class='ident'>errors</span>) {
-            <span class='self'>self</span>.<span class='ident'>silence</span>(<span class='ident'>buf</span>);
-            <span class='kw'>return</span>;
+        <span class="kw">if</span> <span class="ident">enhance</span>::<span class="ident">should_mute</span>(<span class="kw-2">&amp;</span><span class="ident">errors</span>) {
+            <span class="self">self</span>.<span class="ident">silence</span>(<span class="ident">buf</span>);
+            <span class="kw">return</span>;
         }
 
-        <span class='kw'>let</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>BaseParams</span>::<span class='ident'>new</span>(<span class='ident'>period</span>);
-        <span class='kw'>let</span> (<span class='ident'>amps</span>, <span class='kw-2'>mut</span> <span class='ident'>voice</span>, <span class='ident'>gain_idx</span>) <span class='op'>=</span> <span class='ident'>descramble</span>(<span class='kw-2'>&amp;</span><span class='ident'>frame</span>.<span class='ident'>chunks</span>, <span class='kw-2'>&amp;</span><span class='ident'>params</span>);
-        <span class='kw'>let</span> <span class='ident'>gains</span> <span class='op'>=</span> <span class='ident'>Gains</span>::<span class='ident'>new</span>(<span class='ident'>gain_idx</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>params</span>);
-        <span class='kw'>let</span> <span class='ident'>coefs</span> <span class='op'>=</span> <span class='ident'>Coefficients</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>gains</span>, <span class='kw-2'>&amp;</span><span class='ident'>amps</span>, <span class='kw-2'>&amp;</span><span class='ident'>params</span>);
-        <span class='kw'>let</span> <span class='ident'>spectrals</span> <span class='op'>=</span> <span class='ident'>Spectrals</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>coefs</span>, <span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>);
-        <span class='kw'>let</span> <span class='ident'>energy</span> <span class='op'>=</span> <span class='ident'>FrameEnergy</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>spectrals</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>energy</span>, <span class='kw-2'>&amp;</span><span class='ident'>params</span>);
+        <span class="kw">let</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">BaseParams</span>::<span class="ident">new</span>(<span class="ident">period</span>);
+        <span class="kw">let</span> (<span class="ident">amps</span>, <span class="kw-2">mut</span> <span class="ident">voice</span>, <span class="ident">gain_idx</span>) <span class="op">=</span> <span class="ident">descramble</span>(<span class="kw-2">&amp;</span><span class="ident">frame</span>.<span class="ident">chunks</span>, <span class="kw-2">&amp;</span><span class="ident">params</span>);
+        <span class="kw">let</span> <span class="ident">gains</span> <span class="op">=</span> <span class="ident">Gains</span>::<span class="ident">new</span>(<span class="ident">gain_idx</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">params</span>);
+        <span class="kw">let</span> <span class="ident">coefs</span> <span class="op">=</span> <span class="ident">Coefficients</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">gains</span>, <span class="kw-2">&amp;</span><span class="ident">amps</span>, <span class="kw-2">&amp;</span><span class="ident">params</span>);
+        <span class="kw">let</span> <span class="ident">spectrals</span> <span class="op">=</span> <span class="ident">Spectrals</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">coefs</span>, <span class="kw-2">&amp;</span><span class="ident">params</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">prev</span>);
+        <span class="kw">let</span> <span class="ident">energy</span> <span class="op">=</span> <span class="ident">FrameEnergy</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">spectrals</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">prev</span>.<span class="ident">energy</span>, <span class="kw-2">&amp;</span><span class="ident">params</span>);
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>enhanced</span> <span class='op'>=</span> <span class='ident'>EnhancedSpectrals</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>spectrals</span>, <span class='kw-2'>&amp;</span><span class='ident'>energy</span>, <span class='kw-2'>&amp;</span><span class='ident'>params</span>);
-        <span class='kw'>let</span> <span class='ident'>amp_thresh</span> <span class='op'>=</span> <span class='ident'>enhance</span>::<span class='ident'>amp_thresh</span>(<span class='kw-2'>&amp;</span><span class='ident'>errors</span>, <span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>amp_thresh</span>);
-        <span class='ident'>enhance</span>::<span class='ident'>smooth</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>enhanced</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>errors</span>, <span class='kw-2'>&amp;</span><span class='ident'>energy</span>, <span class='ident'>amp_thresh</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">enhanced</span> <span class="op">=</span> <span class="ident">EnhancedSpectrals</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">spectrals</span>, <span class="kw-2">&amp;</span><span class="ident">energy</span>, <span class="kw-2">&amp;</span><span class="ident">params</span>);
+        <span class="kw">let</span> <span class="ident">amp_thresh</span> <span class="op">=</span> <span class="ident">enhance</span>::<span class="ident">amp_thresh</span>(<span class="kw-2">&amp;</span><span class="ident">errors</span>, <span class="self">self</span>.<span class="ident">prev</span>.<span class="ident">amp_thresh</span>);
+        <span class="ident">enhance</span>::<span class="ident">smooth</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">enhanced</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">voice</span>, <span class="kw-2">&amp;</span><span class="ident">errors</span>, <span class="kw-2">&amp;</span><span class="ident">energy</span>, <span class="ident">amp_thresh</span>);
 
-        <span class='kw'>let</span> <span class='ident'>udft</span> <span class='op'>=</span> <span class='ident'>UnvoicedDft</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>enhanced</span>, <span class='ident'>rand</span>::<span class='ident'>weak_rng</span>());
-        <span class='kw'>let</span> <span class='ident'>vbase</span> <span class='op'>=</span> <span class='ident'>PhaseBase</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>);
-        <span class='kw'>let</span> <span class='ident'>vphase</span> <span class='op'>=</span> <span class='ident'>Phase</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>vbase</span>, <span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='ident'>rand</span>::<span class='ident'>weak_rng</span>());
+        <span class="kw">let</span> <span class="ident">udft</span> <span class="op">=</span> <span class="ident">UnvoicedDft</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>, <span class="kw-2">&amp;</span><span class="ident">voice</span>, <span class="kw-2">&amp;</span><span class="ident">enhanced</span>, <span class="ident">rand</span>::<span class="ident">weak_rng</span>());
+        <span class="kw">let</span> <span class="ident">vbase</span> <span class="op">=</span> <span class="ident">PhaseBase</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">prev</span>);
+        <span class="kw">let</span> <span class="ident">vphase</span> <span class="op">=</span> <span class="ident">Phase</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">vbase</span>, <span class="kw-2">&amp;</span><span class="ident">params</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">prev</span>, <span class="kw-2">&amp;</span><span class="ident">voice</span>, <span class="ident">rand</span>::<span class="ident">weak_rng</span>());
 
-        <span class='ident'>crossbeam</span>::<span class='ident'>scope</span>(<span class='op'>|</span><span class='ident'>scope</span><span class='op'>|</span> {
-            <span class='kw'>let</span> <span class='ident'>unvoiced</span> <span class='op'>=</span> <span class='ident'>Arc</span>::<span class='ident'>new</span>(<span class='ident'>Unvoiced</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>udft</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>unvoiced</span>));
-            <span class='kw'>let</span> <span class='ident'>voiced</span> <span class='op'>=</span> <span class='ident'>Arc</span>::<span class='ident'>new</span>(<span class='ident'>Voiced</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>, <span class='kw-2'>&amp;</span><span class='ident'>vphase</span>, <span class='kw-2'>&amp;</span><span class='ident'>enhanced</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>));
+        <span class="ident">crossbeam</span>::<span class="ident">scope</span>(<span class="op">|</span><span class="ident">scope</span><span class="op">|</span> {
+            <span class="kw">let</span> <span class="ident">unvoiced</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Unvoiced</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">udft</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">prev</span>.<span class="ident">unvoiced</span>));
+            <span class="kw">let</span> <span class="ident">voiced</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Voiced</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">prev</span>, <span class="kw-2">&amp;</span><span class="ident">vphase</span>, <span class="kw-2">&amp;</span><span class="ident">enhanced</span>, <span class="kw-2">&amp;</span><span class="ident">voice</span>));
 
-            <span class='kw'>for</span> (<span class='ident'>i</span>, <span class='ident'>chunk</span>) <span class='kw'>in</span> <span class='ident'>buf</span>.<span class='ident'>chunks_mut</span>(<span class='ident'>SAMPLES_PER_THREAD</span>).<span class='ident'>enumerate</span>() {
-                <span class='kw'>let</span> <span class='ident'>u</span> <span class='op'>=</span> <span class='ident'>unvoiced</span>.<span class='ident'>clone</span>();
-                <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>voiced</span>.<span class='ident'>clone</span>();
+            <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">chunk</span>) <span class="kw">in</span> <span class="ident">buf</span>.<span class="ident">chunks_mut</span>(<span class="ident">SAMPLES_PER_THREAD</span>).<span class="ident">enumerate</span>() {
+                <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="ident">unvoiced</span>.<span class="ident">clone</span>();
+                <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">voiced</span>.<span class="ident">clone</span>();
 
-                <span class='kw'>let</span> <span class='ident'>start</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>*</span> <span class='ident'>SAMPLES_PER_THREAD</span>;
-                <span class='kw'>let</span> <span class='ident'>stop</span> <span class='op'>=</span> <span class='ident'>start</span> <span class='op'>+</span> <span class='ident'>SAMPLES_PER_THREAD</span>;
+                <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">SAMPLES_PER_THREAD</span>;
+                <span class="kw">let</span> <span class="ident">stop</span> <span class="op">=</span> <span class="ident">start</span> <span class="op">+</span> <span class="ident">SAMPLES_PER_THREAD</span>;
 
-                <span class='comment'>// Compute Eq 142 for this chunk.</span>
-                <span class='ident'>scope</span>.<span class='ident'>spawn</span>(<span class='kw'>move</span> <span class='op'>||</span> {
-                    (<span class='ident'>start</span>..<span class='ident'>stop</span>)
-                        .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>n</span><span class='op'>|</span> <span class='ident'>u</span>.<span class='ident'>get</span>(<span class='ident'>n</span>) <span class='op'>+</span> <span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>n</span>))
-                        .<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>chunk</span>[..]);
+                <span class="comment">// Compute Eq 142 for this chunk.</span>
+                <span class="ident">scope</span>.<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">||</span> {
+                    (<span class="ident">start</span>..<span class="ident">stop</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">u</span>.<span class="ident">get</span>(<span class="ident">n</span>) <span class="op">+</span> <span class="ident">v</span>.<span class="ident">get</span>(<span class="ident">n</span>))
+                        .<span class="ident">collect_slice_checked</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">chunk</span>[..]);
                 });
             }
         });
 
-        <span class='comment'>// Save current parameters.</span>
-        <span class='self'>self</span>.<span class='ident'>prev</span> <span class='op'>=</span> <span class='ident'>PrevFrame</span> {
-            <span class='ident'>params</span>: <span class='ident'>params</span>,
-            <span class='ident'>spectrals</span>: <span class='ident'>spectrals</span>,
-            <span class='ident'>enhanced</span>: <span class='ident'>enhanced</span>,
-            <span class='ident'>voice</span>: <span class='ident'>voice</span>,
-            <span class='ident'>err_rate</span>: <span class='ident'>errors</span>.<span class='ident'>rate</span>,
-            <span class='ident'>energy</span>: <span class='ident'>energy</span>,
-            <span class='ident'>amp_thresh</span>: <span class='ident'>amp_thresh</span>,
-            <span class='ident'>unvoiced</span>: <span class='ident'>udft</span>,
-            <span class='ident'>phase_base</span>: <span class='ident'>vbase</span>,
-            <span class='ident'>phase</span>: <span class='ident'>vphase</span>,
+        <span class="comment">// Save current parameters.</span>
+        <span class="self">self</span>.<span class="ident">prev</span> <span class="op">=</span> <span class="ident">PrevFrame</span> {
+            <span class="ident">params</span>: <span class="ident">params</span>,
+            <span class="ident">spectrals</span>: <span class="ident">spectrals</span>,
+            <span class="ident">enhanced</span>: <span class="ident">enhanced</span>,
+            <span class="ident">voice</span>: <span class="ident">voice</span>,
+            <span class="ident">err_rate</span>: <span class="ident">errors</span>.<span class="ident">rate</span>,
+            <span class="ident">energy</span>: <span class="ident">energy</span>,
+            <span class="ident">amp_thresh</span>: <span class="ident">amp_thresh</span>,
+            <span class="ident">unvoiced</span>: <span class="ident">udft</span>,
+            <span class="ident">phase_base</span>: <span class="ident">vbase</span>,
+            <span class="ident">phase</span>: <span class="ident">vphase</span>,
         };
     }
 
-    <span class='doccomment'>/// Fill the given audio buffer with silence.</span>
-    <span class='kw'>fn</span> <span class='ident'>silence</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AudioBuf</span>) {
-        (<span class='number'>0</span>..<span class='ident'>SAMPLES_PER_FRAME</span>).<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> <span class='number'>0.0</span>).<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);
+    <span class="doccomment">/// Fill the given audio buffer with silence.</span>
+    <span class="kw">fn</span> <span class="ident">silence</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AudioBuf</span>) {
+        (<span class="number">0</span>..<span class="ident">SAMPLES_PER_FRAME</span>).<span class="ident">map</span>(<span class="op">|</span>_<span class="op">|</span> <span class="number">0.0</span>).<span class="ident">collect_slice_checked</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>[..]);
     }
 
-    <span class='doccomment'>/// Repeat the previous frame into the given audio buffer.</span>
-    <span class='kw'>fn</span> <span class='ident'>repeat</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AudioBuf</span>) {
-        <span class='comment'>// Apply Eqs 99 through 104.</span>
-        <span class='kw'>let</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>params</span>.<span class='ident'>clone</span>();
-        <span class='kw'>let</span> <span class='ident'>voice</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>voice</span>.<span class='ident'>clone</span>();
-        <span class='kw'>let</span> <span class='ident'>enhanced</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>enhanced</span>.<span class='ident'>clone</span>();
+    <span class="doccomment">/// Repeat the previous frame into the given audio buffer.</span>
+    <span class="kw">fn</span> <span class="ident">repeat</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AudioBuf</span>) {
+        <span class="comment">// Apply Eqs 99 through 104.</span>
+        <span class="kw">let</span> <span class="ident">params</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev</span>.<span class="ident">params</span>.<span class="ident">clone</span>();
+        <span class="kw">let</span> <span class="ident">voice</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev</span>.<span class="ident">voice</span>.<span class="ident">clone</span>();
+        <span class="kw">let</span> <span class="ident">enhanced</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev</span>.<span class="ident">enhanced</span>.<span class="ident">clone</span>();
 
-        <span class='kw'>let</span> <span class='ident'>udft</span> <span class='op'>=</span> <span class='ident'>UnvoicedDft</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='kw-2'>&amp;</span><span class='ident'>enhanced</span>, <span class='ident'>rand</span>::<span class='ident'>weak_rng</span>());
-        <span class='kw'>let</span> <span class='ident'>vbase</span> <span class='op'>=</span> <span class='ident'>PhaseBase</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>);
-        <span class='kw'>let</span> <span class='ident'>vphase</span> <span class='op'>=</span> <span class='ident'>Phase</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>vbase</span>, <span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>, <span class='ident'>rand</span>::<span class='ident'>weak_rng</span>());
+        <span class="kw">let</span> <span class="ident">udft</span> <span class="op">=</span> <span class="ident">UnvoicedDft</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>, <span class="kw-2">&amp;</span><span class="ident">voice</span>, <span class="kw-2">&amp;</span><span class="ident">enhanced</span>, <span class="ident">rand</span>::<span class="ident">weak_rng</span>());
+        <span class="kw">let</span> <span class="ident">vbase</span> <span class="op">=</span> <span class="ident">PhaseBase</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">prev</span>);
+        <span class="kw">let</span> <span class="ident">vphase</span> <span class="op">=</span> <span class="ident">Phase</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">vbase</span>, <span class="kw-2">&amp;</span><span class="ident">params</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">prev</span>, <span class="kw-2">&amp;</span><span class="ident">voice</span>, <span class="ident">rand</span>::<span class="ident">weak_rng</span>());
 
-        <span class='kw'>let</span> <span class='ident'>unvoiced</span> <span class='op'>=</span> <span class='ident'>Unvoiced</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>udft</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>.<span class='ident'>unvoiced</span>);
-        <span class='kw'>let</span> <span class='ident'>voiced</span> <span class='op'>=</span> <span class='ident'>Voiced</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>params</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>prev</span>, <span class='kw-2'>&amp;</span><span class='ident'>vphase</span>, <span class='kw-2'>&amp;</span><span class='ident'>enhanced</span>, <span class='kw-2'>&amp;</span><span class='ident'>voice</span>);
+        <span class="kw">let</span> <span class="ident">unvoiced</span> <span class="op">=</span> <span class="ident">Unvoiced</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">udft</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">prev</span>.<span class="ident">unvoiced</span>);
+        <span class="kw">let</span> <span class="ident">voiced</span> <span class="op">=</span> <span class="ident">Voiced</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">prev</span>, <span class="kw-2">&amp;</span><span class="ident">vphase</span>, <span class="kw-2">&amp;</span><span class="ident">enhanced</span>, <span class="kw-2">&amp;</span><span class="ident">voice</span>);
 
-        <span class='comment'>// Repeat frame using previous parameters [p47].</span>
-        (<span class='number'>0</span>..<span class='ident'>SAMPLES_PER_FRAME</span>)
-            .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>n</span><span class='op'>|</span> <span class='ident'>unvoiced</span>.<span class='ident'>get</span>(<span class='ident'>n</span>) <span class='op'>+</span> <span class='ident'>voiced</span>.<span class='ident'>get</span>(<span class='ident'>n</span>))
-            .<span class='ident'>collect_slice_checked</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>[..]);
+        <span class="comment">// Repeat frame using previous parameters [p47].</span>
+        (<span class="number">0</span>..<span class="ident">SAMPLES_PER_FRAME</span>)
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">unvoiced</span>.<span class="ident">get</span>(<span class="ident">n</span>) <span class="op">+</span> <span class="ident">voiced</span>.<span class="ident">get</span>(<span class="ident">n</span>))
+            .<span class="ident">collect_slice_checked</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>[..]);
     }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>THREADS</span>;
-    <span class='kw'>use</span> <span class='ident'>consts</span>::<span class='ident'>SAMPLES_PER_FRAME</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">THREADS</span>;
+    <span class="kw">use</span> <span class="ident">consts</span>::<span class="ident">SAMPLES_PER_FRAME</span>;
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>verify_threads</span>() {
-        <span class='comment'>// Verify samples are split cleanly over threads.</span>
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>SAMPLES_PER_FRAME</span> <span class='op'>%</span> <span class='ident'>THREADS</span> <span class='op'>==</span> <span class='number'>0</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">verify_threads</span>() {
+        <span class="comment">// Verify samples are split cleanly over threads.</span>
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">SAMPLES_PER_FRAME</span> <span class="op">%</span> <span class="ident">THREADS</span> <span class="op">==</span> <span class="number">0</span>);
     }
 }
 </pre>
@@ -368,13 +369,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
@@ -408,7 +411,6 @@
         window.rootPath = "../../";
         window.currentCrate = "imbe";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>
