@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `open` fn in crate `rtlsdr`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, open">
+    <meta name="description" content="API documentation for the Rust `Error` type in crate `rtlsdr_mt`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Error">
 
-    <title>rtlsdr::open - Rust</title>
+    <title>rtlsdr_mt::Error - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../normalize.css">
     <link rel="stylesheet" type="text/css" href="../rustdoc.css">
@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc fn">
+<body class="rustdoc type">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -30,7 +30,7 @@
     <nav class="sidebar">
         <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='index.html'>rtlsdr</a></p><script>window.sidebarCurrent = {name: 'open', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Type Definition Error</p><div class="sidebar-elems"><p class='location'><a href='index.html'>rtlsdr_mt</a></p><script>window.sidebarCurrent = {name: 'Error', ty: 'type', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -45,14 +45,12 @@
     </nav>
 
     <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>rtlsdr</a>::<wbr><a class="fn" href=''>open</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Type Definition <a href='index.html'>rtlsdr_mt</a>::<wbr><a class="type" href=''>Error</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rtlsdr/lib.rs.html#65-69' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn open(idx: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; <a class="type" href="../rtlsdr/type.Result.html" title="type rtlsdr::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="struct" href="../rtlsdr/struct.Controller.html" title="struct rtlsdr::Controller">Controller</a>, <a class="struct" href="../rtlsdr/struct.Reader.html" title="struct rtlsdr::Reader">Reader</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>&gt;</pre><div class='docblock'><p>Try to open the RTL-SDR device at the given index.</p>
-
-<p>Return a controller and reader for the device on success.</p>
+               </span><a class='srclink' href='../src/rtlsdr_mt/lib.rs.html#45' title='goto source code'>[src]</a></span></h1>
+<pre class='rust typedef'>type Error = <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>;</pre><div class='docblock'><p>Error type for this crate.</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -110,7 +108,7 @@
 
     <script>
         window.rootPath = "../";
-        window.currentCrate = "rtlsdr";
+        window.currentCrate = "rtlsdr_mt";
     </script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>

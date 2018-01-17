@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/mick/.cargo/git/checkouts/p25.rs-3ba4edc693bfda13/1c893b9/src/lib.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/mick/.cargo/git/checkouts/p25.rs-3ba4edc693bfda13/fc36f2e/src/lib.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>lib.rs.html -- source</title>
@@ -79,6 +79,7 @@
 <span id="33">33</span>
 <span id="34">34</span>
 <span id="35">35</span>
+<span id="36">36</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Implements the Project 25 (P25) air interface radio protocol, including baseband frame</span>
 <span class="doccomment">//! synchronization, symbol decoding, error correction coding, and packet reconstuction.</span>
@@ -88,6 +89,7 @@
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">binfield_matrix</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">cai_cyclic</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">cai_golay</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">collect_slice</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">moving_avg</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">num</span>;

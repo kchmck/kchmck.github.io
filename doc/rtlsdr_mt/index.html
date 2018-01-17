@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `rtlsdr` crate.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, rtlsdr">
+    <meta name="description" content="API documentation for the Rust `rtlsdr_mt` crate.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, rtlsdr_mt">
 
-    <title>rtlsdr - Rust</title>
+    <title>rtlsdr_mt - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../normalize.css">
     <link rel="stylesheet" type="text/css" href="../rustdoc.css">
@@ -30,7 +30,7 @@
     <nav class="sidebar">
         <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Crate rtlsdr</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'rtlsdr', ty: 'mod', relpath: '../'};</script></div>
+        <p class='location'>Crate rtlsdr_mt</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'rtlsdr_mt', ty: 'mod', relpath: '../'};</script></div>
     </nav>
 
     <nav class="sub">
@@ -45,11 +45,11 @@
     </nav>
 
     <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Crate <a class="mod" href=''>rtlsdr</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Crate <a class="mod" href=''>rtlsdr_mt</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rtlsdr/lib.rs.html#1-265' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/rtlsdr_mt/lib.rs.html#1-265' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>This crate provides a high-level interface to the RTL-SDR that separates controlling
 the device and reading samples, for integration into multithreaded applications.</p>
 
@@ -58,7 +58,7 @@ the device and reading samples, for integration into multithreaded applications.
 while incrementing the receive frequency by 1kHz every second in a subthread.</p>
 
 <pre class="rust rust-example-rendered">
-<span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">ctl</span>, <span class="kw-2">mut</span> <span class="ident">reader</span>) <span class="op">=</span> <span class="ident">rtlsdr</span>::<span class="ident">open</span>(<span class="number">0</span>).<span class="ident">unwrap</span>();
+<span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">ctl</span>, <span class="kw-2">mut</span> <span class="ident">reader</span>) <span class="op">=</span> <span class="ident">rtlsdr_mt</span>::<span class="ident">open</span>(<span class="number">0</span>).<span class="ident">unwrap</span>();
 
 <span class="ident">ctl</span>.<span class="ident">enable_agc</span>().<span class="ident">unwrap</span>();
 <span class="ident">ctl</span>.<span class="ident">set_ppm</span>(<span class="op">-</span><span class="number">2</span>).<span class="ident">unwrap</span>();
@@ -81,14 +81,14 @@ while incrementing the receive frequency by 1kHz every second in a subthread.</p
 <table>
                        <tr class=' module-item'>
                            <td><a class="struct" href="struct.Controller.html"
-                                  title='struct rtlsdr::Controller'>Controller</a></td>
+                                  title='struct rtlsdr_mt::Controller'>Controller</a></td>
                            <td class='docblock-short'>
                                 <p>Controls hardware parameters.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="struct" href="struct.Reader.html"
-                                  title='struct rtlsdr::Reader'>Reader</a></td>
+                                  title='struct rtlsdr_mt::Reader'>Reader</a></td>
                            <td class='docblock-short'>
                                 <p>Reads I/Q samples.</p>
                            </td>
@@ -96,14 +96,14 @@ while incrementing the receive frequency by 1kHz every second in a subthread.</p
 <table>
                        <tr class=' module-item'>
                            <td><a class="fn" href="fn.devices.html"
-                                  title='fn rtlsdr::devices'>devices</a></td>
+                                  title='fn rtlsdr_mt::devices'>devices</a></td>
                            <td class='docblock-short'>
                                 <p>Create an iterator over available RTL-SDR devices.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="fn" href="fn.open.html"
-                                  title='fn rtlsdr::open'>open</a></td>
+                                  title='fn rtlsdr_mt::open'>open</a></td>
                            <td class='docblock-short'>
                                 <p>Try to open the RTL-SDR device at the given index.</p>
                            </td>
@@ -111,21 +111,21 @@ while incrementing the receive frequency by 1kHz every second in a subthread.</p
 <table>
                        <tr class=' module-item'>
                            <td><a class="type" href="type.Error.html"
-                                  title='type rtlsdr::Error'>Error</a></td>
+                                  title='type rtlsdr_mt::Error'>Error</a></td>
                            <td class='docblock-short'>
                                 <p>Error type for this crate.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="type" href="type.Result.html"
-                                  title='type rtlsdr::Result'>Result</a></td>
+                                  title='type rtlsdr_mt::Result'>Result</a></td>
                            <td class='docblock-short'>
                                 <p>Result type for this crate.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="type" href="type.TunerGains.html"
-                                  title='type rtlsdr::TunerGains'>TunerGains</a></td>
+                                  title='type rtlsdr_mt::TunerGains'>TunerGains</a></td>
                            <td class='docblock-short'>
                                 <p>Holds a list of valid gain values.</p>
                            </td>
@@ -186,7 +186,7 @@ while incrementing the receive frequency by 1kHz every second in a subthread.</p
 
     <script>
         window.rootPath = "../";
-        window.currentCrate = "rtlsdr";
+        window.currentCrate = "rtlsdr_mt";
     </script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>

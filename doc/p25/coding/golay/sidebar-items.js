@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["extended","Encoding and decoding of the (24, 12, 8) code."],["shortened","Encoding and decoding of the (18, 6, 8) code."],["standard","Encoding and decoding of the (23, 12, 7) code."]]});
+initSidebarItems({"mod":[["extended","Encoding and decoding of the (24, 12, 8) extended Golay code."],["shortened","Encoding and decoding of the (18, 6, 8) code."],["standard","Encoding and decoding of the (23, 12, 7) standard Golay code."]]});

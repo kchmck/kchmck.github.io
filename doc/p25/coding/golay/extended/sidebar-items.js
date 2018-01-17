@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["decode","Try to decode the given  24-bit word to the nearest codeword, correcting up to 3 errors."],["encode","Encode the given 12 data bits into a 24-bit codeword."]]});
+initSidebarItems({"fn":[["decode","Try to decode the given 24-bit word to the nearest codeword, correcting up to 3 errors and detecting 4 errors."],["encode","Encode the given 12 data bits into a 24-bit codeword."]]});

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/mick/.cargo/git/checkouts/rtlsdr.rs-052119ac39f016b8/586bd9d/src/lib.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/mick/.cargo/registry/src/github.com-1ecc6299db9ec823/rtlsdr_mt-2.0.0/src/lib.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>lib.rs.html -- source</title>
@@ -319,7 +319,7 @@
 <span class="doccomment">//! while incrementing the receive frequency by 1kHz every second in a subthread.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust,no_run</span>
-<span class="doccomment">//! let (mut ctl, mut reader) = rtlsdr::open(0).unwrap();</span>
+<span class="doccomment">//! let (mut ctl, mut reader) = rtlsdr_mt::open(0).unwrap();</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ctl.enable_agc().unwrap();</span>
 <span class="doccomment">//! ctl.set_ppm(-2).unwrap();</span>
@@ -376,7 +376,7 @@
 <span class="doccomment">/// Return a controller and reader for the device on success.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">open</span>(<span class="ident">idx</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">Controller</span>, <span class="ident">Reader</span>)<span class="op">&gt;</span> {
     <span class="ident">Device</span>::<span class="ident">open</span>(<span class="ident">idx</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">dev</span><span class="op">|</span> <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">dev</span>)).<span class="ident">map</span>(<span class="op">|</span><span class="ident">arc</span><span class="op">|</span> {
-        (<span class="ident">Controller</span>::<span class="ident">new</span>(<span class="ident">arc</span>.<span class="ident">clone</span>()), <span class="ident">Reader</span>::<span class="ident">new</span>(<span class="ident">arc</span>.<span class="ident">clone</span>()))
+        (<span class="ident">Controller</span>::<span class="ident">new</span>(<span class="ident">arc</span>.<span class="ident">clone</span>()), <span class="ident">Reader</span>::<span class="ident">new</span>(<span class="ident">arc</span>))
     })
 }
 
@@ -633,7 +633,7 @@
 
     <script>
         window.rootPath = "../../";
-        window.currentCrate = "rtlsdr";
+        window.currentCrate = "rtlsdr_mt";
     </script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
