@@ -1,0 +1,171 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/mick/.cargo/registry/src/github.com-1ecc6299db9ec823/rtlsdr_sys-1.1.1/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../rtlsdr_sys/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1"> 1</span>
+<span id="2"> 2</span>
+<span id="3"> 3</span>
+<span id="4"> 4</span>
+<span id="5"> 5</span>
+<span id="6"> 6</span>
+<span id="7"> 7</span>
+<span id="8"> 8</span>
+<span id="9"> 9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+</pre><div class="example-wrap"><pre class="rust ">
+<span class="doccomment">//! This crate provides low-level [FFI](https://doc.rust-lang.org/book/ffi.html) bindings</span>
+<span class="doccomment">//! for [librtlsdr](https://git.osmocom.org/rtl-sdr/). See the</span>
+<span class="doccomment">//! [`rtl-sdr.h`](https://git.osmocom.org/rtl-sdr/tree/include/rtl-sdr.h) header</span>
+<span class="doccomment">//! distributed with the library for a description of each corresponding binding.</span>
+
+<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
+
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">libc</span>;
+
+<span class="kw">use</span> <span class="ident">libc</span>::{<span class="ident">uint32_t</span>, <span class="ident">uint16_t</span>, <span class="ident">uint8_t</span>, <span class="ident">c_char</span>, <span class="ident">c_uchar</span>, <span class="ident">c_int</span>, <span class="ident">c_void</span>};
+
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">rtlsdr_dev_t</span> <span class="op">=</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>;
+
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">rtlsdr_read_async_cb_t</span> <span class="op">=</span> <span class="kw">extern</span> <span class="kw">fn</span>(<span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_uchar</span>, <span class="ident">len</span>: <span class="ident">uint32_t</span>,
+                                            <span class="ident">ctx</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>);
+
+<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">rtlsdr_tuner</span> {
+    <span class="ident">RTLSDR_TUNER_UNKNOWN</span>,
+    <span class="ident">RTLSDR_TUNER_E4000</span>,
+    <span class="ident">RTLSDR_TUNER_FC0012</span>,
+    <span class="ident">RTLSDR_TUNER_FC0013</span>,
+    <span class="ident">RTLSDR_TUNER_FC2580</span>,
+    <span class="ident">RTLSDR_TUNER_R820T</span>,
+    <span class="ident">RTLSDR_TUNER_R828D</span>
+}
+
+<span class="attribute">#[<span class="ident">link</span>(<span class="ident">name</span> <span class="op">=</span> <span class="string">&quot;rtlsdr&quot;</span>)]</span>
+<span class="kw">extern</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_device_count</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">uint32_t</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_device_name</span>(<span class="ident">idx</span>: <span class="ident">uint32_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">c_char</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_device_usb_strings</span>(<span class="ident">idx</span>: <span class="ident">uint32_t</span>, <span class="ident">mfg</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_char</span>,
+                                         <span class="ident">prod</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_char</span>, <span class="ident">serial</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_char</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_index_by_serial</span>(<span class="ident">serial</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">c_char</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_open</span>(<span class="ident">dev</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">rtlsdr_dev_t</span>, <span class="ident">idx</span>: <span class="ident">uint32_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_close</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_set_xtal_freq</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">rtl_freq</span>: <span class="ident">uint32_t</span>,
+                                <span class="ident">tuner_freq</span>: <span class="ident">uint32_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_xtal_freq</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">rtl_freq</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">uint32_t</span>,
+                                <span class="ident">tuner_freq</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">uint32_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_usb_strings</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">mfg</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_char</span>, <span class="ident">prod</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_char</span>,
+                                  <span class="ident">serial</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_char</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_write_eeprom</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">data</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">uint8_t</span>, <span class="ident">offset</span>: <span class="ident">uint8_t</span>,
+                               <span class="ident">len</span>: <span class="ident">uint16_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_read_eeprom</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">data</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">uint8_t</span>, <span class="ident">offset</span>: <span class="ident">uint8_t</span>,
+                              <span class="ident">len</span>: <span class="ident">uint16_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_set_center_freq</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">freq</span>: <span class="ident">uint32_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_center_freq</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">uint32_t</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_set_freq_correction</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">ppm</span>: <span class="ident">c_int</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_freq_correction</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_tuner_type</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">rtlsdr_tuner</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_tuner_gains</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">gains</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_int</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_set_tuner_gain</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">gain</span>: <span class="ident">c_int</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_tuner_gain</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_set_tuner_bandwidth</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">bw</span>: <span class="ident">uint32_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_set_tuner_if_gain</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">stage</span>: <span class="ident">c_int</span>, <span class="ident">gain</span>: <span class="ident">c_int</span>) <span class="op">-</span><span class="op">&gt;</span><span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_set_tuner_gain_mode</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">manual</span>: <span class="ident">c_int</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_set_sample_rate</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">rate</span>: <span class="ident">uint32_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_sample_rate</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">uint32_t</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_set_testmode</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">on</span>: <span class="ident">c_int</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_set_agc_mode</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">on</span>: <span class="ident">c_int</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_set_direct_sampling</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">on</span>: <span class="ident">c_int</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_direct_sampling</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_set_offset_tuning</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">on</span>: <span class="ident">c_int</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_get_offset_tuning</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_reset_buffer</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_read_sync</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>, <span class="ident">len</span>: <span class="ident">c_int</span>,
+                            <span class="ident">read</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_int</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_read_async</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>, <span class="ident">cb</span>: <span class="ident">rtlsdr_read_async_cb_t</span>,
+                             <span class="ident">ctx</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>, <span class="ident">num</span>: <span class="ident">uint32_t</span>, <span class="ident">len</span>: <span class="ident">uint32_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtlsdr_cancel_async</span>(<span class="ident">dev</span>: <span class="ident">rtlsdr_dev_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span>;
+}
+</pre></div>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "rtlsdr_sys";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
